@@ -11,8 +11,6 @@ static int* nPrevCheatSettings = NULL;
 
 static int InpCheatListBegin()
 {
- 
-
 	return 0;
 }
 
@@ -20,8 +18,6 @@ static int InpCheatListBegin()
 // do not refresh list every time, modified by regret
 static int InpCheatListMake(BOOL bBuild)
 {
-	 
-
 	return 0;
 }
 
@@ -61,14 +57,11 @@ static void InpCheatReset()
 
 static int InpCheatPick()
 {
- 
 	return 0;
 }
 
  
 int InpCheatCreate()
 {
- 
-
 	return 0;
 }

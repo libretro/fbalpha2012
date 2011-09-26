@@ -28,14 +28,12 @@
 #define Q2 0.3
 #define Gain2 1.475
 
-
 class LowPass2* LP1 = NULL, *LP2 = NULL;
 
 int DspDo(short* Buff, int Len)
 {
-	if (!LP1 || !LP2) {
+	if (!LP1 || !LP2)
 		return 1;
-	}
 
 	LP1->Filter(Buff, Len);			// Left
 	LP2->Filter(Buff + 1, Len);		// Right

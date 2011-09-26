@@ -95,14 +95,7 @@ static inline void refreshWindow(bool bInitialise)
 // simply reinit screen, added by regret
 void simpleReinitScrn(const bool& reinitVid)
 {
- 
-	//scrnSize();
-
-	// need for dx9 blitter
-	//if (reinitVid || vidInitNeeded()) {
-		VidReinit();
-	//} 
- 
+	VidReinit();
 }
  
  

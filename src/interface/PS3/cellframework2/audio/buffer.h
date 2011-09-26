@@ -16,15 +16,15 @@
 #ifndef __BUFFER_H
 #define __BUFFER_H
 
-#include "../common/celltypes.h"
+#include <stdint.h>
 
 typedef struct fifo_buffer fifo_buffer_t;
 
-fifo_buffer_t* fifo_new(u32 size);
-void fifo_write(fifo_buffer_t* buffer, const void* in_buf, u32 size);
-void fifo_read(fifo_buffer_t* buffer, void* in_buf, u32 size);
+fifo_buffer_t* fifo_new(uint32_t size);
+void fifo_write(fifo_buffer_t* buffer, const void* in_buf, uint32_t size);
+void fifo_read(fifo_buffer_t* buffer, void* in_buf, uint32_t size);
 void fifo_free(fifo_buffer_t* buffer);
-u32 fifo_read_avail(fifo_buffer_t* buffer);
-u32 fifo_write_avail(fifo_buffer_t* buffer);
+uint32_t fifo_read_avail(fifo_buffer_t* buffer);
+uint32_t fifo_write_avail(fifo_buffer_t* buffer);
 
 #endif

@@ -6,19 +6,15 @@
 
 #include "burner.h"
 #include "vid_support.h"
-//#include "vid_filter.h"
 
 #include "vid_psgl.h"
  
 HWND hVidWnd = NULL;
-//static bool fullSwitch = false;
 PSGLdevice* psgl_device = NULL;
 PSGLcontext* psgl_context = NULL;
 
 static GLuint gl_width = 0;
 static GLuint gl_height = 0;
-
- 
 static int nGameImageWidth, nGameImageHeight;
 static int nImageWidth, nImageHeight;
  
@@ -391,10 +387,13 @@ static inline int _psglExit()
 
 static inline int _psglTextureInit()
 {
-	if (nRotateGame & 1) {
+	if (nRotateGame & 1)
+	{
 		nVidImageWidth = nGameHeight;
 		nVidImageHeight = nGameWidth;
-	} else {
+	}
+	else
+	{
 		nVidImageWidth = nGameWidth;
 		nVidImageHeight = nGameHeight;
 	}
@@ -405,11 +404,6 @@ static inline int _psglTextureInit()
 	nVidImageDepth = nVidScrnDepth;
 
 	nVidImageBPP = (nVidImageDepth + 7) >> 3;
-   //FBA-PS3 Squarepusher - NOTE: just learn the value here for later use
-   //Reason - integer multiplication is microcoded - while immediate shift left by constant is not
-   //- nVidImageDepth = nVidScrnDepth = 32
-   //(32 + 7) = 39
-   // 39 >> 3 = 39 / 8 = 4
 
 	nBurnBpp = nVidImageBPP;					// Set Burn library Bytes per pixel
 
@@ -417,13 +411,12 @@ static inline int _psglTextureInit()
 	SetBurnHighCol(nVidImageDepth);
 
 	// Make the normal memory buffer
-	if (VidSAllocVidImage()) {
+	if (VidSAllocVidImage())
+	{
 		psglExit();
 		return 1;
 	}
 
-   //FBA-PS3 Squarepusher - NOTE - since we don't use nPreScaleZoom, we can get rid of 
-   //integer multiplications by nPreScaleZoom
 	unsigned int nTextureWidth = VidGetTextureSize(nGameImageWidth);
 	unsigned int nTextureHeight = VidGetTextureSize(nGameImageHeight);
 
@@ -433,10 +426,9 @@ static inline int _psglTextureInit()
 }
 
 static inline int _psglInit()
-{	
+{
 	hVidWnd = hScrnWnd;
 
-	// set fullscreen
 	nVidScrnDepth = 32;
 
 	psglResetCurrentContext();
@@ -454,46 +446,31 @@ static inline int _psglInit()
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
- 
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	init();
 
 	_psglInitCG();
- 
-	VidInitInfo();
 
-	// for filter
-   //FBA-PS3 Note Squarepusher - We don't use this
-	//VidFilterParamInit();
+	VidInitInfo();
 
 	// Initialize the buffer surfaces
 	if (_psglTextureInit())
-   {
+	{
 		psglExit();
 		return 1;
 	}
 
-   #if 0
-	if (nPreScaleEffect) {
-		if (VidFilterInit(nPreScaleEffect, 0)) {
-			if (VidFilterInit(0, 0)) {
-				psglExit();
-				return 1;
-			}
-		}
-	}
-   #endif
-
-   _apply_rotation_settings();
+	_apply_rotation_settings();
 
 	OpenGL::setlinear(vidFilterLinear);
 
 	setVSync(bVidVSync);
 
 	nImageWidth = nImageHeight = 0;
- 
+
 	return 0;
 }
 
@@ -519,16 +496,6 @@ static inline int _psglInit()
       dst += pitch; \
    }while(height);
 
-
-// Run one frame and render the screen
-#if 0
-static inline int _psglFrame(bool bRedraw)			// bRedraw = 0
-{
-   BurnDrvFrame();
-	_psglRender();
-	return 0;
-}
-#endif
 
 void psglClearUI()
 {
@@ -581,34 +548,34 @@ void psglRenderUI()
 
 void CalculateViewport()
 {
-   common_render_function_body();
+	common_render_function_body();
 }
 
 void _psglRender()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-   common_video_copy_function();
+	common_video_copy_function();
 	refresh(inwidth, inheight);
 
 	if (bShowFPS)
-   {
+	{
 		ShowFPS();
-   }
+	}
 
 	psglSwap();
 	cellSysutilCheckCallback();
 }
 
 void psglRenderPaused()			 
-{	
-   common_render_function_body();
+{
+	common_render_function_body();
 	refreshwithalpha(inwidth, inheight, 0xA0);
 }
 
 void psglRenderStretch()			 
 {	
-   common_video_rotate_function();
-	 
+	common_video_rotate_function();
+
 	nImageWidth  = nNewImageWidth;
 	nImageHeight = nNewImageHeight;
 
@@ -631,24 +598,13 @@ void psglRenderStretch()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-   common_video_copy_function();
+	common_video_copy_function();
 }
 
 void psglRenderAlpha()
 {
 	refreshwithalpha(nGameImageWidth, nGameImageHeight, 0xA0);
 }
-
-#if 0
-static inline int _psglPaint(int bValidate)
-{
-	if (bValidate & 2) {
-		_psglRender();
-	}
-
-	return 0;
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -657,16 +613,6 @@ static inline int _psglGetSettings(InterfaceInfo* pInfo)
 	return 0;
 }
 
-
-#if 0
-CGerror _psglCheckCgError(int line)
-{
-	CGerror err = cgGetError();
-
-	return err;
-}
-#endif
- 
 static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filename, const char *entry)
 {
 	const char* args[] = { "-fastmath", "-unroll=all", "-ifcvt=all", 0};
@@ -693,43 +639,43 @@ static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filenam
 
 int32_t psglInitShader(const char* filename)
 {
-   CGprogram id = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, filename, "main_fragment");
-   CGprogram v_id = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, filename, "main_vertex");
-   if (id)
-   {
-      FragmentProgram = id;
-      VertexProgram = v_id;
+	CGprogram id = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, filename, "main_fragment");
+	CGprogram v_id = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, filename, "main_vertex");
+	if (id)
+	{
+		FragmentProgram = id;
+		VertexProgram = v_id;
 
-      get_cg_params();
+		get_cg_params();
 
-      return CELL_OK;
-   }
-   return !CELL_OK;
+		return CELL_OK;
+	}
+	return !CELL_OK;
 }
 
 void _psglExitCG()
 {
- 
+
 	if (VertexProgram)
 	{
 		cgGLUnbindProgram(CG_PROFILE_SCE_VP_RSX);
 		cgDestroyProgram(VertexProgram);
-      VertexProgram = NULL;
+		VertexProgram = NULL;
 	}
 
 	if (FragmentProgram)
 	{
 		cgGLUnbindProgram(CG_PROFILE_SCE_FP_RSX);
 		cgDestroyProgram(FragmentProgram);
-      FragmentProgram = NULL;
+		FragmentProgram = NULL;
 	}
 
 	if (CgContext)
 	{
 		cgDestroyContext(CgContext);
-      CgContext = NULL;
+		CgContext = NULL;
 	}
- 
+
 }
 void _psglInitCG()
 {
@@ -737,20 +683,20 @@ void _psglInitCG()
 
 	_psglExitCG();
 
-   CgContext = cgCreateContext();
+	CgContext = cgCreateContext();
 	cgRTCgcInit();
 
 	strcpy(shaderFile, SHADER_DIRECTORY);
 	strcat(shaderFile, m_ListShaderData[shaderindex].c_str());
- 
+
 	const char *shader = shaderFile;
-   VertexProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
-   FragmentProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
+	VertexProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
+	FragmentProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
 
 	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
 	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
 
-   get_cg_params();
+	get_cg_params();
 }
 
 // The Video Output plugin:

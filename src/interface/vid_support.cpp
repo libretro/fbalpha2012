@@ -12,7 +12,8 @@ static unsigned char* pVidSFullImage = NULL;
 
 void VidSFreeVidImage()
 {
-	if (pVidSFullImage) {
+	if (pVidSFullImage)
+	{
 		free(pVidSFullImage);
 		pVidSFullImage = NULL;
 	}
@@ -31,11 +32,14 @@ int VidSAllocVidImage()
 	nMemLen = (nVidImageHeight + 4) * nVidImagePitch;
 	pVidSFullImage = (unsigned char*)malloc(nMemLen);
 
-	if (pVidSFullImage) {
+	if (pVidSFullImage)
+	{
 		memset(pVidSFullImage, 0, nMemLen);
 		pVidImage = pVidSFullImage + nVidImagePitch;
 		return 0;
-	} else {
+	}
+	else
+	{
 		pVidImage = NULL;
 		return 1;
 	}
@@ -48,23 +52,26 @@ void VidInitInfo()
 	nGameHeight = nVidImageHeight;
 	nRotateGame = 0;
 
-	if (bDrvOkay) {
+	if (bDrvOkay)
+	{
 		// Get the game screen size
 		BurnDrvGetVisibleSize(&nGameWidth, &nGameHeight);
 
-		if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
-			if (nVidRotationAdjust & 1) {
+		if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+		{
+			if (nVidRotationAdjust & 1)
+			{
 				int n = nGameWidth;
 				nGameWidth = nGameHeight;
 				nGameHeight = n;
 				nRotateGame |= (nVidRotationAdjust & 2);
-			} else {
-				nRotateGame |= 1;
 			}
+			else
+				nRotateGame |= 1;
 		}
-		if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED) {
+
+		if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
 			nRotateGame ^= 2;
-		}
 	}
 }
 
@@ -72,17 +79,19 @@ void VidInitInfo()
 // (taking into account the aspect ratios of the game and monitor)
 bool VidSGetArcaderes(int* pWidth, int* pHeight)
 {
-	if (!bDrvOkay) {
+	if (!bDrvOkay)
 		return false;
-	}
 
 	int nGameWidth, nGameHeight;
 	int nGameAspectX, nGameAspectY;
 
-	if ((BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) && (nVidRotationAdjust & 1)) {
+	if ((BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) && (nVidRotationAdjust & 1))
+	{
 		BurnDrvGetVisibleSize(&nGameHeight, &nGameWidth);
 		BurnDrvGetAspect(&nGameAspectY, &nGameAspectX);
-	} else {
+	}
+	else
+	{
 		BurnDrvGetVisibleSize(&nGameWidth, &nGameHeight);
 		BurnDrvGetAspect(&nGameAspectX, &nGameAspectY);
 	}
@@ -90,20 +99,22 @@ bool VidSGetArcaderes(int* pWidth, int* pHeight)
 	double dMonAspect = (double)vidScrnAspect;
 	double dGameAspect = (double)nGameAspectX / nGameAspectY;
 
-	if (dMonAspect > dGameAspect) {
+	if (dMonAspect > dGameAspect)
+	{
 		*pWidth = nGameHeight * nGameAspectY * nGameWidth * vidScrnAspect / (nGameHeight * nGameAspectX);
 		*pHeight = nGameHeight;
-	} else {
+	}
+	else
+	{
 		*pWidth = nGameWidth;
 		*pHeight = nGameWidth * nGameAspectX * nGameHeight / (nGameWidth * nGameAspectY * vidScrnAspect);
 	}
 
 	// Horizontal resolution must be a multiple of 8
-	if (*pWidth - nGameWidth < 8) {
+	if (*pWidth - nGameWidth < 8)
 		*pWidth = (*pWidth + 7) & ~7;
-	} else {
+	else
 		*pWidth = (*pWidth + 4) & ~7;
-	}
 
 	return true;
 }
@@ -114,13 +125,12 @@ bool VidSGetArcaderes(int* pWidth, int* pHeight)
 // - The window size
 int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 {
-   #ifndef SN_TARGET_PS3
-	if (bVidFullStretch) {				// Arbitrary stretch
+#ifndef SN_TARGET_PS3
+	if (bVidFullStretch) // Arbitrary stretch
 		return 0;
-	}
-   #endif
+#endif
 
-	int xm, ym;							// The multiple of nScrnWidth and nScrnHeight we can fit in
+	int xm, ym; // The multiple of nScrnWidth and nScrnHeight we can fit in
 	int nScrnWidth, nScrnHeight;
 
 	int nGameAspectX = 4, nGameAspectY = 3;
@@ -128,13 +138,13 @@ int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 	int nHeight = pRect->bottom - pRect->top;
 
 #ifndef SN_TARGET_PS3
-	if (bDrvOkay) {
+	if (bDrvOkay)
+	{
 #endif
-		if ((BurnDrvGetFlags() & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED)) && (nVidRotationAdjust & 1)) {
+		if ((BurnDrvGetFlags() & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED)) && (nVidRotationAdjust & 1))
 			BurnDrvGetAspect(&nGameAspectY, &nGameAspectX);
-		} else {
+		else
 			BurnDrvGetAspect(&nGameAspectX, &nGameAspectY);
-		}
 #ifndef SN_TARGET_PS3
 	}
 #endif
@@ -143,46 +153,54 @@ int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 	ym = nHeight / nGameHeight;
 
 #ifdef SN_TARGET_PS3
-		nScrnWidth = nVidScrnWidth;
-		nScrnHeight = nVidScrnHeight;
+	nScrnWidth = nVidScrnWidth;
+	nScrnHeight = nVidScrnHeight;
 #else
-	if (nVidFullscreen) {
+	if (nVidFullscreen)
+	{
 		nScrnWidth = nVidScrnWidth;
 		nScrnHeight = nVidScrnHeight;
-	} else {
+	}
+	else
+	{
 		nScrnWidth = SystemWorkArea.right - SystemWorkArea.left;
 		nScrnHeight = SystemWorkArea.bottom - SystemWorkArea.top;
 	}
 #endif
 
-	if (bVidCorrectAspect) {					// Correct aspect ratio
+	if (bVidCorrectAspect)
+	{ // Correct aspect ratio
 		int nWidthScratch;
 		nWidthScratch = nHeight * nGameAspectX * nScrnWidth / (nScrnHeight * vidScrnAspect * nGameAspectY);
-		if (nWidthScratch > nWidth) {			// The image is too wide
-			if (nGameWidth < nGameHeight) {		// Vertical games
+
+		if (nWidthScratch > nWidth)
+		{ // The image is too wide
+			if (nGameWidth < nGameHeight) // Vertical games
 				nHeight = nWidth * nGameAspectY * nScrnWidth / (nScrnHeight * vidScrnAspect * nGameAspectX);
-			} else {							// Horizontal games
+			else	// Horizontal games
 				nHeight = nWidth * vidScrnAspect * nGameAspectY * nScrnHeight / (nScrnWidth * nGameAspectX);
-			}
-		} else {
-			nWidth = nWidthScratch;
 		}
-	} else {
-		if (xm && ym) {							// Don't correct aspect ratio
-			if (xm > ym) {
+		else
+			nWidth = nWidthScratch;
+	}
+	else
+	{
+		if (xm && ym)
+		{ // Don't correct aspect ratio
+			if (xm > ym)
 				xm = ym;
-			} else {
+			else
 				ym = xm;
-			}
+
 			nWidth = nGameWidth * xm;
 			nHeight = nGameHeight * ym;
 		} else {
-			if (xm) {
+			if (xm)
 				nWidth = nGameWidth * xm * nHeight / nGameHeight;
-			} else {
-				if (ym) {
+			else
+			{
+				if (ym)
 					nHeight = nGameHeight * ym * nWidth / nGameWidth;
-				}
 			}
 		}
 	}

@@ -6,13 +6,6 @@
 // General
 void VidSExit();
  
-#if 0
-// Gamma controls
-void VidSRestoreGamma();
-int VidSUpdateGamma();
-int VidSSetupGamma(IDirectDrawSurface7* pSurf);
-#endif
-
 // Select optimal full-screen resolution
 struct VidSDisplayScoreInfo {
 	// Filled in advance by the caller

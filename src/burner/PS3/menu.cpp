@@ -10,7 +10,6 @@
 #include "burner.h"
 #include "../../interface/PS3/cellframework2/input/pad_input.h"
 #include "vid_psgl.h"
-//#include "vid_filter.h"
 #include "inp_keys.h"
 
 #define FILEBROWSER_DELAY	180000
@@ -406,7 +405,7 @@ void LoadDIPS()
 void LoadInputs()
 {
 	unsigned int i, j = 0;
- 
+
 	// get button info
 	int nButtons = 0; // buttons per player
 	int nPlayer = 0;
@@ -418,7 +417,7 @@ void LoadInputs()
 
 	// Add all the input names to the list
 	for (unsigned int i = 0; i < nGameInpCount; i++)
-   {
+	{
 		// Get the name of the input
 		struct BurnInputInfo bii;
 		bii.szName = NULL;
@@ -429,19 +428,19 @@ void LoadInputs()
 			continue;
 		if (bii.szName == NULL)
 			bii.szName = "";
-  
+
 		m_InputList[std::string(bii.szName)] = std::string(" ");
 		m_InputListData.push_back(std::string(bii.szName));
 		m_InputListOffsets.push_back(j);
- 
+
 		j++;
 	}
 
 	struct GameInp* pgi = GameInp + nGameInpCount;
 	for (unsigned int i = 0; i < nMacroCount; i++, pgi++)
-   {
+	{
 		if (pgi->nInput & GIT_GROUP_MACRO)
-      {
+		{
 			m_InputList[std::string(pgi->Macro.szName)] = std::string(" ");
 			m_InputListData.push_back(std::string(pgi->Macro.szName));
 			m_InputListOffsets.push_back(j);
@@ -456,7 +455,7 @@ void LoadInputs()
 	// Update the values of all the inputs
 	int z = 0;
 	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
-   {
+	{
 		if (pgi->Input.pVal == NULL)
 			continue;
 
@@ -472,7 +471,7 @@ void LoadInputs()
 			bii.szName = "";
 		}
 
-  
+
 		TCHAR* pszVal = InpToDesc(pgi);
 
 		m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
@@ -482,9 +481,9 @@ void LoadInputs()
 	}
 
 	for (i = 0, pgi = GameInp + nGameInpCount; i < nMacroCount; i++, pgi++)
-   {
+	{
 		if (pgi->nInput & GIT_GROUP_MACRO)
-      {
+		{
 			TCHAR* pszVal = InpMacroToDesc(pgi);
 			m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
 		}
@@ -510,11 +509,11 @@ void LoadInputs()
 
 int InitDipList()
 {
-	fDipSelect		= 0.0f;
-	iDipSelect		= 0;
-	fDipCursorPos	= 0.0f;
-	iDipCursorPos	= 0;
-	fDipMaxCount	= 0.0f;
+	fDipSelect = 0.0f;
+	iDipSelect = 0;
+	fDipCursorPos = 0.0f;
+	iDipCursorPos = 0;
+	fDipMaxCount = 0.0f;
 
 	m_DipList.clear();
 	m_DipListData.clear();
@@ -667,14 +666,14 @@ int InitRomList()
 
 void ResetMenuVars()
 {
-	fGameSelect	= 0.0f;
-	iGameSelect	= 0;
+	fGameSelect = 0.0f;
+	iGameSelect = 0;
 	fCursorPos = 0.0f;
 	iCursorPos = 0;
-	fMaxCount =	0.0f;
+	fMaxCount = 0.0f;
 
 	//set frame	time
-	m_fFrameTime = 1.0f	/ 60.0f;
+	m_fFrameTime = 1.0f/60.0f;
 
 	m_vecAvailRomList.clear();
 	m_vecAvailRomIndex.clear();
@@ -682,7 +681,7 @@ void ResetMenuVars()
 }
 
 int AvRoms()
-{	 
+{
 	iNumGames =	m_vecAvailRomList.size();
 
 	if (iNumGames < GAMESEL_MaxWindowList)
@@ -716,13 +715,12 @@ int AvRoms()
 
 void BuildRomList()
 {
- 
 	bool IsFiltered = false;
 	std::vector<std::string> vecTempRomList;
 	std::vector<std::string> vecAvailRomListFileName;
 	std::vector<std::string> vecAvailRomList;
 	std::vector<int>		 vecAvailRomIndex;
- 
+
 	m_vecAvailRomList.clear();
 	m_vecAvailRomReleasedBy.clear();
 	m_vecAvailRomInfo.clear();
@@ -734,55 +732,47 @@ void BuildRomList()
 	if (m_ListData.empty())
 	{
 		for (int d = 0; d < DIRS_MAX; d++)
-      {
+		{
 			if (!_tcsicmp(szAppRomPaths[d], _T("")))
-            continue; // skip empty path
+				continue; // skip empty path
 
-         iterate_directory(szAppRomPaths[d], m_ListData);
+			iterate_directory(szAppRomPaths[d], m_ListData);
 		}
 		std::sort(m_ListData.begin(), m_ListData.end());
 	}
 
 	if (m_ListShaderData.empty())
 	{
-      iterate_directory(SHADER_DIRECTORY, m_ListShaderData);
+		iterate_directory(SHADER_DIRECTORY, m_ListShaderData);
 		std::sort(m_ListShaderData.begin(), m_ListShaderData.end());
 	}
-	 
-	//int tempgame;
-	//tempgame = nBurnDrvSelect;
- 
+
 	// Now build a vector of Burn Roms
-   unsigned int i = 0;
-   do
-   {
+	unsigned int i = 0;
+	do
+	{
 		nBurnDrvSelect = i;	
 		char *szName;
-	 
+
 		BurnDrvGetArchiveName(&szName, 0);
-      #if 0
-		if (BurnDrvGetArchiveName(&szName, 0))
-      {
-		}
-      #endif
- 
+
 		vecAvailRomListFileName.push_back(szName);
 		vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
 		vecAvailRomIndex.push_back(i);
-      i++;
+		i++;
 	}while(i < nBurnDrvCount-1);
 
 	// For each *.zip we have, see if there is a matching burn rom
 	// if so add it to the m_vec members and we are done.
 
 	for (unsigned int x = 0; x < vecAvailRomListFileName.size(); x++)
-   {
+	{
 		for (unsigned int y = 0; y < m_ListData.size(); y++)
-      {
+		{
 			if (m_ListData[y] == vecAvailRomListFileName[x])
-         {
+			{
 				nBurnDrvSelect = vecAvailRomIndex[x];
- 
+
 				const int nHardware = 1 << (BurnDrvGetHardwareCode() >> 24);
 
 				if (CurrentFilter > 0)
@@ -794,47 +784,47 @@ void BuildRomList()
 #if defined (FBA_DEBUG)
 				if ((IsFiltered))  // skip roms marked as not working
 #else
-				if (BurnDrvIsWorking() && (IsFiltered))  // skip roms marked as not working
+					if (BurnDrvIsWorking() && (IsFiltered))  // skip roms marked as not working
 #endif
-				{
-
-				    int nNumPlayers = BurnDrvGetMaxPlayers();
-
-					if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) ||
-						(HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) ||
-						(HideChildren == 0))
 					{
-						if ((ThreeOrFourPlayerOnly == 1 && nNumPlayers > 2) || ThreeOrFourPlayerOnly == 0)
+
+						int nNumPlayers = BurnDrvGetMaxPlayers();
+
+						if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) ||
+								(HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) ||
+								(HideChildren == 0))
 						{
-							m_vecAvailRomIndex.push_back(vecAvailRomListFileName[x]);
-							m_vecAvailRomBurnDrvIndex.push_back(vecAvailRomIndex[x]);
-							m_vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
-							m_vecAvailRomReleasedBy.push_back(BurnDrvGetTextA(DRV_MANUFACTURER));		
+							if ((ThreeOrFourPlayerOnly == 1 && nNumPlayers > 2) || ThreeOrFourPlayerOnly == 0)
+							{
+								m_vecAvailRomIndex.push_back(vecAvailRomListFileName[x]);
+								m_vecAvailRomBurnDrvIndex.push_back(vecAvailRomIndex[x]);
+								m_vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
+								m_vecAvailRomReleasedBy.push_back(BurnDrvGetTextA(DRV_MANUFACTURER));		
 
-							if (BurnDrvGetTextA(DRV_SYSTEM))
-								m_vecAvailRomManufacturer.push_back(BurnDrvGetTextA(DRV_SYSTEM));
-							else
-								m_vecAvailRomManufacturer.push_back("Unknown");
+								if (BurnDrvGetTextA(DRV_SYSTEM))
+									m_vecAvailRomManufacturer.push_back(BurnDrvGetTextA(DRV_SYSTEM));
+								else
+									m_vecAvailRomManufacturer.push_back("Unknown");
 
-							if (BurnDrvGetTextA(DRV_COMMENT))
-								m_vecAvailRomInfo.push_back(BurnDrvGetTextA(DRV_COMMENT));
-							else
-								m_vecAvailRomInfo.push_back("No Additional Information");
+								if (BurnDrvGetTextA(DRV_COMMENT))
+									m_vecAvailRomInfo.push_back(BurnDrvGetTextA(DRV_COMMENT));
+								else
+									m_vecAvailRomInfo.push_back("No Additional Information");
 
-							if (BurnDrvGetTextA(DRV_PARENT))
-								m_vecAvailRomParent.push_back(BurnDrvGetTextA(DRV_PARENT));
-							else
-								m_vecAvailRomParent.push_back("No Parent Rom");
+								if (BurnDrvGetTextA(DRV_PARENT))
+									m_vecAvailRomParent.push_back(BurnDrvGetTextA(DRV_PARENT));
+								else
+									m_vecAvailRomParent.push_back("No Parent Rom");
+							}
 						}
 					}
-				}
 				break;
 			}
 		}
 	}
 	AvRoms();
 	//nBurnDrvSelect = ~0U;
-  
+
 }
 
 
@@ -852,10 +842,10 @@ void ConfigMenu()
 
 	cellDbgFontDraw();
 
-   int number = 0;
+	int number = 0;
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_DISPLAY_FRAMERATE ? cols : 0xFFFFFFFF, "Show Framerate : %s", bShowFPS ? "Yes" : "No" );     
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	switch(psglGetCurrentResolutionId())
 	{
@@ -885,56 +875,56 @@ void ConfigMenu()
 			break;
 	}
 	cellDbgFontDraw();
-   number++;
+	number++;
 
-   char msg[256];
-   switch(nVidScrnAspectMode)
-   {
-      case ASPECT_RATIO_CUSTOM:
-         strcpy(msg,"Custom (Resized)");
-         break;
-      case ASPECT_RATIO_AUTO:
-         sprintf(msg,"Auto %d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-      case ASPECT_RATIO_AUTO_FBA: 
-         sprintf(msg,"Auto (FBA) %d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-      default:
-         sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-   }
+	char msg[256];
+	switch(nVidScrnAspectMode)
+	{
+		case ASPECT_RATIO_CUSTOM:
+			strcpy(msg,"Custom (Resized)");
+			break;
+		case ASPECT_RATIO_AUTO:
+			sprintf(msg,"Auto %d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+		case ASPECT_RATIO_AUTO_FBA: 
+			sprintf(msg,"Auto (FBA) %d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+		default:
+			sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+	}
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_KEEP_ASPECT ? cols : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
 	cellDbgFontDraw();
-   number++;
+	number++;
 
-   char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
+	char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_ROTATE ? cols : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_AUTO_FRAMESKIP ? cols : 0xFFFFFFFF, "Auto Frameskip Enabled: %s", autoFrameSkip ? "Yes" : "No");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? cols : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
 	cellDbgFontDraw();	
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? cols : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_VSYNC ? cols : 0xFFFFFFFF, "Vertical Sync : %s", bVidVSync ? "Yes" : "No");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_HIDE_CLONES ? cols : 0xFFFFFFFF, "Hide Clone Roms : %s", HideChildren ? "Yes" : "No");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_SHOW_THREE_FOUR_PLAYER_ONLY ? cols : 0xFFFFFFFF, "Show 3 or 4 Player Roms Only : %s", ThreeOrFourPlayerOnly ? "Yes" : "No");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_TRIPLE_BUFFER ? cols : 0xFFFFFFFF, "Triple Buffering Enabled : %s", bVidTripleBuffer ? "Yes" : "No");
 	cellDbgFontDraw();
@@ -957,16 +947,16 @@ static void cb_dialog_ok(int button_type, void *userdata)
 
 void ConfigFrameMove()
 {
-   static uint64_t old_state = 0;
-   uint64_t new_state = cell_pad_input_poll_device(0);
-   uint64_t diff_state = old_state ^ new_state;
+	static uint64_t old_state = 0;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
 
 	if (CTRL_CIRCLE(new_state))
 	{
 		// switch to config
 		if (bDrvOkay)	// theres a game loaded, return to game
 		{
-         old_state = new_state;
+			old_state = new_state;
 			setPauseMode(0);
 			audio.play();
 			GameStatus = EMULATING;
@@ -974,7 +964,7 @@ void ConfigFrameMove()
 		}
 		else
 		{
-         old_state = new_state;
+			old_state = new_state;
 			GameStatus = MENU;	// back to romlist
 		}
 	}
@@ -982,58 +972,58 @@ void ConfigFrameMove()
 	{
 		// switch to config
 
-		 UpdateConsoleXY("Generating clrmame.dat. Please wait...", 0.35f, 0.5f );
+		UpdateConsoleXY("Generating clrmame.dat. Please wait...", 0.35f, 0.5f );
 
-		 if (create_datfile("/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat",1) == 0)
-		 {
+		if (create_datfile("/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat",1) == 0)
+		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_DIALOG_TYPE_NORMAL| \
-			CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-			CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-			CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-			"clrmame.dat created in /dev_hdd0/game/FBAN00000/USRDIR/.",cb_dialog_ok,NULL,NULL);
+					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+					"clrmame.dat created in /dev_hdd0/game/FBAN00000/USRDIR/.",cb_dialog_ok,NULL,NULL);
 			while(dialog_is_running)
 			{
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 				psglSwap();
 				cellSysutilCheckCallback();	
 			}
-		 }
-		 else
-		 {
+		}
+		else
+		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_TYPE_SE_TYPE_ERROR| \
-			CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-			CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-			CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-			"Error generating clrmame.dat.",cb_dialog_ok,NULL,NULL);
+					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+					"Error generating clrmame.dat.",cb_dialog_ok,NULL,NULL);
 			while(dialog_is_running)
 			{
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 				psglSwap();
 				cellSysutilCheckCallback();	
 			}
-		 }
+		}
 	}
 	else if(CTRL_DOWN(new_state & diff_state) | CTRL_R2(new_state) | CTRL_LSTICK_DOWN(new_state))
 	{
-			sys_timer_usleep(FILEBROWSER_DELAY/2);
-			currentConfigIndex++;
+		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		currentConfigIndex++;
 
 		if (currentConfigIndex >= MAX_NO_OF_SETTINGS)
 			currentConfigIndex = MAX_NO_OF_SETTINGS-1;
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_L2(new_state) | CTRL_LSTICK_UP(new_state))
 	{		
-			sys_timer_usleep(FILEBROWSER_DELAY/2);
-			currentConfigIndex--;
+		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		currentConfigIndex--;
 
 		if (currentConfigIndex < 0)
 			currentConfigIndex = 0;
 	}
 
 	switch(currentConfigIndex)
-   {
+	{
 		case SETTING_DISPLAY_FRAMERATE:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
@@ -1044,12 +1034,12 @@ void ConfigFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
 			{
 				psglResolutionPrevious();
-		      sys_timer_usleep(FILEBROWSER_DELAY/2);
+				sys_timer_usleep(FILEBROWSER_DELAY/2);
 			}
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state)) 
 			{
 				psglResolutionNext();	
-		      sys_timer_usleep(FILEBROWSER_DELAY/2);
+				sys_timer_usleep(FILEBROWSER_DELAY/2);
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
@@ -1059,20 +1049,20 @@ void ConfigFrameMove()
 		case SETTING_KEEP_ASPECT:
 			if(CTRL_LEFT(new_state & diff_state))
 			{
-           if(nVidScrnAspectMode > 0)
-           {
-             nVidScrnAspectMode--;
-             setWindowAspect();
-           }
-         }
-         else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
-         {
-           if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
-           {
-             nVidScrnAspectMode++;
-             setWindowAspect();
-           }
-         }
+				if(nVidScrnAspectMode > 0)
+				{
+					nVidScrnAspectMode--;
+					setWindowAspect();
+				}
+			}
+			else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+			{
+				if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
+				{
+					nVidScrnAspectMode++;
+					setWindowAspect();
+				}
+			}
 			break;
 		case SETTING_ROTATE:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -1083,7 +1073,7 @@ void ConfigFrameMove()
 				{
 					nVidRotationAdjust = 0;
 				}
-            //apply_rotation_settings();
+				//apply_rotation_settings();
 			}
 			break;
 		case SETTING_AUTO_FRAMESKIP:
@@ -1094,23 +1084,23 @@ void ConfigFrameMove()
 			break;
 		case SETTING_CURRENT_SHADER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
-         {
-            if(shaderindex > 0)
-				   shaderindex--;
-         }
+			{
+				if(shaderindex > 0)
+					shaderindex--;
+			}
 
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
-         {
-            if(shaderindex < m_ListShaderData.size()-1)
+			{
+				if(shaderindex < m_ListShaderData.size()-1)
 					shaderindex ++;
-         }
+			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
 				vidUseFilter = 0;				
 
 				char shaderFile[255];
 
-			   strcpy(shaderFile,SHADER_DIRECTORY);
+				strcpy(shaderFile,SHADER_DIRECTORY);
 				strcat(shaderFile,m_ListShaderData[shaderindex].c_str());
 				psglInitShader(shaderFile);
 			}
@@ -1121,10 +1111,10 @@ void ConfigFrameMove()
 			break;
 		case SETTING_VSYNC:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
-         {
+			{
 				bVidVSync = !bVidVSync;
-            setVSync(bVidVSync);
-         }
+				setVSync(bVidVSync);
+			}
 			break;
 		case SETTING_HIDE_CLONES:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -1145,15 +1135,15 @@ void ConfigFrameMove()
 	}
 
 	ConfigMenu();
-   old_state = new_state;
+	old_state = new_state;
 }
 
 
 void RomMenu()
 {
-   #ifdef CELL_DEBUG_MEMORY
-	   sys_memory_info_t mem_info;
-   #endif
+#ifdef CELL_DEBUG_MEMORY
+	sys_memory_info_t mem_info;
+#endif
 
 	int	iTempGameSel;
 	int	iGameidx;
@@ -1164,9 +1154,9 @@ void RomMenu()
 	iCursorPos = fCursorPos;
 	iTempGameSel = iGameSelect;
 
-   #ifdef CELL_DEBUG_MEMORY
-	   sys_memory_get_user_memory_size(&mem_info);
-   #endif
+#ifdef CELL_DEBUG_MEMORY
+	sys_memory_get_user_memory_size(&mem_info);
+#endif
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - Main Menu");             
 	cellDbgFontDraw();
 
@@ -1174,18 +1164,18 @@ void RomMenu()
 	cellDbgFontDraw();
 	cellDbgFontPuts(0.6f, 0.06f, 0.75f, 0xFFE0EEFF ,"L1/R1 - Previous/Next Hardware Filter");     
 	cellDbgFontDraw();
-	 
+
 	if (iNumGames == 0)
 	{		
 		cellDbgFontPuts(0.05f, 0.08f, 0.75f, cols, "No Roms Found");             
 		cellDbgFontDraw();
 	}
 
-   iGameidx = 0;
-   do
+	iGameidx = 0;
+	do
 	{
 		if (iGameidx==iCursorPos)
-      {	
+		{	
 			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx ), 0.75f, cols, m_vecAvailRomList[iTempGameSel++].c_str());             
 			cellDbgFontDraw();	
 
@@ -1202,16 +1192,16 @@ void RomMenu()
 				cellDbgFontDraw();
 			}
 
-   #ifdef CELL_DEBUG_MEMORY
+#ifdef CELL_DEBUG_MEMORY
 			cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, cols ,"%ld free memory",mem_info.available_user_memory );     
 			cellDbgFontDraw();
 			cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, cols ,"%ld total memory",mem_info.total_user_memory );     
 			cellDbgFontDraw();
 			cellDbgFontPrintf(0.75f, 0.95f + 0.025f, 0.75f, cols ,"BurnDrvSelect = %ld ", m_vecAvailRomBurnDrvIndex[iGameSelect+iCursorPos]);     
 			cellDbgFontDraw();
-   #endif
+#endif
 
-			 
+
 			cellDbgFontPrintf(0.05f, 0.80f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Name : %s", m_vecAvailRomIndex[iGameSelect+iCursorPos].c_str() );     
 			cellDbgFontDraw();
 			cellDbgFontPrintf(0.05f, 0.82f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Info : %s", m_vecAvailRomInfo[iGameSelect+iCursorPos].c_str());
@@ -1236,15 +1226,15 @@ void RomMenu()
 			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx), 0.75f, 0xFFFFFFFF, m_vecAvailRomList[iTempGameSel++].c_str());             
 			cellDbgFontDraw();
 		}
-      iGameidx++;
+		iGameidx++;
 	}while(iGameidx<m_iMaxWindowList);
 }
 
 void DipFrameMove()
 {
-   static uint64_t old_state = 0;
-   uint64_t new_state = cell_pad_input_poll_device(0);
-   uint64_t diff_state = old_state ^ new_state;
+	static uint64_t old_state = 0;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
 
 	if (CTRL_CIRCLE(new_state & diff_state))
 	{
@@ -1256,7 +1246,7 @@ void DipFrameMove()
 			{
 				setPauseMode(0);
 				audio.play();
-            is_running = 1;
+				is_running = 1;
 				GameStatus = EMULATING;
 				old_state = new_state;
 				return;
@@ -1277,7 +1267,7 @@ void DipFrameMove()
 			m_DipListValues.clear();
 
 			if (nSel >= 0) {
-		 
+
 				if (m_DipListOffsets.size() > 0)
 				{
 					nDIPGroup = m_DipListOffsets[iDipSelect	+ iDipCursorPos];
@@ -1298,7 +1288,7 @@ void DipFrameMove()
 						} else {
 							_stprintf(szText, _T("%hs"), bdi.szText);
 						}
-					 
+
 						m_DipListValues.push_back(std::string(szText));
 
 						if (CheckSetting(nDIPGroup + j)) {
@@ -1306,7 +1296,7 @@ void DipFrameMove()
 						}
 					}
 				}
-				 
+
 			}		
 
 			old_state = new_state;
@@ -1351,7 +1341,7 @@ void DipFrameMove()
 			bool bClampCursor =	FALSE;
 
 			fDipCursorPos ++;
-	 
+
 			if(	fDipCursorPos > m_iWindowMiddleDip )
 			{
 				// clamp cursor	position
@@ -1518,7 +1508,7 @@ void InputMenu()
 
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - Input Mapping Menu");             
 	cellDbgFontDraw();
- 
+
 	for	(iInputidx=0; iInputidx<m_iMaxWindowListInput;	iInputidx++)
 	{ 
 		int val = iTempInputSel++;
@@ -1569,15 +1559,15 @@ void InputMenu()
 
 	cellDbgFontPrintf(0.05f, 0.92f + 0.025f, 0.50f, 0xFFFFE0E0, "Core %s - r%s - %s", szAppBurnVer, szSVNVer, szSVNDate);
 	cellDbgFontDraw();
- 
-	
+
+
 }
 
 void InputFrameMove()
 {
-   static uint64_t old_state;
-   uint64_t new_state = cell_pad_input_poll_device(0);
-   uint64_t diff_state = old_state ^ new_state;
+	static uint64_t old_state;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
 
 	if (CTRL_CIRCLE(new_state))
 	{
@@ -1588,10 +1578,10 @@ void InputFrameMove()
 
 			if (bDrvOkay)	// theres a game loaded, return to game
 			{
-            old_state = new_state;
+				old_state = new_state;
 				setPauseMode(0);
 				audio.play();
-            is_running = 1;
+				is_running = 1;
 				GameStatus = EMULATING;
 
 				return;
@@ -1600,7 +1590,7 @@ void InputFrameMove()
 		else
 		{
 			inputList = 0;
-         old_state = new_state;
+			old_state = new_state;
 		}
 	}
 	else if (CTRL_CROSS(old_state & diff_state))
@@ -1608,7 +1598,7 @@ void InputFrameMove()
 		if (!inputList)
 		{
 			inputList = 1;
-         old_state = new_state;
+			old_state = new_state;
 			return;
 		}
 		else
@@ -1618,60 +1608,60 @@ void InputFrameMove()
 			int id = inputListSel;		
 
 			pgi = GameInp + m_InputListOffsets[iInputSelect	+ iInputCursorPos];
-	 		 
-	 
+
+
 			if (strstr(m_InputListData[iInputSelect	+ iInputCursorPos].c_str(), "Service"))
 			{
 				switch (id)
 				{
-				case 0:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_C;
-					break;
-				case 1:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
-					break;
-				case 2:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_X;
-					break;
-				case 3:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_V;
-					break;
-				case 4:	
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_1;
-					break;
-				case 5:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_5;
-					break;
-				case 6:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_S;
-					break;
-				case 7:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_D;
-					break;
-				case 8:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_F1;
-					break;
-				case 9:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_F2;
-					break;
-				case 10: 
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
-					break;
-				case 11:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
-					break;
+					case 0:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+						break;
+					case 1:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+						break;
+					case 2:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+						break;
+					case 3:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+						break;
+					case 4:	
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+						break;
+					case 5:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+						break;
+					case 6:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+						break;
+					case 7:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+						break;
+					case 8:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_F1;
+						break;
+					case 9:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_F2;
+						break;
+					case 10: 
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
+						break;
+					case 11:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
+						break;
 				}
 			}
 
@@ -1679,273 +1669,273 @@ void InputFrameMove()
 			{
 				switch (id)
 				{
-				case 0:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_C);
-					}
-					else
-					{
-						KEY(FBK_C);
-					}			 
-					break;
-				case 1:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_Z);
-					}
-					else
-					{
-						KEY(FBK_Z);
-					}	
-					break;
-				case 2:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_X);
-					}
-					else
-					{
-						KEY(FBK_X);
-					}
-					break;
-				case 3:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_V);
-					}
-					else
-					{
-						KEY(FBK_V);
-					}
-					break;
-				case 4:	
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_1);
-					}
-					else
-					{
-						KEY(FBK_1);
-					}
-					break;
-				case 5:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_5);
-					}
-					else
-					{
-						KEY(FBK_5);
-					}
-					break;
-				case 6:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_S);
-					}
-					else
-					{
-						KEY(FBK_S);
-					}
-					break;
-				case 7:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_D);
-					}
-					else
-					{
-						KEY(FBK_D);
-					}
-					break;
-				case 8:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_F1);
-					}
-					else
-					{
-						KEY(FBK_F1);
-					}
-					break;
-				case 9:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(FBK_F2);
-					}
-					else
-					{
-						KEY(FBK_F2);
-					}
-					break;
-				case 10: 
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L2_BUTTON);
-					}
-					else
-					{
-						KEY(PS3_L2_BUTTON);
-					}
-					break;
-				case 11:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R2_BUTTON);
-					}
-					else
-					{
-						KEY(PS3_R2_BUTTON);
-					}
-					break;
-				case 12:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L3_BUTTON);
-					}
-					else
-					{
-						KEY(PS3_L3_BUTTON);
-					}
-					break;
-				case 13:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R3_BUTTON);
-					}
-					else
-					{
-						KEY(PS3_R3_BUTTON);
-					}
-					break;
+					case 0:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_C);
+						}
+						else
+						{
+							KEY(FBK_C);
+						}			 
+						break;
+					case 1:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_Z);
+						}
+						else
+						{
+							KEY(FBK_Z);
+						}	
+						break;
+					case 2:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_X);
+						}
+						else
+						{
+							KEY(FBK_X);
+						}
+						break;
+					case 3:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_V);
+						}
+						else
+						{
+							KEY(FBK_V);
+						}
+						break;
+					case 4:	
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_1);
+						}
+						else
+						{
+							KEY(FBK_1);
+						}
+						break;
+					case 5:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_5);
+						}
+						else
+						{
+							KEY(FBK_5);
+						}
+						break;
+					case 6:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_S);
+						}
+						else
+						{
+							KEY(FBK_S);
+						}
+						break;
+					case 7:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_D);
+						}
+						else
+						{
+							KEY(FBK_D);
+						}
+						break;
+					case 8:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_F1);
+						}
+						else
+						{
+							KEY(FBK_F1);
+						}
+						break;
+					case 9:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(FBK_F2);
+						}
+						else
+						{
+							KEY(FBK_F2);
+						}
+						break;
+					case 10: 
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L2_BUTTON);
+						}
+						else
+						{
+							KEY(PS3_L2_BUTTON);
+						}
+						break;
+					case 11:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R2_BUTTON);
+						}
+						else
+						{
+							KEY(PS3_R2_BUTTON);
+						}
+						break;
+					case 12:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L3_BUTTON);
+						}
+						else
+						{
+							KEY(PS3_L3_BUTTON);
+						}
+						break;
+					case 13:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R3_BUTTON);
+						}
+						else
+						{
+							KEY(PS3_R3_BUTTON);
+						}
+						break;
 				}
 			}
-	 
+
 			else if (strstr(m_InputListData[iInputSelect+iInputCursorPos].c_str(), "P2"))
 			{
 				switch (id)
 				{
-				case 0:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4082);
-					}
-					else
-					{
-						KEY(0x4082);
-					}
-					break;
-				case 1:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4080);
-					}
-					else
-					{
-						KEY(0x4080);
-					}
-					break;
-				case 2:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4081);
-					}
-					else
-					{
-						KEY(0x4081);
-					}
-					break;
-				case 3:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4083);
-					}
-					else
-					{
-						KEY(0x4083);
-					}
-					break;
-				case 4:	
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x03);
-					}
-					else
-					{
-						KEY(0x03);
-					}
-					break;
-				case 5:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x07);
-					}
-					else
-					{
-						KEY(0x07);
-					}
-					break;
-				case 6:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4084);
-					}
-					else
-					{
-						KEY(0x4084);
-					}
-					break;
-				case 7:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4085);
-					}
-					else
-					{
-						KEY(0x4085);
-					}
-					break;
-				case 8:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L3_BUTTON | 0x4000);
-					}
-					else
-					{
-						KEY(PS3_L3_BUTTON | 0x4000);
-					}
-					break;
-				case 9:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R3_BUTTON | 0x4000);
-					}
-					else
-					{
-						KEY(PS3_R3_BUTTON | 0x4000);
-					}
-					break;
-				case 10: 
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L2_BUTTON | 0x4000);
-					}
-					else
-					{
-						KEY(PS3_L2_BUTTON | 0x4000);
-					}
-					break;
-				case 11:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R2_BUTTON | 0x4000);
-					}
-					else
-					{
-						KEY(PS3_R2_BUTTON | 0x4000);
-					}
-					break;
+					case 0:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4082);
+						}
+						else
+						{
+							KEY(0x4082);
+						}
+						break;
+					case 1:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4080);
+						}
+						else
+						{
+							KEY(0x4080);
+						}
+						break;
+					case 2:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4081);
+						}
+						else
+						{
+							KEY(0x4081);
+						}
+						break;
+					case 3:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4083);
+						}
+						else
+						{
+							KEY(0x4083);
+						}
+						break;
+					case 4:	
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x03);
+						}
+						else
+						{
+							KEY(0x03);
+						}
+						break;
+					case 5:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x07);
+						}
+						else
+						{
+							KEY(0x07);
+						}
+						break;
+					case 6:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4084);
+						}
+						else
+						{
+							KEY(0x4084);
+						}
+						break;
+					case 7:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4085);
+						}
+						else
+						{
+							KEY(0x4085);
+						}
+						break;
+					case 8:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L3_BUTTON | 0x4000);
+						}
+						else
+						{
+							KEY(PS3_L3_BUTTON | 0x4000);
+						}
+						break;
+					case 9:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R3_BUTTON | 0x4000);
+						}
+						else
+						{
+							KEY(PS3_R3_BUTTON | 0x4000);
+						}
+						break;
+					case 10: 
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L2_BUTTON | 0x4000);
+						}
+						else
+						{
+							KEY(PS3_L2_BUTTON | 0x4000);
+						}
+						break;
+					case 11:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R2_BUTTON | 0x4000);
+						}
+						else
+						{
+							KEY(PS3_R2_BUTTON | 0x4000);
+						}
+						break;
 				}
 			}
 
@@ -1953,126 +1943,126 @@ void InputFrameMove()
 			{
 				switch (id)
 				{
-				case 0:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4182);
-					}
-					else
-					{
-						KEY(0x4182);
-					} 
-					break;
-				case 1:				 
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4180);
-					}
-					else
-					{
-						KEY(0x4180);
-					} 
-					break;
-				case 2:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4181);
-					}
-					else
-					{
-						KEY(0x4181);
-					} 
-					break;
-				case 3:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4183);
-					}
-					else
-					{
-						KEY(0x4183);
-					} 
-					break; 
-				case 4:	
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x04);
-					}
-					else
-					{
-						KEY(0x04);
-					} 
-					break;
-				case 5:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x08);
-					}
-					else
-					{
-						KEY(0x08);
-					} 
-					break;
-				case 6:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4184);
-					}
-					else
-					{
-						KEY(0x4184);
-					} 
-					break;
-				case 7:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4185);
-					}
-					else
-					{
-						KEY(0x4185);
-					} 
-					break;
-				case 8:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L3_BUTTON | 0x4100);
-					}
-					else
-					{
-						KEY(PS3_L3_BUTTON | 0x4100);
-					} 
-					break;
-				case 9:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R3_BUTTON | 0x4100);
-					}
-					else
-					{
-						KEY(PS3_R3_BUTTON | 0x4100);
-					} 
-					break;
-				case 10: 
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L2_BUTTON | 0x4100);
-					}
-					else
-					{
-						KEY(PS3_L2_BUTTON | 0x4100);
-					} 
-					break;
-				case 11:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R2_BUTTON | 0x4100);
-					}
-					else
-					{
-						KEY(PS3_R2_BUTTON | 0x4100);
-					} 
-					break;
+					case 0:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4182);
+						}
+						else
+						{
+							KEY(0x4182);
+						} 
+						break;
+					case 1:				 
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4180);
+						}
+						else
+						{
+							KEY(0x4180);
+						} 
+						break;
+					case 2:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4181);
+						}
+						else
+						{
+							KEY(0x4181);
+						} 
+						break;
+					case 3:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4183);
+						}
+						else
+						{
+							KEY(0x4183);
+						} 
+						break; 
+					case 4:	
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x04);
+						}
+						else
+						{
+							KEY(0x04);
+						} 
+						break;
+					case 5:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x08);
+						}
+						else
+						{
+							KEY(0x08);
+						} 
+						break;
+					case 6:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4184);
+						}
+						else
+						{
+							KEY(0x4184);
+						} 
+						break;
+					case 7:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4185);
+						}
+						else
+						{
+							KEY(0x4185);
+						} 
+						break;
+					case 8:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L3_BUTTON | 0x4100);
+						}
+						else
+						{
+							KEY(PS3_L3_BUTTON | 0x4100);
+						} 
+						break;
+					case 9:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R3_BUTTON | 0x4100);
+						}
+						else
+						{
+							KEY(PS3_R3_BUTTON | 0x4100);
+						} 
+						break;
+					case 10: 
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L2_BUTTON | 0x4100);
+						}
+						else
+						{
+							KEY(PS3_L2_BUTTON | 0x4100);
+						} 
+						break;
+					case 11:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R2_BUTTON | 0x4100);
+						}
+						else
+						{
+							KEY(PS3_R2_BUTTON | 0x4100);
+						} 
+						break;
 				}
 			}
 
@@ -2080,186 +2070,186 @@ void InputFrameMove()
 			{
 				switch (id)
 				{
-				case 0:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4282);
-					}
-					else
-					{
-						KEY(0x4282);
-					} 
-					break;
-				case 1:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4280);
-					}
-					else
-					{
-						KEY(0x4280);
-					} 
-					break;
-				case 2:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4281);
-					}
-					else
-					{
-						KEY(0x4281);
-					}  
-					break;
-				case 3:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4283);
-					}
-					else
-					{
-						KEY(0x4283);
-					}  
-					break;
-				case 4:	
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x05);
-					}
-					else
-					{
-						KEY(0x05);
-					} 
-					break;
-				case 5:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x09);
-					}
-					else
-					{
-						KEY(0x09);
-					} 
-					break;
-				case 6:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4284);
-					}
-					else
-					{
-						KEY(0x4284);
-					} 
-					break;
-				case 7:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(0x4285);
-					}
-					else
-					{
-						KEY(0x4285);
-					} 
-					break;
-				case 8:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L3_BUTTON | 0x4200);
-					}
-					else
-					{
-						KEY(PS3_L3_BUTTON | 0x4200);
-					} 
-					break;
-				case 9:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R3_BUTTON | 0x4200);
-					}
-					else
-					{
-						KEY(PS3_R3_BUTTON | 0x4200);
-					} 
-					break;
-				case 10: 
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_L2_BUTTON | 0x4200);
-					}
-					else
-					{
-						KEY(PS3_L2_BUTTON | 0x4200);
-					} 
-					break;
-				case 11:
-					if (pgi->nInput & GIT_GROUP_MACRO)
-					{
-						MACRO(PS3_R2_BUTTON | 0x4200);
-					}
-					else
-					{
-						KEY(PS3_R2_BUTTON | 0x4200);
-					} 
-					break;
+					case 0:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4282);
+						}
+						else
+						{
+							KEY(0x4282);
+						} 
+						break;
+					case 1:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4280);
+						}
+						else
+						{
+							KEY(0x4280);
+						} 
+						break;
+					case 2:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4281);
+						}
+						else
+						{
+							KEY(0x4281);
+						}  
+						break;
+					case 3:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4283);
+						}
+						else
+						{
+							KEY(0x4283);
+						}  
+						break;
+					case 4:	
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x05);
+						}
+						else
+						{
+							KEY(0x05);
+						} 
+						break;
+					case 5:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x09);
+						}
+						else
+						{
+							KEY(0x09);
+						} 
+						break;
+					case 6:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4284);
+						}
+						else
+						{
+							KEY(0x4284);
+						} 
+						break;
+					case 7:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(0x4285);
+						}
+						else
+						{
+							KEY(0x4285);
+						} 
+						break;
+					case 8:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L3_BUTTON | 0x4200);
+						}
+						else
+						{
+							KEY(PS3_L3_BUTTON | 0x4200);
+						} 
+						break;
+					case 9:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R3_BUTTON | 0x4200);
+						}
+						else
+						{
+							KEY(PS3_R3_BUTTON | 0x4200);
+						} 
+						break;
+					case 10: 
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_L2_BUTTON | 0x4200);
+						}
+						else
+						{
+							KEY(PS3_L2_BUTTON | 0x4200);
+						} 
+						break;
+					case 11:
+						if (pgi->nInput & GIT_GROUP_MACRO)
+						{
+							MACRO(PS3_R2_BUTTON | 0x4200);
+						}
+						else
+						{
+							KEY(PS3_R2_BUTTON | 0x4200);
+						} 
+						break;
 				}
 			}
 			else
 			{
 				switch (id)
 				{
-				case 0:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_C;
-					break;
-				case 1:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
-					break;
-				case 2:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_X;
-					break;
-				case 3:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_V;
-					break;
-				case 4:	
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_1;
-					break;
-				case 5:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_5;
-					break;
-				case 6:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_S;
-					break;
-				case 7:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)FBK_D;
-					break;
-				case 8:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_L3_BUTTON;
-					break;
-				case 9:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_R3_BUTTON;
-					break;
-				case 10: 
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
-					break;
-				case 11:
-					pgi->nInput = GIT_SWITCH;
-					pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
-					break;
+					case 0:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+						break;
+					case 1:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+						break;
+					case 2:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+						break;
+					case 3:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+						break;
+					case 4:	
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+						break;
+					case 5:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+						break;
+					case 6:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+						break;
+					case 7:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+						break;
+					case 8:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_L3_BUTTON;
+						break;
+					case 9:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_R3_BUTTON;
+						break;
+					case 10: 
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
+						break;
+					case 11:
+						pgi->nInput = GIT_SWITCH;
+						pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
+						break;
 				}
 			}
 
 			LoadInputs();
 			inputList = 0;
-         old_state = new_state;
+			old_state = new_state;
 		}
 	}				 
 	else if(CTRL_DOWN(new_state & diff_state) | CTRL_R2(new_state) | CTRL_LSTICK_DOWN(new_state))
@@ -2271,7 +2261,7 @@ void InputFrameMove()
 			bool bClampCursor =	FALSE;
 
 			fInputCursorPos ++;
-	 
+
 			if(fInputCursorPos > m_iWindowMiddleInput)
 			{
 				// clamp cursor	position
@@ -2279,9 +2269,9 @@ void InputFrameMove()
 
 				// advance gameselect
 				if(fInputSelect == 0)
-               fInputSelect += (fInputCursorPos - m_iWindowMiddleInput);
+					fInputSelect += (fInputCursorPos - m_iWindowMiddleInput);
 				else
-               fInputSelect ++;
+					fInputSelect ++;
 
 				// clamp game window range (high)
 				if((fInputSelect	+ m_iMaxWindowListInput)	> iNumInput)
@@ -2312,7 +2302,7 @@ void InputFrameMove()
 				inputListSel = m_InputSettingsData.size()-1;
 			}
 		}
-      old_state = new_state;
+		old_state = new_state;
 
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_L2(new_state) | CTRL_LSTICK_UP(new_state)) 
@@ -2358,7 +2348,7 @@ void InputFrameMove()
 			if (inputListSel < 0)
 				inputListSel = 0;
 		}
-      old_state = new_state;
+		old_state = new_state;
 	}			 			 			 
 	else if (CTRL_TRIANGLE(old_state & diff_state))
 	{
@@ -2366,10 +2356,10 @@ void InputFrameMove()
 		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_DIALOG_TYPE_NORMAL| \
-			CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-			CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-			CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-			"Input Preset saved.",cb_dialog_ok,NULL,NULL);
+					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+					"Input Preset saved.",cb_dialog_ok,NULL,NULL);
 			while(dialog_is_running)
 			{
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -2381,10 +2371,10 @@ void InputFrameMove()
 		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_TYPE_SE_TYPE_ERROR| \
-			CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-			CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-			CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-			"Error saving Input Preset.",cb_dialog_ok,NULL,NULL);
+					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+					"Error saving Input Preset.",cb_dialog_ok,NULL,NULL);
 			while(dialog_is_running)
 			{
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -2392,7 +2382,7 @@ void InputFrameMove()
 				cellSysutilCheckCallback();	
 			}
 		}
-      old_state = new_state;
+		old_state = new_state;
 
 	}
 	else if (CTRL_SQUARE(old_state & diff_state))
@@ -2401,7 +2391,7 @@ void InputFrameMove()
 		unsigned int i;
 
 		for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
-      {
+		{
 			struct BurnInputInfo bii;
 
 			// Get the extra info about the input
@@ -2416,11 +2406,11 @@ void InputFrameMove()
 			GamcMisc(pgi, bii.szInfo, 0);
 		}	
 
-      old_state = new_state;
+		old_state = new_state;
 		LoadInputs();
 	}
 
-   old_state = new_state;
+	old_state = new_state;
 }
 
 
@@ -2428,78 +2418,78 @@ void InGameMenu()
 {
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - In Game Menu");             
 	cellDbgFontDraw();
- 
-   int number = 0;
+
+	int number = 0;
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_MAP_BUTTONS ? cols : 0xFFFFFFFF, "Map Gamepad Buttons" );     
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_DIP_SWITCHES ? cols : 0xFFFFFFFF, "Map Dip Switches");
 	cellDbgFontDraw(); 
-   number++;
+	number++;
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESIZE_SCREEN ? cols : 0xFFFFFFFF, "Resize Screen");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_FRAME_ADVANCE ? cols : 0xFFFFFFFF, "Frame Advance");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER ? cols : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
 	cellDbgFontDraw();	
-   number++;
+	number++;
 
-   char msg[256];
-   switch(nVidScrnAspectMode)
-   {
-      case ASPECT_RATIO_CUSTOM:
-         sprintf(msg,"Custom (Resized)");
-         break;
-      case ASPECT_RATIO_AUTO:
-         sprintf(msg,"Auto %d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-      case ASPECT_RATIO_AUTO_FBA: 
-         sprintf(msg,"Auto (FBA) %d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-      default:
-         sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
-         break;
-   }
+	char msg[256];
+	switch(nVidScrnAspectMode)
+	{
+		case ASPECT_RATIO_CUSTOM:
+			sprintf(msg,"Custom (Resized)");
+			break;
+		case ASPECT_RATIO_AUTO:
+			sprintf(msg,"Auto %d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+		case ASPECT_RATIO_AUTO_FBA: 
+			sprintf(msg,"Auto (FBA) %d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+		default:
+			sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
+			break;
+	}
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_KEEP_ASPECT ? cols : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER ? cols : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
-   char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
+	char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_ROTATE ? cols : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_SAVE_STATE ? cols : 0xFFFFFFFF, "Save State #%d", save_state_slot);
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_LOAD_STATE ? cols : 0xFFFFFFFF, "Load State #%d", save_state_slot);
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESET_GAME ? cols : 0xFFFFFFFF, "Reset Game");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 #ifdef MULTIMAN_SUPPORT
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RETURN_TO_MULTIMAN ? cols : 0xFFFFFFFF, "Return to multiMAN");
 	cellDbgFontDraw();
-   number++;
+	number++;
 #endif
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_EXIT_GAME ? cols : 0xFFFFFFFF, "Exit Game");
 	cellDbgFontDraw();
-   number++;
+	number++;
 
 	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BACK_TO_GAME ? cols : 0xFFFFFFFF, "Return to current Game");
 	cellDbgFontDraw();
@@ -2513,7 +2503,7 @@ void StretchMenu()
 {
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - Resize Screen Menu");             
 	cellDbgFontDraw();
- 
+
 	cellDbgFontPrintf(0.7f, 0.86f + 0.025f, 0.75f, 0xFFE0EEFF ,"Triangle - Reset to Default");     
 	cellDbgFontDraw();
 	cellDbgFontPrintf(0.7f, 0.88f + 0.025f, 0.75f, 0xFFE0EEFF ,"Circle - Return to Game");     
@@ -2527,9 +2517,9 @@ void StretchMenu()
 void InGameFrameMove()
 {
 	int nRet = 0;
-   static uint64_t old_state = 0;
-   uint64_t new_state = cell_pad_input_poll_device(0);
-   uint64_t diff_state = old_state ^ new_state;
+	static uint64_t old_state = 0;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
 
 	if (CTRL_CIRCLE(old_state & diff_state))
 	{
@@ -2537,33 +2527,33 @@ void InGameFrameMove()
 
 		if (bDrvOkay)	// theres a game loaded, return to game
 		{
-         old_state = new_state;
+			old_state = new_state;
 			setPauseMode(0);
 			audio.play();
-         is_running = 1;
+			is_running = 1;
 			GameStatus = EMULATING;
 			return;
 		}		
 	}
 	else if(CTRL_DOWN(new_state & diff_state) | CTRL_LSTICK_DOWN(new_state))
 	{				 
-      if(inGameIndex < LAST_INGAME_SETTING)
-      {
-		   inGameIndex++;
-		   sys_timer_usleep(FILEBROWSER_DELAY/2);
-      }
+		if(inGameIndex < LAST_INGAME_SETTING)
+		{
+			inGameIndex++;
+			sys_timer_usleep(FILEBROWSER_DELAY/2);
+		}
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_LSTICK_UP(new_state))
 	{		 
-      if(inGameIndex > 0)
-      {
-		   inGameIndex--;
-		   sys_timer_usleep(FILEBROWSER_DELAY/2);
-      }
+		if(inGameIndex > 0)
+		{
+			inGameIndex--;
+			sys_timer_usleep(FILEBROWSER_DELAY/2);
+		}
 	}
 
 	switch(inGameIndex)
-    {
+	{
 		case INGAME_MAP_BUTTONS:	
 			if(CTRL_CROSS(old_state & diff_state))
 			{
@@ -2593,70 +2583,70 @@ void InGameFrameMove()
 				}
 			}
 			break;
-      case INGAME_FRAME_ADVANCE:
-         if(CTRL_CROSS(old_state & diff_state) || CTRL_R2(new_state))
-         {
-            old_state = new_state;
-            setPauseMode(0);
-            audio.play();
-            is_running = 0;
-            GameStatus = EMULATING;
-         }
-         break;
+		case INGAME_FRAME_ADVANCE:
+			if(CTRL_CROSS(old_state & diff_state) || CTRL_R2(new_state))
+			{
+				old_state = new_state;
+				setPauseMode(0);
+				audio.play();
+				is_running = 0;
+				GameStatus = EMULATING;
+			}
+			break;
 		case INGAME_CURRENT_SHADER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
-         {
-            if(shaderindex > 0)
-				   shaderindex--;
-         }
+			{
+				if(shaderindex > 0)
+					shaderindex--;
+			}
 
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
-         {
-            if(shaderindex < m_ListShaderData.size()-1)
+			{
+				if(shaderindex < m_ListShaderData.size()-1)
 					shaderindex ++;
-         }
+			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
 				vidUseFilter = 0;				
 
 				char shaderFile[255];
 
-			   strcpy(shaderFile,SHADER_DIRECTORY);
+				strcpy(shaderFile,SHADER_DIRECTORY);
 				strcat(shaderFile,m_ListShaderData[shaderindex].c_str());
 				psglInitShader(shaderFile);
-            BurnReinitScrn();
-            VidFrame();
+				BurnReinitScrn();
+				VidFrame();
 			}
 			break;
 		case INGAME_KEEP_ASPECT:
 			if(CTRL_LEFT(new_state & diff_state))
 			{
-           if(nVidScrnAspectMode > 0)
-           {
-             nVidScrnAspectMode--;
-             setWindowAspect();
-             BurnReinitScrn();
-             VidFrame();
-           }
-         }
-         else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
-         {
-           if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
-           {
-             nVidScrnAspectMode++;
-             setWindowAspect();
-             BurnReinitScrn();
-             VidFrame();
-           }
-         }
+				if(nVidScrnAspectMode > 0)
+				{
+					nVidScrnAspectMode--;
+					setWindowAspect();
+					BurnReinitScrn();
+					VidFrame();
+				}
+			}
+			else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+			{
+				if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
+				{
+					nVidScrnAspectMode++;
+					setWindowAspect();
+					BurnReinitScrn();
+					VidFrame();
+				}
+			}
 			break;
 		case INGAME_BILINEAR_FILTER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
-         {
+			{
 				vidFilterLinear = !vidFilterLinear;
-             BurnReinitScrn();
-             VidFrame();
-         }
+				BurnReinitScrn();
+				VidFrame();
+			}
 			break;
 		case INGAME_ROTATE:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -2667,20 +2657,19 @@ void InGameFrameMove()
 				{
 					nVidRotationAdjust = 0;
 				}
-            //apply_rotation_settings();
-            BurnReinitScrn();
-            VidFrame();
+				BurnReinitScrn();	//apply_rotation_settings();
+				VidFrame();
 			}
 			break;
 		case INGAME_SAVE_STATE:	
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
-         {
-            if(save_state_slot > 0)
-               save_state_slot--;
-         } 
+			{
+				if(save_state_slot > 0)
+					save_state_slot--;
+			} 
 
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state)) 
-            save_state_slot++;
+				save_state_slot++;
 
 			if(CTRL_CROSS(old_state & diff_state))
 			{
@@ -2688,10 +2677,10 @@ void InGameFrameMove()
 				{			 
 					dialog_is_running = true;
 					cellMsgDialogOpen2(CELL_MSGDIALOG_DIALOG_TYPE_NORMAL| \
-					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-					"State saved successfully.",cb_dialog_ok,NULL,NULL);
+							CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+							CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+							CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+							"State saved successfully.",cb_dialog_ok,NULL,NULL);
 					while(dialog_is_running)
 					{
 						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -2703,10 +2692,10 @@ void InGameFrameMove()
 				{
 					dialog_is_running = true;
 					cellMsgDialogOpen2(CELL_MSGDIALOG_TYPE_SE_TYPE_ERROR| \
-					CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
-					CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
-					CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
-					"Error saving state.",cb_dialog_ok,NULL,NULL);
+							CELL_MSGDIALOG_TYPE_BG_VISIBLE| \
+							CELL_MSGDIALOG_TYPE_BUTTON_TYPE_NONE|CELL_MSGDIALOG_TYPE_DISABLE_CANCEL_OFF|\
+							CELL_MSGDIALOG_TYPE_DEFAULT_CURSOR_OK,\
+							"Error saving state.",cb_dialog_ok,NULL,NULL);
 					while(dialog_is_running)
 					{
 						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -2718,13 +2707,13 @@ void InGameFrameMove()
 			break;
 		case INGAME_LOAD_STATE:	
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
-         {
-            if(save_state_slot > 0)
-               save_state_slot--;
-         } 
+			{
+				if(save_state_slot > 0)
+					save_state_slot--;
+			} 
 
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state)) 
-            save_state_slot++;
+				save_state_slot++;
 
 			if(CTRL_CROSS(old_state & diff_state))
 			{
@@ -2732,7 +2721,7 @@ void InGameFrameMove()
 
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
-               old_state = new_state;
+					old_state = new_state;
 					setPauseMode(0);
 					audio.play();
 					GameStatus = EMULATING;				 
@@ -2746,14 +2735,14 @@ void InGameFrameMove()
 				DoReset = true;
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
-               old_state = new_state;
+					old_state = new_state;
 					setPauseMode(0);
 					audio.play();
-               is_running = 1;
+					is_running = 1;
 					GameStatus = EMULATING;				 
 				}		
 			}
-			
+
 			break;
 		case INGAME_EXIT_GAME:	
 			if(CTRL_CROSS(old_state & diff_state))
@@ -2762,10 +2751,10 @@ void InGameFrameMove()
 				{
 					if ( nPrevGame < nBurnDrvCount ) 
 					{				
-                  old_state = new_state;
+						old_state = new_state;
 						nBurnDrvSelect = nPrevGame;
-                  is_running = 0;
-	 
+						is_running = 0;
+
 						nPrevGame = ~0U;			 
 						RunExit();				 		 	
 						BurnerDrvExit();				// Make sure any game driver is exited
@@ -2782,11 +2771,11 @@ void InGameFrameMove()
 			if(CTRL_CROSS(old_state & diff_state))
 			{
 				configAppSaveXml();
-            sys_spu_initialize(6, 0);
-            char multiMAN[512];
-            sprintf(multiMAN, "%s", "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF");
-            sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);		
-            sys_process_exit(0);
+				sys_spu_initialize(6, 0);
+				char multiMAN[512];
+				sprintf(multiMAN, "%s", "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF");
+				sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);		
+				sys_process_exit(0);
 			}
 			break;
 #endif
@@ -2795,10 +2784,10 @@ void InGameFrameMove()
 			{			 
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
-               old_state = new_state;
+					old_state = new_state;
 					setPauseMode(0);
 					audio.play();
-               is_running = 1;
+					is_running = 1;
 					GameStatus = EMULATING;				 
 				}		
 			}
@@ -2806,23 +2795,23 @@ void InGameFrameMove()
 	}
 
 	//InGameMenu();
-   old_state = new_state;
+	old_state = new_state;
 
 }
  
 void FrameMove()
 { 
-   static uint64_t old_state = 0;
-   uint64_t new_state = cell_pad_input_poll_device(0);
-   uint64_t diff_state = old_state ^ new_state;
-			 
+	static uint64_t old_state = 0;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
+
 	if(CTRL_R2(new_state))
 	{
 		// default don`t clamp cursor
 		bool bClampCursor =	FALSE;
 
 		fCursorPos ++;
- 
+
 		if(	fCursorPos > m_iWindowMiddle )
 		{
 			// clamp cursor	position
@@ -2860,7 +2849,7 @@ void FrameMove()
 		bool bClampCursor =	FALSE;
 
 		fCursorPos ++;
- 
+
 		if(fCursorPos > m_iWindowMiddle)
 		{
 			// clamp cursor	position
@@ -2919,7 +2908,7 @@ void FrameMove()
 			old_state = new_state;
 			setPauseMode(0);
 			audio.play();
-         is_running = 1;
+			is_running = 1;
 			GameStatus = EMULATING;
 			return;
 		}
@@ -2957,7 +2946,7 @@ void FrameMove()
 	{
 		ThreeOrFourPlayerOnly = !ThreeOrFourPlayerOnly; 
 		BuildRomList();	
-		 
+
 	}
 	else if( CTRL_UP(new_state & diff_state) | CTRL_LSTICK_UP(new_state))  
 	{
@@ -3030,11 +3019,11 @@ void FrameMove()
 	{
 		// initalise emulation here	and	set	emulating to true
 		int	entryselected =	iGameSelect	+ iCursorPos;
- 
+
 		if (iNumGames >	0)
 		{	
 			nBurnDrvSelect = (unsigned int)m_vecAvailRomBurnDrvIndex[entryselected];
- 
+
 			if (nPrevGame == nBurnDrvSelect)
 			{
 				// same game, do nothing
@@ -3050,7 +3039,7 @@ void FrameMove()
 				if ( nPrevGame < nBurnDrvCount ) 
 				{				
 					nBurnDrvSelect = nPrevGame;
- 
+
 					nPrevGame = ~0U;			 
 					RunExit();				 		 	
 					BurnerDrvExit();				// Make sure any game driver is exited
@@ -3058,7 +3047,7 @@ void FrameMove()
 					scrnExit();						// Exit the screen window					 
 				}
 			}
-					 
+
 			nBurnFPS = 6000;
 			nFMInterpolation = 0;
 
@@ -3066,7 +3055,7 @@ void FrameMove()
 			{
 				nPrevGame = m_vecAvailRomBurnDrvIndex[entryselected];
 
- 				mediaInit();
+				mediaInit();
 				RunInit();
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
@@ -3090,109 +3079,6 @@ void FrameMove()
 			nPrevGame = nBurnDrvSelect;
 		}
 	}
- 	
-   old_state = new_state;
+
+	old_state = new_state;
 }
-
-/*
-int load_png_texture(uint8_t *data, char *name)
-{
-	int  ret_file, ret, ok=-1;
-	
-
-	CellPngDecMainHandle        mHandle;
-	CellPngDecSubHandle         sHandle;
-
-	CellPngDecThreadInParam 	InParam;
-	CellPngDecThreadOutParam 	OutParam;
-
-	CellPngDecSrc 		        src; 
-	CellPngDecOpnInfo 	        opnInfo;
-	CellPngDecInfo 		        info;
-	CellPngDecDataOutInfo 	    dOutInfo;
-	CellPngDecDataCtrlParam     dCtrlParam;
-	CellPngDecInParam 	        inParam;
-	CellPngDecOutParam 	        outParam;
-
-	CtrlMallocArg               MallocArg;
-	CtrlFreeArg                 FreeArg;
-
-	int ret_png=-1;
-
-	InParam.spuThreadEnable   = CELL_PNGDEC_SPU_THREAD_DISABLE;
-	InParam.ppuThreadPriority = 512;
-	InParam.spuThreadPriority = 200;
-	InParam.cbCtrlMallocFunc  = png_malloc;
-	InParam.cbCtrlMallocArg   = &MallocArg;
-	InParam.cbCtrlFreeFunc    = png_free;
-	InParam.cbCtrlFreeArg     = &FreeArg;
-	
-
-	ret_png= ret= cellPngDecCreate(&mHandle, &InParam, &OutParam);
-	
-	memset(data, 0xff, (1280 * 720 * 4));
-
-	png_w= png_h= 0;
-
-	if(ret_png == CELL_OK)
-		{
-		
-			memset(&src, 0, sizeof(CellPngDecSrc));
-			src.srcSelect     = CELL_PNGDEC_FILE;
-			src.fileName      = name;
-
-			src.spuThreadEnable  = CELL_PNGDEC_SPU_THREAD_DISABLE;
-			
-			ret_file=ret = cellPngDecOpen(mHandle, &sHandle, &src, &opnInfo);
-			
-			if(ret == CELL_OK)
-				{
-				ret = cellPngDecReadHeader(mHandle, sHandle, &info);
-				}
-
-			if(ret == CELL_OK)
-				{	
-				inParam.commandPtr        = NULL;
-				inParam.outputMode        = CELL_PNGDEC_TOP_TO_BOTTOM;
-				inParam.outputColorSpace  = CELL_PNGDEC_RGBA;
-				inParam.outputBitDepth    = 8;
-				inParam.outputPackFlag    = CELL_PNGDEC_1BYTE_PER_1PIXEL;
-				
-				if((info.colorSpace == CELL_PNGDEC_GRAYSCALE_ALPHA) || (info.colorSpace == CELL_PNGDEC_RGBA) || (info.chunkInformation & 0x10))
-					inParam.outputAlphaSelect = CELL_PNGDEC_STREAM_ALPHA;
-				else
-					inParam.outputAlphaSelect = CELL_PNGDEC_FIX_ALPHA;
-				
-				inParam.outputColorAlpha  = 0xff;
-
-				ret = cellPngDecSetParameter(mHandle, sHandle, &inParam, &outParam);
-				}
-
-			if(ret == CELL_OK)
-				{
-					dCtrlParam.outputBytesPerLine = 720* 4;  
-					ret = cellPngDecDecodeData(mHandle, sHandle, data, &dCtrlParam, &dOutInfo);
-					//sys_timer_usleep(300);
-
-					if((ret == CELL_OK) && (dOutInfo.status == CELL_PNGDEC_DEC_STATUS_FINISH))
-						{
-						png_w= outParam.outputWidth;
-						png_h= outParam.outputHeight;
-						ok=0;
-						}
-				}
-
-			if(ret_file==0)	ret = cellPngDecClose(mHandle, sHandle);
-			
-			ret = cellPngDecDestroy(mHandle);
-			
-			}
-	
-	InParam.spuThreadEnable   = CELL_PNGDEC_SPU_THREAD_DISABLE;
-
- 
-	return ok;
-}
-*/
-
-

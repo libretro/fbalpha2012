@@ -5,7 +5,6 @@
  #define UNICODE
 #endif
 
-#include <assert.h>
 #include <string.h>
 #include <sys/timer.h>
 #include <sys/return_code.h>
@@ -148,11 +147,6 @@ int FBAPopupDisplay(int nFlags);
 int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...);
 int FBAPopupDestroyText();
 
-// splash.cpp
-extern int nSplashTime;
-int SplashCreate();
-void SplashDestroy(bool bForce);
-
 // media.cpp
 int mediaInit();
 int mediaExit();
@@ -261,12 +255,6 @@ int configAppSaveXml();
 // conc.cpp
 int configCheatLoad(const TCHAR* filename = NULL);
 int configCheatReload(const TCHAR* filename = NULL);
-
-// wave.cpp
-extern bool soundLogStart;		// wave log start flag
-int waveLogStart();
-int waveLogStop();
-void waveLogWrite();
 
 // inpd.cpp
 int InpdUpdate();
@@ -382,30 +370,6 @@ int MemCardToggle();
 int ProgressUpdateBurner(double dProgress, const TCHAR* pszText, bool bAbs);
 int ProgressCreate();
 int ProgressDestroy();
-
-// dialogmanager.cpp
-void dialogAdd(int id, HWND dialog);
-HWND dialogGet(int id);
-void dialogDelete(int id);
-bool dialogIsEmpty();
-void dialogClear();
- 
-// ----------------------------------------------------------------------------
-// Debugger
-
-// debugger.cpp
-int DebugExit();
-int DebugCreate();
-
-// ----------------------------------------------------------------------------
-// AVI recording
-
-extern int nAviStatus;
-extern int nAviIntAudio;
-int AviStart();
-int AviRecordFrame(int bDraw);
-int AviStop();
-void AviSetBuffer(unsigned char* buffer);
 
 // ----------------------------------------------------------------------------
 // Audit

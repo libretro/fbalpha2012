@@ -3,9 +3,6 @@
  *                            PS3 application development.
  *
  *  Copyright (C) 2010
- *       Hans-Kristian Arntzen
- *       Stephen A. Damm
- *       Daniel De Matteis
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -26,14 +23,9 @@
  * pad_input.c - Cellframework Mk. II
  *
  *  Created on:   Jan 30, 2011
- *  Author(s):		Squarepusher2, Halsafar, Themaister
- *
- * NOTES AS OF NOW:
  ********************************************************************************/
 
 #include "pad_input.h"
-#include <string.h>
-#include <stdlib.h>
 #include <cell/pad.h>
 #include <sdk_version.h>
 
@@ -76,53 +68,52 @@ void cell_pad_input_deinit(void)
    cellPadEnd();
 }
 
-u32 cell_pad_input_pads_connected(void)
+uint32_t cell_pad_input_pads_connected(void)
 {
-#if(CELL_SDK_VERSION == 0x340001)
-   CellPadInfo2 pad_info;
-   cellPadGetInfo2(&pad_info);
+#if(CELL_SDK_VERSION > 0x340000)
+	CellPadInfo2 pad_info;
+	cellPadGetInfo2(&pad_info);
 #else
-   CellPadInfo pad_info;
-   cellPadGetInfo(&pad_info);
+	CellPadInfo pad_info;
+	cellPadGetInfo(&pad_info);
 #endif
-   return pad_info.now_connect;
+	return pad_info.now_connect;
 }
 
 #define M(x) (x & 0xFF)
 
-cell_input_state_t cell_pad_input_poll_device(u32 id)
+uint64_t cell_pad_input_poll_device(uint32_t id)
 {
-   static cell_input_state_t ret[MAX_PADS];
-   CellPadData pad_data;
+	static uint64_t ret[MAX_PADS];
+	CellPadData pad_data;
 
-   // Get new pad data
-   cellPadGetData(id, &pad_data);
+	// Get new pad data
+	cellPadGetData(id, &pad_data);
 
-   if (pad_data.len == 0)
-      return ret[id];
-   else
-   {
-      ret[id] = 0;
+	if (pad_data.len == 0)
+		return ret[id];
+	else
+	{
+		ret[id] = 0;
 
-      // Build the return value.
-      ret[id] |= (u64)M(pad_data.button[LOWER_BUTTONS]);
-      ret[id] |= (u64)M(pad_data.button[HIGHER_BUTTONS]) << 8;
-      ret[id] |= (u64)M(pad_data.button[RSTICK_X]) << 32;
-      ret[id] |= (u64)M(pad_data.button[RSTICK_Y]) << 40;
-      ret[id] |= (u64)M(pad_data.button[LSTICK_X]) << 16;
-      ret[id] |= (u64)M(pad_data.button[LSTICK_Y]) << 24;
+		// Build the return value.
+		ret[id] |= (uint64_t)M(pad_data.button[LOWER_BUTTONS]);
+		ret[id] |= (uint64_t)M(pad_data.button[HIGHER_BUTTONS]) << 8;
+		ret[id] |= (uint64_t)M(pad_data.button[RSTICK_X]) << 32;
+		ret[id] |= (uint64_t)M(pad_data.button[RSTICK_Y]) << 40;
+		ret[id] |= (uint64_t)M(pad_data.button[LSTICK_X]) << 16;
+		ret[id] |= (uint64_t)M(pad_data.button[LSTICK_Y]) << 24;
 
-      ret[id] |= (u64)(PRESSED_LEFT_LSTICK(ret[id]) ? 1 : 0) << LSTICK_LEFT_SHIFT;
-      ret[id] |= (u64)(PRESSED_RIGHT_LSTICK(ret[id]) ? 1 : 0) << LSTICK_RIGHT_SHIFT;
-      ret[id] |= (u64)(PRESSED_UP_LSTICK(ret[id]) ? 1 : 0) << LSTICK_UP_SHIFT;
-      ret[id] |= (u64)(PRESSED_DOWN_LSTICK(ret[id]) ? 1 : 0) << LSTICK_DOWN_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_LEFT_LSTICK(ret[id]) ? 1 : 0) << LSTICK_LEFT_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_RIGHT_LSTICK(ret[id]) ? 1 : 0) << LSTICK_RIGHT_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_UP_LSTICK(ret[id]) ? 1 : 0) << LSTICK_UP_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_DOWN_LSTICK(ret[id]) ? 1 : 0) << LSTICK_DOWN_SHIFT;
 
-      ret[id] |= (u64)(PRESSED_LEFT_RSTICK(ret[id]) ? 1 : 0) << RSTICK_LEFT_SHIFT;
-      ret[id] |= (u64)(PRESSED_RIGHT_RSTICK(ret[id]) ? 1 : 0) << RSTICK_RIGHT_SHIFT;
-      ret[id] |= (u64)(PRESSED_UP_RSTICK(ret[id]) ? 1 : 0) << RSTICK_UP_SHIFT;
-      ret[id] |= (u64)(PRESSED_DOWN_RSTICK(ret[id]) ? 1 : 0) << RSTICK_DOWN_SHIFT;
-      return ret[id];
-   }
+		ret[id] |= (uint64_t)(PRESSED_LEFT_RSTICK(ret[id]) ? 1 : 0) << RSTICK_LEFT_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_RIGHT_RSTICK(ret[id]) ? 1 : 0) << RSTICK_RIGHT_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_UP_RSTICK(ret[id]) ? 1 : 0) << RSTICK_UP_SHIFT;
+		ret[id] |= (uint64_t)(PRESSED_DOWN_RSTICK(ret[id]) ? 1 : 0) << RSTICK_DOWN_SHIFT;
+		return ret[id];
+	}
 }
 #undef M
-

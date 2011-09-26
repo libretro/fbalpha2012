@@ -140,7 +140,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         $(BURNER_DIR)/PS3/localise.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
                                         $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/scrn.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/strconv.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
                                         \
-                                        $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/autofire.cpp $(BURNER_DIR)/combo.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp $(BURNER_DIR)/misc.cpp $(BURNER_DIR)/sshot.cpp \
+                                        $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp $(BURNER_DIR)/misc.cpp \
                                         $(BURNER_DIR)/state.cpp $(BURNER_DIR)/statec.cpp $(BURNER_DIR)/tracklst.cpp \
                                         \
                                         $(CPU_DIR)/arm7/arm7.cpp $(CPU_DIR)/arm7/arm7_intf.cpp \

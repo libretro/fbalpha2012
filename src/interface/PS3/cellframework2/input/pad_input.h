@@ -3,9 +3,6 @@
  *                            PS3 application development.
  *
  *  Copyright (C) 2010
- *       Hans-Kristian Arntzen
- *       Stephen A. Damm
- *       Daniel De Matteis
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -26,13 +23,10 @@
  * pad_input.h - Cellframework Mk. II
  *
  *  Created on:   Jan 31, 2011
- *  Author(s):		Squarepusher2, Halsafar, Themaister
  ********************************************************************************/
 
 #ifndef __CELL_PAD_INPUT_H
 #define __CELL_PAD_INPUT_H
-
-#include "../common/celltypes.h"
 
 #define MAX_PADS 7
 
@@ -94,26 +88,24 @@
 
 #define CTRL_MASK(state, mask) (state & mask)
 
-#define CTRL_AXIS_LSTICK_X(state) ((u8)(((0xFF0000LLU & state) >> 16) & 0xFF))
-#define CTRL_AXIS_LSTICK_Y(state) ((u8)(((0xFF000000LLU & state) >> 24) & 0xFF))
-#define CTRL_AXIS_RSTICK_X(state) ((u8)(((0xFF00000000LLU & state) >> 32) & 0xFF))
-#define CTRL_AXIS_RSTICK_Y(state) ((u8)(((0xFF0000000000LLU & state) >> 40) & 0xFF))
-
-typedef u64 cell_input_state_t;
-
+#define CTRL_AXIS_LSTICK_X(state) ((uint8_t)(((0xFF0000LLU & state) >> 16) & 0xFF))
+#define CTRL_AXIS_LSTICK_Y(state) ((uint8_t)(((0xFF000000LLU & state) >> 24) & 0xFF))
+#define CTRL_AXIS_RSTICK_X(state) ((uint8_t)(((0xFF00000000LLU & state) >> 32) & 0xFF))
+#define CTRL_AXIS_RSTICK_Y(state) ((uint8_t)(((0xFF0000000000LLU & state) >> 40) & 0xFF))
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
 
 // Init and destruction of device.
 int cell_pad_input_init(void);
 void cell_pad_input_deinit(void);
 
 // Get number of pads connected
-u32 cell_pad_input_pads_connected(void);
-
-cell_input_state_t cell_pad_input_poll_device(u32 id);
+uint32_t cell_pad_input_pads_connected(void);
+uint64_t cell_pad_input_poll_device(uint32_t id);
 
 #ifdef __cplusplus
 }

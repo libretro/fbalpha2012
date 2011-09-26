@@ -1,6 +1,3 @@
-#include <assert.h>
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <string.h>
 #include <sys/timer.h>
 #include <sys/return_code.h>

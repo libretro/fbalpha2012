@@ -74,11 +74,13 @@ extern void (__cdecl *BurnProcessCombo)();
 
 extern unsigned int nCurrentFrame;
 
-static inline int GetCurrentFrame() {
+static inline int GetCurrentFrame()
+{
 	return nCurrentFrame;
 }
 
-static inline void SetCurrentFrame(const unsigned int n) {
+static inline void SetCurrentFrame(const unsigned int n)
+{
 	nCurrentFrame = n;
 }
 

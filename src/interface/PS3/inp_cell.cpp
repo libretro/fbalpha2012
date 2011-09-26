@@ -114,28 +114,25 @@ static int CheckMouseState(struct DinpMouseProperties* Mouse, unsigned int nSubC
 
 int CellinpState(int nCode)
 {
- 
-        int numPadsConnected = 0;
+	uint32_t numPadsConnected = 0;
 
 	uint64_t pads_connected = cell_pad_input_pads_connected();
 	uint64_t new_state_p1 = cell_pad_input_poll_device(0);
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
-        if (nCode < 0)
-	{
+	if (nCode < 0)
 		return 0;
+
+	if (DoReset)
+	{
+
+		if (nCode == FBK_F3)
+		{
+			DoReset = false;
+			return 1;
+		}
+
 	}
-  
-        if (DoReset)
-        {
-                
-                if (nCode == FBK_F3)
-                {
-                        DoReset = false;
-                        return 1;
-                }
-                
-        }
 
 	if (pausemenu_condition)
 	{
@@ -145,8 +142,8 @@ int CellinpState(int nCode)
 		is_running = 0;
 		return 0;
 	}
- 
- 
+
+
 	numPadsConnected = cell_pad_input_pads_connected();
 
 	switch (nCode)
@@ -189,7 +186,7 @@ int CellinpState(int nCode)
 			break;
 	}
 
-        if (numPadsConnected > 1)
+	if (numPadsConnected > 1)
 	{
 		uint64_t new_state_p2 = cell_pad_input_poll_device(1);
 
@@ -230,8 +227,8 @@ int CellinpState(int nCode)
 		}
 	}
 
-        
-        if (numPadsConnected > 2)
+
+	if (numPadsConnected > 2)
 	{
 		uint64_t new_state_p3 = cell_pad_input_poll_device(2);
 
@@ -272,7 +269,7 @@ int CellinpState(int nCode)
 		}
 	}
 
-        if (numPadsConnected > 3)
+	if (numPadsConnected > 3)
 	{
 		uint64_t new_state_p4 = cell_pad_input_poll_device(3);
 
@@ -313,8 +310,8 @@ int CellinpState(int nCode)
 
 		} 
 	}
- 
-        return 0;
+
+	return 0;
 }
  
 // Read one joystick axis
@@ -343,56 +340,42 @@ int CellinpGetControlName(int nCode, TCHAR* pszDeviceName, TCHAR* pszControlName
 
 void doStretch(void)
 {
-      static uint64_t old_state;
-      uint64_t new_state = cell_pad_input_poll_device(0);
-      uint64_t diff_state = old_state ^ new_state;
-      if(CTRL_LSTICK_LEFT(new_state))
-		{
-			nXOffset -= 1;
-		}
-		else if (CTRL_LSTICK_RIGHT(new_state))
-		{
-			nXOffset += 1;
-		}		
-		if (CTRL_LSTICK_UP(new_state))
-		{
-			nYOffset += 1;
-		}
-		else if (CTRL_LSTICK_DOWN(new_state)) 
-		{
-			nYOffset -= 1;
-		}
+	static uint64_t old_state;
+	uint64_t new_state = cell_pad_input_poll_device(0);
+	uint64_t diff_state = old_state ^ new_state;
 
-		if (CTRL_RSTICK_LEFT(new_state))
-		{
-			nXScale -= 1;
-		}
-		else if (CTRL_RSTICK_RIGHT(new_state))
-		{
-			nXScale += 1;
-		}		
-		if (CTRL_RSTICK_UP(new_state))
-		{
-			nYScale += 1;
-		}
-		else if (CTRL_RSTICK_DOWN(new_state))
-		{
-			nYScale -= 1;
-		}
+	if(CTRL_LSTICK_LEFT(new_state))
+		nXOffset -= 1;
 
-		if (CTRL_CIRCLE(new_state))
-		{
-			GameStatus = PAUSE;
-         is_running = 0;
-		}
+	else if (CTRL_LSTICK_RIGHT(new_state))
+		nXOffset += 1;
 
-		if (CTRL_TRIANGLE(new_state))
-		{
-			// reset to default
-			nXScale = nYScale = nXOffset = nYOffset = 0;
-		}
+	if (CTRL_LSTICK_UP(new_state))
+		nYOffset += 1;
 
-      old_state = new_state;
+	else if (CTRL_LSTICK_DOWN(new_state)) 
+		nYOffset -= 1;
+
+	if (CTRL_RSTICK_LEFT(new_state))
+		nXScale -= 1;
+	else if (CTRL_RSTICK_RIGHT(new_state))
+		nXScale += 1;
+
+	if (CTRL_RSTICK_UP(new_state))
+		nYScale += 1;
+	else if (CTRL_RSTICK_DOWN(new_state))
+		nYScale -= 1;
+
+	if (CTRL_CIRCLE(new_state))
+	{
+		GameStatus = PAUSE;
+		is_running = 0;
+	}
+
+	if (CTRL_TRIANGLE(new_state))
+		nXScale = nYScale = nXOffset = nYOffset = 0;	// reset to default
+
+	old_state = new_state;
 }
 
 // ----------------------------------------------------------------------------

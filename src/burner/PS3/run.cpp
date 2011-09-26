@@ -50,48 +50,6 @@ static uint64_t inline GetTickCount()
 	return ticks.tick;
 }
 
-// With or without sound, run one frame.
-// If bDraw is true, it's the last frame before we are up to date, and so we should draw the screen
-#if 0
-static int RunFrame(int bDraw, int bPause)
-{	
-	//static int bPrevPause = 0;
-	//static int bPrevDraw = 0;
-
-	nCurrentFrame++;
-
-   GetInput();
-
-   if (VidFrame())      // Do one frame
-      audio.blank();
-		 
-	//bPrevPause = bPause;
-	//bPrevDraw = bDraw;
-
-	return 0;
-}
-#endif
-
-#if 0
-void RunIdle()
-{
-		audio.check();
-
-      // RUN FRAME
-	   static int bPrevPause = 0;
-	   static int bPrevDraw = 0;
-
-      nCurrentFrame++;
-      GetInput();
-
-      if (VidFrame())      // Do one frame
-         audio.blank();
-
-   	bPrevPause = bPause;
-	   bPrevDraw = bDraw;
-}
-#endif
-
 int RunReset()
 {
 	// Reset FPS display
@@ -125,9 +83,9 @@ int RunMessageLoop(int argc, char **argv)
 {
 	int bRestartVideo;
 	int once = 0;
-   extern unsigned int nPrevGame;
-   static int bPrevPause = 0;
-   static int bPrevDraw = 0;
+	extern unsigned int nPrevGame;
+	static int bPrevPause = 0;
+	static int bPrevDraw = 0;
 
 	bRestartVideo = 0;
 
@@ -135,124 +93,121 @@ int RunMessageLoop(int argc, char **argv)
 
 	//GameInpCheckLeftAlt();
 	//GameInpCheckMouse();								// Hide the cursor
-	 
+
 	// get the last filter
 	CurrentFilter = nLastFilter;	 
 	BuildRomList();
 
 
 #ifdef MULTIMAN_SUPPORT
-   if(argc > 1)
-   {
-      char *pathpos = strrchr(strdup(argv[1]), '/');
-      directLoadGame(strdup(pathpos));
- 		mediaInit();
+	if(argc > 1)
+	{
+		char *pathpos = strrchr(strdup(argv[1]), '/');
+		directLoadGame(strdup(pathpos));
+		mediaInit();
 		RunInit();
-	   GameStatus = EMULATING;	
-      nPrevGame = 0;
-   }
+		GameStatus = EMULATING;	
+		nPrevGame = 0;
+	}
 #endif
 
-   do{
+	do{
 
 		switch (GameStatus)
 		{
-		case MENU:	
-			psglClearUI();
-			RomMenu();
-			FrameMove();
+			case MENU:	
+				psglClearUI();
+				RomMenu();
+				FrameMove();
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+				cellConsolePoll();
 #endif
-			psglRenderUI();
-			break;
-		case CONFIG_MENU:
-			psglClearUI();
-			ConfigMenu();
-			ConfigFrameMove();
+				psglRenderUI();
+				break;
+			case CONFIG_MENU:
+				psglClearUI();
+				ConfigMenu();
+				ConfigFrameMove();
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+				cellConsolePoll();
 #endif
-			psglRenderUI();
-			break;
-		case PAUSE:
-			psglClearUI();
-			//VidRedraw();			
-			psglRenderPaused();
-			InGameMenu();
-			InGameFrameMove();		
+				psglRenderUI();
+				break;
+			case PAUSE:
+				psglClearUI();
+				psglRenderPaused();
+				InGameMenu();
+				InGameFrameMove();		
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+				cellConsolePoll();
 #endif
-			psglRenderUI();
-			break;
-		case INPUT_MENU:						
-			psglClearUI();
-			psglRenderPaused();
-			InputMenu();
-			InputFrameMove();			
+				psglRenderUI();
+				break;
+			case INPUT_MENU:						
+				psglClearUI();
+				psglRenderPaused();
+				InputMenu();
+				InputFrameMove();			
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+				cellConsolePoll();
 #endif
-			psglRenderUI();
-			break;
-		case DIP_MENU:						
-			psglClearUI();
-			psglRenderPaused();
-			DipMenu();
-			DipFrameMove();			
-			psglRenderUI();
-			break;
-		case SCREEN_RESIZE:
-			psglClearUI();			
-			psglRenderStretch();
-         psglRenderAlpha();
-			doStretch();
-			StretchMenu();
+				psglRenderUI();
+				break;
+			case DIP_MENU:						
+				psglClearUI();
+				psglRenderPaused();
+				DipMenu();
+				DipFrameMove();			
+				psglRenderUI();
+				break;
+			case SCREEN_RESIZE:
+				psglClearUI();			
+				psglRenderStretch();
+				psglRenderAlpha();
+				doStretch();
+				StretchMenu();
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+				cellConsolePoll();
 #endif
-			psglRenderUI();
-         custom_aspect_ratio_mode = 1;
-         nVidScrnAspectMode = ASPECT_RATIO_CUSTOM;
-			break;
-		case EMULATING:
-         if(!is_running)
-            GameStatus = PAUSE;
-         CalculateViewports();
-         do{
-         // RUN IDLE
-         audio_check();
+				psglRenderUI();
+				custom_aspect_ratio_mode = 1;
+				nVidScrnAspectMode = ASPECT_RATIO_CUSTOM;
+				break;
+			case EMULATING:
+				if(!is_running)
+					GameStatus = PAUSE;
+				CalculateViewports();
+				do{
+					// RUN IDLE
+					audio_check();
 
-         // RUN FRAME
+					// RUN FRAME
+					nCurrentFrame++;
 
-         nCurrentFrame++;
+					// GET INPUT
+					InputMake(true);                 // get input
 
-         // GET INPUT
-         InputMake(true);                 // get input
+					InpdUpdate();
 
+					// Update Input Set dialog
+					InpsUpdate();
 
-         InpdUpdate();
+					VidFrame();
 
-	      // Update Input Set dialog
-	      InpsUpdate();
-
-         VidFrame();
-
-   	   bPrevPause  = 0;
-	      bPrevDraw   = 1;
+					bPrevPause  = 0;
+					bPrevDraw   = 1;
 #ifdef CELL_DEBUG_CONSOLE
-         cellConsolePoll();
+					cellConsolePoll();
 #endif
-         }while(is_running);
-			break;
+				}while(is_running);
+				break;
 		}
 	}while(!exitGame);
 
 	RunExit();				 		 		 
 	BurnerDrvExit();				// Make sure any game driver is exitted
 	mediaExit();					// Exit media
-	scrnExit();						// Exit the screen window
+	scrnExit();					// Exit the screen window
 	return 0;
 }
  

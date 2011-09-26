@@ -1,5 +1,3 @@
-#include <assert.h>
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/timer.h>
@@ -18,16 +16,16 @@
 #ifndef MENU_H
 #define MENU_H
  
-#define MENU					0
-#define EMULATING				1
-#define INGAME_MENU				2
-#define PAUSE					3
-#define CONFIG_MENU				4
-#define INPUT_MENU				5
+#define MENU			0
+#define EMULATING		1
+#define INGAME_MENU		2
+#define PAUSE			3
+#define CONFIG_MENU		4
+#define INPUT_MENU		5
 #define INPUT_WITH_LIST_MENU	6
-#define SCREEN_RESIZE			    7
-#define DIP_MENU				8
-#define DIP_WITH_LIST_MENU		9
+#define SCREEN_RESIZE		7
+#define DIP_MENU		8
+#define DIP_WITH_LIST_MENU	9
 
 enum {
    SETTING_DISPLAY_FRAMERATE,

@@ -3,10 +3,8 @@
 
 // Main module
 
-//#define APP_DEBUG_LOG			// log debug messages to zzBurnDebug.html
 #include "main.h"
 #include "burner.h"
-#include "Splash.h"
 #include "RomList.h"
 #include "InGameOptions.h"
 #include "version.h"
@@ -38,31 +36,22 @@ extern void reset_frame_counter();
  
 SYS_PROCESS_PARAM(1001, 0x80000);
 
-void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata) {
-        (void) param;
-        (void) userdata;
-
-        switch (status) {
-                case CELL_SYSUTIL_REQUEST_EXITGAME:  
-                  is_running = 0;
-						exitGame = 1;
-	               sys_process_exit(0);
-                        break;
-                case CELL_SYSUTIL_DRAWING_BEGIN:
-                case CELL_SYSUTIL_DRAWING_END:
-                        break;
-        }
-}
-
-
-
-// Debug printf to a file
-static int __cdecl AppDebugPrintf(int nStatus, TCHAR* pszFormat, ...)
+void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 {
- 
-	return 0;
-}
+	(void) param;
+	(void) userdata;
 
+	switch (status) {
+		case CELL_SYSUTIL_REQUEST_EXITGAME:  
+			is_running = 0;
+			exitGame = 1;
+			sys_process_exit(0);
+			break;
+		case CELL_SYSUTIL_DRAWING_BEGIN:
+		case CELL_SYSUTIL_DRAWING_END:
+			break;
+	}
+}
 
 
 int dprintf(TCHAR* pszFormat, ...)
@@ -84,61 +73,30 @@ int OpenDebugLog()
 
 void DebugMsg(const char* fmt, ...)
 {
-#if 0
-    std::ofstream writeLog;
-
- 
-	char tempstr[512];
-
-	va_list arglist;
-	va_start(arglist, fmt);
-	vsprintf(tempstr, fmt, arglist);
-	va_end(arglist);
-
-    //always write to file
-    writeLog.open("/dev_hdd0/game/FBAN00000/USRDIR/debug.log",std::ofstream::app);
-    if (writeLog.is_open())
-    {
-            writeLog.write(tempstr, strlen(tempstr));
-            writeLog.write("\n",1);
-    }
-    writeLog.close();
-#endif
 }
 
-int DriveMounted(string path)
-{
-
-	return 1;
-}
- 
 static int AppInit()
 {
- 
-	//OpenDebugLog();
-	//setWindowAspect();
-	SplashCreate();
-
-#if 1 || !defined (FBA_DEBUG)
 	// print a warning if we're running for the 1st time
-	if (nIniVersion < nBurnVer) {
+	if (nIniVersion < nBurnVer)
+	{
 		scrnInit();		 
-		configAppSaveXml();		// Create initial config file
+		configAppSaveXml(); // Create initial config file
 	}
-#endif
 
 	// Init the Burn library
 	BurnLibInit();
- 
+
 	nVidSelect = VID_PSGL;
- 	if (audio.select(audSelect)) {
+	if (audio.select(audSelect))
+	{
 		audio.select(_T("CellAudio"));
 	}
- 	// Build the ROM information
-	 
+	// Build the ROM information
+
 	getAllRomsetInfo(); 
 	nVidFullscreen = 1;
-	 
+
 	BurnExtLoadOneRom = archiveLoadOneFile; 
 	InitRomList();
 	InitInputList();
@@ -168,54 +126,44 @@ void AppCleanup()
 	strConvClean();
 }
 
-#if 0
-bool AppProcessKeyboardInput()
-{
-                                                                                                                                                              
-	return true;
-}
-#endif
-
 // Main program entry point
 int  main(int argc, char **argv)
 {
-
 	// One raw SPU used for PSGL - two raw SPUs and one SPU thread for the application
 	sys_spu_initialize(4, 3);
 
-   cellSysmoduleLoadModule(CELL_SYSMODULE_FS);
-   cellSysmoduleLoadModule(CELL_SYSMODULE_IO);     
+	cellSysmoduleLoadModule(CELL_SYSMODULE_FS);
+	cellSysmoduleLoadModule(CELL_SYSMODULE_IO);     
 	cellSysmoduleLoadModule(CELL_SYSMODULE_RTC);
 
 	cellSysutilRegisterCallback(0, sysutil_exit_callback, NULL);
 
 #ifdef CELL_DEBUG_CONSOLE
-   cellConsoleInit();
-   cellConsoleNetworkInitialize();
-   cellConsoleNetworkServerInit(-1);
-   cellConsoleScreenShotPluginInit();
+	cellConsoleInit();
+	cellConsoleNetworkInitialize();
+	cellConsoleNetworkServerInit(-1);
+	cellConsoleScreenShotPluginInit();
 #endif
 
 	// Make version string
 	if (nBurnVer & 0xFF)
-   {
+	{
 		// private version (alpha)
 		_stprintf(szAppBurnVer, _T("%x.%x.%x.%02x"), nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF, nBurnVer & 0xFF);
 		_stprintf(szSVNVer, _T("%s"), SVN_VERSION);
 		_stprintf(szSVNDate, _T("%s"), SVN_DATE);
 	}
-   else
-   {
+	else
+	{
 		// public version
 		_stprintf(szAppBurnVer, _T("%x.%x.%x"), nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF);
 		_stprintf(szSVNVer, _T("%s"), SVN_VERSION);
 		_stprintf(szSVNDate, _T("%s"), SVN_DATE);
 	}
 
-	// Load config for the application
-	configAppLoadXml();
+	configAppLoadXml();				// Load config for the application
 
-   cell_pad_input_init();
+	cell_pad_input_init();
 
 	appDirectory();					// Set current directory to be the applications directory
 
@@ -226,22 +174,22 @@ int  main(int argc, char **argv)
 
 	psglInitGL();
 	dbgFontInit();
-   reset_frame_counter();
+	reset_frame_counter();
 
 	mediaInit();
 	RunMessageLoop(argc, argv); 
 
-	AppExit();						// Exit the application
- 
-    cell_pad_input_deinit();
+	AppExit();					// Exit the application
+
+	cell_pad_input_deinit();
 
 	configAppSaveXml();				// Save config for the application
 	strConvClean();					// Free string conversion
 
-   cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
-   cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     
+	cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
+	cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_RTC);
-   cellSysutilUnregisterCallback(0);
+	cellSysutilUnregisterCallback(0);
 
 	exit(0);
 }
@@ -289,11 +237,4 @@ void UpdateConsoleXY(char *text, float X, float Y)
 	 cellDbgFontPuts(X, Y, 0.75f, 0xFFFFFFFF, text);
 	 cellDbgFontDraw();
 	 psglRenderUI();
-}
-
-int SplashCreate(void)
-{
- 
-	return 0;
-
 }

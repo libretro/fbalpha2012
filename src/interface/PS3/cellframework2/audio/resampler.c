@@ -25,13 +25,13 @@ struct resampler
 {
    float *data;
    double ratio;
-   u32 data_ptr;
-   u32 data_size;
+   uint32_t data_ptr;
+   uint32_t data_size;
    void *cb_data;
    int channels;
    resampler_cb_t func;
-   u64 sum_output_frames;
-   u64 sum_input_frames;
+   uint64_t sum_output_frames;
+   uint64_t sum_input_frames;
 };
 
 resampler_t* resampler_new(resampler_cb_t func, double ratio, int channels, void* cb_data)
@@ -62,11 +62,11 @@ void resampler_free(resampler_t* state)
       free(state);
 }
 
-static u32 resampler_get_required_frames(resampler_t* state, u32 frames)
+static uint32_t resampler_get_required_frames(resampler_t* state, uint32_t frames)
 {
-   u32 after_sum = state->sum_output_frames + frames;
+   uint32_t after_sum = state->sum_output_frames + frames;
 
-   u32 min_input_frames = (u32)((after_sum / state->ratio) + 2.0);
+   uint32_t min_input_frames = (uint32_t)((after_sum / state->ratio) + 2.0);
    return min_input_frames - state->sum_input_frames;
 }
 
@@ -77,13 +77,13 @@ static void poly_create_3(float *poly, float *y)
    poly[0] = y[0];
 }
 
-static u32 resampler_process(resampler_t *state, u32 frames, float *out_data)
+static uint32_t resampler_process(resampler_t *state, uint32_t frames, float *out_data)
 {
-   u32 frames_used = 0;
-   u64 pos_out;
+   uint32_t frames_used = 0;
+   uint64_t pos_out;
    double pos_in = 0.0;
 
-   for (u64 x = state->sum_output_frames; x < state->sum_output_frames + frames; x++)
+   for (uint64_t x = state->sum_output_frames; x < state->sum_output_frames + frames; x++)
    {
       pos_out = x - state->sum_output_frames;
       pos_in  = ((double)x / state->ratio) - (double)state->sum_input_frames;
@@ -117,21 +117,21 @@ static u32 resampler_process(resampler_t *state, u32 frames, float *out_data)
    return frames_used;
 }
 
-u32 resampler_cb_read(resampler_t *state, u32 frames, float *data)
+uint32_t resampler_cb_read(resampler_t *state, uint32_t frames, float *data)
 {
    // How many frames must we have to resample?
-   u32 req_frames = resampler_get_required_frames(state, frames);
+   uint32_t req_frames = resampler_get_required_frames(state, frames);
 
    // Do we need to read more data?
    if (SAMPLES_TO_FRAMES(state->data_ptr, state) < req_frames)
    {
-      u32 must_read = req_frames - SAMPLES_TO_FRAMES(state->data_ptr, state);
+      uint32_t must_read = req_frames - SAMPLES_TO_FRAMES(state->data_ptr, state);
       float temp_buf[FRAMES_TO_SAMPLES(must_read, state)];
 
-      u32 has_read = 0;
+      uint32_t has_read = 0;
 
-      u32 copy_size = 0;
-      u32 ret = 0;
+      uint32_t copy_size = 0;
+      uint32_t ret = 0;
       float *ptr = NULL;
       while (has_read < must_read)
       {
@@ -147,7 +147,7 @@ u32 resampler_cb_read(resampler_t *state, u32 frames, float *data)
       }
 
       // We might have gotten a lot of data from the callback. We should realloc our buffer if needed.
-      u32 req_buffer_frames = SAMPLES_TO_FRAMES(state->data_ptr, state) + has_read;
+      uint32_t req_buffer_frames = SAMPLES_TO_FRAMES(state->data_ptr, state) + has_read;
 
       if (req_buffer_frames > SAMPLES_TO_FRAMES(state->data_size, state))
       {
@@ -171,7 +171,7 @@ u32 resampler_cb_read(resampler_t *state, u32 frames, float *data)
 
    // Phew. We should have enough data in our buffer now to be able to process the data we need.
 
-   u32 frames_used = resampler_process(state, frames, data);
+   uint32_t frames_used = resampler_process(state, frames, data);
    state->sum_input_frames += frames_used;
    memmove(state->data, state->data + FRAMES_TO_SAMPLES(frames_used, state), (state->data_ptr - FRAMES_TO_SAMPLES(frames_used, state)) * sizeof(float));
    state->data_ptr -= FRAMES_TO_SAMPLES(frames_used, state);

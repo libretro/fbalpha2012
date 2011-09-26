@@ -81,13 +81,6 @@ static const GLfloat   tvertsVertical[] = {
    pitch = iwidth * sizeof(unsigned int); \
    data = buffer;
 
-#if 0
-static void clear()
-{
-   memset(buffer, 0, iwidth * iheight * sizeof(unsigned int));
-}
-#endif
-
 #define set_cg_params() \
    cgGLSetParameter2f(cg_video_size, iwidth, iheight); \
    cgGLSetParameter2f(cg_texture_size, iwidth, iheight); \
@@ -205,8 +198,8 @@ static void clear()
 
 static void setlinear(unsigned int smooth)
 {
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 }
 
 }

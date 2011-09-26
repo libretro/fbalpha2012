@@ -31,12 +31,12 @@ int write_xmlfile(const TCHAR* szFilename, FILE* file)
 		ticpp::Element desc("description", str);
 		ticpp::Element category("category", APP_DESCRIPTION);
 		ticpp::Element version("version", szAppBurnVer);
-//		ticpp::Element data("data", MAKE_STRING(BUILD_DATE));
+		//		ticpp::Element data("data", MAKE_STRING(BUILD_DATE));
 		header.LinkEndChild(&name);
 		header.LinkEndChild(&desc);
 		header.LinkEndChild(&category);
 		header.LinkEndChild(&version);
-//		header.LinkEndChild(&data);
+		//		header.LinkEndChild(&data);
 		root.LinkEndChild(&header);
 
 		// game
@@ -94,12 +94,12 @@ int write_xmlfile(const TCHAR* szFilename, FILE* file)
 			}
 
 			// Report problems
-//			if (nParentSelect == -1U) {
-//				fprintf(file, "# Missing parent %s. It needs to be added to " APP_TITLE "!\n\n", spName);
-//			}
-//			if (nBoardROMSelect == -1U) {
-//				fprintf(file, "# Missing boardROM %s. It needs to be added to " APP_TITLE "!\n\n", sbName);
-//			}
+			//			if (nParentSelect == -1U) {
+			//				fprintf(file, "# Missing parent %s. It needs to be added to " APP_TITLE "!\n\n", spName);
+			//			}
+			//			if (nBoardROMSelect == -1U) {
+			//				fprintf(file, "# Missing boardROM %s. It needs to be added to " APP_TITLE "!\n\n", sbName);
+			//			}
 
 			// Write the header
 			ticpp::Element game("game");
@@ -203,7 +203,7 @@ int write_xmlfile(const TCHAR* szFilename, FILE* file)
 
 					// Selectable BIOS meta info
 					if (nPass == 0 && (nMerged & 2) && (ri.nType & BRF_SELECT)) {
-//						fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i - 128, szPossibleName, ri.nType & BRF_OPT ? "" : "default yes ");
+						//						fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i - 128, szPossibleName, ri.nType & BRF_OPT ? "" : "default yes ");
 					}
 					// File info
 					if (nPass == 1 && !nMerged) {
@@ -282,7 +282,7 @@ int write_xmlfile(const TCHAR* szFilename, FILE* file)
 					if (nRet == 0) {
 						if (nPass == 0) {
 							if (ri.nType & BRF_SELECT) {
-//								fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i, szPossibleName, ri.nType & 0x80 ? "" : "default yes ");
+								//								fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i, szPossibleName, ri.nType & 0x80 ? "" : "default yes ");
 							}
 						} else {
 							sprintf(str, "%08x", ri.nCrc);
@@ -337,9 +337,8 @@ int write_datfile(FILE* file)
 	{
 		nBurnDrvSelect = nGameSelect;								// Switch to driver nGameSelect
 
-		if (BurnDrvGetFlags() & BDF_BOARDROM) {
+		if (BurnDrvGetFlags() & BDF_BOARDROM)
 			continue;
-		}
 
 		strcpy(sgName, BurnDrvGetTextA(DRV_NAME));
 		strcpy(spName, "");											// make sure this string is empty before we start
@@ -360,23 +359,22 @@ int write_datfile(FILE* file)
 			}
 
 			nBurnDrvSelect = nGameSelect;							// restore driver select
-		} else {
-			nParentSelect = nGameSelect;
 		}
+		else
+			nParentSelect = nGameSelect;
 
 		// Check to see if the game has a BoardROM
 		if (BurnDrvGetTextA(DRV_BOARDROM))
 		{
 			strcpy(sbName, BurnDrvGetTextA(DRV_BOARDROM));
 			nBoardROMSelect = BurnDrvGetIndexByNameA(sbName);
-			if (nBoardROMSelect >= nBurnDrvCount) {
+			if (nBoardROMSelect >= nBurnDrvCount)
 				nBoardROMSelect = -1U;
-			}
 
 			nBurnDrvSelect = nGameSelect;							// restore driver select
-		} else {
-			nBoardROMSelect = nGameSelect;
 		}
+		else
+			nBoardROMSelect = nGameSelect;
 
 		// Report problems
 		if (nParentSelect == -1U)
@@ -497,11 +495,10 @@ int write_datfile(FILE* file)
 				// File info
 				if (nPass == 1 && !nMerged)
 				{
-					if (ri.nType & BRF_NODUMP) {
+					if (ri.nType & BRF_NODUMP)
 						fprintf(file, "\trom ( name %s size %d flags nodump )\n", szPossibleName, ri.nLen);
-					} else {
+					else
 						fprintf(file, "\trom ( name %s size %d crc %08x )\n", szPossibleName, ri.nLen, ri.nCrc);
-					}
 				}
 				if (nPass == 1 && nMerged)
 				{
@@ -511,11 +508,10 @@ int write_datfile(FILE* file)
 					// Files from parent/boardROMs
 					else
 					{
-						if (ri.nType & BRF_NODUMP) {
+						if (ri.nType & BRF_NODUMP)
 							fprintf(file, "\trom ( name %s merge %s size %d flags nodump )\n", szPossibleName, szPossibleName, ri.nLen);
-						} else {
+						else
 							fprintf(file, "\trom ( name %s merge %s size %d crc %08x )\n", szPossibleName, szPossibleName, ri.nLen, ri.nCrc);
-						}
 					}
 				}
 			}
@@ -529,9 +525,8 @@ int write_datfile(FILE* file)
 	{
 		int i, nPass;
 
-		if (!(BurnDrvGetFlags() & BDF_BOARDROM)) {
+		if (!(BurnDrvGetFlags() & BDF_BOARDROM))
 			continue;
-		}
 
 		fprintf(file, "resource (\n");
 		fprintf(file, "\tname %s\n", BurnDrvGetTextA(DRV_NAME));
@@ -584,10 +579,7 @@ int write_datfile(FILE* file)
 int create_datfile(TCHAR* szFilename, int type)
 {
 	if (type == 1)
-	{
-		// write clrmamepro xml dat
-		return write_xmlfile(szFilename, NULL);
-	}
+		return write_xmlfile(szFilename, NULL);	// write clrmamepro xml dat
 
 	FILE* file = _tfopen(szFilename, _T("w"));
 	if (!file)

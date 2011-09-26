@@ -224,7 +224,8 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 			break;
 	}
 
-	if (strncmp(szi, "mouse", 5) == 0) {
+	if (strncmp(szi, "mouse", 5) == 0)
+	{
 
 		if (strcmp(szi, "mouse x-axis") == 0) {
 			pgi->nInput = GIT_MOUSEAXIS;
@@ -237,12 +238,14 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 			pgi->Input.MouseAxis.nAxis = 1;
 			return 0;
 		}
-		if (strncmp(szi, "mouse button", 12) == 0) {
+		if (strncmp(szi, "mouse button", 12) == 0)
+		{
 			char* szb = szi + 13;
 			int nButton = strtol(szb, NULL, 0);
-			if (nButton >= 1) {
+
+			if (nButton >= 1)
 				nButton--;
-			}
+
 			KEY(0x8080 + nButton);
 			return 0;
 		}
@@ -273,34 +276,36 @@ int GamcAnalogKey(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 	char *szSearch = NULL;
 	int k0 = 0, k1 = 0;
 	szSearch = szPlay[nPlayer & 3];
-	if (_strnicmp(szSearch, szi, 3) != 0) {			// Not our player
+
+	if (_strnicmp(szSearch, szi, 3) != 0) // Not our player
 		return 1;
-	}
+
 	szi += 3;
 
-	if (*szi == 0) {
+	if (*szi == 0)
 		return 1;
-	}
-	if (strcmp(szi + 1, "-axis") != 0) {
+
+	if (strcmp(szi + 1, "-axis") != 0)
 		return 1;
-	}
 
 	// Keyboard
-	if (szi[0] == 'x') {
+	if (szi[0] == 'x')
+	{
 		k0 = FBK_LEFTARROW;
 		k1 = FBK_RIGHTARROW;
 	}
-	if (szi[0] == 'y') {
+	if (szi[0] == 'y')
+	{
 		k0 = FBK_UPARROW;
 		k1 = FBK_DOWNARROW;
 	}
-	if (szi[0] == 'z') {
+	if (szi[0] == 'z')
+	{
 		k0 = FBK_V;
 		k1 = FBK_F;
 	}
-	if (k0 == 0 || k1 == 0) {
+	if (k0 == 0 || k1 == 0)
 		return 1;
-	}
 
 	SetSliderKey(pgi, k0, k1, nSlide);
 
@@ -312,38 +317,38 @@ int GamcAnalogJoy(struct GameInp* pgi, char* szi, int nPlayer, int nJoy, int nSl
 	int nAxis = 0;
 
 	char* szSearch = szPlay[nPlayer & 3];
-	if (_strnicmp(szSearch, szi, 3) != 0)	{	// Not our player
+
+	if (_strnicmp(szSearch, szi, 3) != 0) // Not our player
 		return 1;
-	}
+
 	szi += 3;
 
-	if (szi[0] == 0) {
+	if (szi[0] == 0)
 		return 1;
-	}
-	if (strncmp(szi + 1, "-axis", 5) != 0) {
-		return 1;
-	}
 
-	if (strncmp(szi, "x", 1) == 0) {
+	if (strncmp(szi + 1, "-axis", 5) != 0)
+		return 1;
+
+	if (strncmp(szi, "x", 1) == 0)
 		nAxis = 0;
-	}
-	if (strncmp(szi, "y", 1) == 0) {
+
+	if (strncmp(szi, "y", 1) == 0)
 		nAxis = 1;
-	}
-	if (strncmp(szi, "z", 1) == 0) {
+
+	if (strncmp(szi, "z", 1) == 0)
 		nAxis = 2;
-	}
 
-	if (strlen(szi) > 6) {
-		if (strcmp(&szi[6], "-neg") == 0) {
+	if (strlen(szi) > 6)
+	{
+		if (strcmp(&szi[6], "-neg") == 0)
 			nSlide = 3;
-		}
-		if (strcmp(&szi[6], "-pos") == 0) {
+
+		if (strcmp(&szi[6], "-pos") == 0)
 			nSlide = 4;
-		}
 	}
 
-	switch (nSlide) {
+	switch (nSlide)
+	{
 		case 2:								// Sliding
 			pgi->nInput = GIT_JOYSLIDER;
 			pgi->Input.Slider.nSliderValue = 0x8000;		// Put slider in the middle
@@ -385,33 +390,32 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 {
 	char* szSearch = szPlay[nPlayer & 3];
 	int nJoyBase = 0;
-	
-	if (_strnicmp(szSearch, szi, 3) != 0) {	// Not our player
+
+	if (_strnicmp(szSearch, szi, 3) != 0) // Not our player
 		return 1;
-	}
+
 	szi += 3;
-	
+
 	if (nDevice <= -2) {
 		int bOurs = 0;
-		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0) {
-			bOurs = 1;
-		}
-		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0) {
-			bOurs = 1;
-		}
-		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0) {
-			bOurs = 1;
-		}
-		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0) {
-			bOurs = 1;
-		}
-		if (strncmp(szi, "fire ", 5) == 0) {
-			bOurs = 1;
-		}
 
-		if (!bOurs)	{
+		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
+			bOurs = 1;
+
+		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0)
+			bOurs = 1;
+
+		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0)
+			bOurs = 1;
+
+		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0)
+			bOurs = 1;
+
+		if (strncmp(szi, "fire ", 5) == 0)
+			bOurs = 1;
+
+		if (!bOurs)
 			return 1;
-		}
 
 		pgi->nInput = GIT_CONSTANT;			// Constant zero
 		pgi->Input.Constant.nConst = 0;		//
@@ -422,96 +426,98 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 	// Now check the rest of it
 	if (nDevice == -1) {
 		// Keyboard
-		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0) {
+		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
 			KEY(FBK_UPARROW);
-		}
-		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0) {
+
+		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0)
 			KEY(FBK_DOWNARROW);
-		}
-		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0) {
+
+		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0)
 			KEY(FBK_LEFTARROW);
-		}
-		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0) {
+
+		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0)
 			KEY(FBK_RIGHTARROW);
-		}
-		if (nFireButtons == 4) {
-			if (strcmp(szi, "fire 1") == 0) {
+
+		if (nFireButtons == 4)
+		{
+			if (strcmp(szi, "fire 1") == 0)
 				KEY(FBK_Z);
-			}
-			if (strcmp(szi, "fire 2") == 0) {
+
+			if (strcmp(szi, "fire 2") == 0)
 				KEY(FBK_X);
-			}
-			if (strcmp(szi, "fire 3") == 0) {
+
+			if (strcmp(szi, "fire 3") == 0)
 				KEY(FBK_C);
-			}
-			if (strcmp(szi, "fire 4") == 0) {
+
+			if (strcmp(szi, "fire 4") == 0)
 				KEY(FBK_V);
-			}
 
-			if (_stricmp(szi, "Button ABC") == 0) {
+			if (_stricmp(szi, "Button ABC") == 0)
 				MACRO(FBK_A);
-			}
-			if (_stricmp(szi, "Button BCD") == 0) {
-				MACRO(FBK_S);
-			}
-			if (_stricmp(szi, "Button ABCD") == 0) {
-				MACRO(FBK_D);
-			}
 
-		} else {
-			if (bStreetFighterLayout) {
-				if (strcmp(szi, "fire 1") == 0) {
+			if (_stricmp(szi, "Button BCD") == 0)
+				MACRO(FBK_S);
+
+			if (_stricmp(szi, "Button ABCD") == 0)
+				MACRO(FBK_D);
+
+		}
+		else
+		{
+			if (bStreetFighterLayout)
+			{
+				if (strcmp(szi, "fire 1") == 0)
 					KEY(FBK_V);
-				}
-				if (strcmp(szi, "fire 2") == 0) {
+
+				if (strcmp(szi, "fire 2") == 0)
 					KEY(FBK_S);
-				}
-				if (strcmp(szi, "fire 3") == 0) {
+
+				if (strcmp(szi, "fire 3") == 0)
 					KEY(FBK_D);
-				}
-				if (strcmp(szi, "fire 4") == 0) {
+
+				if (strcmp(szi, "fire 4") == 0)
 					KEY(FBK_Z);
-				}
-				if (strcmp(szi, "fire 5") == 0) {
+
+				if (strcmp(szi, "fire 5") == 0)
 					KEY(FBK_X);
-				}
-				if (strcmp(szi, "fire 6") == 0) {
+
+				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_C);
-				}
-				if (_stricmp(szi, "3× Punch") == 0) {
+
+				if (_stricmp(szi, "3× Punch") == 0)
 					MACRO(FBK_F);
-				}
-				if (_stricmp(szi, "3× Kick") == 0) {
+
+				if (_stricmp(szi, "3× Kick") == 0)
 					MACRO(FBK_V);
-				}
-			} else {
-				if (strcmp(szi, "fire 1") == 0) {
+			}
+			else
+			{
+				if (strcmp(szi, "fire 1") == 0)
 					KEY(FBK_Z);
-				}
-				if (strcmp(szi, "fire 2") == 0) {
+
+				if (strcmp(szi, "fire 2") == 0)
 					KEY(FBK_X);
-				}
-				if (strcmp(szi, "fire 3") == 0) {
+
+				if (strcmp(szi, "fire 3") == 0)
 					KEY(FBK_C);
-				}
-				if (strcmp(szi, "fire 4") == 0) {
+
+				if (strcmp(szi, "fire 4") == 0)
 					KEY(FBK_A);
-				}
-				if (strcmp(szi, "fire 5") == 0) {
+
+				if (strcmp(szi, "fire 5") == 0)
 					KEY(FBK_S);
-				}
-				if (strcmp(szi, "fire 6") == 0) {
+
+				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_D);
-				}
-				if (strcmp(szi, "fire 7") == 0) {
+
+				if (strcmp(szi, "fire 7") == 0)
 					KEY(FBK_Q);
-				}
-				if (strcmp(szi, "fire 8") == 0) {
+
+				if (strcmp(szi, "fire 8") == 0)
 					KEY(FBK_W);
-				}
-				if (strcmp(szi, "fire 9") == 0) {
+
+				if (strcmp(szi, "fire 9") == 0)
 					KEY(FBK_E);
-				}
 			}
 		}
 
@@ -534,12 +540,14 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 	if (strcmp(szi, "right") == 0) {
 		KEY(nJoyBase + 0x01)
 	}
-	if (strncmp(szi, "fire ", 5) == 0) {
+	if (strncmp(szi, "fire ", 5) == 0)
+	{
 		char *szb = szi + 5;
 		int nButton = strtol(szb, NULL, 0);
-		if (nButton >= 1) {
+
+		if (nButton >= 1)
 			nButton--;
-		}
+
 		int val = nJoyBase + 0x80 + nButton;
 		KEY(nJoyBase + 0x80 + nButton);
 	}
@@ -554,12 +562,12 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 	szSearch = szPlay[nPlayer & 3];
 	int k0 = 0, k1 = 0;
 
-	if (_strnicmp(szSearch, szi, 3) != 0) {				// Not our player
+	if (_strnicmp(szSearch, szi, 3) != 0) // Not our player
 		return 1;
-	}
+
 	szi += 3;
 
-	 
+
 	// Hori Arcade Stick
 	if (strcmp(szi, "x-axis") == 0) {
 		k0 = FBK_LEFTARROW;
@@ -618,7 +626,7 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 				KEY(FBK_X);
 			}
 
-		
+
 		} else {
 			if (strcmp(szi, "fire 1") == 0) {
 				KEY(FBK_LSHIFT);
@@ -653,7 +661,7 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 		SetSliderKey(pgi, k0, k1, nSlide);
 	}
 
-	 
+
 
 	return 1;												// Couldn't map input
 }
@@ -665,12 +673,13 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 	szSearch = szPlay[nPlayer & 3];
 	int k0 = 0, k1 = 0;
 
-	if (_strnicmp(szSearch, szi, 3) != 0) {				// Not our player
+	if (_strnicmp(szSearch, szi, 3) != 0) // Not our player
 		return 1;
-	}
+
 	szi += 3;
 
-	if ((nFlags & 1) == 0) {
+	if ((nFlags & 1) == 0)
+	{
 
 		// X-Arcade / Hanaho HotRod joystick left side
 		if (strcmp(szi, "x-axis") == 0) {

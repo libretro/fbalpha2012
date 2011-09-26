@@ -5,85 +5,51 @@
 #include "autofire.h"
 #endif
 
-HWND hInpdDlg = NULL;						// Handle to the Input Dialog
+HWND hInpdDlg = NULL; // Handle to the Input Dialog
 static HWND hInpdList = NULL;
-static unsigned char* LastVal = NULL;		// Last input values/defined
-static int bLastValDefined = 0;				//
+static unsigned char* LastVal = NULL; // Last input values/defined
+static int bLastValDefined = 0;	
 
-static HWND hInpdGi = NULL, hInpdPci = NULL, hInpdAnalog = NULL;	// Combo boxes
-
-#ifndef NO_AUTOFIRE
-// autofire map
-struct AutoFireInfo {
-	int player;
-	int button;
-};
-map<int, AutoFireInfo> autofireMap;
-
-// ==> autofire setting, added by regret
-static int InpdAutofireInit()
-{
- 
-
-	return 0;
-}
-
-static void InpdAutofireExit()
-{
- 
-}
-// <== autofire setting
-#endif
+static HWND hInpdGi = NULL, hInpdPci = NULL, hInpdAnalog = NULL; // Combo boxes
 
 // Update which input is using which PC input
 static int InpdUseUpdate()
 {
- 
-
 	return 0;
 }
 
 int InpdUpdate()
 {
- 
-
 	return 0;
 }
 
 static int InpdListBegin()
 {
- 
-
 	return 0;
 }
 
 // Make a list view of the game inputs
 int InpdListMake(int bBuild)
 {
- 
 	InpdUseUpdate();
-
 	return 0;
 }
 
  
 static int InpdInit()
 {
- 
-
 	return 0;
 }
 
 static int InpdExit()
 {
- 
-
 	return 0;
 }
 
 static void GameInpConfigOne(int nPlayer, int nPcDev, int nAnalog, struct GameInp* pgi, char* szi)
 {
-	switch (nPcDev) {
+	switch (nPcDev)
+	{
 		case  0:
 			GamcPlayer(pgi, szi, nPlayer, -1);						// Keyboard
 			GamcAnalogKey(pgi, szi, nPlayer, nAnalog);
@@ -129,24 +95,25 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 	struct GameInp* pgi = NULL;
 	unsigned int i;
 
-	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++) {
+	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	{
 		struct BurnInputInfo bii;
 
 		// Get the extra info about the input
 		bii.szInfo = NULL;
 		BurnDrvGetInputInfo(&bii, i);
-		if (bii.pVal == NULL) {
+
+		if (bii.pVal == NULL)
 			continue;
-		}
-		if (bii.szInfo == NULL) {
+
+		if (bii.szInfo == NULL)
 			bii.szInfo = "";
-		}
+
 		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, bii.szInfo);
 	}
 
-	for (i = 0; i < nMacroCount; i++, pgi++) {
+	for (i = 0; i < nMacroCount; i++, pgi++)
 		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, pgi->Macro.szName);
-	}
 
 	GameInpCheckLeftAlt();
 
@@ -157,29 +124,22 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 
 static int DeleteInput(unsigned int i)
 {
- 
-
 	return 0;
 }
 
 // List item(s) deleted; find out which one(s)
 static int ListItemDelete()
 {
- 
 	return 0;
 }
 
 static int InitAnalogOptions(int nGi, int nPci)
 {
- 
-
 	return 0;
 }
 
 int UsePreset(bool bMakeDefault)
 {
- 
-
 	return 0;
 }
 
@@ -192,40 +152,33 @@ static TCHAR* GetDefaultInputFilename()
 {
 	TCHAR* fileName = defaultInpFilename;
 
-#if 1
 	int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
 
-	if (flag == HARDWARE_SNK_NEOGEO) {
+	if (flag == HARDWARE_SNK_NEOGEO)
 		fileName = defaultNeoInpFilename;
-	}
-	else if (flag == HARDWARE_CAPCOM_CPS1
-		|| flag == HARDWARE_CAPCOM_CPS1_QSOUND
-		|| flag == HARDWARE_CAPCOM_CPS1_GENERIC
-		|| flag == HARDWARE_CAPCOM_CPSCHANGER
-		|| flag == HARDWARE_CAPCOM_CPS2
-		|| flag == HARDWARE_CAPCOM_CPS3) {
+	else if (flag == HARDWARE_CAPCOM_CPS1 || flag == HARDWARE_CAPCOM_CPS1_QSOUND || flag == HARDWARE_CAPCOM_CPS1_GENERIC || flag == HARDWARE_CAPCOM_CPSCHANGER || flag == HARDWARE_CAPCOM_CPS2 || flag == HARDWARE_CAPCOM_CPS3)
+	{
 		fileName = defaultCpsInpFilename;
 	}
-#endif
 
 	return fileName;
 }
 
 int SaveDefaultInput()
 {
- 
+
 	TCHAR* fileName = GetDefaultInputFilename();
 	FILE* h = _tfopen(fileName, _T("wt"));
-	if (h == NULL) {
+
+	if (h == NULL)
 		return 1;
-	}
 
 	// Write version number
 	_ftprintf(h, _T("version 0x%06X\n\n"), nBurnVer);
 	GameInpWrite(h, false);
-	if (h) {
+
+	if(h)
 		fclose(h);
-	}
 
 	return 0;
 }
@@ -235,9 +188,9 @@ int loadDefaultInput()
 	TCHAR* fileName = GetDefaultInputFilename();
 
 	// Read default inputs from file
-	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++) {
+	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++)
 		GameInputAutoIni(nPlayer, fileName, true);
-	}
+
 	return 0;
 }
 // <== default input mapping
@@ -245,14 +198,10 @@ int loadDefaultInput()
 // ==> save preset, added by regret
 static int savePreset(HWND hDlg)
 {
- 
 	return 0;
 }
 
- 
-
 int InpdCreate()
 {
- 
 	return 0;
 }

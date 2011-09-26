@@ -16,7 +16,8 @@ static int FBAPopupLog()
 {
 	TCHAR* pszTypeEnglish;
 
-	switch (nPopupFlags & 7) {
+	switch (nPopupFlags & 7)
+	{
 		case PUF_TYPE_ERROR:
 			pszTypeEnglish = FBALoadStringEx(IDS_ERR_ERROR, false);
 			break;
@@ -30,20 +31,21 @@ static int FBAPopupLog()
 
 	dprintf(_T("*** %s message:\n"), pszTypeEnglish);
 
-	for (TCHAR* szText = pszBufferEnglish; ; ) {
+	for (TCHAR* szText = pszBufferEnglish; ; )
+	{
 		int nLen;
 
 		for (nLen = 0; szText[nLen] && szText[nLen] != _T('\n'); nLen++) { }
 
-		if (nLen) {
+		if (nLen)
+		{
 			TCHAR szFormat[16];
 			_stprintf(szFormat, _T("    %%.%is\n"), nLen);
 			dprintf(szFormat, szText);
 		}
 
-		if (!szText[nLen]) {
+		if (!szText[nLen])
 			break;
-		}
 
 		szText += nLen + 1;
 	}
@@ -63,7 +65,7 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 	char* s1 = va_arg( vaEnglish, char * );
 	char* s2 = va_arg( vaEnglish, char * );
 	pszStringEnglish = pszFormat;
-	 
+
 	// See if we need to load strings from reources
 	if (nFlags & PUF_TEXT_TRANSLATE) {
 		TCHAR* pszStringLocal;
@@ -74,12 +76,15 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 		pszStringLocal = pszFormat;
 
 		// Add the translated string if present
-		if (bLanguageActive && (nFlags & PUF_TEXT_TRANSLATE) &&  pszStringLocal && *pszStringLocal) {
+		if (bLanguageActive && (nFlags & PUF_TEXT_TRANSLATE) &&  pszStringLocal && *pszStringLocal)
+		{
 			// Add the translated string
 			int nLen = snprintf(szString, sizearray(szString), pszStringLocal, vaLocal);
-			if (nLen > 0) {
+			if (nLen > 0)
+			{
 				TCHAR* pszNewBuffer = (TCHAR*)realloc(pszBufferLocal, (nLen + nBufferLocalSize + 1) * sizeof(TCHAR));
-				if (pszNewBuffer) {
+				if (pszNewBuffer)
+				{
 					pszBufferLocal = pszNewBuffer;
 					_tcsncpy(pszBufferLocal + nBufferLocalSize, szString, nLen);
 					nBufferLocalSize += nLen;
@@ -92,11 +97,14 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 	}
 
 	// Add the English language string
-	if (pszStringEnglish && *pszStringEnglish) {
+	if (pszStringEnglish && *pszStringEnglish)
+	{
 		int nLen = snprintf(szString, sizearray(szString), pszStringEnglish, s1, s2);
-		if (nLen > 0) {
+		if (nLen > 0)
+		{
 			TCHAR* pszNewBuffer = (TCHAR*)realloc(pszBufferEnglish, (nLen + nBufferEnglishSize + 1) * sizeof(TCHAR));
-			if (pszNewBuffer) {
+			if (pszNewBuffer)
+			{
 				pszBufferEnglish = pszNewBuffer;
 				_tcsncpy(pszBufferEnglish + nBufferEnglishSize, szString, nLen);
 				nBufferEnglishSize += nLen;

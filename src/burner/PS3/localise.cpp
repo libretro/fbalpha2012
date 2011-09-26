@@ -16,16 +16,12 @@ TCHAR szLanguage[MAX_PATH] = _T("");
 int FBALoadString(int id, char *buffer, int maxsize)
 {
 	int ret = 0;
-
- 
 	return ret;
 }
 
 TCHAR* FBALoadStringEx(int id, bool translate)
 {
 	static TCHAR loadstr[2048] = _T("");
- 
-
 	return loadstr;
 }
 
@@ -38,7 +34,6 @@ int FBALocaliseInstance()
 
 void FBALocaliseExit()
 {
- 
 	bLanguageActive = false;
 }
 
@@ -52,7 +47,6 @@ int FBALocaliseInit(TCHAR* lanaugae)
 
 static void localiseMakeOfn()
 {
- 
 }
 
 int FBALocaliseLoad()

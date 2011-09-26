@@ -20,12 +20,12 @@
 struct fifo_buffer
 {
    char *buffer;
-   u32 bufsize;
-   u32 first;
-   u32 end;
+   uint32_t bufsize;
+   uint32_t first;
+   uint32_t end;
 };
 
-fifo_buffer_t* fifo_new(u32 size)
+fifo_buffer_t* fifo_new(uint32_t size)
 {
    fifo_buffer_t *buf = calloc(1, sizeof(*buf));
    if (buf == NULL)
@@ -49,29 +49,29 @@ void fifo_free(fifo_buffer_t* buffer)
    free(buffer);
 }
 
-u32 fifo_read_avail(fifo_buffer_t* buffer)
+uint32_t fifo_read_avail(fifo_buffer_t* buffer)
 {
-   u32 first = buffer->first;
-   u32 end = buffer->end;
+   uint32_t first = buffer->first;
+   uint32_t end = buffer->end;
    if (end < first)
       end += buffer->bufsize;
    return end - first;
 }
 
-u32 fifo_write_avail(fifo_buffer_t* buffer)
+uint32_t fifo_write_avail(fifo_buffer_t* buffer)
 {
-   u32 first = buffer->first;
-   u32 end = buffer->end;
+   uint32_t first = buffer->first;
+   uint32_t end = buffer->end;
    if (end < first)
       end += buffer->bufsize;
 
    return (buffer->bufsize - 1) - (end - first);
 }
 
-void fifo_write(fifo_buffer_t* buffer, const void* in_buf, u32 size)
+void fifo_write(fifo_buffer_t* buffer, const void* in_buf, uint32_t size)
 {
-   u32 first_write = size;
-   u32 rest_write = 0;
+   uint32_t first_write = size;
+   uint32_t rest_write = 0;
    if (buffer->end + size > buffer->bufsize)
    {
       first_write = buffer->bufsize - buffer->end;
@@ -86,10 +86,10 @@ void fifo_write(fifo_buffer_t* buffer, const void* in_buf, u32 size)
 }
 
 
-void fifo_read(fifo_buffer_t* buffer, void* in_buf, u32 size)
+void fifo_read(fifo_buffer_t* buffer, void* in_buf, uint32_t size)
 {
-   u32 first_read = size;
-   u32 rest_read = 0;
+   uint32_t first_read = size;
+   uint32_t rest_read = 0;
    if (buffer->first + size > buffer->bufsize)
    {
       first_read = buffer->bufsize - buffer->first;

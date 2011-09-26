@@ -11,6 +11,18 @@
 #define TRUE                1
 #endif
 
+#ifdef SN_TARGET_PS3
+typedef char  TCHAR;
+typedef int32_t HWND;
+typedef int32_t HFONT;
+typedef int32_t HBITMAP;
+typedef uint32_t BOOL;
+typedef char WCHAR;
+typedef uint32_t DWORD;
+typedef uint8_t BYTE;
+typedef uint16_t WORD;
+typedef float FLOAT;
+#else
 typedef char				TCHAR;
 typedef int					HWND;
 typedef int					HFONT;
@@ -21,6 +33,7 @@ typedef unsigned long       DWORD;
 typedef unsigned char       BYTE;
 typedef unsigned short      WORD;
 typedef float               FLOAT;
+#endif
 #define _T(x) x
 #define __forceinline	__attribute((always_inline))
 #define _stprintf sprintf
@@ -98,8 +111,6 @@ typedef float               FLOAT;
  typedef uint32_t uintptr_t;
  #endif
 #else
-// __extension__ typedef unsigned long long uint64_t;
-// __extension__ typedef signed long long   int64_t;
  #include <stdint.h>
 #endif
 

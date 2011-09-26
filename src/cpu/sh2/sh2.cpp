@@ -35,24 +35,13 @@
 
 
 #include "burnint.h"
+#include "fbatypes.h"
 
-void DebugMsg(const char* format, ...);
+//void DebugMsg(const char* format, ...);
 
 #include "sh2.h"
 
-//#include "tchar.h"
-//extern int (__cdecl *bprintf) (int nStatus, TCHAR* szFormat, ...);
-
 int has_sh2;
-
-typedef signed char INT8;
-typedef unsigned char UINT8;
-typedef signed short INT16;
-typedef unsigned short UINT16;
-typedef signed int INT32;
-typedef unsigned int UINT32;
-typedef signed long long INT64;
-typedef unsigned long long UINT64;
 
 #define BUSY_LOOP_HACKS 	1
 #define FAST_OP_FETCH		1
@@ -513,9 +502,7 @@ INLINE unsigned short cpu_readop16(unsigned int A)
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
 	if (pr = NULL)
 	{
-#ifndef SN_TARGET_PS3
-		DebugMsg("cpu_readop16 PR = NULL @ %x", A);
-#endif
+		//DebugMsg("cpu_readop16 PR = NULL @ %x", A);
 		return 0;
 	}
 
@@ -582,10 +569,10 @@ INLINE UINT16 OPRW(UINT32 A)
 
 INLINE UINT32 RL(UINT32 A)
 {
-/*	if (A >= 0xe0000000) return sh2_internal_r((A & 0x1fc)>>2, 0);
-	if (A >= 0xc0000000) return program_read_dword_32be(A);
-	if (A >= 0x40000000) return 0xa5a5a5a5;
-	return program_read_dword_32be(A & AM);		*/
+	/*	if (A >= 0xe0000000) return sh2_internal_r((A & 0x1fc)>>2, 0);
+		if (A >= 0xc0000000) return program_read_dword_32be(A);
+		if (A >= 0x40000000) return 0xa5a5a5a5;
+		return program_read_dword_32be(A & AM);		*/
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
 	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
@@ -1319,7 +1306,7 @@ INLINE void DT(UINT32 n)
 		if (next_opcode == 0x8bfd)
 		{
 			//bprintf(0, _T("SH2: BUSY_LOOP_HACKS (%d)--; \n"), sh2->r[n], sh2->sh2_icount);
-         do
+			do
 			{
 				sh2->r[n]--;
 				sh2->sh2_icount -= 4;	/* cycles for DT (1) and BF taken (3) */
@@ -2542,10 +2529,14 @@ static void sh2_timer_activate(void)
 			sh2->timer_cycles = max_delta;
 			sh2->timer_base = sh2->frc_base;
 			
-		} else {
+		}
+		#if 0
+		else
+		{
 //			logerror("SH2.%d: Timer event in %d cycles of external clock", sh2->cpu_number, max_delta);
 			//bprintf(0, _T("SH2.0: Timer event in %d cycles of external clock\n"), max_delta);
 		}
+		#endif
 	}
 }
 
@@ -2932,31 +2923,31 @@ static UINT32 sh2_internal_r(UINT32 offset, UINT32 /*mem_mask*/)
 	
 	switch( offset )
 	{
-	case 0x04: // TIER, FTCSR, FRC
-		sh2_timer_resync();
-		return (sh2->m[4] & 0xffff0000) | sh2->frc;
-	case 0x05: // OCRx, TCR, TOCR
-		if(sh2->m[5] & 0x10)
-			return (sh2->ocrb << 16) | (sh2->m[5] & 0xffff);
-		else
-			return (sh2->ocra << 16) | (sh2->m[5] & 0xffff);
-	case 0x06: // ICR
-		return sh2->icr << 16;
+		case 0x04: // TIER, FTCSR, FRC
+			sh2_timer_resync();
+			return (sh2->m[4] & 0xffff0000) | sh2->frc;
+		case 0x05: // OCRx, TCR, TOCR
+			if(sh2->m[5] & 0x10)
+				return (sh2->ocrb << 16) | (sh2->m[5] & 0xffff);
+			else
+				return (sh2->ocra << 16) | (sh2->m[5] & 0xffff);
+		case 0x06: // ICR
+			return sh2->icr << 16;
 
-	case 0x38: // ICR, IPRA
-//		return (sh2->m[0x38] & 0x7fffffff) | (sh2->nmi_line_state == ASSERT_LINE ? 0 : 0x80000000);
-		return (sh2->m[0x38] & 0x7fffffff) | 0x80000000;
+		case 0x38: // ICR, IPRA
+			//		return (sh2->m[0x38] & 0x7fffffff) | (sh2->nmi_line_state == ASSERT_LINE ? 0 : 0x80000000);
+			return (sh2->m[0x38] & 0x7fffffff) | 0x80000000;
 
-	case 0x78: // BCR1
-//		return sh2->is_slave ? 0x00008000 : 0;
-		return 0;
+		case 0x78: // BCR1
+			//		return sh2->is_slave ? 0x00008000 : 0;
+			return 0;
 
-	case 0x41: // dvdntl mirrors
-	case 0x47:
-		return sh2->m[0x45];
+		case 0x41: // dvdntl mirrors
+		case 0x47:
+			return sh2->m[0x45];
 
-	case 0x46: // dvdnth mirror
-		return sh2->m[0x44];
+		case 0x46: // dvdnth mirror
+			return sh2->m[0x44];
 	}
 	return sh2->m[offset];
 }

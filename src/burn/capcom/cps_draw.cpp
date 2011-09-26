@@ -24,25 +24,26 @@ static void Cps2Layers();
 typedef int  (*CpsObjDrawDoFn)(int,int);
 typedef int  (*CpsScrXDrawDoFn)(unsigned char *,int,int);
 typedef void (*CpsLayersDoFn)();
-//typedef int  (*CpsrPrepareDoFn)();
 typedef int  (*CpsrRenderDoFn)();
 
 CpsObjDrawDoFn  CpsObjDrawDoX;
 CpsScrXDrawDoFn CpsScr1DrawDoX;
 CpsScrXDrawDoFn CpsScr3DrawDoX;
 CpsLayersDoFn   CpsLayersDoX;
-//CpsrPrepareDoFn CpsrPrepareDoX;
 CpsrRenderDoFn  CpsrRenderDoX;
 
 void DrawFnInit()
 {
-	if(Cps == 2) {
+	if(Cps == 2)
+	{
 		CpsLayersDoX   = Cps2Layers;
 		CpsScr1DrawDoX = Cps2Scr1Draw;
 		CpsScr3DrawDoX = Cps2Scr3Draw;
 		CpsObjDrawDoX  = Cps2ObjDraw;
 		CpsrRenderDoX  = Cps2rRender;
-	} else {
+	}
+	else
+	{
 		CpsLayersDoX   = Cps1Layers;
 		CpsScr1DrawDoX = Cps1Scr1Draw;
 		CpsScr3DrawDoX = Cps1Scr3Draw;
@@ -66,9 +67,9 @@ static int DrawScroll1(int i)
 
 	nScrX += 0x40;
 
-//	bprintf(PRINT_NORMAL, _T("1 %x, %x, %x\n"), nOff, nScrX, nScrY);
+	//	bprintf(PRINT_NORMAL, _T("1 %x, %x, %x\n"), nOff, nScrX, nScrY);
 
-   if (kludge == 10 || kludge == 21) nScrX -= 0x0c;
+	if (kludge == 10 || kludge == 21) nScrX -= 0x0c;
 	if (kludge == 6 || kludge == 11) nScrX += 0xFFC0;
 	if (kludge == 14) nScrX -= 0x08;
 	if (kludge == 20) nScrX -= 0x10;
@@ -79,9 +80,10 @@ static int DrawScroll1(int i)
 	nOff <<= 8;
 	nOff &= 0xffc000;
 	Find = CpsFindGfxRam(nOff, 0x4000);
-	if (Find == NULL) {
+
+	if (Find == NULL)
 		return 1;
-	}
+
 	CpsScr1DrawDoX(Find, nScrX, nScrY);
 	return 0;
 }
@@ -104,7 +106,7 @@ static int DrawScroll2Init(int i)
 
 	nCpsrScrX += 0x40;
 
-//	bprintf(PRINT_NORMAL, _T("2 %x, %x, %x\n"), nScr2Off, nCpsrScrX, nCpsrScrY);
+	//	bprintf(PRINT_NORMAL, _T("2 %x, %x, %x\n"), nScr2Off, nCpsrScrX, nCpsrScrY);
 
 	if (kludge == 10 || kludge == 21) nCpsrScrX -= 0x0e;
 	if (kludge == 11) nCpsrScrX += 0xFFC0;
@@ -119,9 +121,9 @@ static int DrawScroll2Init(int i)
 
 	nScr2Off &= 0xFFC000;
 	CpsrBase = CpsFindGfxRam(nScr2Off, 0x4000);
-	if (CpsrBase == NULL) {
+
+	if (CpsrBase == NULL)
 		return 1;
-	}
 
 	CpsrRows = NULL;
 
@@ -142,7 +144,7 @@ static int DrawScroll2Init(int i)
 	}
 
 	//CpsrPrepareDoX();
-   CpsrPrepare();
+	CpsrPrepare();
 	return 0;
 }
 
@@ -176,28 +178,29 @@ static int DrawScroll3(int i)
 
 	nScrX += 0x40;
 
-//	bprintf(PRINT_NORMAL, _T("3 %x, %x, %x\n"), nOff, nScrX, nScrY);
+	//	bprintf(PRINT_NORMAL, _T("3 %x, %x, %x\n"), nOff, nScrX, nScrY);
 
-   int32_t kludge_10_mask = ((kludge - 10) | -(kludge - 10)) >> 31;
-   int32_t kludge_11_mask = ((kludge - 11) | -(kludge - 11)) >> 31;
-   int32_t kludge_14_mask = ((kludge - 14) | -(kludge - 14)) >> 31;
-   int32_t kludge_20_mask = ((kludge - 20) | -(kludge - 20)) >> 31;
-   int32_t kludge_21_mask = ((kludge - 21) | -(kludge - 21)) >> 31;
-   nScrX = ((nScrX - 0x10) & ~(kludge_10_mask | kludge_21_mask)) | (nScrX & (kludge_10_mask | kludge_21_mask));
-   nScrX = ((nScrX + 0xFFC0) & ~kludge_11_mask) | (nScrX & kludge_11_mask); 
-   nScrX = ((nScrX - 0x0C) & ~kludge_14_mask) | (nScrX & kludge_14_mask); 
-   nScrX = ((nScrX - 0x10) & ~kludge_20_mask) | (nScrX & kludge_20_mask);
-   int32_t dinopic_mask = ((Dinopic) | -(Dinopic)) >> 31;
-   nScrX = ((nScrX + CpsLayer3XOffs) & dinopic_mask) | (nScrX & ~dinopic_mask);
+	int32_t kludge_10_mask = ((kludge - 10) | -(kludge - 10)) >> 31;
+	int32_t kludge_11_mask = ((kludge - 11) | -(kludge - 11)) >> 31;
+	int32_t kludge_14_mask = ((kludge - 14) | -(kludge - 14)) >> 31;
+	int32_t kludge_20_mask = ((kludge - 20) | -(kludge - 20)) >> 31;
+	int32_t kludge_21_mask = ((kludge - 21) | -(kludge - 21)) >> 31;
+	nScrX = ((nScrX - 0x10) & ~(kludge_10_mask | kludge_21_mask)) | (nScrX & (kludge_10_mask | kludge_21_mask));
+	nScrX = ((nScrX + 0xFFC0) & ~kludge_11_mask) | (nScrX & kludge_11_mask); 
+	nScrX = ((nScrX - 0x0C) & ~kludge_14_mask) | (nScrX & kludge_14_mask); 
+	nScrX = ((nScrX - 0x10) & ~kludge_20_mask) | (nScrX & kludge_20_mask);
+	int32_t dinopic_mask = ((Dinopic) | -(Dinopic)) >> 31;
+	nScrX = ((nScrX + CpsLayer3XOffs) & dinopic_mask) | (nScrX & ~dinopic_mask);
 	nScrY += 0x10;
-   nScrY = ((nScrY + CpsLayer3YOffs) & dinopic_mask) | (nScrY & ~dinopic_mask);
+	nScrY = ((nScrY + CpsLayer3YOffs) & dinopic_mask) | (nScrY & ~dinopic_mask);
 
 	nOff <<= 8;
 	nOff &= 0xffc000;
 	Find=CpsFindGfxRam(nOff, 0x4000);
-	if (Find == NULL) {
+
+	if (Find == NULL)
 		return 1;
-	}
+
 	CpsScr3DrawDoX(Find, nScrX, nScrY);
 	return 0;
 }
@@ -266,10 +269,10 @@ static void Cps1Layers()
 			DrawStar(0);
 		}
 
-		if (LayerCont & CpsLayEn[5]) {
-			CpsStarPalUpdate(CpsSavePal, 1, CpsRecalcPal);
-			DrawStar(1);
-		}
+	if (LayerCont & CpsLayEn[5]) {
+		CpsStarPalUpdate(CpsSavePal, 1, CpsRecalcPal);
+		DrawStar(1);
+	}
 
 	// prepare layer 2
 	DrawScroll2Init(0);
@@ -287,18 +290,15 @@ static void Cps1Layers()
 				switch (Draw[i+1]) {
 					case 1:
 						if (nDrawMask & 2)
-                  {
-                      DrawScroll1(0);
-                  }
+							DrawScroll1(0);
 						break;
 					case 2:
 						if (nDrawMask & 4)
-                  {
-                     DrawScroll2DoCps1();
-                  }
+							DrawScroll2DoCps1();
 						break;
 					case 3:
-						if (nDrawMask & 8) DrawScroll3(0);
+						if (nDrawMask & 8)
+							DrawScroll3(0);
 						break;
 				}
 				nBgHi=0;
@@ -308,16 +308,16 @@ static void Cps1Layers()
 		// Then Draw the scroll layer on top
 		switch (n) {
 			case 1:
-				if (nDrawMask & 2) DrawScroll1(0);
+				if (nDrawMask & 2)
+					DrawScroll1(0);
 				break;
 			case 2:
 				if (nDrawMask & 4)
-            {
-               DrawScroll2DoCps1();
-            }
+					DrawScroll2DoCps1();
 				break;
 			case 3:
-				if (nDrawMask & 8) DrawScroll3(0);
+				if (nDrawMask & 8)
+					DrawScroll3(0);
 				break;
 		}
 	}
@@ -362,12 +362,12 @@ static void Cps2Layers()
 		CRP(3, 2) CRP(3, 1) CRP(2, 1) CRP(3, 0) CRP(2, 0) CRP(1, 0)
 #undef CRP
 
-		// Pre-process priorities
-		// Higher priority layers must have higher layer-sprite priorities
-		// N.B. If this is not the case, masking effects may occur (not emulated)
+			// Pre-process priorities
+			// Higher priority layers must have higher layer-sprite priorities
+			// N.B. If this is not the case, masking effects may occur (not emulated)
 #if 0
-		// Raise sprite priorities of top layers if needed
-		int nHighPrio = 0;
+			// Raise sprite priorities of top layers if needed
+			int nHighPrio = 0;
 		for (int i = 0; i < 4; i++) {
 			if (Draw[nSlice][i] > 0) {
 				if (Prio[nSlice][Draw[nSlice][i]] < nHighPrio) {
@@ -381,29 +381,29 @@ static void Cps2Layers()
 		// Lower sprite priorities of bottom layers if needed
 		int nHighPrio = 9999;
 
-			if (Draw[nSlice][3] > 0) {
-				if (Prio[nSlice][Draw[nSlice][3]] > nHighPrio) {
-					Prio[nSlice][Draw[nSlice][3]] = nHighPrio;
-				} else {
-					nHighPrio = Prio[nSlice][Draw[nSlice][3]];
-				}
-			}
+		if (Draw[nSlice][3] > 0)
+		{
+			if (Prio[nSlice][Draw[nSlice][3]] > nHighPrio)
+				Prio[nSlice][Draw[nSlice][3]] = nHighPrio;
+			else
+				nHighPrio = Prio[nSlice][Draw[nSlice][3]];
+		}
 
-			if (Draw[nSlice][2] > 0) {
-				if (Prio[nSlice][Draw[nSlice][2]] > nHighPrio) {
-					Prio[nSlice][Draw[nSlice][2]] = nHighPrio;
-				} else {
-					nHighPrio = Prio[nSlice][Draw[nSlice][2]];
-				}
-			}
+		if (Draw[nSlice][2] > 0)
+		{
+			if (Prio[nSlice][Draw[nSlice][2]] > nHighPrio)
+				Prio[nSlice][Draw[nSlice][2]] = nHighPrio;
+			else
+				nHighPrio = Prio[nSlice][Draw[nSlice][2]];
+		}
 
-			if (Draw[nSlice][1] > 0) {
-				if (Prio[nSlice][Draw[nSlice][1]] > nHighPrio) {
-					Prio[nSlice][Draw[nSlice][1]] = nHighPrio;
-				} else {
-					nHighPrio = Prio[nSlice][Draw[nSlice][1]];
-				}
-			}
+		if (Draw[nSlice][1] > 0)
+		{
+			if (Prio[nSlice][Draw[nSlice][1]] > nHighPrio)
+				Prio[nSlice][Draw[nSlice][1]] = nHighPrio;
+			else
+				nHighPrio = Prio[nSlice][Draw[nSlice][1]];
+		}
 
 #endif
 		nSlice++;
@@ -415,150 +415,148 @@ static void Cps2Layers()
 		nSlice = 0;
 		do {
 #ifdef SN_TARGET_PS3
-            //0
-				if (Prio[nSlice][Draw[nSlice][0]] == nCurrPrio) {
+			//0
+			if (Prio[nSlice][Draw[nSlice][0]] == nCurrPrio) {
 
-					// Render sprites between the previous layer and this one
-					if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-						Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-						nPrevPrio = nCurrPrio;
-					}
-
-					nStartline = nRasterline[nSlice];
-					nEndline = nRasterline[nSlice + 1];
-					if (!nEndline) {
-						nEndline = 224;
-					}
-
-					// Render layer
-					switch (Draw[nSlice][0]) {
-						case 1:
-							if (nDrawMask[nSlice] & 2) {
-								DrawScroll1(nSlice);
-							}
-							break;
-						case 2:
-							if (nDrawMask[nSlice] & 4) {
-								DrawScroll2Init(nSlice);
-								DrawScroll2DoCps2();
-								DrawScroll2Exit();
-							}
-							break;
-						case 3:
-							if (nDrawMask[nSlice] & 8) {
-								DrawScroll3(nSlice);
-							}
-							break;
-					}
+				// Render sprites between the previous layer and this one
+				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
+					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
+					nPrevPrio = nCurrPrio;
 				}
-            //1
-				if (Prio[nSlice][Draw[nSlice][1]] == nCurrPrio) {
 
-					// Render sprites between the previous layer and this one
-					if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-						Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-						nPrevPrio = nCurrPrio;
-					}
-
-					nStartline = nRasterline[nSlice];
-					nEndline = nRasterline[nSlice + 1];
-					if (!nEndline) {
-						nEndline = 224;
-					}
-
-					// Render layer
-					switch (Draw[nSlice][1]) {
-						case 1:
-							if (nDrawMask[nSlice] & 2) {
-								DrawScroll1(nSlice);
-							}
-							break;
-						case 2:
-							if (nDrawMask[nSlice] & 4) {
-								DrawScroll2Init(nSlice);
-								DrawScroll2DoCps2();
-								DrawScroll2Exit();
-							}
-							break;
-						case 3:
-							if (nDrawMask[nSlice] & 8) {
-								DrawScroll3(nSlice);
-							}
-							break;
-					}
+				nStartline = nRasterline[nSlice];
+				nEndline = nRasterline[nSlice + 1];
+				if (!nEndline) {
+					nEndline = 224;
 				}
-            //2
-				if (Prio[nSlice][Draw[nSlice][2]] == nCurrPrio) {
 
-					// Render sprites between the previous layer and this one
-					if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-						Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-						nPrevPrio = nCurrPrio;
-					}
-
-					nStartline = nRasterline[nSlice];
-					nEndline = nRasterline[nSlice + 1];
-					if (!nEndline) {
-						nEndline = 224;
-					}
-
-					// Render layer
-					switch (Draw[nSlice][2]) {
-						case 1:
-							if (nDrawMask[nSlice] & 2) {
-								DrawScroll1(nSlice);
-							}
-							break;
-						case 2:
-							if (nDrawMask[nSlice] & 4) {
-								DrawScroll2Init(nSlice);
-								DrawScroll2DoCps2();
-								DrawScroll2Exit();
-							}
-							break;
-						case 3:
-							if (nDrawMask[nSlice] & 8) {
-								DrawScroll3(nSlice);
-							}
-							break;
-					}
+				// Render layer
+				switch (Draw[nSlice][0]) {
+					case 1:
+						if (nDrawMask[nSlice] & 2)
+							DrawScroll1(nSlice);
+						break;
+					case 2:
+						if (nDrawMask[nSlice] & 4)
+						{
+							DrawScroll2Init(nSlice);
+							DrawScroll2DoCps2();
+							DrawScroll2Exit();
+						}
+						break;
+					case 3:
+						if (nDrawMask[nSlice] & 8)
+							DrawScroll3(nSlice);
+						break;
 				}
-            //3
-				if (Prio[nSlice][Draw[nSlice][3]] == nCurrPrio) {
+			}
+			//1
+			if (Prio[nSlice][Draw[nSlice][1]] == nCurrPrio) {
 
-					// Render sprites between the previous layer and this one
-					if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-						Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-						nPrevPrio = nCurrPrio;
-					}
-
-					nStartline = nRasterline[nSlice];
-					nEndline = nRasterline[nSlice + 1];
-					if (!nEndline) {
-						nEndline = 224;
-					}
-
-					// Render layer
-					switch (Draw[nSlice][3]) {
-						case 1:
-							if (nDrawMask[nSlice] & 2) {
-								DrawScroll1(nSlice);
-							}
-							break;
-						case 2:
-							if (nDrawMask[nSlice] & 4) {
-								DrawScroll2Init(nSlice);
-								DrawScroll2DoCps2();
-								DrawScroll2Exit();
-							}
-							break;
-						case 3:
-							if (nDrawMask[nSlice] & 8) {
-								DrawScroll3(nSlice);
-							}
-							break;
-					}
+				// Render sprites between the previous layer and this one
+				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
+					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
+					nPrevPrio = nCurrPrio;
 				}
+
+				nStartline = nRasterline[nSlice];
+				nEndline = nRasterline[nSlice + 1];
+
+				if (!nEndline)
+					nEndline = 224;
+
+				// Render layer
+				switch (Draw[nSlice][1])
+				{
+					case 1:
+						if (nDrawMask[nSlice] & 2)
+							DrawScroll1(nSlice);
+						break;
+					case 2:
+						if (nDrawMask[nSlice] & 4)
+						{
+							DrawScroll2Init(nSlice);
+							DrawScroll2DoCps2();
+							DrawScroll2Exit();
+						}
+						break;
+					case 3:
+						if (nDrawMask[nSlice] & 8)
+							DrawScroll3(nSlice);
+						break;
+				}
+			}
+			//2
+			if (Prio[nSlice][Draw[nSlice][2]] == nCurrPrio) {
+
+				// Render sprites between the previous layer and this one
+				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
+					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
+					nPrevPrio = nCurrPrio;
+				}
+
+				nStartline = nRasterline[nSlice];
+				nEndline = nRasterline[nSlice + 1];
+
+				if (!nEndline)
+					nEndline = 224;
+
+				// Render layer
+				switch (Draw[nSlice][2])
+				{
+					case 1:
+						if (nDrawMask[nSlice] & 2)
+							DrawScroll1(nSlice);
+						break;
+					case 2:
+						if (nDrawMask[nSlice] & 4)
+						{
+							DrawScroll2Init(nSlice);
+							DrawScroll2DoCps2();
+							DrawScroll2Exit();
+						}
+						break;
+					case 3:
+						if (nDrawMask[nSlice] & 8)
+							DrawScroll3(nSlice);
+						break;
+				}
+			}
+			//3
+			if (Prio[nSlice][Draw[nSlice][3]] == nCurrPrio) {
+
+				// Render sprites between the previous layer and this one
+				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
+					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
+					nPrevPrio = nCurrPrio;
+				}
+
+				nStartline = nRasterline[nSlice];
+				nEndline = nRasterline[nSlice + 1];
+				if (!nEndline) {
+					nEndline = 224;
+				}
+
+				// Render layer
+				switch (Draw[nSlice][3])
+				{
+					case 1:
+						if (nDrawMask[nSlice] & 2)
+							DrawScroll1(nSlice);
+						break;
+					case 2:
+						if (nDrawMask[nSlice] & 4) {
+							DrawScroll2Init(nSlice);
+							DrawScroll2DoCps2();
+							DrawScroll2Exit();
+						}
+						break;
+					case 3:
+						if (nDrawMask[nSlice] & 8)
+							DrawScroll3(nSlice);
+						break;
+				}
+			}
 #else
 			for (int i = 0; i < 4; i++) {
 
@@ -572,16 +570,15 @@ static void Cps2Layers()
 
 					nStartline = nRasterline[nSlice];
 					nEndline = nRasterline[nSlice + 1];
-					if (!nEndline) {
+					if (!nEndline)
 						nEndline = 224;
-					}
 
 					// Render layer
-					switch (Draw[nSlice][i]) {
+					switch (Draw[nSlice][i])
+					{
 						case 1:
-							if (nDrawMask[nSlice] & 2) {
+							if (nDrawMask[nSlice] & 2)
 								DrawScroll1(nSlice);
-							}
 							break;
 						case 2:
 							if (nDrawMask[nSlice] & 4) {
@@ -591,9 +588,8 @@ static void Cps2Layers()
 							}
 							break;
 						case 3:
-							if (nDrawMask[nSlice] & 8) {
+							if (nDrawMask[nSlice] & 8)
 								DrawScroll3(nSlice);
-							}
 							break;
 					}
 				}
@@ -604,9 +600,8 @@ static void Cps2Layers()
 	}
 
 	// Render highest priority sprites
-	if ((nDrawMask[0] & 1) && (nPrevPrio < 7)) {
+	if ((nDrawMask[0] & 1) && (nPrevPrio < 7))
 		Cps2ObjDraw(nPrevPrio + 1, 7);
-	}
 }
 
 #ifdef SN_TARGET_PS3

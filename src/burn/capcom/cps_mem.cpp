@@ -101,7 +101,8 @@ void CpsMapObjectBanks(int nBank)
 int __fastcall CPSResetCallback()
 {
 	// Reset instruction on 68000
-	if (!Cps1Pic) ZetReset();						// Reset Z80 (CPU #1)
+	if (!Cps1Pic)
+		ZetReset();						// Reset Z80 (CPU #1)
 
 	return 0;
 }
@@ -110,11 +111,10 @@ int __fastcall CPSResetCallback()
 
 unsigned char __fastcall CPSQSoundC0ReadByte(unsigned int sekAddress)
 {
-//	bprintf(PRINT_NORMAL, _T("    QS %06X read\n"), sekAddress);
+	//	bprintf(PRINT_NORMAL, _T("    QS %06X read\n"), sekAddress);
 
-	if (!(sekAddress & 1)) {
+	if (!(sekAddress & 1))
 		return 0xFF;
-	}
 
 	QsndSyncZ80();
 
@@ -124,19 +124,17 @@ unsigned char __fastcall CPSQSoundC0ReadByte(unsigned int sekAddress)
 
 void __fastcall CPSQSoundC0WriteByte(unsigned int sekAddress, unsigned char byteValue)
 {
-//	bprintf(PRINT_NORMAL, _T("    QS %06X -> %02X\n"), sekAddress, byteValue);
+	//	bprintf(PRINT_NORMAL, _T("    QS %06X -> %02X\n"), sekAddress, byteValue);
 
-	if (!(sekAddress & 1)) {
+	if (!(sekAddress & 1))
 		return;
-	}
 
 	sekAddress &= 0x1FFF;
 
 #if 1 && defined USE_SPEEDHACKS
 	// Sync only when the last byte of the sound command is written
-	if (sekAddress == 0x001F) {
+	if (sekAddress == 0x001F)
 		QsndSyncZ80();
-	}
 #else
 	QsndSyncZ80();
 #endif
@@ -146,11 +144,10 @@ void __fastcall CPSQSoundC0WriteByte(unsigned int sekAddress, unsigned char byte
 
 unsigned char __fastcall CPSQSoundF0ReadByte(unsigned int sekAddress)
 {
-//	bprintf(PRINT_NORMAL, _T("    QS %06X read\n"), sekAddress);
+	//	bprintf(PRINT_NORMAL, _T("    QS %06X read\n"), sekAddress);
 
-	if (!(sekAddress & 1)) {
+	if (!(sekAddress & 1))
 		return 0xFF;
-	}
 
 	QsndSyncZ80();
 
@@ -162,17 +159,15 @@ void __fastcall CPSQSoundF0WriteByte(unsigned int sekAddress, unsigned char byte
 {
 //	bprintf(PRINT_NORMAL, _T("    QS %06X -> %02X\n"), sekAddress, byteValue);
 
-	if (!(sekAddress & 1)) {
+	if (!(sekAddress & 1))
 		return;
-	}
 
 	sekAddress &= 0x1FFF;
 
 #if 1 && defined USE_SPEEDHACKS
 	// Sync only when the last byte of the sound command is written
-	if (sekAddress == 0x001F) {
+	if (sekAddress == 0x001F)
 		QsndSyncZ80();
-	}
 #else
 	QsndSyncZ80();
 #endif
@@ -180,84 +175,10 @@ void __fastcall CPSQSoundF0WriteByte(unsigned int sekAddress, unsigned char byte
 	CpsZRamF0[sekAddress >> 1] = byteValue;
 }
 
-// ----------------------------------------------------------------------------
-
-#if 0
-unsigned char __fastcall CPSExtraNVRAMReadByte(unsigned int sekAddress)
-{
-//	bprintf(PRINT_NORMAL, _T("  - 0x%06X read.\n"), sekAddress);
-
-	sekAddress &= 0x3FFF;
-	return CpsRam660[sekAddress];
-}
-
-void __fastcall CPSExtraNVRAMWriteByte(unsigned int sekAddress, unsigned char byteValue)
-{
-//	bprintf(PRINT_NORMAL, _T("  - 0x%06X -> %02X\n"), sekAddress, byteValue);
-
-	sekAddress &= 0x3FFF;
-	CpsRam660[sekAddress] = byteValue;
-}
-#endif
-
-// ----------------------------------------------------------------------------
-
-/*
-int prevline;
-
-void __fastcall CpsWriteSpriteByte(unsigned int sekAddress, unsigned char byteValue)
-{
-	if (prevline != SekCurrentScanline()) {
-		prevline = SekCurrentScanline();
-//		bprintf(PRINT_NORMAL, _T("  - sb (%3i)\n"), prevline);
-	}
-
-	sekAddress &= 0x1FFF;
-	CpsRam708[sekAddress + nCpsObjectBank * 0x8000] = byteValue;
-}
-
-void __fastcall CpsWriteSpriteWord(unsigned int sekAddress, unsigned short wordValue)
-{
-	if (prevline != SekCurrentScanline()) {
-		prevline = SekCurrentScanline();
-//		bprintf(PRINT_NORMAL, _T("  - sw (%3i)\n"), prevline);
-	}
-
-	sekAddress &= 0x1FFE;
-	CpsRam708[sekAddress + nCpsObjectBank * 0x8000 + 1] = wordValue >> 8;
-	CpsRam708[sekAddress + nCpsObjectBank * 0x8000 + 0] = wordValue & 255;
-}
-*/
-
-// ----------------------------------------------------------------------------
-/*
-unsigned char __fastcall haxx0rReadByte(unsigned int sekAddress)
-{
-	sekAddress &= 0xFFFF;
-	bprintf(PRINT_NORMAL, _T("    QS %06X read (%02X)\n"), sekAddress, CpsEncZRom[sekAddress]);
-	return CpsEncZRom[sekAddress];
-}*/
-
-#if 0
-// ==> for phoenix fix, by iq_132
-unsigned char __fastcall phoenix_ram_read_byte(unsigned int sekAddress)
-{
-	return CpsRamFF[(sekAddress & 0xffff)];
-}
-
-void __fastcall phoenix_ram_write_byte(unsigned int sekAddress, unsigned char byteValue)
-{
-	if (sekAddress >= 0xFFFFF0) CpsFrg[(sekAddress & 0x0F)] = byteValue;
-	CpsRamFF[(sekAddress & 0xffff)] = byteValue;
-}
-// <==
-#endif
-
 int CpsMemInit()
 {
-	if (AllocateMemory()) {
+	if (AllocateMemory())
 		return 1;
-	}
 
 	SekOpen(0);
 
@@ -268,14 +189,11 @@ int CpsMemInit()
 	SekMapMemory(CpsRom, 0, nCpsRomLen - 1, SM_READ);
 
 	// 68000 Rom (as seen decrypted, through fetch)
-	if (nCpsCodeLen > 0) {
-		// Decoded part (up to nCpsCodeLen)
-		SekMapMemory(CpsCode, 0, nCpsCodeLen - 1, SM_FETCH);
-	}
-	if (nCpsRomLen > nCpsCodeLen) {
-		// The rest (up to nCpsRomLen)
-		SekMapMemory(CpsRom + nCpsCodeLen, nCpsCodeLen, nCpsRomLen - 1, SM_FETCH);
-	}
+	if (nCpsCodeLen > 0)
+		SekMapMemory(CpsCode, 0, nCpsCodeLen - 1, SM_FETCH);	// Decoded part (up to nCpsCodeLen)
+
+	if (nCpsRomLen > nCpsCodeLen)
+		SekMapMemory(CpsRom + nCpsCodeLen, nCpsCodeLen, nCpsRomLen - 1, SM_FETCH);	// The rest (up to nCpsRomLen)
 
 	if (Cps == 2) {
 		nCpsObjectBank = -1;
@@ -289,29 +207,17 @@ int CpsMemInit()
 		SekMapMemory(CpsRam660, 0x660000, 0x663FFF, SM_RAM);
 #endif
 
-//		SekMapHandler(4, 0x708000, 0x709FFF, SM_WRITE);
-//		SekMapHandler(4, 0x70A000, 0x70BFFF, SM_WRITE);
-//		SekMapHandler(4, 0x70C000, 0x70DFFF, SM_WRITE);
-//		SekMapHandler(4, 0x70E000, 0x70FFFF, SM_WRITE);
+		//		SekMapHandler(4, 0x708000, 0x709FFF, SM_WRITE);
+		//		SekMapHandler(4, 0x70A000, 0x70BFFF, SM_WRITE);
+		//		SekMapHandler(4, 0x70C000, 0x70DFFF, SM_WRITE);
+		//		SekMapHandler(4, 0x70E000, 0x70FFFF, SM_WRITE);
 
-//		SekSetWriteByteHandler(4, CpsWriteSpriteByte);
-//		SekSetWriteWordHandler(4, CpsWriteSpriteWord);
+		//		SekSetWriteByteHandler(4, CpsWriteSpriteByte);
+		//		SekSetWriteWordHandler(4, CpsWriteSpriteWord);
 	}
 
 	SekMapMemory(CpsRam90,		0x900000, 0x92FFFF, SM_RAM);	// Gfx Ram
 	SekMapMemory(CpsRamFF,		0xFF0000, 0xFFFFFF, SM_RAM);	// Work Ram
-
-#if 0
-	// ==> for phoenix fix, by iq_132
-	if ((Cps == 2) && (nCpsCodeLen == 0))
-	{
-		SekMapHandler(2,        0xFF0000, 0xFFFFFF, SM_WRITE);
-		SekSetWriteByteHandler(2, phoenix_ram_write_byte);
-		SekMapHandler(2,        0xFF0000, 0xFFFFFF, SM_READ);
-		SekSetReadByteHandler(2, phoenix_ram_read_byte);
-	}
-	// <==
-#endif
 
 	SekSetReadByteHandler(0, CpsReadByte);
 	SekSetWriteByteHandler(0, CpsWriteByte);
@@ -334,8 +240,8 @@ int CpsMemInit()
 		}
 
 		SekMapMemory(CpsEncZRom, 0xF00000, 0xF0FFFF, SM_ROM);
-//		SekMapHandler(3,	0xF00000, 0xF0FFFF, SM_ROM);
-//		SekSetReadByteHandler(3, haxx0rReadByte);
+		//		SekMapHandler(3,	0xF00000, 0xF0FFFF, SM_ROM);
+		//		SekSetReadByteHandler(3, haxx0rReadByte);
 
 		// QSound shared RAM
 		SekMapHandler(1,	0xF18000, 0xF19FFF, SM_RAM);
@@ -354,14 +260,6 @@ int CpsMemInit()
 
 int CpsMemExit()
 {
-#if 0
-	FILE* fp = fopen("mem.raw", "wb");
-	if (fp) {
-		fwrite(CpsRam660, 1, 0x4000, fp);
-		fclose(fp);
-	}
-#endif
-
 	// Deallocate all used memory
 	free(CpsMem);
 	CpsMem = NULL;
@@ -379,12 +277,14 @@ static int ScanRam()
 	ba.Data = CpsRamFF;  ba.nLen = 0x010000; ba.szName = "CpsRamFF";  BurnAcb(&ba);
 	ba.Data = CpsReg;    ba.nLen = 0x000100; ba.szName = "CpsReg";    BurnAcb(&ba);
 
-	if (Cps == 2 || Cps1Qs == 1) {
+	if (Cps == 2 || Cps1Qs == 1)
+	{
 		ba.Data = CpsZRamC0; ba.nLen = 0x001000; ba.szName = "CpsZRamC0"; BurnAcb(&ba);
 		ba.Data = CpsZRamF0; ba.nLen = 0x001000; ba.szName = "CpsZRamF0"; BurnAcb(&ba);
 	}
 
-	if (Cps == 2) {
+	if (Cps == 2)
+	{
 		ba.Data = CpsRam708; ba.nLen = 0x010000; ba.szName = "CpsRam708"; BurnAcb(&ba);
 		ba.Data = CpsFrg;    ba.nLen = 0x000010; ba.szName = "CpsFrg";    BurnAcb(&ba);
 	}
@@ -397,13 +297,11 @@ int CpsAreaScan(int nAction, int *pnMin)
 {
 	struct BurnArea ba;
 
-	if (CpsMem == NULL) {
+	if (CpsMem == NULL)
 		return 1;
-	}
 
-	if (pnMin) {										// Return minimum compatible version
+	if (pnMin)	// Return minimum compatible version
 		*pnMin = 0x029521;
-	}
 
 	if (nAction & ACB_MEMORY_ROM) {
 		memset(&ba, 0, sizeof(ba));
@@ -418,15 +316,15 @@ int CpsAreaScan(int nAction, int *pnMin)
 		BurnAcb(&ba);
 	}
 
-	if (Cps == 2 || Cps1Qs == 1 || kludge == 5) {		// Scan EEPROM
+	if (Cps == 2 || Cps1Qs == 1 || kludge == 5)		// Scan EEPROM
 		EEPROMScan(nAction, pnMin);
-	}
 
-	if (nAction & ACB_MEMORY_RAM) {
-
+	if (nAction & ACB_MEMORY_RAM)
+	{
 		ScanRam();
 
-		if (Cps == 2) {
+		if (Cps == 2)
+		{
 			memset(&ba, 0, sizeof(ba));
 			ba.Data   = CpsRam660;
 			ba.nLen   = 0x004000;
@@ -469,16 +367,14 @@ int CpsAreaScan(int nAction, int *pnMin)
 
 		SekScan(nAction);								// Scan 68000 state
 
-		if (nAction & ACB_WRITE) {						// Palette could have changed
+		if (nAction & ACB_WRITE) // Palette could have changed
 			CpsRecalcPal = 1;
-		}
 	}
 
-	if (Cps == 2 || Cps1Qs == 1) {						// Scan QSound chips
+	if (Cps == 2 || Cps1Qs == 1) // Scan QSound chips
 		QsndScan(nAction);
-	} else {											// Scan PSound chips
+	else // Scan PSound chips
 		PsndScan(nAction);
-	}
 
 	return 0;
 }

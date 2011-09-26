@@ -19,12 +19,12 @@ int nIrqLine50, nIrqLine52;
 static int DrvReset()
 {
 	extern unsigned char* CpsMem;
-	if (CpsMem) {
+	if (CpsMem)
 		memset (CpsMem, 0, 0x40000); // Clear GFX and main RAM
-	}
 
 	// Reset machine
-	if (Cps == 2 || (kludge == 5) || Cps1Qs == 1) EEPROMReset();
+	if (Cps == 2 || (kludge == 5) || Cps1Qs == 1)
+		EEPROMReset();
 
 	SekOpen(0);
 	SekReset();
@@ -53,9 +53,8 @@ static int DrvReset()
 
 	nCpsCyclesExtra = 0;
 
-	if (Cps == 2 || Cps1Qs == 1) {			// Sound init (QSound)
-		QsndReset();
-	}
+	if (Cps == 2 || Cps1Qs == 1)
+		QsndReset(); // Sound init (QSound)
 
 	BurnAfterReset();
 
@@ -100,36 +99,35 @@ int CpsRunInit()
 		return 1;
 	}
 
-	if (Cps == 2 || (kludge == 5)) {
+	if (Cps == 2 || (kludge == 5))
 		EEPROMInit(&cps2_eeprom_interface);
-	} else {
-		if (Cps1Qs == 1) {
+	else
+	{
+		if (Cps1Qs == 1)
 			EEPROMInit(&qsound_eeprom_interface);
-		}
 	}
 
 	CpsRwInit();							// Registers setup
 
-	if (CpsPalInit()) {						// Palette init
+	if (CpsPalInit())						// Palette init
 		return 1;
-	}
-	if (CpsObjInit()) {						// Sprite init
+
+	if (CpsObjInit())						// Sprite init
 		return 1;
-	}
 
 	if ((Cps & 1) && Cps1Qs == 0 && Cps1Pic == 0) {			// Sound init (MSM6295 + YM2151)
-		if (PsndInit()) {
+		if (PsndInit())
 			return 1;
-		}
 	}
 
 	if (Cps == 2 || Cps1Qs == 1) {			// Sound init (QSound)
-		if (QsndInit()) {
+		if (QsndInit())
 			return 1;
-		}
 	}
 
-	if (Cps == 2 || (kludge == 5) || Cps1Qs == 1) EEPROMReset();
+	if (Cps == 2 || (kludge == 5) || Cps1Qs == 1)
+		EEPROMReset();
+
 	DrvReset();
 
 	//Init Draw Function
@@ -143,8 +141,10 @@ int CpsRunExit()
 	if (Cps == 2 || (kludge == 5) || Cps1Qs == 1) EEPROMExit();
 
 	// Sound exit
-	if (Cps == 2 || Cps1Qs == 1) QsndExit();
-	if (Cps != 2 && Cps1Qs == 0) PsndExit();
+	if (Cps == 2 || Cps1Qs == 1)
+		QsndExit();
+	if (Cps != 2 && Cps1Qs == 0)
+		PsndExit();
 
 	// Graphics exit
 	CpsObjExit();
@@ -170,9 +170,8 @@ static inline void GetPalette(int nStart, int nCount)
 	int nPal = (swapWord(val) << 8) & 0xFFF800;
 
 	unsigned char* Find = CpsFindGfxRam(nPal, 0x1000);
-	if (Find) {
+	if (Find)
 		memcpy(CpsSavePal + (nStart << 10), Find + (nStart << 10), nCount << 10);
-	}
 }
 
 static void GetStarPalette()
@@ -224,34 +223,33 @@ static void DoIRQ()
 
 	SekSetIRQLine(4, SEK_IRQSTATUS_AUTO);
 	SekRun(nCpsCycles * 0x01 / 0x0106);
-	if (nRasterline[nInterrupt] < 224) {
+	if (nRasterline[nInterrupt] < 224)
+	{
 		CopyCpsReg(nInterrupt);
 		CopyCpsFrg(nInterrupt);
-	} else {
-		nRasterline[nInterrupt] = 0;
 	}
+	else
+		nRasterline[nInterrupt] = 0;
 
 	// Schedule next interrupt
 	if (!bEnableAutoIrq50) {
-		if (nIrqLine >= nIrqLine50) {
+		if (nIrqLine >= nIrqLine50)
 			nIrqLine50 = 0x0106;
-		}
-	} else {
-		if (bEnableAutoIrq50 && nIrqLine == nIrqLine50) {
+	}
+	else
+	{
+		if (bEnableAutoIrq50 && nIrqLine == nIrqLine50)
 			nIrqLine50 += 32;
-		}
 	}
 	if (!bEnableAutoIrq52 && nIrqLine >= nIrqLine52) {
 		nIrqLine52 = 0x0106;
 	} else {
-		if (bEnableAutoIrq52 && nIrqLine == nIrqLine52) {
+		if (bEnableAutoIrq52 && nIrqLine == nIrqLine52)
 			nIrqLine52 += 32;
-		}
 	}
 	ScheduleIRQ();
-	if (nIrqCycles < SekTotalCycles()) {
+	if (nIrqCycles < SekTotalCycles())
 		nIrqCycles = SekTotalCycles() + 1;
-	}
 
 	return;
 }
@@ -260,9 +258,8 @@ int Cps1Frame()
 {
 	int nDisplayEnd, nNext, i;
 
-	if (CpsReset) {
+	if (CpsReset)
 		DrvReset();
-	}
 
 	SekNewFrame();
 	if (Cps1Qs == 1) {
@@ -290,85 +287,85 @@ int Cps1Frame()
 	}
 
 #ifdef SN_TARGET_PS3
-      //0
-		nNext = nCpsCycles >> 2;					// find out next cycle count to run to
+	//0
+	nNext = nCpsCycles >> 2;					// find out next cycle count to run to
 
-		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
+	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
 
-			SekRun(nNext - nDisplayEnd);						// run 68K
+		SekRun(nNext - nDisplayEnd);						// run 68K
 
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
 
-			GetPalette(0, 6);									// Get palette
-			if (CpsStar) {
-				GetStarPalette();
-			}
-
-			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+		GetPalette(0, 6);									// Get palette
+		if (CpsStar) {
+			GetStarPalette();
 		}
 
-		SekRun(nNext - SekTotalCycles());						// run 68K
+		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+	}
 
-      //1
-		nNext = ((1 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
+	SekRun(nNext - SekTotalCycles());						// run 68K
 
-		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
+	//1
+	nNext = ((1 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
 
-			SekRun(nNext - nDisplayEnd);						// run 68K
+	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
 
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+		SekRun(nNext - nDisplayEnd);						// run 68K
 
-			GetPalette(0, 6);									// Get palette
-			if (CpsStar) {
-				GetStarPalette();
-			}
+		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
 
-			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+		GetPalette(0, 6);									// Get palette
+		if (CpsStar) {
+			GetStarPalette();
 		}
 
-		SekRun(nNext - SekTotalCycles());						// run 68K
+		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+	}
 
-      //2
-		nNext = ((2 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
+	SekRun(nNext - SekTotalCycles());						// run 68K
 
-		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
+	//2
+	nNext = ((2 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
 
-			SekRun(nNext - nDisplayEnd);						// run 68K
+	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
 
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+		SekRun(nNext - nDisplayEnd);						// run 68K
 
-			GetPalette(0, 6);									// Get palette
-			if (CpsStar) {
-				GetStarPalette();
-			}
+		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
 
-			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+		GetPalette(0, 6);									// Get palette
+		if (CpsStar) {
+			GetStarPalette();
 		}
 
-		SekRun(nNext - SekTotalCycles());						// run 68K
+		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+	}
 
-      //3
-		nNext = ((3 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
+	SekRun(nNext - SekTotalCycles());						// run 68K
 
-		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
+	//3
+	nNext = ((3 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
 
-			SekRun(nNext - nDisplayEnd);						// run 68K
+	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
 
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+		SekRun(nNext - nDisplayEnd);						// run 68K
 
-			GetPalette(0, 6);									// Get palette
-			if (CpsStar) {
-				GetStarPalette();
-			}
+		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
 
-			if (kludge == 10 || kludge == 21) {
-				CpsObjGet();   						// Get objects
-			}
-
-			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+		GetPalette(0, 6);									// Get palette
+		if (CpsStar) {
+			GetStarPalette();
 		}
 
-		SekRun(nNext - SekTotalCycles());						// run 68K
+		if (kludge == 10 || kludge == 21) {
+			CpsObjGet();   						// Get objects
+		}
+
+		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+	}
+
+	SekRun(nNext - SekTotalCycles());						// run 68K
 #else
 	for (i = 0; i < 4; i++) {
 		nNext = ((i + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
@@ -399,9 +396,10 @@ int Cps1Frame()
 		CpsDraw();												// Draw frame
 	}
 
-	if (Cps1Qs == 1) {
+	if (Cps1Qs == 1)
 		QsndEndFrame();
-	} else {
+	else
+	{
 		if (!Cps1Pic) {
 			PsndSyncZ80(nCpsZ80Cycles);
 			PsmUpdate(nBurnSoundLen);
@@ -421,17 +419,16 @@ int Cps2Frame()
 	int nDisplayEnd, nNext;									// variables to keep track of executed 68K cyles
 	int i;
 
-	if (CpsReset) {
+	if (CpsReset)
 		DrvReset();
-	}
 
-//	extern int prevline;
-//	prevline = -1;
+	//	extern int prevline;
+	//	prevline = -1;
 
 	SekNewFrame();
 	QsndNewFrame();
 
-   nCpsCycles = (int)(((long long)nCPS68KClockspeed * nBurnCPUSpeedAdjust) >> 8);
+	nCpsCycles = (int)(((long long)nCPS68KClockspeed * nBurnCPUSpeedAdjust) >> 8);
 	SekSetCyclesScanline(nCpsCycles / 262);
 
 	CpsRwGetInp();											// Update the input port values
@@ -439,41 +436,26 @@ int Cps2Frame()
 	nDisplayEnd = nCpsCycles * (nFirstLine + 224) / 0x0106;	// Account for VBlank
 
 	nInterrupt = 0;
-#ifdef SN_TARGET_PS3
-//MAX_RASTER is 10, i < MAX_RASTER + 2 = 12 iterations
-		nRasterline[0] = 0;
-		nRasterline[1] = 0;
-		nRasterline[2] = 0;
-		nRasterline[3] = 0;
-		nRasterline[4] = 0;
-		nRasterline[5] = 0;
-		nRasterline[6] = 0;
-		nRasterline[7] = 0;
-		nRasterline[8] = 0;
-		nRasterline[9] = 0;
-		nRasterline[10] = 0;
-		nRasterline[11] = 0;
-#else
-	for (i = 0; i < MAX_RASTER + 2; i++) {
+
+	for (i = 0; i < MAX_RASTER + 2; i++)
 		nRasterline[i] = 0;
-	}
-#endif
 
 	// Determine which (if any) of the line counters generates the first IRQ
 	bEnableAutoIrq50 = bEnableAutoIrq52 = false;
 	nIrqLine50 = nIrqLine52 = 0x0106;
-	if (swapWord(*((unsigned short*)(CpsReg + 0x50))) & 0x8000) {
+
+	if (swapWord(*((unsigned short*)(CpsReg + 0x50))) & 0x8000)
 		bEnableAutoIrq50 = true;
-	}
-	if (bEnableAutoIrq50 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0) {
+
+	if (bEnableAutoIrq50 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0)
 		nIrqLine50 = swapWord((*((unsigned short*)(CpsReg + 0x50))) & 0x01FF);
-	}
-	if (swapWord(*((unsigned short*)(CpsReg + 0x52))) & 0x8000) {
+
+	if (swapWord(*((unsigned short*)(CpsReg + 0x52))) & 0x8000)
 		bEnableAutoIrq52 = true;
-	}
-	if (bEnableAutoIrq52 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0) {
+
+	if (bEnableAutoIrq52 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0)
 		nIrqLine52 = (swapWord(*((unsigned short*)(CpsReg + 0x52))) & 0x01FF);
-	}
+
 	ScheduleIRQ();
 
 	SekOpen(0);
@@ -501,32 +483,32 @@ int Cps2Frame()
 	Cps2ObjGet();										// Get objects
 
 #ifdef SN_TARGET_PS3
-      //0
-		nNext = (1 * nDisplayEnd) / 3;			// find out next cycle count to run to
+	//0
+	nNext = (1 * nDisplayEnd) / 3;			// find out next cycle count to run to
 
-		while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-			SekRun(nIrqCycles - SekTotalCycles());
-			DoIRQ();
-		}
-		SekRun(nNext - SekTotalCycles());				// run cpu
+	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
+		SekRun(nIrqCycles - SekTotalCycles());
+		DoIRQ();
+	}
+	SekRun(nNext - SekTotalCycles());				// run cpu
 
-      //1
-		nNext = (2 * nDisplayEnd) / 3;			// find out next cycle count to run to
+	//1
+	nNext = (2 * nDisplayEnd) / 3;			// find out next cycle count to run to
 
-		while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-			SekRun(nIrqCycles - SekTotalCycles());
-			DoIRQ();
-		}
-		SekRun(nNext - SekTotalCycles());				// run cpu
+	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
+		SekRun(nIrqCycles - SekTotalCycles());
+		DoIRQ();
+	}
+	SekRun(nNext - SekTotalCycles());				// run cpu
 
-      //2
-		nNext = (3 * nDisplayEnd) / 3;			// find out next cycle count to run to
+	//2
+	nNext = (3 * nDisplayEnd) / 3;			// find out next cycle count to run to
 
-		while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-			SekRun(nIrqCycles - SekTotalCycles());
-			DoIRQ();
-		}
-		SekRun(nNext - SekTotalCycles());				// run cpu
+	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
+		SekRun(nIrqCycles - SekTotalCycles());
+		DoIRQ();
+	}
+	SekRun(nNext - SekTotalCycles());				// run cpu
 #else
 	for (i = 0; i < 3; i++) {
 		nNext = ((i + 1) * nDisplayEnd) / 3;			// find out next cycle count to run to
@@ -539,15 +521,14 @@ int Cps2Frame()
 	}
 #endif
 
-//	nCpsCyclesSegment[0] = (nCpsCycles * nVBlank) / 0x0106;
-//	nDone += SekRun(nCpsCyclesSegment[0] - nDone);
+	//	nCpsCyclesSegment[0] = (nCpsCycles * nVBlank) / 0x0106;
+	//	nDone += SekRun(nCpsCyclesSegment[0] - nDone);
 
 	SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// VBlank
 	SekRun(nCpsCycles - SekTotalCycles());
 
-	if (pBurnDraw) {
+	if (pBurnDraw)
 		Cps2Draw();
-	}
 
 	nCpsCyclesExtra = SekTotalCycles() - nCpsCycles;
 
@@ -555,63 +536,7 @@ int Cps2Frame()
 
 	SekClose();
 
-//	bprintf(PRINT_NORMAL, _T("    -\n"));
-
-#if 0 && defined FBA_DEBUG
-	if (nInterrupt) {
-		bprintf(PRINT_IMPORTANT, _T("Beam synchronized interrupt at line %2X.\r"), nRasterline[nInterrupt]);
-	} else {
-		bprintf(PRINT_NORMAL, _T("Beam synchronized interrupt disabled.   \r"));
-	}
-
-	extern int counter;
-	if (counter) {
-		bprintf(PRINT_NORMAL, _T("\n\nSlices start at: "));
-		for (i = 0; i < MAX_RASTER + 2; i++) {
-			bprintf(PRINT_NORMAL, _T("%2X "), nRasterline[i]);
-		}
-		bprintf(PRINT_NORMAL, _T("\n"));
-		for (i = 0; i < 0x80; i++) {
-			if (*((unsigned short*)(CpsSaveReg[0] + i * 2)) != *((unsigned short*)(CpsSaveReg[nInterrupt] + i * 2))) {
-				bprintf(PRINT_NORMAL, _T("Register %2X: %4X -> %4X\n"), i * 2, *((unsigned short*)(CpsSaveReg[0] + i * 2)), *((unsigned short*)(CpsSaveReg[nInterrupt] + i * 2)));
-			}
-		}
-		bprintf(PRINT_NORMAL, _T("\n"));
-		for (i = 0; i < 0x010; i++) {
-			if (CpsSaveFrg[0][i] != CpsSaveFrg[nInterrupt][i]) {
-				bprintf(PRINT_NORMAL, _T("FRG %X: %02X -> %02X\n"), i, CpsSaveFrg[0][i], CpsSaveFrg[nInterrupt][i]);
-			}
-		}
-		bprintf(PRINT_NORMAL, _T("\n"));
-		if (((CpsSaveFrg[0][4] << 8) | CpsSaveFrg[0][5]) != ((CpsSaveFrg[nInterrupt][4] << 8) | CpsSaveFrg[nInterrupt][5])) {
-			bprintf(PRINT_NORMAL, _T("Layer-sprite priority: %04X -> %04X\n"), ((CpsSaveFrg[0][4] << 8) | CpsSaveFrg[0][5]), ((CpsSaveFrg[nInterrupt][4] << 8) | CpsSaveFrg[nInterrupt][5]));
-		}
-
-		bprintf(PRINT_NORMAL, _T("\n"));
-		for (int j = 0; j <= nInterrupt; j++) {
-			if (j) {
-				bprintf(PRINT_NORMAL, _T("IRQ : %i (triggered at line %3i)\n\n"), j, nRasterline[j]);
-			} else {
-				bprintf(PRINT_NORMAL, _T("Initial register status\n\n"));
-			}
-
-			for (i = 0; i < 0x080; i+= 8) {
-				bprintf(PRINT_NORMAL, _T("%2X: %4X %4X %4X %4X %4X %4X %4X %4X\n"), i * 2, *((unsigned short*)(CpsSaveReg[j] + 0 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 2 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 4 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 6 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 8 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 10 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 12 + i * 2)), *((unsigned short*)(CpsSaveReg[j] + 14 + i * 2)));
-			}
-
-			bprintf(PRINT_NORMAL, _T("\nFRG: "));
-			for (i = 0; i < 0x010; i++) {
-				bprintf(PRINT_NORMAL, _T("%02X "), CpsSaveFrg[j][i]);
-			}
-			bprintf(PRINT_NORMAL, _T("\n\n"));
-
-		}
-
-		extern int bRunPause;
-		bRunPause = 1;
-		counter = 0;
-	}
-#endif
+	//	bprintf(PRINT_NORMAL, _T("    -\n"));
 
 	return 0;
 }

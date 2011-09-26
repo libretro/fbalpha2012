@@ -183,9 +183,9 @@ static void MapBank(struct QChan* pc)
 
 	// Confirm whole bank is in range:
 	// If bank is out of range use bank 0 instead
-	if ((nBank + 0x10000) > nCpsQSamLen) {
+	if ((nBank + 0x10000) > nCpsQSamLen)
 		nBank = 0;
-	}
+
 	pc->PlayBank = (char*)CpsQSam + nBank;
 }
 
@@ -249,9 +249,8 @@ int QscInit(int nRate, int nVolumeShift)
 
 	nQscVolumeShift = 10 + nVolumeShift;
 
-	for (int i = 0; i < 33; i++) {
+	for (uint32_t i = 0; i < 33; i++)
 		PanningVolumes[i] = (int)((256.0 / sqrt(32.0)) * sqrt((double)i));
-	}
 
 	QscReset();
 
@@ -262,11 +261,13 @@ int QscScan(int nAction)
 {
 	SCAN_VAR(QChan);
 
-	if (nAction & ACB_WRITE) {
+	if (nAction & ACB_WRITE)
+	{
 		// Update bank pointers with new banks, and recalc nAdvance
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 16; i++)
+		{
 			MapBank(QChan + i);
-         struct QChan * pc = QChan + i;
+			struct QChan * pc = QChan + i;
 			CalcAdvance(pc);
 		}
 	}
@@ -334,9 +335,8 @@ void QscWrite(int a, int d)
 			pc->nPitch = d;
 			CalcAdvance(pc);
 
-			if (d == 0) {								// Key off; stop playing
+			if (d == 0) // Key off; stop playing
 				pc->bKey = 0;
-			}
 
 			break;
 		}
@@ -358,9 +358,10 @@ void QscWrite(int a, int d)
 		case 6: {										// Set volume
 			pc->nMasterVolume = d;
 
-			if (d == 0) {
+			if (d == 0)
 				pc->bKey = 0;
-			} else {
+			else
+			{
 				if (pc->bKey == 0) {					// Key on; play sample
 					pc->nPlayStart = pc->nStart;
 
@@ -383,33 +384,31 @@ void QscWrite(int a, int d)
 int QscUpdate(int nEnd)
 {
 #ifndef SN_TARGET_PS3
-	if (pBurnSoundOut == NULL) {
+	if (pBurnSoundOut == NULL)
 		return 0;
-	}
 #endif
 
-	if (nEnd > nBurnSoundLen) {
+	if (nEnd > nBurnSoundLen)
 		nEnd = nBurnSoundLen;
-	}
 
 	int nLen = nEnd - nPos;
-	if (nLen <= 0) {
+	if (nLen <= 0)
 		return 0;
-	}
 
-	if (Tams < nLen) {
-		if (Qs_s) {
+	if (Tams < nLen)
+	{
+		if (Qs_s)
 			free(Qs_s);
-		}
+
 		Tams = nLen;
 		Qs_s = (int*)malloc(sizeof(int) * 2 * Tams);
 	}
 
 	memset(Qs_s, 0, nLen * 2 * sizeof(int));
 
-   #ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 	if (nInterpolation < 3) {
-   #endif
+#endif
 
 		// Go through all channels
 		for (int c = 0; c < 16; c++) {
@@ -434,16 +433,18 @@ int QscUpdate(int nEnd)
 					// Check for end of sample
 					if (QChan[c].nPos >= (QChan[c].nEnd - 0x01000)) {
 						if (QChan[c].nLoop) {						// Loop sample
-							if (QChan[c].nPos < QChan[c].nEnd) {
+							if (QChan[c].nPos < QChan[c].nEnd)
 								QChan[c].nEndBuffer[0] = QChan[c].PlayBank[(QChan[c].nEnd - QChan[c].nLoop) >> 12];
-							} else {
+							else
+							{
 								QChan[c].nPos = QChan[c].nEnd - QChan[c].nLoop + (QChan[c].nPos & 0x0FFF);
 								p = (QChan[c].nPos >> 12) & 0xFFFF;
 							}
 						} else {
-							if (QChan[c].nPos < QChan[c].nEnd) {
+							if (QChan[c].nPos < QChan[c].nEnd)
 								QChan[c].nEndBuffer[0] = QChan[c].PlayBank[p];
-							} else {
+							else
+							{
 								QChan[c].bKey = 0;					// Quit playing
 								break;
 							}
@@ -471,9 +472,9 @@ int QscUpdate(int nEnd)
 		nPos = nEnd;
 
 		return 0;
-   #ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 	}
-   #endif
+#endif
 
 	// Go through all channels
 	for (int c = 0; c < 16; c++) {
@@ -490,11 +491,11 @@ int QscUpdate(int nEnd)
 				while (QChan[c].nPos < 0x1000 && i) {
 					int p = QChan[c].nPlayStart >> 12;
 					int s = INTERPOLATE4PS_CUSTOM(QChan[c].nPos,
-												  0,
-												  QChan[c].PlayBank[p + 0],
-												  QChan[c].PlayBank[p + 1],
-												  QChan[c].PlayBank[p + 2],
-												  256);
+							0,
+							QChan[c].PlayBank[p + 0],
+							QChan[c].PlayBank[p + 1],
+							QChan[c].PlayBank[p + 2],
+							256);
 
 					pTemp[0] += s * VolL;
 					pTemp[1] += s * VolR;
@@ -519,11 +520,11 @@ int QscUpdate(int nEnd)
 						if (QChan[c].nPos < QChan[c].nEnd) {
 							int nIndex = 4 - ((QChan[c].nEnd - QChan[c].nPos) >> 12);
 							s = INTERPOLATE4PS_CUSTOM((QChan[c].nPos) & ((1 << 12) - 1),
-													  QChan[c].nEndBuffer[nIndex + 0],
-													  QChan[c].nEndBuffer[nIndex + 1],
-													  QChan[c].nEndBuffer[nIndex + 2],
-													  QChan[c].nEndBuffer[nIndex + 3],
-													  256);
+									QChan[c].nEndBuffer[nIndex + 0],
+									QChan[c].nEndBuffer[nIndex + 1],
+									QChan[c].nEndBuffer[nIndex + 2],
+									QChan[c].nEndBuffer[nIndex + 3],
+									256);
 						} else {
 							if (QChan[c].nLoop) {					// Loop sample
 								if (QChan[c].nLoop <= 0x1000) {		// Don't play, but leave bKey on
@@ -540,11 +541,11 @@ int QscUpdate(int nEnd)
 					} else {
 						p = (QChan[c].nPos >> 12) & 0xFFFF;
 						s = INTERPOLATE4PS_CUSTOM((QChan[c].nPos) & ((1 << 12) - 1),
-												  QChan[c].PlayBank[p + 0],
-												  QChan[c].PlayBank[p + 1],
-												  QChan[c].PlayBank[p + 2],
-												  QChan[c].PlayBank[p + 3],
-												  256);
+								QChan[c].PlayBank[p + 0],
+								QChan[c].PlayBank[p + 1],
+								QChan[c].PlayBank[p + 2],
+								QChan[c].PlayBank[p + 3],
+								256);
 					}
 
 					// Add to the sound currently in the buffer
@@ -585,12 +586,14 @@ static int QsndZBankMap()
 	nOff = nQsndZBank << 14;
 	nOff += 0x8000;
 
-	if (Cps1Qs == 0) {
-		if (nOff + 0x4000 > nCpsZRomLen) {			// End of bank is out of range
+	if (Cps1Qs == 0)
+	{
+		if (nOff + 0x4000 > nCpsZRomLen) // End of bank is out of range
 			nOff = 0;
-		}
 		Bank = CpsZRom + nOff;
-	} else {
+	}
+	else
+	{
 #ifdef SN_TARGET_PS3
 		if (nOff + 0x4000 > (nCpsZRomLen >> 1)) {
 #else
@@ -607,11 +610,10 @@ static int QsndZBankMap()
 
 	// Read and fetch the bank
 	ZetMapArea(0x8000, 0xbfff, 0, Bank);
-	if (Cps1Qs == 0) {
+	if (Cps1Qs == 0)
 		ZetMapArea(0x8000, 0xbfff, 2, Bank, CpsZRom + nOff);
-	} else {
+	else
 		ZetMapArea(0x8000, 0xbfff, 2, Bank);
-	}
 
 	return 0;
 }
@@ -644,20 +646,19 @@ void __fastcall QsndZWrite(unsigned short a, unsigned char d)
 
 unsigned char __fastcall QsndZRead(unsigned short a)
 {
-	if (a == 0xd007) {						// return ready all the time
+	if (a == 0xd007) // return ready all the time
 		return 0x80;
-	}
+
 	return 0;
 }
 
 int QsndZInit()
 {
-	if (nCpsZRomLen < 0x8000) {				// Not enough Z80 Data
+	if (nCpsZRomLen < 0x8000) // Not enough Z80 Data
 		return 1;
-	}
-	if (CpsZRom == NULL) {
+
+	if (CpsZRom == NULL)
 		return 1;
-	}
 
 	ZetInit(1);
 
@@ -684,11 +685,10 @@ int QsndZInit()
 	ZetMemCallback(0xD000, 0xEFFF, 0);
 	ZetMemCallback(0xD000, 0xEFFF, 1);
 
-	if (Cps1Qs) {
+	if (Cps1Qs)
 		ZetMapArea(0xD000, 0xEFFF, 2, CpsZRom, CpsZRom - (nCpsZRomLen / 2));	// If it tries to fetch this area
-	} else {
+	else
 		ZetMapArea(0xD000, 0xEFFF, 2, CpsZRom);
-	}
 
 	ZetMapArea(0xF000, 0xFFFF, 0, CpsZRamF0);
 	ZetMapArea(0xF000, 0xFFFF, 1, CpsZRamF0);
@@ -709,12 +709,11 @@ int QsndZExit()
 // Scan the current QSound z80 state
 int QsndZScan(int nAction)
 {
-	ZetScan(nAction);					// Scan Z80
+	ZetScan(nAction); // Scan Z80
 	SCAN_VAR(nQsndZBank);
 
-	if (nAction & ACB_WRITE) {			// If write, bank could have changed
+	if (nAction & ACB_WRITE) // If write, bank could have changed
 		QsndZBankMap();
-	}
 
 	return 0;
 }

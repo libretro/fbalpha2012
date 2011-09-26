@@ -20,7 +20,7 @@ int CtvReady()
 	// Must be called before calling CpstOne
 	if (nBurnBpp!=nLastBpp)
 	{
-      #ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 		if (nBurnBpp==2) {
 			memcpy(CtvDoX,CtvDo2,sizeof(CtvDoX));
 			memcpy(CtvDoXM,CtvDo2m,sizeof(CtvDoXM));
@@ -32,13 +32,13 @@ int CtvReady()
 			memcpy(CtvDoXB,CtvDo3b,sizeof(CtvDoXB));
 		}
 		else if (nBurnBpp==4) {
-      #endif
+#endif
 			memcpy(CtvDoX,CtvDo4,sizeof(CtvDoX));
 			memcpy(CtvDoXM,CtvDo4m,sizeof(CtvDoXM));
 			memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
-      #ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 		}
-      #endif
+#endif
 	}
 	nLastBpp=nBurnBpp;
 	return 0;

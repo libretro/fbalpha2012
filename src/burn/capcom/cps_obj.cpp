@@ -30,20 +30,19 @@ int CpsObjInit()
 {
 	nMax = 0x100;				// CPS1 has 256 sprites
 
-	if (Cps == 2) {				// CPS2 has 1024 sprites
+	if (Cps == 2)				// CPS2 has 1024 sprites
 		nMax = 0x400;
-	}
 
 	nFrameCount = 2;			// CPS2 sprites lagged by 1 frame and double buffered
 								// CPS1 sprites lagged by 1 frame
 
 	ObjMem = (unsigned char*)malloc((nMax << 3) * nFrameCount);
-	if (ObjMem == NULL) {
+	if (ObjMem == NULL)
 		return 1;
-	}
 
 	// Set up the frame buffers
-	for (int i = 0; i < nFrameCount; i++) {
+	for (int i = 0; i < nFrameCount; i++)
+	{
 		of[i].Obj = ObjMem + (nMax << 3) * i;
 		of[i].nCount = 0;
 	}
@@ -139,9 +138,8 @@ int CpsObjGet()
 	}
 
 	nGetNext++;
-	if (nGetNext >= nFrameCount) {
+	if (nGetNext >= nFrameCount)
 		nGetNext = 0;
-	}
 
 	return 0;
 }
@@ -162,7 +160,6 @@ int Cps2ObjGet()
 	pof->nShiftY = -0x10;
 
 		Get = CpsRam708 + ((nCpsObjectBank ^ 1) << 15);		// Select CPS2 sprite buffer
-//		Get = CpsRam708 + ((GetCurrentFrame() & 1) << 15);	// Select CPS2 sprite buffer
 
 		pof->nShiftX = -CpsSaveFrg[0][0x9];
 		pof->nShiftY = -CpsSaveFrg[0][0xB];
@@ -170,15 +167,16 @@ int Cps2ObjGet()
 	if (Get == NULL) return 1;
 
 	// Make a copy of all active sprites in the list
-	for (pg = Get, i = 0; i < nMax; pg += 8, i++) {
+	for (pg = Get, i = 0; i < nMax; pg += 8, i++)
+	{
 		unsigned short* ps = (unsigned short*)pg;
 
-			if ( swapWord(ps[1]) & 0x8000)	{													// end of sprite list?
-				break;
-			}
-			if ( swapWord(ps[0]) == 0 &&  swapWord(ps[1]) == 0x0100 &&  swapWord(ps[2]) == 0 &&  swapWord(ps[3]) == 0xff00) {	// Slammasters end of sprite list?
-				break;
-			}
+		if ( swapWord(ps[1]) & 0x8000)	{													// end of sprite list?
+			break;
+		}
+		if ( swapWord(ps[0]) == 0 &&  swapWord(ps[1]) == 0x0100 &&  swapWord(ps[2]) == 0 &&  swapWord(ps[3]) == 0xff00) {	// Slammasters end of sprite list?
+			break;
+		}
 
 		if (Dinopic) {
 			if ((( swapWord(ps[2]) - 461) |  swapWord(ps[1])) == 0) {												// sprite blank
@@ -209,8 +207,9 @@ void CpsObjDrawInit()
 {
 	nZOffset = nMaxZMask;
 
-	if (nZOffset >= 0xFC00) {
-		// The Z buffer might moverflow the next fram, so initialise it
+	if (nZOffset >= 0xFC00)
+	{
+		// The Z buffer might moverflow the next frame, so initialise it
 		memset(ZBuf, 0, 384 * 224 * 2);
 		nZOffset = 0;
 	}
@@ -233,11 +232,13 @@ int Cps1ObjDraw(int nLevelFrom, int nLevelTo)
 	// Point to Obj list
 	ps=(unsigned short *)pof->Obj;
 
-	if (kludge != 10 && kludge != 13 && kludge != 20 && kludge != 21 && !Dinopic) {
-		ps+=(pof->nCount-1)<<2; nPsAdd=-4; // CPS1 is reversed
-	} else {
-		nPsAdd=4;
+	if (kludge != 10 && kludge != 13 && kludge != 20 && kludge != 21 && !Dinopic) // CPS1 is reversed
+	{
+		ps+=(pof->nCount-1)<<2;
+		nPsAdd= -4;
 	}
+	else
+		nPsAdd=4;
 
 	// Go through all the Objs
 	for (i=0; i<pof->nCount; i++,ps+=nPsAdd) {
@@ -334,22 +335,20 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 			bMask = 1;
 			continue;
 		}
-		if (v < nLevelFrom) {
-			continue;
-		}
 
-		if (bMask) {
+		if (v < nLevelFrom)
+			continue;
+
+		if (bMask)
 			nMaxZMask = ZValue;
-		} else {
+		else
 			nMaxZValue = ZValue;
-		}
 
 		// Select CpstOne function;
-		if (bMask || nMaxZMask > nMaxZValue) {
+		if (bMask || nMaxZMask > nMaxZValue)
 			pCpstOne = CpstOneObjDoX[1];
-		} else {
+		else
 			pCpstOne = CpstOneObjDoX[0];
-		}
 
 		x = swapWord(ps[0]);
 		y = swapWord(ps[1]);
@@ -383,8 +382,8 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 		x += pof->nShiftX;
 		y += pof->nShiftY;
 
-//		x -= CpsSaveFrg[0][0x9];
-//		y -= CpsSaveFrg[0][0xB];
+		//		x -= CpsSaveFrg[0][0x9];
+		//		y -= CpsSaveFrg[0][0xB];
 
 #endif
 		n |= (swapWord(ps[1]) & 0x6000) << 3;	// high bits of address
@@ -404,9 +403,9 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 			nCpstType = CTT_16X16;
 		}
 
-//		if (v == 0) {
-//			bprintf(PRINT_IMPORTANT, _T("  - %4i: 0x%04X 0x%04X 0x%04X 0x%04X\n"), ZValue - (unsigned short)nMaxZValue, ps[0], ps[1], ps[2], ps[3]);
-//		}
+		//		if (v == 0) {
+		//			bprintf(PRINT_IMPORTANT, _T("  - %4i: 0x%04X 0x%04X 0x%04X 0x%04X\n"), ZValue - (unsigned short)nMaxZValue, ps[0], ps[1], ps[2], ps[3]);
+		//		}
 
 		nCpstFlip = nFlip;
 		for (dy = 0; dy < by; dy++) {
@@ -428,7 +427,7 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 				nCpstX = x + (ex << 4);
 				nCpstY = y + (ey << 4);
 
-//				nCpstTile = n + (dy << 4) + dx;								// normal version
+				//				nCpstTile = n + (dy << 4) + dx;								// normal version
 				nCpstTile = (n & ~0x0F) + (dy << 4) + ((n + dx) & 0x0F);	// pgear fix
 				nCpstTile <<= 7;											// Find real tile address
 

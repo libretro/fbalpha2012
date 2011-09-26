@@ -391,13 +391,11 @@ static unsigned int SepTable[256];
 static int SepTableCalc()
 {
 	static int bDone = 0;
-	if (bDone) {
+	if (bDone)
 		return 0;										// Already done it
-	}
 
-	for (int i = 0; i < 256; i++) {
+	for (uint32_t i = 0; i < 256; i++)
 		SepTable[i] = Separate(255 - i);
-	}
 
 	bDone = 1;											// done it
 	return 0;
@@ -417,9 +415,8 @@ static int LoadUp(unsigned char** pRom, int* pnRomLen, int nNum)
 
 	// Load the rom
 	Rom = (unsigned char*)malloc(ri.nLen);
-	if (Rom == NULL) {
+	if (Rom == NULL)
 		return 1;
-	}
 
 	if (BurnLoadRom(Rom,nNum,1)) {
 		free(Rom);
@@ -439,7 +436,8 @@ static int LoadUpSplit(unsigned char** pRom, int* pnRomLen, int nNum)
 	int i;
 
 	ri.nLen = 0;
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 4; i++)
+	{
 		BurnDrvGetRomInfo(&ri, nNum + i);
 		nRomSize[i] = ri.nLen;
 	}
@@ -478,9 +476,8 @@ static int CpsLoadOne(unsigned char* Tile, int nNum, int nWord, int nShift)
 	int i;
 
 	LoadUp(&Rom, &nRomLen, nNum);
-	if (Rom == NULL) {
+	if (Rom == NULL)
 		return 1;
-	}
 
 	nRomLen &= ~1;								// make sure even
 
@@ -508,21 +505,19 @@ static int CpsLoadOneHack160(unsigned char *Tile, int nNum, int nWord, int nOffs
 	unsigned char *pt = NULL, *pr = NULL;
 
 	LoadUp(&Rom1, &nRomLen1, nNum);
-	if (Rom1 == NULL) {
+	if (Rom1 == NULL)
 		return 1;
-	}
+
 	LoadUp(&Rom2, &nRomLen2, nNum + 1);
-	if (Rom2 == NULL) {
+	if (Rom2 == NULL)
 		return 1;
-	}
 
 	for (i = 0, pt = Tile, pr = Rom1 + (nRomLen1/4 * nOffset); i < nRomLen1/4; pt += 8) {
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 0;
 		*((unsigned int *)pt) |= Pix;
@@ -532,9 +527,8 @@ static int CpsLoadOneHack160(unsigned char *Tile, int nNum, int nWord, int nOffs
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 2;
 		*((unsigned int *)pt) |= Pix;
@@ -553,29 +547,28 @@ static int CpsLoadOneHack(unsigned char *Tile, int nNum, int nWord, int nOffset)
 	unsigned char *pt = NULL, *pr = NULL;
 
 	LoadUp(&Rom1, &nRomLen1, nNum);
-	if (Rom1 == NULL) {
+	if (Rom1 == NULL)
 		return 1;
-	}
+
 	LoadUp(&Rom2, &nRomLen2, nNum + 1);
-	if (Rom2 == NULL) {
+
+	if (Rom2 == NULL)
 		return 1;
-	}
 	LoadUp(&Rom3, &nRomLen3, nNum + 2);
-	if (Rom3 == NULL) {
+
+	if (Rom3 == NULL)
 		return 1;
-	}
 	LoadUp(&Rom4, &nRomLen4, nNum + 3);
-	if (Rom4 == NULL) {
+
+	if (Rom4 == NULL)
 		return 1;
-	}
 
 	for (i = 0, pt = Tile, pr = Rom1 + (nRomLen1/2 * nOffset); i < nRomLen1/2; pt += 8) {
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 0;
 		*((unsigned int *)pt) |= Pix;
@@ -585,9 +578,8 @@ static int CpsLoadOneHack(unsigned char *Tile, int nNum, int nWord, int nOffset)
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 1;
 		*((unsigned int *)pt) |= Pix;
@@ -597,9 +589,8 @@ static int CpsLoadOneHack(unsigned char *Tile, int nNum, int nWord, int nOffset)
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 2;
 		*((unsigned int *)pt) |= Pix;
@@ -609,9 +600,8 @@ static int CpsLoadOneHack(unsigned char *Tile, int nNum, int nWord, int nOffset)
 		unsigned int Pix;		// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= 3;
 		*((unsigned int *)pt) |= Pix;
@@ -631,18 +621,18 @@ static int CpsLoadOneBoot(unsigned char *Tile, int nNum, int nWord, int nShift)
 	int i;
 
 	LoadUp(&Rom, &nRomLen, nNum);
-	if (Rom == NULL) {
+
+	if (Rom == NULL)
 		return 1;
-	}
+
 	nRomLen &= ~1;								// make sure even
 
 	for (i = 0, pt = Tile, pr = Rom; i < nRomLen; pt += 4) {
 		unsigned int Pix;						// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= nShift;
 		*((unsigned int *)pt) |= Pix;
@@ -1011,17 +1001,16 @@ static int CpsGetROMs(bool bLoad)
 
 	int nGfxNum = 0;
 
-	if (bLoad) {
-		if (/*!CpsCodeLoad || */!CpsRomLoad || !CpsGfxLoad || !CpsZRomLoad || !CpsQSamLoad) {
+	if (bLoad)
+	{
+		if (/*!CpsCodeLoad || */!CpsRomLoad || !CpsGfxLoad || !CpsZRomLoad || !CpsQSamLoad)
 			return 1;
-		}
 	} else {
 		nCpsCodeLen = nCpsRomLen = nCpsGfxLen = nCpsZRomLen = nCpsQSamLen = 0;
 
 		nGfxMaxSize = 0;
-		if (BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS2_SIMM) {
+		if (BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS2_SIMM)
 			nGfxMaxSize = ~0U;
-		}
 	}
 
 	for (int i = 0; !BurnDrvGetRomName(&pRomName, i, 0); i++) {
@@ -1035,9 +1024,9 @@ static int CpsGetROMs(bool bLoad)
 					Cps2LoadTilesSIM(CpsGfxLoad, i);
 					CpsGfxLoad += ri.nLen * 8;
 					i += 7;
-				} else {
-					nCpsGfxLen += ri.nLen;
 				}
+				else
+					nCpsGfxLen += ri.nLen;
 				continue;
 			}
 
@@ -1065,9 +1054,9 @@ static int CpsGetROMs(bool bLoad)
 			if (bLoad) {
 				BurnLoadRom(CpsRomLoad, i, 1);
 				CpsRomLoad += ri.nLen;
-			} else {
-				nCpsRomLen += ri.nLen;
 			}
+			else
+				nCpsRomLen += ri.nLen;
 			continue;
 		}
 
@@ -1076,9 +1065,9 @@ static int CpsGetROMs(bool bLoad)
 			if (bLoad) {
 				BurnLoadRom(CpsZRomLoad, i, 1);
 				CpsZRomLoad += ri.nLen;
-			} else {
-				nCpsZRomLen += ri.nLen;
 			}
+			else
+				nCpsZRomLen += ri.nLen;
 			continue;
 		}
 
@@ -1095,12 +1084,12 @@ static int CpsGetROMs(bool bLoad)
 					i += 3;
 				}
 			} else {
-				if (ri.nLen > nGfxMaxSize) {
+				if (ri.nLen > nGfxMaxSize)
 					nGfxMaxSize = ri.nLen;
-				}
-				if (ri.nLen < nGfxMaxSize) {
+
+				if (ri.nLen < nGfxMaxSize)
 					nGfxMaxSize = ~0U;
-				}
+
 				nCpsGfxLen += ri.nLen;
 				nGfxNum++;
 			}
@@ -1113,9 +1102,9 @@ static int CpsGetROMs(bool bLoad)
 				BurnLoadRom(CpsQSamLoad, i, 1);
 				BurnByteswap(CpsQSamLoad, ri.nLen);
 				CpsQSamLoad += ri.nLen;
-			} else {
-				nCpsQSamLen += ri.nLen;
 			}
+			else
+				nCpsQSamLen += ri.nLen;
 			continue;
 		}
 	}
@@ -1125,9 +1114,8 @@ static int CpsGetROMs(bool bLoad)
 	} else {
 		cps2_decrypt_init();	// Find encrypted program code length
 
-		if (nGfxMaxSize != ~0U) {
+		if (nGfxMaxSize != ~0U)
 			nCpsGfxLen = nGfxNum * nGfxMaxSize;
-		}
 
 #if 1 && defined FBA_DEBUG
 		bprintf(PRINT_IMPORTANT, _T("  - 68K ROM size:\t0x%08X\n"), nCpsRomLen);
@@ -1136,9 +1124,8 @@ static int CpsGetROMs(bool bLoad)
 		bprintf(PRINT_IMPORTANT, _T("  - QSound data:\t0x%08X\n"), nCpsQSamLen);
 #endif
 		// omit checking nCpsCodeLen for phoenix rom
-		if (!nCpsRomLen || !nCpsGfxLen || !nCpsZRomLen || !nCpsQSamLen/* || !nCpsCodeLen*/) {
+		if (!nCpsRomLen || !nCpsGfxLen || !nCpsZRomLen || !nCpsQSamLen/* || !nCpsCodeLen*/)
 			return 1;
-		}
 	}
 
 	return 0;
@@ -1159,19 +1146,20 @@ int Cps1GetRoms(bool bLoad)
 	unsigned char *CpsAdLoad = CpsAd;
 	unsigned char *CpsQSamLoad = (unsigned char*)CpsQSam;
 
-	if (bLoad) {
-		if (!CpsRomLoad || !CpsGfxLoad || !CpsZRomLoad || (Cps1Qs && !nCpsQSamLen)) {
+	if (bLoad)
+	{
+		if (!CpsRomLoad || !CpsGfxLoad || !CpsZRomLoad || (Cps1Qs && !nCpsQSamLen))
 			return 1;
-		}
-	} else {
-		nCpsCodeLen = nCpsRomLen = nCpsGfxLen = nCpsZRomLen = nCpsQSamLen = nCpsAdLen = 0;
 	}
+	else
+		nCpsCodeLen = nCpsRomLen = nCpsGfxLen = nCpsZRomLen = nCpsQSamLen = nCpsAdLen = 0;
 
 	while (1)
 	{
 		ri.nLen = 0;
 		BurnDrvGetRomInfo(&ri, i);
-		if (ri.nLen == 0) break;
+		if (ri.nLen == 0)
+			break;
 
 		if ((ri.nType & 7) == 1)	// Load 68k prg roms
 		{
@@ -1214,7 +1202,7 @@ int Cps1GetRoms(bool bLoad)
 				}
 				else if ((ri.nLen == 0x020000 && kludge == 16) || (ri.nLen == 0x080000 && kludge == 17)) // fcrash && sf2mdt
 				{
-			  		CpsLoadTilesBoot2(CpsGfxLoad, i);
+					CpsLoadTilesBoot2(CpsGfxLoad, i);
 					CpsGfxLoad += 4 * ri.nLen; i += 3;
 				}
 				else if ((ri.nLen == 0x020000 && kludge != 7 && kludge != 16 && kludge != 21) || (ri.nLen == 0x080000 && kludge == 19) || ri.nLen == 0x010000 || ri.nLen == 0x040000)
@@ -1224,22 +1212,22 @@ int Cps1GetRoms(bool bLoad)
 				}
 				else if (ri.nLen == 0x100000 && kludge == 14) // captcommb
 				{
-			 		CpsLoadTilesBoot(CpsGfxLoad, i);
+					CpsLoadTilesBoot(CpsGfxLoad, i);
 					CpsGfxLoad += 4 * ri.nLen; i += 3;
 				}
 				else if (ri.nLen == 0x200000 && kludge != 5 && kludge != 15) // wofhack bootlegs
 				{
-			 		CpsLoadTilesHack160(CpsGfxLoad, i);
+					CpsLoadTilesHack160(CpsGfxLoad, i);
 					CpsGfxLoad += 2 * ri.nLen; i += 1;
 				}
 				else if (ri.nLen == 0x200000 && kludge == 15) // punipic2
 				{
-			 		CpsLoadTilesHack160a(CpsGfxLoad, i);
+					CpsLoadTilesHack160a(CpsGfxLoad, i);
 					CpsGfxLoad += 2 * ri.nLen; i += 1;
 				}
 				else if (ri.nLen == 0x200000 && kludge == 5) // Pang! 3
 				{
-			  		CpsLoadTilesPang(CpsGfxLoad, i);
+					CpsLoadTilesPang(CpsGfxLoad, i);
 					CpsGfxLoad += 2 * ri.nLen; i += 1;
 				}
 			} else {
@@ -1292,9 +1280,8 @@ int Cps1GetRoms(bool bLoad)
 		nCpsZRomLen <<= 1;
 		if (kludge == 5) nCpsGfxLen <<= 1;	// Double gfx size for Pang! 3
 
-		if (!nCpsRomLen || !nCpsGfxLen || !nCpsZRomLen || (Cps1Qs && !nCpsQSamLen)) {
+		if (!nCpsRomLen || !nCpsGfxLen || !nCpsZRomLen || (Cps1Qs && !nCpsQSamLen))
 			return 1;
-		}
 	}
 
 	return 0;
@@ -1303,90 +1290,91 @@ int Cps1GetRoms(bool bLoad)
 int CpsInit()
 {
 	// figure out what system we're looking at
-	{
-		int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
+	int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
 
-		switch (flag) {
-			case HARDWARE_CAPCOM_CPS1:
-			case HARDWARE_CAPCOM_CPS1_QSOUND:
-			case HARDWARE_CAPCOM_CPS1_GENERIC:
-				Cps = 1; // Cps 1
-				break;
+	switch (flag) {
+		case HARDWARE_CAPCOM_CPS1:
+		case HARDWARE_CAPCOM_CPS1_QSOUND:
+		case HARDWARE_CAPCOM_CPS1_GENERIC:
+			Cps = 1; // Cps 1
+			break;
 
-			case HARDWARE_CAPCOM_CPSCHANGER:
-				Cps = 3; // Cps Changer (Cps 1)
-				break;
+		case HARDWARE_CAPCOM_CPSCHANGER:
+			Cps = 3; // Cps Changer (Cps 1)
+			break;
 
-			case HARDWARE_CAPCOM_CPS2:
-				Cps = 2; // Cps 2
-				break;
-		}
+		case HARDWARE_CAPCOM_CPS2:
+			Cps = 2; // Cps 2
+			break;
 	}
 
 	CpsGetInfo();
 
-	if (Cps == 2) {
-		if (CpsGetROMs(false)) {
+	if (Cps == 2)
+	{
+		if (CpsGetROMs(false))
 			return 1;
-		}
-	} else {
-		if (Cps1GetRoms(false)) {
+	}
+	else
+	{
+		if (Cps1GetRoms(false))
 			return 1;
-		}
 		nCpsGfxLen += 0x2000;	// Extra space for "Stars"
 	}
 
 	int nMemLen, i;
 
-	if (Cps == 2) {
+	if (Cps == 2)
 		BurnSetRefreshRate(80000/51.8/25.9);
-	} else {
+	else
 		BurnSetRefreshRate(59.61);
-	}
 
-	if (!nCPS68KClockspeed) {
-		if (Cps == 2) {
+	if (!nCPS68KClockspeed)
+	{
+		if (Cps == 2)
 			nCPS68KClockspeed = 11800000;
-		} else {
-			if (kludge == 5 || kludge == 10 || kludge == 11 || kludge == 12 || kludge == 15 || kludge == 17 || kludge == 18 || kludge == 20) {
+		else
+		{
+			if (kludge == 5 || kludge == 10 || kludge == 11 || kludge == 12 || kludge == 15 || kludge == 17 || kludge == 18 || kludge == 20)
 				nCPS68KClockspeed = 12000000;
-			} else {
+			else
 				nCPS68KClockspeed = 10000000;
-			}
 		}
 	}
 	nCPS68KClockspeed = nCPS68KClockspeed * 100 / nBurnFPS;
 
 	nMemLen = nCpsGfxLen + nCpsRomLen + nCpsCodeLen + nCpsZRomLen + nCpsQSamLen + nCpsAdLen;
 
-	if (Cps1Qs == 1) {
+	if (Cps1Qs == 1)
 		nMemLen += nCpsZRomLen;
-	}
 
 	// Allocate space for Program and data roms
 	CpsGfx = (unsigned char*)malloc(nMemLen);
-	if (CpsGfx == NULL) {
+
+	if (CpsGfx == NULL)
 		return 1;
-	}
+
 	memset(CpsGfx, 0, nMemLen);
 
 	CpsRom  = CpsGfx + nCpsGfxLen;
 	CpsCode = CpsRom + nCpsRomLen;
 
-	if (Cps1Qs == 1) {
+	if (Cps1Qs == 1)
+	{
 		CpsEncZRom = CpsCode + nCpsCodeLen;
 		CpsZRom = CpsEncZRom + nCpsZRomLen;
-	} else {
-		CpsZRom = CpsCode + nCpsCodeLen;
 	}
+	else
+		CpsZRom = CpsCode + nCpsCodeLen;
+
 	CpsQSam = (char*)(CpsZRom + nCpsZRomLen);
 	CpsAd   = (unsigned char*)(CpsQSam + nCpsQSamLen);
 
 	// Create Gfx addr mask
-	for (i = 0; i < 31; i++) {
-		if ((1 << i) >= (int)nCpsGfxLen) {
+	for (i = 0; i < 31; i++)
+	{
+		if ((1 << i) >= (int)nCpsGfxLen)
 			break;
-		}
 	}
 	nCpsGfxMask = (1 << i) - 1;
 
@@ -1402,20 +1390,20 @@ int CpsInit()
 
 	CpsReset = 0; Cpi01A = Cpi01C = Cpi01E = 0;		  // blank other inputs
 
-	if (Cps == 2) {
-		if (CpsGetROMs(true)) {
+	if (Cps == 2)
+	{
+		if (CpsGetROMs(true))
 			return 1;
-		}
-	} else {
-		if (Cps1GetRoms(true)) {
+	}
+	else
+	{
+		if (Cps1GetRoms(true))
 			return 1;
-		}
 		nCpsGfxLen -= 0x2000;	// stars
 	}
 
-	if (pCpsInitCallback) {
+	if (pCpsInitCallback)
 		pCpsInitCallback();
-	}
 
 	return CpsRunInit();
 }

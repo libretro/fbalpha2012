@@ -119,15 +119,13 @@ int Cps2Scr1Draw(unsigned char *Base, int sx, int sy)
 				nCpstFlip = (a >> 5) & 3;
 
 				// Don't need to clip except around the border
-				if (x < 0 || x >= 48 - 1 || nClipY) {
+				if (x < 0 || x >= 48 - 1 || nClipY)
 					nCpstType = CTT_8X8 | CTT_CARE;
-				} else {
+				else
 					nCpstType = CTT_8X8;
-				}
 
-				if (CpstOneDoX[2]()) {
+				if (CpstOneDoX[2]())
 					nKnowBlank = t;
-				}
 			}
 		}
 	}
@@ -161,12 +159,14 @@ int Cps1Scr3Draw(unsigned char *Base,int sx,int sy)
 			if (Scroll3TileMask) t &= Scroll3TileMask;
 
 			t = GfxRomBankMapper(GFXTYPE_SCROLL3, t);
-			if (t == -1) continue;
+			if (t == -1)
+				continue;
 
 			t<<=9; // Get real tile address
 			t+=nCpsGfxScroll[3]; // add on offset to scroll tiles
 
-			if (t==nKnowBlank) continue; // Don't draw: we know it's blank
+			if (t==nKnowBlank)
+				continue; // Don't draw: we know it's blank
 
 			a=swapWord(pst[1]);
 
@@ -181,9 +181,8 @@ int Cps1Scr3Draw(unsigned char *Base,int sx,int sy)
 			nCpstX=sx+(x<<5); nCpstY=sy+(y<<5);
 			nCpstTile=t; nCpstFlip=(a>>5)&3;
 
-			if (nBgHi) {
+			if (nBgHi)
 				CpstPmsk = swapWord(*(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]));
-			}
 
 			if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
 		}
@@ -244,15 +243,13 @@ int Cps2Scr3Draw(unsigned char *Base, int sx, int sy)
 				nCpstFlip = (a >> 5) & 3;
 
 				// Don't need to clip except around the border
-				if (x < 0 || x >= 12 - 1 || nClipY) {
+				if (x < 0 || x >= 12 - 1 || nClipY)
 					nCpstType = CTT_32X32 | CTT_CARE;
-				} else {
+				else
 					nCpstType = CTT_32X32;
-				}
 
-				if (CpstOneDoX[2]()) {
+				if (CpstOneDoX[2]())
 					nKnowBlank = t;
-				}
 			}
 		}
 	}

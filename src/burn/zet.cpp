@@ -48,14 +48,12 @@ unsigned char __fastcall ZetReadProg(unsigned int a)
 {
 	// check mem map
 	unsigned char * pr = (unsigned char*)ZetCPUContext[nOpenedCPU].pZetMemMap[0x000 | ((a >> 8)&0xFF)];
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[a & 0xff];
-	}
 	
 	// check handler
-	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL) {
+	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL)
 		return ZetCPUContext[nOpenedCPU].ZetRead(a);
-	}
 	
 	return 0;
 }
@@ -80,14 +78,12 @@ unsigned char __fastcall ZetReadOp(unsigned int a)
 {
 	// check mem map
 	unsigned char * pr = (unsigned char *)ZetCPUContext[nOpenedCPU].pZetMemMap[0x200 | ((a >> 8))];
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[a & 0xff];
-	}
 	
 	// check read handler
-	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL) {
+	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL)
 		return ZetCPUContext[nOpenedCPU].ZetRead(a);
-	}
 	
 	return 0;
 }
@@ -96,14 +92,12 @@ unsigned char __fastcall ZetReadOpArg(unsigned int a)
 {
 	// check mem map
 	unsigned char * pr = (unsigned char *)ZetCPUContext[nOpenedCPU].pZetMemMap[0x300 | ((a >> 8))];
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[a & 0xff];
-	}
 	
 	// check read handler
-	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL) {
+	if (ZetCPUContext[nOpenedCPU].ZetRead != NULL)
 		return ZetCPUContext[nOpenedCPU].ZetRead(a);
-	}
 	
 	return 0;
 }

@@ -68,7 +68,7 @@ PPU_SRCS                +=  $(INTERFACE_DIR)/PS3/cellframework2/audio/audioport.
                             $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/inp_cell.cpp $(INTERFACE_DIR)/PS3/vid_psgl.cpp $(INTERFACE_DIR)/PS3/vid_psgl_support.cpp
 PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3snd.cpp $(BURN_DIR)/cps3/d_cps3.cpp \
                                     $(CPU_DIR)/sh2/sh2.cpp \
-                            $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp $(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound.cpp $(BURN_DIR)/burn_sound_c.cpp $(BURN_DIR)/burn_y8950.cpp \
+                            $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp $(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound_c.cpp $(BURN_DIR)/burn_y8950.cpp \
             $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp $(BURN_DIR)/burn_ym2413.cpp $(BURN_DIR)/burn_ym2608.cpp $(BURN_DIR)/burn_ym2610.cpp $(BURN_DIR)/burn_ym2612.cpp $(BURN_DIR)/burn_ym3526.cpp \
                                         $(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/cheat.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
                                         $(BURN_DIR)/ics2115.cpp $(BURN_DIR)/k007232.cpp $(BURN_DIR)/k051649.cpp $(BURN_DIR)/k053260.cpp $(BURN_DIR)/k054539.cpp $(BURN_DIR)/load.cpp $(BURN_DIR)/m6502_intf.cpp $(BURN_DIR)/m6800_intf.cpp $(BURN_DIR)/m6809_intf.cpp \
@@ -80,7 +80,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         \
                                         $(BURN_DIR)/capcom/cps.cpp $(BURN_DIR)/capcom/cps2crpt.cpp $(BURN_DIR)/capcom/cps_config.cpp $(BURN_DIR)/capcom/cps_draw.cpp $(BURN_DIR)/capcom/cps_mem.cpp $(BURN_DIR)/capcom/cps_obj.cpp \
                                         $(BURN_DIR)/capcom/cps_pal.cpp $(BURN_DIR)/capcom/cps_run.cpp $(BURN_DIR)/capcom/cps_rw.cpp $(BURN_DIR)/capcom/cps_scr.cpp $(BURN_DIR)/capcom/cpsr.cpp $(BURN_DIR)/capcom/cpsrd.cpp $(BURN_DIR)/capcom/cpst.cpp $(BURN_DIR)/capcom/ctv.cpp \
-                                        $(BURN_DIR)/capcom/d_cps1.cpp $(BURN_DIR)/capcom/d_cps2.cpp $(BURN_DIR)/capcom/kabuki.cpp $(BURN_DIR)/capcom/ps.cpp $(BURN_DIR)/capcom/ps_m.cpp $(BURN_DIR)/capcom/ps_z.cpp $(BURN_DIR)/capcom/qs.cpp $(BURN_DIR)/capcom/qs_c.cpp $(BURN_DIR)/capcom/qs_z.cpp \
+                                        $(BURN_DIR)/capcom/d_cps1.cpp $(BURN_DIR)/capcom/d_cps2.cpp $(BURN_DIR)/capcom/kabuki.cpp $(BURN_DIR)/capcom/ps.cpp $(BURN_DIR)/capcom/ps_m.cpp $(BURN_DIR)/capcom/ps_z.cpp $(BURN_DIR)/capcom/qs.cpp \
                                         \
                                         $(BURN_DIR)/cave/cave.cpp $(BURN_DIR)/cave/cave_palette.cpp $(BURN_DIR)/cave/cave_sprite.cpp $(BURN_DIR)/cave/cave_tile.cpp $(BURN_DIR)/cave/d_dodonpachi.cpp $(BURN_DIR)/cave/d_donpachi.cpp $(BURN_DIR)/cave/d_esprade.cpp $(BURN_DIR)/cave/d_feversos.cpp \
                                         $(BURN_DIR)/cave/d_gaia.cpp $(BURN_DIR)/cave/d_guwange.cpp $(BURN_DIR)/cave/d_hotdogst.cpp $(BURN_DIR)/cave/d_mazinger.cpp $(BURN_DIR)/cave/d_metmqstr.cpp $(BURN_DIR)/cave/d_pwrinst2.cpp $(BURN_DIR)/cave/d_sailormn.cpp $(BURN_DIR)/cave/d_uopoko.cpp \

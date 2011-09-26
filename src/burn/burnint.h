@@ -123,15 +123,21 @@ typedef union {
 // Driver information
 
 struct BurnDriver {
-	char* szShortName;			// The filename of the zip file (without extension)
-	char* szParent;				// The filename of the parent (without extension, NULL if not applicable)
-	char* szBoardROM;			// The filename of the board ROMs (without extension, NULL if not applicable)
-	char* szDate;
+	const char * szShortName;			// The filename of the zip file (without extension)
+	const char* szParent;				// The filename of the parent (without extension, NULL if not applicable)
+	const char* szBoardROM;			// The filename of the board ROMs (without extension, NULL if not applicable)
+	const char* szDate;
 
 	// szFullNameA, szCommentA, szManufacturerA and szSystemA should always contain valid info
 	// szFullNameW, szCommentW, szManufacturerW and szSystemW should be used only if characters or scripts are needed that ASCII can't handle
-	char*    szFullNameA; char*    szCommentA; char*    szManufacturerA; char*    szSystemA;
-	wchar_t* szFullNameW; wchar_t* szCommentW; wchar_t* szManufacturerW; wchar_t* szSystemW;
+	const char*    szFullNameA;
+	const char*    szCommentA;
+	const char*    szManufacturerA;
+	const char*    szSystemA;
+	wchar_t* szFullNameW;
+	wchar_t* szCommentW;
+	wchar_t* szManufacturerW;
+	wchar_t* szSystemW;
 
 	int flags;			// See burn.h
 	int players;		// Max number of players a game supports (so we can remove single player games from netplay)
@@ -158,16 +164,17 @@ struct BurnDriver {
 int BurnSetRefreshRate(double dRefreshRate);
 
 // Byteswaps an area of memory
-static inline int BurnByteswap(UINT8* pMem, int nLen)
+static inline uint32_t BurnByteswap(UINT8* pMem, int nLen)
 {
 	nLen >>= 1;
-	for (int i = 0; i < nLen; i++, pMem += 2) {
+	for (int32_t i = 0; i < nLen; i++, pMem += 2)
+	{
 		UINT8 t = pMem[0];
 		pMem[0] = pMem[1];
 		pMem[1] = t;
 	}
 
-	return 0;;
+	return 0;
 }
 
 
@@ -216,22 +223,20 @@ static inline void PutPix(UINT8* pPix, UINT32 c)
 
 static inline void DrvClearOpposites(unsigned char* joystickInputs)
 {
-	if ((*joystickInputs & 0x03) == 0x03) {
+	if ((*joystickInputs & 0x03) == 0x03)
 		*joystickInputs &= ~0x03;
-	}
-	if ((*joystickInputs & 0x0c) == 0x0c) {
+
+	if ((*joystickInputs & 0x0c) == 0x0c)
 		*joystickInputs &= ~0x0c;
-	}
 }
 
 static inline void DrvClearOpposites(unsigned short* joystickInputs)
 {
-	if ((*joystickInputs & 0x03) == 0x03) {
+	if ((*joystickInputs & 0x03) == 0x03)
 		*joystickInputs &= ~0x03;
-	}
-	if ((*joystickInputs & 0x0c) == 0x0c) {
+
+	if ((*joystickInputs & 0x0c) == 0x0c)
 		*joystickInputs &= ~0x0c;
-	}
 }
 
 // ------------------------------------------------------------------

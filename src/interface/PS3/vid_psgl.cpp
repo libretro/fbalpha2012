@@ -28,7 +28,7 @@ static CGparameter cg_video_size, cg_texture_size, cg_output_size;
 static CGparameter cg_v_video_size, cg_v_texture_size, cg_v_output_size, cgp_timer, cgp_vertex_timer;
 static GLuint cg_viewport_width, cg_viewport_height;
 static GLuint bufferID = 0;
-static float frame_count;
+static uint32_t frame_count;
 static unsigned iwidth = 0, iheight = 0;
 static unsigned int* buffer = 0;
 

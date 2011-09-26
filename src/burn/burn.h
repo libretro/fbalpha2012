@@ -100,7 +100,7 @@ static inline void SetCurrentFrame(const unsigned int n)
 #define BRF_NODUMP			(1 << 28)
 
 struct BurnRomInfo {
-	char* szName;
+	char * szName;
 	unsigned int nLen;
 	unsigned int nCrc;
 	unsigned int nType;
@@ -227,8 +227,8 @@ unsigned int BurnDrvGetIndexByNameA(const char* name);
 unsigned int BurnDrvGetIndexByName(const TCHAR* name);
 
 TCHAR* BurnDrvGetText(unsigned int i);
-char* BurnDrvGetTextA(unsigned int i);
-char* BurnDrvGetMyTextA(unsigned int index, unsigned int type); // get my driver info
+const char * BurnDrvGetTextA(unsigned int i);
+const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type); // get my driver info
 
 int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext = true, unsigned type = 0);
 int BurnDrvGetRomInfo(struct BurnRomInfo *pri, unsigned int i);

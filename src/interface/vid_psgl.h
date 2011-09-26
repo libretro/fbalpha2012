@@ -92,7 +92,7 @@ static const GLfloat   tvertsVertical[] = {
    cgGLSetParameter1f(cgp_vertex_timer, frame_count);
 
 #define refresh(inwidth, inheight) \
-   frame_count += 1.0; \
+   frame_count += 1; \
    glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (iwidth * iheight) << 2, buffer); \
    glTextureReferenceSCE(GL_TEXTURE_2D, 1, iwidth, iheight, 0, GL_ARGB_SCE, iwidth << 2, 0); \
    set_cg_params(); \
@@ -100,7 +100,7 @@ static const GLfloat   tvertsVertical[] = {
    glFlush();
 
 #define refreshwithalpha(inwidth, inheight, alpha) \
-   frame_count += 1.0; \
+   frame_count += 1; \
    glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (iwidth * iheight) << 2, buffer, GL_SYSTEM_DRAW_SCE); \
    uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY); \
    for(int i = 0; i != iheight; i ++) \

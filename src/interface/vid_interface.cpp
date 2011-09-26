@@ -116,36 +116,28 @@ static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 VidOut* VidDriver(unsigned int driver)
 {
 #if defined (SN_TARGET_PS3)
-	if (driver == VID_PSGL) {
+	if (driver == VID_PSGL)
 		return &VidOutPSGL;
-	}
 #elif defined (_XBOX)
-	if (driver == VID_D3D) {
+	if (driver == VID_D3D)
 		return &VidOutD3D;
-	}
 #elif defined (_WIN32)
-	if (driver >= VID_LEN) {
+	if (driver >= VID_LEN)
 		return &VidOutDDraw;
-	}
-	else if (driver == VID_DDRAW) {
+	else if (driver == VID_DDRAW)
 		return &VidOutDDraw;
-	}
-	else if (driver == VID_D3D7) {
+	else if (driver == VID_D3D7)
 		return &VidOutD3D7;
-	}
-	else if (driver == VID_D3D) {
+	else if (driver == VID_D3D)
 		return &VidOutD3D;
-	}
 	#ifndef NO_OPENGL
-	else if (driver == VID_WGL) {
+	else if (driver == VID_WGL)
 		return &VidOutWGL;
-	}
 	#endif
  
 #elif defined (BUILD_SDL)
-	else if (driver == VID_SDLFX) {
+	else if (driver == VID_SDLFX)
 		return &VidOutSDLFX;
-	}
 #endif
 
 	   
@@ -170,18 +162,22 @@ int VidInit()
 	nShowEffect = 0;
 
 #ifndef SN_TARGET_PS3
-	if (!bDrvOkay && nShowEffect) {
+	if (!bDrvOkay && nShowEffect)
+	{
 		// for show intro
- 		if (nVidSelect < VID_LEN) {
+		if (nVidSelect < VID_LEN)
+		{
 			nVidActive = nVidSelect;
-			if ((nRet = VidDriver(nVidActive)->Init()) == 0) {
+			if ((nRet = VidDriver(nVidActive)->Init()) == 0)
+			{
 				nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
 
 				bVidOkay = true;
 
 				effect_depth = nVidScrnDepth; // set effect depth
 
-				if (nVidImageBPP > 2) {
+				if (nVidImageBPP > 2)
+				{
 					nBurnBpp = 2;
 
 					pVidTransPalette = (unsigned int*)malloc(transPaletteSize * sizeof(int));
@@ -189,7 +185,8 @@ int VidInit()
 
 					BurnHighCol = HighCol15;
 
-					if (pVidTransPalette == NULL || pVidTransImage == NULL) {
+					if (pVidTransPalette == NULL || pVidTransImage == NULL)
+					{
 						VidExit();
 						nRet = 1;
 					}
@@ -247,7 +244,8 @@ int VidInit()
 			unsigned char* pLineBuffer = (unsigned char*)malloc(bitmap.bmWidth * 4);
 			HDC hDC = GetDC(hVidWnd);
 
-			if (hDC && pLineBuffer) {
+			if (hDC && pLineBuffer)
+			{
 				memset(&bitmapinfo, 0, sizeof(BITMAPINFO));
 				bitmapinfo.bmiHeader.biSize = sizeof(BITMAPINFO);
 				bitmapinfo.bmiHeader.biWidth = bitmap.bmWidth;
@@ -256,15 +254,18 @@ int VidInit()
 				bitmapinfo.bmiHeader.biBitCount = 24;
 				bitmapinfo.bmiHeader.biCompression = BI_RGB;
 
-				for (int y = 0; y < nVidImageHeight; y++) {
+				for (int y = 0; y < nVidImageHeight; y++)
+				{
 					unsigned char* pd = pVidImage + y * nVidImagePitch;
 					unsigned char* ps = pLineBuffer;
 
 					GetDIBits(hDC, hbitmap, nVidImageHeight - 1 - y, 1, ps, &bitmapinfo, DIB_RGB_COLORS);
 
-					for (int x = 0; x < nVidImageWidth; x++, ps += 3) {
+					for (int x = 0; x < nVidImageWidth; x++, ps += 3)
+					{
 						unsigned int nColour = VidHighCol(ps[2], ps[1], ps[0], 0);
-						switch (nVidImageBPP) {
+						switch (nVidImageBPP)
+						{
 							case 2:
 								*((unsigned short*)pd) = (unsigned short)nColour;
 								pd += 2;
@@ -283,15 +284,14 @@ int VidInit()
 					}
 				}
 			}
-			if (hDC) {
+			if (hDC)
 				ReleaseDC(hVidWnd, hDC);
-			}
+
 			free(pLineBuffer);
 		}
 
-		if (hbitmap) {
+		if (hbitmap)
 			DeleteObject(hbitmap);
-		}
 #endif
 
 #ifndef SN_TARGET_PS3
@@ -305,9 +305,8 @@ int VidExit()
 {
 	IntInfoFree(&VidInfo);
 
-	if (!bVidOkay) {
+	if (!bVidOkay)
 		return 1;
-	}
 
 	int nRet = VidDriver(nVidActive)->Exit();
 
@@ -341,57 +340,57 @@ void CalculateViewports()
 
 #ifdef SN_TARGET_PS3
 #define VidDoFrame(bRedraw) \
-	if (pVidTransImage) \
-   { \
-		unsigned short* pSrc = (unsigned short*)pVidTransImage; \
-		unsigned char* pDest = pVidImage; \
-      \
-		if (bVidRecalcPalette) \
-      { \
-         uint64_t r = 0; \
-         do{ \
-            uint64_t g = 0; \
-            do{ \
-               uint64_t b = 0; \
-               do{ \
-                  uint64_t r_ = r | (r >> 5); \
-                  uint64_t g_ = g | (g >> 5); \
-                  uint64_t b_ = b | (b >> 5); \
-						pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_); \
-                  b += 8; \
-					}while(b < 256); \
-            g += 8; \
-				}while(g < 256); \
-         r += 8; \
-			}while(r < 256); \
-         \
-			bVidRecalcPalette = false; \
-		} \
-      \
-		pBurnDraw = pVidTransImage; \
-		nBurnPitch = nVidImageWidth << 1; \
-      \
-		extern void _psglRender();  \
-		BurnDrvFrame(); \
-		_psglRender(); \
-      \
-		/* set avi buffer, modified by regret */ \
-      \
-		pBurnDraw = NULL; \
-		nBurnPitch = 0; \
-      \
-      int y = 0; \
-      do{ \
-         int x = 0; \
-         do{ \
-            ((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]]; \
-            x++; \
-         }while(x < nVidImageWidth); \
-         y++; \
-         pSrc += nVidImageWidth; \
-         pDest += nVidImagePitch; \
-      }while(y < nVidImageHeight); \
+if (pVidTransImage) \
+{ \
+	unsigned short* pSrc = (unsigned short*)pVidTransImage; \
+	unsigned char* pDest = pVidImage; \
+	\
+	if (bVidRecalcPalette) \
+	{ \
+		uint64_t r = 0; \
+		do{ \
+			uint64_t g = 0; \
+			do{ \
+				uint64_t b = 0; \
+				do{ \
+					uint64_t r_ = r | (r >> 5); \
+					uint64_t g_ = g | (g >> 5); \
+					uint64_t b_ = b | (b >> 5); \
+					pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_); \
+					b += 8; \
+				}while(b < 256); \
+				g += 8; \
+			}while(g < 256); \
+			r += 8; \
+		}while(r < 256); \
+		\
+		bVidRecalcPalette = false; \
 	} \
+	\
+	pBurnDraw = pVidTransImage; \
+	nBurnPitch = nVidImageWidth << 1; \
+	\
+	extern void _psglRender();  \
+	BurnDrvFrame(); \
+	_psglRender(); \
+	\
+	/* set avi buffer, modified by regret */ \
+	\
+	pBurnDraw = NULL; \
+	nBurnPitch = 0; \
+	\
+	int y = 0; \
+	do{ \
+		int x = 0; \
+		do{ \
+			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]]; \
+			x++; \
+		}while(x < nVidImageWidth); \
+		y++; \
+		pSrc += nVidImageWidth; \
+		pDest += nVidImagePitch; \
+	}while(y < nVidImageHeight); \
+} \
    else \
    { \
 		pBurnDraw = pVidImage; \
@@ -413,16 +412,16 @@ static int VidDoFrame(bool bRedraw)
 	int nRet;
 
 	if (pVidTransImage)
-   {
+	{
 		unsigned short* pSrc = (unsigned short*)pVidTransImage;
 		unsigned char* pDest = pVidImage;
 
 		if (bVidRecalcPalette)
-      {
+		{
 			for (int r = 0; r < 256; r += 8)
-         {
+			{
 				for (int g = 0; g < 256; g += 8)
-            {
+				{
 					for (int b = 0; b < 256; b += 8)
 						pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = VidHighCol(r | (r >> 5), g | (g >> 5), b | (b >> 5), 0);
 				}
@@ -442,18 +441,17 @@ static int VidDoFrame(bool bRedraw)
 #endif
 
 		// set avi buffer, modified by regret
-		 
+
 		pBurnDraw = NULL;
 		nBurnPitch = 0;
 
 		switch (nVidImageBPP)
-      {
+		{
 			case 3:
-         {
 				for (int y = 0; y < nVidImageHeight; y++, pSrc += nVidImageWidth, pDest += nVidImagePitch)
-            {
+				{
 					for (int x = 0; x < nVidImageWidth; x++)
-               {
+					{
 						unsigned int c = pVidTransPalette[pSrc[x]];
 						*(pDest + (x * 3) + 0) = c & 0xFF;
 						*(pDest + (x * 3) + 1) = (c >> 8) & 0xFF;
@@ -461,20 +459,17 @@ static int VidDoFrame(bool bRedraw)
 					}
 				}
 				break;
-			}
 			case 4:
-         {
 				for (int y = 0; y < nVidImageHeight; y++, pSrc += nVidImageWidth, pDest += nVidImagePitch)
-            {
+				{
 					for (int x = 0; x < nVidImageWidth; x++)
 						((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
 				}
 				break;
-			}
 		}
 	}
-   else
-   {
+	else
+	{
 		pBurnDraw = pVidImage;
 		nBurnPitch = nVidImagePitch;
 
@@ -486,7 +481,7 @@ static int VidDoFrame(bool bRedraw)
 #endif
 
 		// set avi buffer, modified by regret
-		 
+
 		pBurnDraw = NULL;
 		nBurnPitch = 0;
 	}
@@ -498,7 +493,7 @@ static int VidDoFrame(bool bRedraw)
 #ifdef SN_TARGET_PS3
 int VidFrame()
 {
-   VidDoFrame(0);
+	VidDoFrame(0);
 }
 #else
 int VidFrame()
@@ -509,10 +504,8 @@ int VidFrame()
 	// <== Update effect
 
 	if (bVidOkay && bDrvOkay)
-   {
 		return VidDoFrame(0);
-	}
-   else
+	else
 		return 1;
 }
 #endif
@@ -520,14 +513,14 @@ int VidFrame()
 #ifdef SN_TARGET_PS3
 int VidRedraw()
 {
-   VidDoFrame(1);
+	VidDoFrame(1);
 }
 #else
 int VidRedraw()
 {
-   if (bVidOkay /* && bDrvOkay */)
+	if (bVidOkay /* && bDrvOkay */)
 		return VidDoFrame(1);
-   else
+	else
 		return 1;
 }
 #endif
@@ -543,11 +536,10 @@ int VidRecalcPal()
 #ifndef SN_TARGET_PS3
 int VidPaint(int bValidate)
 {
-	if (bVidOkay /* && bDrvOkay */) {
+	if (bVidOkay /* && bDrvOkay */)
 		return VidDriver(nVidActive)->Paint(bValidate);
-	} else {
+	else
 		return 1;
-	}
 }
 #endif
 
@@ -559,10 +551,9 @@ int VidReinit()
 	VidInit();
 
 	if (bRunPause || !bDrvOkay)
-   {
 		VidRedraw();
-	}
-   CalculateViewports();
+
+	CalculateViewports();
 	return 0;
 }
 #else
@@ -592,29 +583,23 @@ int VidScale(RECT* pRect, int nGameWidth, int nGameHeight)
 
 const TCHAR* VidDriverName(unsigned int driver)
 {
-	if (driver >= VID_LEN) {
+	if (driver >= VID_LEN)
 		return FBALoadStringEx(1);
-	}
 
 #if defined (_WIN32)
-	else if (driver == VID_DDRAW) {
+	else if (driver == VID_DDRAW)
 		return _T("DirectDraw");
-	}
-	else if (driver == VID_D3D7) {
+	else if (driver == VID_D3D7)
 		return _T("Direct3D7");
-	}
-	else if (driver == VID_D3D) {
+	else if (driver == VID_D3D)
 		return _T("Direct3D9");
-	}
-	#ifndef NO_OPENGL
-	else if (driver == VID_WGL) {
+#ifndef NO_OPENGL
+	else if (driver == VID_WGL)
 		return _T("OpenGL");
-	}
-	#endif
+#endif
 #elif defined (BUILD_SDL)
-	else if (driver == VID_SDLFX) {
+	else if (driver == VID_SDLFX)
 		return _T("SDLFX");
-	}
 #endif
 
 	return FBALoadStringEx(1);
@@ -623,21 +608,22 @@ const TCHAR* VidDriverName(unsigned int driver)
 #ifdef SN_TARGET_PS3
 const TCHAR* VidGetName()
 {
-   return VidDriverName(nVidActive);
+	return VidDriverName(nVidActive);
 }
 #else
 const TCHAR* VidGetName()
 {
 	if (bVidOkay)
 		return VidDriverName(nVidActive);
-   else
+	else
 		return VidDriverName(nVidSelect);
 }
 #endif
 
 InterfaceInfo* VidGetInfo()
 {
-	if (IntInfoInit(&VidInfo)) {
+	if (IntInfoInit(&VidInfo))
+	{
 		IntInfoFree(&VidInfo);
 		return NULL;
 	}
@@ -652,7 +638,9 @@ InterfaceInfo* VidGetInfo()
 		getClientScreenRect(hVidWnd, &rect);
 		if (nVidFullscreen == 0) {
 			_sntprintf(szString, sizearray(szString), _T("Running in windowed mode, %ix%i, %ibpp"), rect.right - rect.left, rect.bottom - rect.top, nVidScrnDepth);
-		} else {
+		}
+		else
+		{
 			_sntprintf(szString, sizearray(szString), _T("Running fullscreen, %ix%i, %ibpp, Using adapter %d"), nVidScrnWidth, nVidScrnHeight, nVidScrnDepth, nVidAdapter);
 		}
 #elif defined (BUILD_SDL)
@@ -681,12 +669,11 @@ InterfaceInfo* VidGetInfo()
 		}
 #endif
 
-	 	if (VidDriver(nVidActive)->GetSetting) {
+		if (VidDriver(nVidActive)->GetSetting)
 			VidDriver(nVidActive)->GetSetting(&VidInfo);
-		}
-	} else {
-		IntInfoAddStringInterface(&VidInfo, _T("Video plugin not initialised"));
 	}
+	else
+		IntInfoAddStringInterface(&VidInfo, _T("Video plugin not initialised"));
 
 	return &VidInfo;
 }

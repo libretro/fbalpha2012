@@ -293,8 +293,7 @@ void Wr6502(unsigned short address, unsigned char data)
 
 byte Patch6502(register byte Op,register M6502* /*R*/)
 {
-	bprintf(PRINT_NORMAL, _T("Patch6502: %x:\n"),Op);
-
+	//bprintf(PRINT_NORMAL, _T("Patch6502: %x:\n"),Op);
 	return 0;
 }
 
@@ -304,14 +303,12 @@ unsigned char m6502_read_byte(unsigned short address)
 	unsigned char * pr = m6502_regs->MemMap[ address >> 8 ];
 
 	// check memory map
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[ address & 0xff ];
-	}
 
 	// check read handler
-	if (m6502_regs->m6502_read != NULL) {
+	if (m6502_regs->m6502_read != NULL)
 		return m6502_regs->m6502_read(address);
-	}
 
 	return 0;
 }
@@ -322,14 +319,12 @@ unsigned char m6502_fetch_byte(unsigned short address)
 	unsigned char * pr = m6502_regs->MemMap[0x200 | (address >> 8) ];
 
 	// check memory map
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[ address & 0xff ];
-	}
 
 	// check fetch handler
-	if (m6502_regs->m6502_fetch != NULL) {
+	if (m6502_regs->m6502_fetch != NULL)
 		return m6502_regs->m6502_fetch(address);
-	}
 
 	// check read handler
 	return m6502_read_byte(address);
@@ -360,17 +355,14 @@ void m6502_write_rom(unsigned short address, unsigned char data)
 	unsigned char * pf = m6502_regs->MemMap[0x200 | (address >> 8) ];
 
 	// check memory map
-	if (pr != NULL) {
+	if (pr != NULL)
 		pr[ address & 0xff ] = data;
-	}
 
-	if (pw != NULL) {
+	if (pw != NULL)
 		pw[ address & 0xff ] = data;
-	}
 
-	if (pf != NULL) {
+	if (pf != NULL)
 		pf[ address & 0xff ] = data;
-	}
 
 	// check write handler
 	if (m6502_regs->m6502_write != NULL) {

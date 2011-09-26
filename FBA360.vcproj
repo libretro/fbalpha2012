@@ -614,10 +614,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\burn\burn_sound.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\src\burn\burn_sound_c.cpp"
 						>
 					</File>
@@ -902,14 +898,6 @@
 						</File>
 						<File
 							RelativePath=".\src\burn\capcom\qs.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\capcom\qs_c.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\capcom\qs_z.cpp"
 							>
 						</File>
 					</Filter>

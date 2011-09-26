@@ -437,19 +437,19 @@ void konami_set_irq_line(int irqline, int state)
 	{
 		if (konami.nmi_state == state) return;
 		konami.nmi_state = state;
-	//	LOG(("KONAMI#%d set_nmi_line %d\n", cpu_getactivecpu(), state));
+		//	LOG(("KONAMI#%d set_nmi_line %d\n", cpu_getactivecpu(), state));
 		if( state == KONAMI_CLEAR_LINE ) return;
 
 		/* if the stack was not yet initialized */
-	    if( !(konami.int_state & KONAMI_LDS) ) return;
+		if( !(konami.int_state & KONAMI_LDS) ) return;
 
-	    konami.int_state &= ~KONAMI_SYNC;
+		konami.int_state &= ~KONAMI_SYNC;
 		/* state already saved by CWAI? */
 		if( konami.int_state & KONAMI_CWAI )
 		{
 			konami.int_state &= ~KONAMI_CWAI;
 			konami.extra_cycles += 7;	/* subtract +7 cycles next time */
-	    }
+		}
 		else
 		{
 			CC |= CC_E; 				/* save entire state */
@@ -469,9 +469,10 @@ void konami_set_irq_line(int irqline, int state)
 	}
 	else if (irqline < 2)
 	{
-	//	LOG(("KONAMI#%d set_irq_line %d, %d\n", cpu_getactivecpu(), irqline, state));
+		//	LOG(("KONAMI#%d set_irq_line %d, %d\n", cpu_getactivecpu(), irqline, state));
 		konami.irq_state[irqline] = state;
-		if (state == KONAMI_CLEAR_LINE) return;
+		if (state == KONAMI_CLEAR_LINE)
+			return;
 		CHECK_IRQ_LINES;
 	}
 }

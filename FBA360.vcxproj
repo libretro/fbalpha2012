@@ -449,7 +449,6 @@
     <ClCompile Include="src\burn\burn.cpp" />
     <ClCompile Include="src\burn\burn_gun.cpp" />
     <ClCompile Include="src\burn\burn_led.cpp" />
-    <ClCompile Include="src\burn\burn_sound.cpp" />
     <ClCompile Include="src\burn\burn_sound_c.cpp" />
     <ClCompile Include="src\burn\burn_y8950.cpp" />
     <ClCompile Include="src\burn\burn_ym2151.cpp" />
@@ -536,8 +535,6 @@
     <ClCompile Include="src\burn\capcom\ps_m.cpp" />
     <ClCompile Include="src\burn\capcom\ps_z.cpp" />
     <ClCompile Include="src\burn\capcom\qs.cpp" />
-    <ClCompile Include="src\burn\capcom\qs_c.cpp" />
-    <ClCompile Include="src\burn\capcom\qs_z.cpp" />
     <ClCompile Include="src\burn\cave\cave.cpp" />
     <ClCompile Include="src\burn\cave\cave_palette.cpp" />
     <ClCompile Include="src\burn\cave\cave_sprite.cpp" />

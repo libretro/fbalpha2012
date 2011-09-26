@@ -10910,9 +10910,9 @@ struct BurnDriver BurnDrvCpsXmvsfu1d = {
 };
 
 
+#ifndef SN_TARGET_PS3
 // FBA Combo - extra players input hack
 // kDropped = which players got dropped during netplay
-#ifndef SN_TARGET_PS3
 static void XmvsfDrv4pInputSwap()
 {
 	static unsigned int cP1 = 0, cP2 = 0, cP3 = 0, cP4 = 0;
@@ -10954,10 +10954,8 @@ static void XmvsfDrv4pInputSwap()
 
 	CpsDrv4pSwap(nInputSwap);
 }
-#endif
 
 // FBA Combo - extra players input hack
-#ifndef SN_TARGET_PS3
 static int XmvsfDrv4pInit()
 {
 	bInputSwap = true;
@@ -10965,10 +10963,8 @@ static int XmvsfDrv4pInit()
 	BurnDrvInputSwap = XmvsfDrv4pInputSwap;
 	return CpsInit();
 }
-#endif
 
 // FBA Combo - extra players input hack
-#ifndef SN_TARGET_PS3
 static int XmvsfDrv4pExit()
 {
 	bInputSwap = false;
@@ -10976,10 +10972,7 @@ static int XmvsfDrv4pExit()
 	BurnDrvInputSwap = NULL;
 	return CpsExit();
 }
-#endif
 
-
-#ifndef SN_TARGET_PS3
 struct BurnDriver BurnDrvCpsXmvsf4p = {
 	"xmvsf4p", "xmvsf", NULL, "1996",
 	"X-Men vs Street Fighter (Euro 961004 / 4 Players)\0", NULL, "Capcom", "CPS2",

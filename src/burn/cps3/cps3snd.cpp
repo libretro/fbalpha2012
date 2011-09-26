@@ -137,9 +137,11 @@ void cps3SndUpdate()
 	signed char * base = (signed char *)chip->rombase;
 	cps3_voice *vptr = &chip->voice[0];
 
-	for(int i=0; i<CPS3_VOICES; i++, vptr++) {
-		if (chip->key & (1 << i)) {
-			
+	for(int i=0; i<CPS3_VOICES; i++, vptr++)
+	{
+		if (chip->key & (1 << i))
+		{
+
 			uint32_t start = ((vptr->regs[ 3] << 16) | vptr->regs[ 2]) - 0x400000;
 			uint32_t end   = ((vptr->regs[11] << 16) | vptr->regs[10]) - 0x400000;
 			uint32_t loop  = ((vptr->regs[ 9] << 16) | vptr->regs[ 7]) - 0x400000;
@@ -150,7 +152,7 @@ void cps3SndUpdate()
 
 			uint32_t pos = vptr->pos;
 			uint32_t frac = vptr->frac;
-			
+
 			/* Go through the buffer and add voice contributions */
 			int16_t * buffer = (int16_t *)pBurnSoundOut;
 

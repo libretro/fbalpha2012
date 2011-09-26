@@ -192,10 +192,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\burn\burn_sound.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\src\burn\burn_sound_c.cpp"
 						>
 					</File>
@@ -476,14 +472,6 @@
 						</File>
 						<File
 							RelativePath=".\src\burn\capcom\qs.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\capcom\qs_c.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\capcom\qs_z.cpp"
 							>
 						</File>
 					</Filter>
@@ -2124,19 +2112,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\burner\sshot.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\src\burner\state.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\src\burner\statec.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\burner\tracklst.cpp"
 						>
 					</File>
 					<Filter

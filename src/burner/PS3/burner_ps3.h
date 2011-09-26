@@ -159,7 +159,6 @@ void createNeedDir();
 bool directoryExists(const TCHAR* dirname);
 void pathCheck(TCHAR* path);
 int directLoadGame(TCHAR* name);
-int appDirectory();
 int getClientScreenRect(HWND hWnd, RECT* pRect);
 int wndInMid(HWND hMid, HWND hBase);
 void setWindowAspect(bool first_boot = false);

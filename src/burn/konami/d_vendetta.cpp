@@ -298,19 +298,19 @@ unsigned char vendetta_main_read(unsigned short address)
 			return 0; // watchdog
 	}
 
-	if ((address & 0xffe0) == 0x5f80) {
+	if ((address & 0xffe0) == 0x5f80)
 		return K054000Read(address);
-	}
 
-	if (videobank) {
-		if ((address & 0xf000) == 0x4000) {
+	if (videobank)
+	{
+		if ((address & 0xf000) == 0x4000)
+		{
 			address ^= 1;
 			return K053247Read(address & 0x0fff);
 		}
 
-		if ((address & 0xf000) == 0x6000) {
+		if ((address & 0xf000) == 0x6000)
 			return DrvPalRAM[address & 0x0fff];
-		}
 	}
 
 	if ((address & 0xc000) == 0x4000) {
@@ -427,20 +427,20 @@ unsigned char esckids_main_read(unsigned short address)
 
 	}
 
-	if (videobank) {
-		if ((address & 0xf000) == 0x2000) {
+	if (videobank)
+	{
+		if ((address & 0xf000) == 0x2000)
+		{
 			address ^= 1;
 			return K053247Read(address & 0x0fff);
 		}
 
-		if ((address & 0xf000) == 0x4000) {
+		if ((address & 0xf000) == 0x4000)
 			return DrvPalRAM[address & 0x0fff];
-		}
 	}
 
-	if (address >= 0x2000 && address <= 0x5fff) {
+	if (address >= 0x2000 && address <= 0x5fff)
 		return K052109Read(address - 0x2000);
-	}
 
 	return 0;
 }
@@ -479,8 +479,10 @@ unsigned char __fastcall vendetta_sound_read(unsigned short address)
 			return BurnYM2151ReadStatus();
 	}
 
-	if (address >= 0xfc00 && address < 0xfc30) {
-		if ((address & 0x3f) == 0x01) ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
+	if (address >= 0xfc00 && address < 0xfc30)
+	{
+		if ((address & 0x3f) == 0x01)
+			ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
 
 		return K053260Read(0, address & 0xff);
 	}
@@ -492,9 +494,8 @@ static void vendetta_set_lines(int lines)
 {
 	nDrvBank[0] = lines;
 
-	if (lines < 0x1c) {
+	if (lines < 0x1c)
 		konamiMapMemory(DrvKonROM + 0x10000 + (lines * 0x2000), 0x0000 | bankoffset, 0x1fff | bankoffset, KON_ROM);
-	}
 }
 
 static void K052109Callback(int layer, int bank, int *code, int *color, int *, int *)
@@ -546,11 +547,10 @@ static int DrvDoReset()
 
 	videobank = 0;
 
-	if (EEPROMAvailable()) {
+	if (EEPROMAvailable())
 		init_eeprom_count = 0;
-	} else {
+	else
 		init_eeprom_count = 1000;
-	}
 
 	irq_enabled = 0;
 	videobank = 0;
@@ -756,26 +756,27 @@ static void DrvRecalcPal()
 	}
 }
 
-static void sortlayers(int *layer,int *pri)
-{
-#define SWAP(a,b) \
+#define SWAP(a,b,pri,layer) \
 	if (pri[a] < pri[b]) \
 	{ \
 		int t; \
-		t = pri[a]; pri[a] = pri[b]; pri[b] = t; \
-		t = layer[a]; layer[a] = layer[b]; layer[b] = t; \
+		t = pri[a]; \
+		pri[a] = pri[b]; \
+		pri[b] = t; \
+		t = layer[a]; \
+		layer[a] = layer[b]; \
+		layer[b] = t; \
 	}
 
-	SWAP(0,1)
-	SWAP(0,2)
-	SWAP(1,2)
-}
+#define sortlayers(layer,pri) \
+	SWAP(0,1,pri,layer) \
+	SWAP(0,2,pri,layer) \
+	SWAP(1,2,pri,layer)
 
 static int DrvDraw()
 {
-	if (DrvRecalc) {
+	if (DrvRecalc)
 		DrvRecalcPal();
-	}
 
 	K052109UpdateScroll();
 
@@ -799,18 +800,26 @@ static int DrvDraw()
 	BurnTransferClear();
 
 	// this order makes sense...
-	if (nSpriteEnable & 8) K053247SpritesRender(DrvGfxROMExp1, 0);
+	if (nSpriteEnable & 8)
+		K053247SpritesRender(DrvGfxROMExp1, 0);
 
-	if (nBurnLayer & 1)    K052109RenderLayer(layer[0], 1, DrvGfxROMExp0);
+	if (nBurnLayer & 1)
+		K052109RenderLayer(layer[0], 1, DrvGfxROMExp0);
 
-	if (nBurnLayer & 2)    K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
+	if (nBurnLayer & 2)
+		K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
 
-	if (nSpriteEnable & 4) K053247SpritesRender(DrvGfxROMExp1, 1);
-	if (nSpriteEnable & 2) K053247SpritesRender(DrvGfxROMExp1, 2);
+	if (nSpriteEnable & 4)
+		K053247SpritesRender(DrvGfxROMExp1, 1);
 
-	if (nBurnLayer & 4)    K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
+	if (nSpriteEnable & 2)
+		K053247SpritesRender(DrvGfxROMExp1, 2);
 
-	if (nSpriteEnable & 1) K053247SpritesRender(DrvGfxROMExp1, 3);
+	if (nBurnLayer & 4)
+		K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
+
+	if (nSpriteEnable & 1)
+		K053247SpritesRender(DrvGfxROMExp1, 3);
 
 	KonamiBlendCopy(Palette, DrvPalette);
 
@@ -819,22 +828,20 @@ static int DrvDraw()
 
 static int DrvFrame()
 {
-	if (DrvReset) {
+	if (DrvReset)
 		DrvDoReset();
-	}
 
 	ZetNewFrame();
 	konamiNewFrame();
 
+	memset (DrvInputs, 0xff, 5);
+	for (uint32_t i = 0; i < 8; i++)
 	{
-		memset (DrvInputs, 0xff, 5);
-		for (int i = 0; i < 8; i++) {
-			DrvInputs[0] ^= (DrvJoy1[i] & 1) << i;
-			DrvInputs[1] ^= (DrvJoy2[i] & 1) << i;
-			DrvInputs[2] ^= (DrvJoy3[i] & 1) << i;
-			DrvInputs[3] ^= (DrvJoy4[i] & 1) << i;
-			DrvInputs[4] ^= (DrvJoy5[i] & 1) << i;
-		}
+		DrvInputs[0] ^= (DrvJoy1[i] & 1) << i;
+		DrvInputs[1] ^= (DrvJoy2[i] & 1) << i;
+		DrvInputs[2] ^= (DrvJoy3[i] & 1) << i;
+		DrvInputs[3] ^= (DrvJoy4[i] & 1) << i;
+		DrvInputs[4] ^= (DrvJoy5[i] & 1) << i;
 	}
 
 	int nInterleave = nBurnSoundLen;
@@ -850,7 +857,8 @@ static int DrvFrame()
 
 	int trigger_vblank = (nInterleave / 256) * 240;
 
-	for (int i = 0; i < nInterleave; i++) {
+	for (int i = 0; i < nInterleave; i++)
+	{
 		int nNext, nCyclesSegment;
 
 		nNext = (i + 1) * nCyclesTotal[0] / nInterleave;
@@ -865,7 +873,8 @@ static int DrvFrame()
 
 		if (i == trigger_vblank) vblank = 0; // or 8?
 
-		if (pBurnSoundOut) {
+		if (pBurnSoundOut)
+		{
 			int nSegmentLength = nBurnSoundLen / nInterleave;
 			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
 			BurnYM2151Render(pSoundBuf, nSegmentLength);
@@ -874,12 +883,15 @@ static int DrvFrame()
 		}
 	}
 
-	if (irq_enabled) konamiSetIrqLine(KONAMI_IRQ_LINE, KONAMI_HOLD_LINE);
+	if (irq_enabled)
+		konamiSetIrqLine(KONAMI_IRQ_LINE, KONAMI_HOLD_LINE);
 
-	if (pBurnSoundOut) {
+	if (pBurnSoundOut)
+	{
 		int nSegmentLength = nBurnSoundLen - nSoundBufferPos;
 		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-		if (nSegmentLength) {
+		if (nSegmentLength)
+		{
 			BurnYM2151Render(pSoundBuf, nSegmentLength);
 			K053260Update(0, pSoundBuf, nSegmentLength);
 		}
@@ -888,9 +900,8 @@ static int DrvFrame()
 	konamiClose();
 	ZetClose();
 
-	if (pBurnDraw) {
+	if (pBurnDraw)
 		DrvDraw();
-	}
 
 	return 0;
 }
@@ -899,11 +910,11 @@ static int DrvScan(int nAction,int *pnMin)
 {
 	struct BurnArea ba;
 
-	if (pnMin) {
+	if (pnMin)
 		*pnMin = 0x029705;
-	}
 
-	if (nAction & ACB_VOLATILE) {
+	if (nAction & ACB_VOLATILE)
+	{
 		memset(&ba, 0, sizeof(ba));
 
 		ba.Data	  = AllRam;

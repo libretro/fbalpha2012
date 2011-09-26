@@ -155,11 +155,10 @@ unsigned int BurnDrvGetIndexByName(const TCHAR* name)
 
 int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int type)
 {
-	if (pszName == NULL) {
+	if (pszName == NULL)
 		return 1;
-	}
 
-	char* pszGameName = NULL;
+	const char* pszGameName = NULL;
 
 	if (i == 0) {
 		pszGameName = pDriver[nBurnDrvSelect]->szShortName;
@@ -175,7 +174,7 @@ int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int ty
 		if (pszGameName == NULL) {
 			// Go through the list to seek out the parent
 			while (j < i) {
-				char* pszParent = pDriver[nBurnDrvSelect]->szParent;
+				const char* pszParent = pDriver[nBurnDrvSelect]->szParent;
 				pszGameName = NULL;
 
 				if (pszParent == NULL) {							// No parent
@@ -229,9 +228,9 @@ int BurnStateInit();
 // Get the text fields for the driver in TCHARs
 extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 {
-	char* pszStringA = NULL;
+	const char* pszStringA = NULL;
 	wchar_t* pszStringW = NULL;
-	static char* pszCurrentNameA;
+	static const char * pszCurrentNameA;
 	static wchar_t* pszCurrentNameW;
 
 	static wchar_t szShortNameW[32];
@@ -294,7 +293,8 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 					pszStringA = pszCurrentNameA;
 				}
 			} else {
-				pszStringA = pszCurrentNameA = pDriver[nBurnDrvSelect]->szFullNameA;
+				pszStringA = pDriver[nBurnDrvSelect]->szFullNameA;
+				pszCurrentNameA = pDriver[nBurnDrvSelect]->szFullNameA;
 				pszCurrentNameW = NULL;
 			}
 			break;
@@ -353,7 +353,7 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 
 
 // Get the ASCII text fields for the driver in ASCII format;
-extern "C" char* BurnDrvGetTextA(unsigned int i)
+extern "C" const char * BurnDrvGetTextA(unsigned int i)
 {
 	switch (i) {
 		case DRV_NAME:			 
@@ -377,7 +377,7 @@ extern "C" char* BurnDrvGetTextA(unsigned int i)
 	}
 }
 
-extern "C" char* BurnDrvGetMyTextA(unsigned int index, unsigned int type)
+extern "C" const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type)
 {
 	if (index >= nBurnDrvCount)
 		return NULL;

@@ -1,12 +1,6 @@
 // misc win32 functions
 #include "burner.h"
 
-// Set the current directory to be the application's directory
-int appDirectory()
-{
-	return 0;
-}
-
 // ---------------------------------------------------------------------------
 
 // Get the position of the client area of a window on the screen

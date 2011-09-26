@@ -82,25 +82,9 @@ void BurnYM2612UpdateRequest(void);
 #endif
 
 /* compiler dependence */
-#if 0
-#ifndef OSD_CPU_H
-#define OSD_CPU_H
-typedef unsigned char	UINT8;   /* unsigned  8bit */
-typedef unsigned short	UINT16;  /* unsigned 16bit */
-typedef unsigned int	UINT32;  /* unsigned 32bit */
-typedef signed char		INT8;    /* signed  8bit   */
-typedef signed short	INT16;   /* signed 16bit   */
-typedef signed int		INT32;   /* signed 32bit   */
-#endif
-#endif
-
 #ifndef INLINE
 #define INLINE static __inline__
 #endif
-
-
-
-
 
 #if (FM_SAMPLE_BITS==16)
 typedef INT16 FMSAMPLE;

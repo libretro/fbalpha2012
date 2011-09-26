@@ -165,8 +165,6 @@ int  main(int argc, char **argv)
 
 	cell_pad_input_init();
 
-	appDirectory();					// Set current directory to be the applications directory
-
 	createNeedDir();				// Make sure there are roms and cfg subdirectories
 
 	AppInit();

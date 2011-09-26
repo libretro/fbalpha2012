@@ -804,7 +804,7 @@ Z80_INLINE UINT32 ARG16(void)
  * RETN
  ***************************************************************/
 #define RETN	{												\
-	LOG(("Z80 #%d RETN IFF1:%d IFF2:%d\n", cpu_getactivecpu(), IFF1, IFF2)); \
+	/* LOG(("Z80 #%d RETN IFF1:%d IFF2:%d\n", cpu_getactivecpu(), IFF1, IFF2)); \ */ \
 	POP( pc );													\
 	change_pc(PCD);												\
 	IFF1 = IFF2;												\
@@ -3521,7 +3521,7 @@ int Z80Execute(int cycles)
 	/* to just check here */
 	if (Z80.nmi_pending)
 	{
-//		LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
+		//		LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
 		PRVPC = (UINT32)-1;			/* there isn't a valid previous program counter */
 		LEAVE_HALT;			/* Check if processor was halted */
 
@@ -3541,7 +3541,7 @@ int Z80Execute(int cycles)
 		Z80.after_ei = FALSE;
 
 		PRVPC = PCD;
-//		CALL_DEBUGGER(PCD);
+		//		CALL_DEBUGGER(PCD);
 		R++;
 		EXEC_INLINE(op,ROP());
 	} while( z80_ICount > 0 );
@@ -3830,7 +3830,7 @@ static int z80_execute(int cycles)
 	/* to just check here */
 	if (Z80.nmi_pending)
 	{
-		LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
+		//LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
 		PRVPC = -1;			/* there isn't a valid previous program counter */
 		LEAVE_HALT;			/* Check if processor was halted */
 

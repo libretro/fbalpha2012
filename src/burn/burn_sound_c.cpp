@@ -3,7 +3,7 @@
 
 #define CLIP(A) ((A) < -0x8000 ? -0x8000 : (A) > 0x7fff ? 0x7fff : (A))
 
-void BurnSoundCopyClamp_C(int *Src, short *Dest, int Len)
+void BurnSoundCopyClamp_C(int *Src, int16_t *Dest, int Len)
 {
 	Len *= 2;
 	while (Len--) {
@@ -13,7 +13,7 @@ void BurnSoundCopyClamp_C(int *Src, short *Dest, int Len)
 	}
 }
 
-void BurnSoundCopyClamp_Add_C(int *Src, short *Dest, int Len)
+void BurnSoundCopyClamp_Add_C(int *Src, int16_t *Dest, int Len)
 {
 	Len *= 2;
 	while (Len--) {
@@ -23,7 +23,7 @@ void BurnSoundCopyClamp_Add_C(int *Src, short *Dest, int Len)
 	}
 }
 
-void BurnSoundCopyClamp_Mono_C(int *Src, short *Dest, int Len)
+void BurnSoundCopyClamp_Mono_C(int *Src, int16_t *Dest, int Len)
 {
 	while (Len--) {
 		Dest[0] = CLIP((*Src >> 8));
@@ -33,7 +33,7 @@ void BurnSoundCopyClamp_Mono_C(int *Src, short *Dest, int Len)
 	}
 }
 
-void BurnSoundCopyClamp_Mono_Add_C(int *Src, short *Dest, int Len)
+void BurnSoundCopyClamp_Mono_Add_C(int *Src, int16_t *Dest, int Len)
 {
 	while (Len--) {
 		Dest[0] = CLIP((*Src >> 8) + Dest[0]);
@@ -44,7 +44,7 @@ void BurnSoundCopyClamp_Mono_Add_C(int *Src, short *Dest, int Len)
 }
 
 // converted by regret, thanks to XingXing
-void BurnSoundCopy_FM_C(short* SrcL, short* SrcR, short* Dest, int Len, int VolL, int VolR)
+void BurnSoundCopy_FM_C(int16_t* SrcL, int16_t* SrcR, int16_t* Dest, int Len, int VolL, int VolR)
 {
 	int volL = VolL >> 10;
 	int volR = VolR >> 10;
@@ -58,7 +58,7 @@ void BurnSoundCopy_FM_C(short* SrcL, short* SrcR, short* Dest, int Len, int VolL
 	}
 }
 
-void BurnSoundCopy_FM_Add_C(short* SrcL, short* SrcR, short* Dest, int Len, int VolL, int VolR)
+void BurnSoundCopy_FM_Add_C(int16_t* SrcL, int16_t* SrcR, int16_t* Dest, int Len, int VolL, int VolR)
 {
 	int volL = VolL >> 10;
 	int volR = VolR >> 10;
@@ -70,6 +70,28 @@ void BurnSoundCopy_FM_Add_C(short* SrcL, short* SrcR, short* Dest, int Len, int 
 		SrcR++;
 		Dest += 2;
 	}
+}
+
+int16_t Precalc[4096 *4];
+
+// Routine used to precalculate the table used for interpolation
+int cmc_4p_Precalc()
+{
+	int a, x, x2, x3;
+
+	for (a = 0; a < 4096; a++)
+	{
+		x  = a  << 2;			// x = 0..16384
+		x2 = (x  * x) >> 14;	// pow(x, 2);
+		x3 = (x2 * x) >> 14;	// pow(x, 3);
+
+		Precalc[a * 4 + 0] = (int16_t)(-x / 3 + x2 / 2 - x3 / 6);
+		Precalc[a * 4 + 1] = (int16_t)(-x / 2 - x2     + x3 / 2 + 16384);
+		Precalc[a * 4 + 2] = (int16_t)( x     + x2 / 2 - x3 / 2);
+		Precalc[a * 4 + 3] = (int16_t)(-x / 6 + x3 / 6);
+	}
+
+	return 0;
 }
 
 #undef CLIP

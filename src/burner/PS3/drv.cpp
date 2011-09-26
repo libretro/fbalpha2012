@@ -89,9 +89,7 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 
 	GameInpInit();					// Init game input
 	if (ConfigGameLoad(true))
-	{
 		loadDefaultInput();			// load default input mapping
-	}
 	InputMake(true);
 	GameInpDefault();
 

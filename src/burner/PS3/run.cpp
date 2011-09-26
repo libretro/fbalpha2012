@@ -91,9 +91,6 @@ int RunMessageLoop(int argc, char **argv)
 
 	RunInit();
 
-	//GameInpCheckLeftAlt();
-	//GameInpCheckMouse();								// Hide the cursor
-
 	// get the last filter
 	CurrentFilter = nLastFilter;	 
 	BuildRomList();
@@ -186,12 +183,6 @@ int RunMessageLoop(int argc, char **argv)
 
 					// GET INPUT
 					InputMake(true);                 // get input
-
-					InpdUpdate();
-
-					// Update Input Set dialog
-					InpsUpdate();
-
 					VidFrame();
 
 					bPrevPause  = 0;
@@ -207,7 +198,6 @@ int RunMessageLoop(int argc, char **argv)
 	RunExit();				 		 		 
 	BurnerDrvExit();				// Make sure any game driver is exitted
 	mediaExit();					// Exit media
-	scrnExit();					// Exit the screen window
 	return 0;
 }
  

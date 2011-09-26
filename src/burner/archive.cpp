@@ -45,7 +45,7 @@ int archiveCheck(TCHAR* name, int zipOnly)
 	static File_Extractor* fex_scan = NULL;
 	static fex_err_t err_scan = NULL;
 
-	err_scan = fex_open(&fex_scan, WtoA(archiveName));
+	err_scan = fex_open(&fex_scan, archiveName);
 
 	if (!error(err_scan)) {
 		ret = ARC_ZIP;
@@ -55,7 +55,7 @@ int archiveCheck(TCHAR* name, int zipOnly)
 			// try 7z
 			_stprintf(archiveName, _T("%s.7z"), name);
 
-			err_scan = fex_open(&fex_scan, WtoA(archiveName));
+			err_scan = fex_open(&fex_scan, archiveName);
 			if (!error(err_scan)) {
 				ret = ARC_7Z;
 				_tcscat(name, _T(".7z"));

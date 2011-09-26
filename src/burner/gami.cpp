@@ -1306,7 +1306,7 @@ static TCHAR* InputNumToName(unsigned int i)
 	if (bii.szName == NULL) {
 		return _T("unknown");
 	}
-	return (TCHAR *)AtoW(bii.szName);
+	return (TCHAR *)bii.szName;
 }
 
 // Get the input info by number, added by regret
@@ -1318,7 +1318,7 @@ static TCHAR* InputNumToInfo(unsigned int i)
 	if (bii.szInfo == NULL) {
 		return _T("unknown");
 	}
-	return (TCHAR *)AtoW(bii.szInfo);
+	return (TCHAR *)bii.szInfo;
 }
 
 static unsigned int MacroNameToNum(TCHAR* szName)
@@ -1413,7 +1413,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 
 	for (unsigned int j = nGameInpCount; j < nGameInpCount + nMacroCount; j++) {
 		if (GameInp[j].nInput == GIT_MACRO_CUSTOM) {
-			if (labelCheck(szQuote, (TCHAR *)AtoW(GameInp[j].Macro.szName))) {
+			if (labelCheck(szQuote, (TCHAR *)GameInp[j].Macro.szName)) {
 				nInput = j;
 				break;
 			}
@@ -1466,7 +1466,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 					continue;
 				}
 
-				TCHAR* szString = labelCheck(szQuote, (TCHAR *)AtoW(bii.szName));
+				TCHAR* szString = labelCheck(szQuote, (TCHAR *)bii.szName);
 				if (szString && szEnd) {
 					GameInp[nInput].Macro.pVal[i] = bii.pVal;
 					GameInp[nInput].Macro.nInput[i] = j;
@@ -1495,7 +1495,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 	return 1;
 }
 
-int GameInputAutoIni(int nPlayer, TCHAR* lpszFile, bool bOverWrite)
+int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 {
 	nAnalogSpeed = 0x0100;
 

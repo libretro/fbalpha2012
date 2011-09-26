@@ -7,10 +7,7 @@ static int nBaseFps;
 
 // Media init / exit
 int mediaInit()
-{	 
-	if (scrnInit())						// Init the Scrn Window
-		return 1;
-
+{
 	if (!bInputOkay)
 		InputInit();					// Init Input
 
@@ -27,7 +24,8 @@ int mediaInit()
 		}
 	}
 
-	nBurnSoundRate = 0;					// Assume no sound
+	// Assume no sound
+	nBurnSoundRate = 0;					
 	pBurnSoundOut = NULL;
 
 	if (bAudOkay)
@@ -38,7 +36,7 @@ int mediaInit()
 
 	if (!bVidOkay)
 	{
-		VidInit();	// Reinit the video plugin
+		VidInit(); // Reinit the video plugin
 
 		if (bVidOkay && ((bRunPause && bAltPause) || !bDrvOkay))
 			VidRedraw();

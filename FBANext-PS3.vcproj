@@ -2167,10 +2167,6 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\burner\PS3\inps.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\src\burner\PS3\localise.cpp"
 							>
 						</File>
@@ -2204,10 +2200,6 @@
 						</File>
 						<File
 							RelativePath=".\src\burner\PS3\stated.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\strconv.cpp"
 							>
 						</File>
 					</Filter>

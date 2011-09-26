@@ -87,10 +87,6 @@ typedef struct tagPOINT
 } POINT;
  
 // ---------------------------------------------------------------------------
-// includes
-#include "strconv.h"
-
-// ---------------------------------------------------------------------------
 // from burn
 extern int bsavedecryptedcs;
 extern int bsavedecryptedps;
@@ -129,7 +125,6 @@ extern TCHAR szChoice[MAX_PATH];	// File chosen by the user
 
 int dprintf(TCHAR* pszFormat, ...);	// Use instead of printf() in the UI
 
-void AppCleanup();
 bool AppProcessKeyboardInput();
 
 // popup_win32.cpp
@@ -162,8 +157,6 @@ int directLoadGame(const char * name);
 int getClientScreenRect(HWND hWnd, RECT* pRect);
 int wndInMid(HWND hMid, HWND hBase);
 void setWindowAspect(bool first_boot = false);
-char* decorateGameName(unsigned int drv);
-char* decorateKailleraGameName(unsigned int drv);
 int findRom(int i, struct ArcEntry* list, int count);
 
 // drv.cpp
@@ -210,13 +203,6 @@ extern int nYScale;
 
 extern void UpdateConsoleXY(char *text, float X, float Y);
 
-int scrnInit();
-int scrnExit();
-int scrnSize();
-int scrnTitle();
-int scrnSwitchFull();
-int scrnFakeFullscreen();
-int scrnSetFull(const bool& full);
 void __cdecl scrnReinit();
 void setPauseMode(bool bPause);
 void setPauseModeScreen(bool bPause);
@@ -256,9 +242,6 @@ int configCheatLoad(const TCHAR* filename = NULL);
 int configCheatReload(const TCHAR* filename = NULL);
 
 // inpd.cpp
-int InpdUpdate();
-int InpdCreate();
-int InpdListMake(int bBuild);
 int loadDefaultInput();
 int SaveDefaultInput();
 
@@ -278,8 +261,6 @@ int InpDIPSWCreate();
 
 // inps.cpp
 extern unsigned int nInpsInput;		// The input number we are redefining
-int InpsCreate();
-int InpsUpdate();
 
 // inpc.cpp
 extern unsigned int nInpcInput;		// The input number we are redefining
@@ -327,35 +308,12 @@ enum ePath {
 };
 extern TCHAR szMiscPaths[PATH_SUM][MAX_PATH];
 int miscDirCreate(HWND);
-const TCHAR* getMiscPath(unsigned int dirType);
-const TCHAR* getMiscArchiveName(unsigned int dirType);
+const char * getMiscPath(unsigned int dirType);
+const char * getMiscArchiveName(unsigned int dirType);
 
 extern TCHAR szAppRomPaths[DIRS_MAX][MAX_PATH];
 int RomsDirCreate(HWND);
 void pathSheetCreate(HWND);
-
-// skin.cpp
-extern bool bUseGdip;		// use GDI+
-extern int nRandomSkin;
-extern bool bVidUsePlaceholder;
-extern TCHAR szPlaceHolder[MAX_PATH];
- 
-int ActivateChat();
-void DeActivateChat();
-bool ChatActivated();
-HWND GetChatWindow();
-
-// replay.cpp
-extern int nReplayStatus;
-extern bool bReplayReadOnly;
-extern bool bFrameCounterDisplay;
-int RecordInput();
-int ReplayInput();
-int StartRecord();
-int StartReplay(const TCHAR* szFileName = NULL);
-void StopReplay();
-int FreezeInput(unsigned char** buf, int* size);
-int UnfreezeInput(const unsigned char* buf, int size);
 
 // memcard.cpp
 extern int nMemoryCardStatus;	// & 1 = file selected, & 2 = inserted

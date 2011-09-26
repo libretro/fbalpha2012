@@ -76,7 +76,7 @@ TCHAR* InpMacroToDesc(struct GameInp* pgi);
 void GameInpCheckLeftAlt();
 void GameInpCheckMouse();
 int GameInpBlank(int bDipSwitch);
-int GameInputAutoIni(int nPlayer, TCHAR* lpszFile, bool bOverWrite);
+int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite);
 int GameInpDefault();
 int GameInpWrite(FILE* h, bool bWriteConst = true);
 int GameInpRead(TCHAR* szVal, bool bOverWrite);

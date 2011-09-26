@@ -28,9 +28,7 @@ int nSavestateSlot = 1;
 
 bool bShowOnTop = false;
 bool bFullscreenOnStart = false;
-bool bFakeFullscreen = false;
 
-static TCHAR* szClass = _T(APP_TITLE);			// Window class name
 HWND hScrnWnd = NULL;							// Handle to the screen window
 HWND hVideoWnd = NULL;							// Handle to the video window
 
@@ -44,11 +42,6 @@ static int nDragX, nDragY;
 static int nOldWindowX, nOldWindowY;
 static int nLeftButtonX, nLeftButtonY;
  
-bool useDialogs()
-{
-	return false;
-}
-
 void setPauseModeScreen(bool bPause)
 {
 	bRunPause = bPause;
@@ -80,16 +73,9 @@ void setPauseMode(bool bPause)
 // Returns true if a VidInit is needed when the window is resized
 static inline bool vidInitNeeded()
 {
-	if (nVidSelect == VID_PSGL) {
+	if (nVidSelect == VID_PSGL)
 		return true;
-	}
 	return false;
-}
-
-// Refresh the contents of the window when re-sizing it
-static inline void refreshWindow(bool bInitialise)
-{
- 
 }
 
 // simply reinit screen, added by regret
@@ -97,55 +83,9 @@ void simpleReinitScrn(const bool& reinitVid)
 {
 	VidReinit();
 }
- 
- 
 
 bool bLoading = false;
  
-static int scrnRegister()
-{
-	return 0;
-}
-
-int scrnTitle()
-{
-	return 0;
-}
-
-int scrnSize()
-{
-  	return 0;
-}
-
-// Init the screen window (create it)
-int scrnInit()
-{
-	return 0;
-}
-
-// Exit the screen window (destroy it)
-int scrnExit()
-{
-	return 0;
-}
-
-// ==> switch fullscreen, added by regret
-int scrnSwitchFull()
-{
-	return 0;
-}
-
-// fake fullscreen
-int scrnFakeFullscreen()
-{
-	return 0;
-}
-
-// set fullscreen (for opengl)
-int scrnSetFull(const bool& full)
-{ 
-	return 0;
-}
 // <== switch fullscreen
 
 void __cdecl scrnReinit()

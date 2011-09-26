@@ -12,40 +12,6 @@ static int bLastValDefined = 0;
 
 static HWND hInpdGi = NULL, hInpdPci = NULL, hInpdAnalog = NULL; // Combo boxes
 
-// Update which input is using which PC input
-static int InpdUseUpdate()
-{
-	return 0;
-}
-
-int InpdUpdate()
-{
-	return 0;
-}
-
-static int InpdListBegin()
-{
-	return 0;
-}
-
-// Make a list view of the game inputs
-int InpdListMake(int bBuild)
-{
-	InpdUseUpdate();
-	return 0;
-}
-
- 
-static int InpdInit()
-{
-	return 0;
-}
-
-static int InpdExit()
-{
-	return 0;
-}
-
 static void GameInpConfigOne(int nPlayer, int nPcDev, int nAnalog, struct GameInp* pgi, char* szi)
 {
 	switch (nPcDev)
@@ -148,7 +114,7 @@ TCHAR* defaultInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/d
 TCHAR* defaultNeoInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini");
 TCHAR* defaultCpsInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini");
 
-static TCHAR* GetDefaultInputFilename()
+static const char * GetDefaultInputFilename()
 {
 	TCHAR* fileName = defaultInpFilename;
 
@@ -165,7 +131,7 @@ static TCHAR* GetDefaultInputFilename()
 int SaveDefaultInput()
 {
 
-	TCHAR* fileName = GetDefaultInputFilename();
+	const char * fileName = GetDefaultInputFilename();
 	FILE* h = _tfopen(fileName, _T("wt"));
 
 	if (h == NULL)
@@ -183,23 +149,11 @@ int SaveDefaultInput()
 
 int loadDefaultInput()
 {
-	TCHAR* fileName = GetDefaultInputFilename();
+	const char * fileName = GetDefaultInputFilename();
 
 	// Read default inputs from file
 	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++)
 		GameInputAutoIni(nPlayer, fileName, true);
 
-	return 0;
-}
-// <== default input mapping
-
-// ==> save preset, added by regret
-static int savePreset(HWND hDlg)
-{
-	return 0;
-}
-
-int InpdCreate()
-{
 	return 0;
 }

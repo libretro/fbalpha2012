@@ -2770,7 +2770,6 @@ void InGameFrameMove()
 						RunExit();				 		 	
 						BurnerDrvExit();				// Make sure any game driver is exited
 						mediaExit();					// Exit media
-						scrnExit();						// Exit the screen window	
 
 						GameStatus = MENU;	
 					}
@@ -2946,7 +2945,6 @@ void FrameMove()
 				RunExit();				 		 	
 				BurnerDrvExit();				// Make sure any game driver is exited
 				mediaExit();					// Exit media
-				scrnExit();						// Exit the screen window					 				
 			}
 		}
 	}
@@ -3057,7 +3055,6 @@ void FrameMove()
 					RunExit();				 		 	
 					BurnerDrvExit();				// Make sure any game driver is exited
 					mediaExit();					// Exit media
-					scrnExit();						// Exit the screen window					 
 				}
 			}
 
@@ -3086,7 +3083,6 @@ void FrameMove()
 				RunExit();				 		 	
 				BurnerDrvExit();				// Make sure any game driver is exited
 				mediaExit();					// Exit media
-				scrnExit();						// Exit the screen window	
 			}
 
 			nPrevGame = nBurnDrvSelect;

@@ -23,8 +23,10 @@ static int nCurrentArc = -1;						// Archive which is currently open
 
 static void BArchiveListFree()
 {
-	if (List) {
-		for (int i = 0; i < nListCount; i++) {
+	if(List)
+	{
+		for (int i = 0; i < nListCount; i++)
+		{
 			free(List[i].szName);
 			List[i].szName = NULL;
 		}
@@ -37,23 +39,23 @@ static void BArchiveListFree()
 
 static int RomDescribe(struct BurnRomInfo* pri)
 {
-	if (!pri) {
+	if (!pri)
 		return 1;
-	}
  
 	return 0;
 }
 
 static int GetBArchiveError(int nState)
 {
-	switch (nState) {
+	switch (nState)
+	{
 		case STAT_OK:			// OK
 			return 0x0000;
 		case STAT_NOFIND:		// Not present
 			return 0x0001;
 		case STAT_SMALL:		// Incomplete
 			return 0x0001;
-		default:				// CRC wrong or too large
+		default:			// CRC wrong or too large
 			return 0x0100;
 	}
 
@@ -67,19 +69,20 @@ static int CheckRomsBoot()
 	BurnRomInfo ri;
 	int state = STAT_NOFIND;
 
-	for (int i = 0; i < nRomCount; i++) {
+	for (int i = 0; i < nRomCount; i++)
+	{
 		memset(&ri, 0, sizeof(ri));
 		BurnDrvGetRomInfo(&ri, i);			// Find information about the wanted rom
 
 		state = RomFind[i].nState;		// Get the state of the rom in the archive file
-		if (state != STAT_OK && ri.nType) {
-			if (ri.nCrc == 0) {
+		if (state != STAT_OK && ri.nType)
+		{
+			if (ri.nCrc == 0)
 				continue; // no_dump
-			}
 
-			if (!(ri.nType & BRF_OPT)) {
+			if (!(ri.nType & BRF_OPT))
 				return AUDIT_FAIL;
-			}
+
 			ret = AUDIT_PARTPASS;
 		}
 	}
@@ -113,28 +116,22 @@ static int CheckRoms()
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NOTFOUND), szName);
 			}
 
-			if (error == 0) {
+			if (error == 0)
 				nBArchiveError |= 0x2000;
-			}
 
-			if (ri.nType & BRF_ESS) {		// essential rom - without it the game may not run at all
+			if (ri.nType & BRF_ESS)			// essential rom - without it the game may not run at all
 				nBArchiveError |= error << 0;
-			}
-			if (ri.nType & BRF_PRG) {		// rom which contains program information
+			if (ri.nType & BRF_PRG)			// rom which contains program information
 				nBArchiveError |= error << 1;
-			}
-			if (ri.nType & BRF_GRA) {		// rom which contains graphics information
+			if (ri.nType & BRF_GRA) 		// rom which contains graphics information
 				nBArchiveError |= error << 2;
-			}
-			if (ri.nType & BRF_SND) {		// rom which contains sound information
+			if (ri.nType & BRF_SND)			// rom which contains sound information
 				nBArchiveError |= error << 3;
-			}
 		}
 	}
 
-	if (nBArchiveError & 0x0F0F) {
+	if (nBArchiveError & 0x0F0F)
 		nBArchiveError |= 0x4000;
-	}
 
 	return 0;
 }
@@ -143,9 +140,8 @@ static int CheckRoms()
 
 static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 {
-	if (i < 0 || i >= nRomCount || !RomFind) {
+	if (i < 0 || i >= nRomCount || !RomFind)
 		return 1;
-	}
 
 	BurnRomInfo ri;
 	memset(&ri, 0, sizeof(ri));
@@ -154,64 +150,52 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	// show what we're doing
 	char* pszRomName = NULL;
 	BurnDrvGetRomName(&pszRomName, i, 0);
-	if (pszRomName == NULL) {
+	if (pszRomName == NULL)
 		pszRomName = "unknown";
-	}
 
 	TCHAR szText[MAX_PATH];
 	_stprintf(szText, _T("Loading"));
 
-	if (ri.nType & (BRF_PRG | BRF_GRA | BRF_SND | BRF_BIOS)) {
-		if (ri.nType & BRF_BIOS) {
+	if (ri.nType & (BRF_PRG | BRF_GRA | BRF_SND | BRF_BIOS))
+	{
+		if (ri.nType & BRF_BIOS)
 			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("BIOS "));
-		}
-		if (ri.nType & BRF_PRG) {
+		if (ri.nType & BRF_PRG)
 			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("program "));
-		}
-		if (ri.nType & BRF_GRA) {
+		if (ri.nType & BRF_GRA)
 			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("graphics "));
-		}
-		if (ri.nType & BRF_SND) {
+		if (ri.nType & BRF_SND)
 			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("sound "));
-		}
 		_stprintf(szText + _tcslen(szText), _T("(%hs)..."), pszRomName);
-	} else {
-		_stprintf(szText + _tcslen(szText), _T(" %hs..."), pszRomName);
 	}
-	
+	else
+		_stprintf(szText + _tcslen(szText), _T(" %hs..."), pszRomName);
+
 	ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
-
-
 
 #ifndef LOAD_OPT_ROM
 	// skip loading optional rom
-	if (ri.nType & BRF_OPT) {
+	if (ri.nType & BRF_OPT)
 		return 0;
-	}
 #endif
 
-	if (RomFind[i].nState == STAT_NOFIND) {	// Rom not found in archive at all
+	if (RomFind[i].nState == STAT_NOFIND)	// Rom not found in archive at all
 		return 1;
-	}
 
 	int nWantZip = RomFind[i].nArchive;	// Which archive file it is in
 	if (nCurrentArc != nWantZip) {		// If we haven't got the right archive file currently open
 		archiveClose();
 		nCurrentArc = -1;
 
-		if (archiveOpen(szBArchiveName[nWantZip])) {
+		if (archiveOpen(szBArchiveName[nWantZip]))
 			return 1;
-		}
 
 		nCurrentArc = nWantZip;
 	}
 
 	// Read in file and return how many bytes we read
-	if (archiveLoadFile(Dest, ri.nLen, RomFind[i].nPos, pnWrote)) {
-		// Error loading from the archive file
- 
-		return 1;
-	}
+	if (archiveLoadFile(Dest, ri.nLen, RomFind[i].nPos, pnWrote))
+		return 1; // Error loading from the archive file
 
 	return 0;
 }
@@ -220,12 +204,11 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 
 int BArchiveStatus()
 {
-	if (!(nBArchiveError & 0x0F0F)) {
+	if (!(nBArchiveError & 0x0F0F))
 		return BARC_STATUS_OK;
-	}
-	if (nBArchiveError & 1) {
+
+	if (nBArchiveError & 1)
 		return BARC_STATUS_ERROR;
-	}
 
 	return BARC_STATUS_BADDATA;
 }
@@ -233,9 +216,8 @@ int BArchiveStatus()
 int BArchiveCheckRoms(const bool& bootApp)
 {
 #ifdef USE_OLD_AUDIT
-	if (bootApp) {
+	if (bootApp)
 		return CheckRomsBoot();
-	}
 #endif
 
 	// Check the roms to see if the code, graphics etc are complete
@@ -249,51 +231,47 @@ int BArchiveCheckRoms(const bool& bootApp)
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_PROBLEM));
 		}
 
-		if (nBArchiveError & 0x0101) {
+		if (nBArchiveError & 0x0101)
+		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
-			if (nBArchiveError & 0x0001) {
+			if (nBArchiveError & 0x0001)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_ESS_MISS));
-			} else {
+			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_ESS_BAD));
-			}
 		}
 		if (nBArchiveError & 0x0202) {
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_PRG));
-			if (nBArchiveError & 0x0002) {
+			if (nBArchiveError & 0x0002)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
-			} else {
+			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_BAD));
-			}
 		}
 		if (nBArchiveError & 0x0404) {
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_GRA));
-			if (nBArchiveError & 0x0004) {
+			if (nBArchiveError & 0x0004)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
-			} else {
+			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_BAD));
-			}
 		}
 		if (nBArchiveError & 0x0808) {
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_SND));
-			if (nBArchiveError & 0x0008) {
+			if (nBArchiveError & 0x0008)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
-			} else {
+			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_BAD));
-			}
 		}
 
 		// Catch non-categorised ROMs
 		if ((nBArchiveError & 0x0F0F) == 0) {
 			if (nBArchiveError & 0x0010) {
 				FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
-				if (nBArchiveError & 0x1000) {
+				if (nBArchiveError & 0x1000)
 					FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
-				} else {
+				else
 					FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_BAD));
-				}
 			}
 		}
 	} else {
@@ -308,28 +286,27 @@ int BArchiveCheckRoms(const bool& bootApp)
 
 int BArchiveOpen(bool bootApp)
 {
-	if (szBArchiveName == NULL) {
+	if (szBArchiveName == NULL)
 		return 1;
-	}
 
 	BArchiveClose(); // Make sure nothing is open
 
 	// Count the number of roms needed
-	for (nRomCount = 0; ; nRomCount++) {
-		if (BurnDrvGetRomInfo(NULL, nRomCount)) {
+	for (nRomCount = 0; ; nRomCount++)
+	{
+		if (BurnDrvGetRomInfo(NULL, nRomCount))
 			break;
-		}
 	}
-	if (nRomCount <= 0) {
+
+	if (nRomCount <= 0)
 		return 1;
-	}
 
 	// Create an array for holding lookups for each rom -> archive entries
 	unsigned int nMemLen = nRomCount * sizeof(ROMFIND);
 	RomFind = (ROMFIND*)malloc(nMemLen);
-	if (RomFind == NULL) {
+	if (RomFind == NULL)
 		return 1;
-	}
+
 	memset(RomFind, 0, nMemLen);
 
 	// Locate each archive file
@@ -340,123 +317,98 @@ int BArchiveOpen(bool bootApp)
 
 	for (int y = 0, z = 0; y < BZIP_MAX && z < BZIP_MAX; y++) {
 		// Get archive name without extension
-		if (BurnDrvGetArchiveName(&szName, y, false)) {
+		if (BurnDrvGetArchiveName(&szName, y, false))
 			break;
-		}
 
 		bFound = false;
 
-		for (int d = 0; d < DIRS_MAX; d++) {
-//			if (bFound) {
-//				break;
-//			}
-
-			if (!_tcsicmp(szAppRomPaths[d], _T(""))) {
+		for (int d = 0; d < DIRS_MAX; d++)
+		{
+			if (!_tcsicmp(szAppRomPaths[d], _T("")))
 				continue; // skip empty path
-			}
 
 			// check the archived rom file, modified by regret
 			_stprintf(szFullName, _T("%s%hs"), szAppRomPaths[d], szName);
 
 			checkvalue = archiveCheck(szFullName,  0  );
-			if (checkvalue == ARC_NONE) {
+			if (checkvalue == ARC_NONE)
 				continue;
-			}
 
 			bFound = true;
 
 			szBArchiveName[z] = (TCHAR*)malloc(MAX_PATH * sizeof(TCHAR));
-			if (!szBArchiveName[z]) {
+			if (!szBArchiveName[z])
 				continue;
-			}
+
 			_tcscpy(szBArchiveName[z], szFullName);
-			if (!bootApp) {
+			if (!bootApp)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_FOUND), szName, szBArchiveName[z]);
-			}
 			z++;
-
-#if 0
-			// Look further in the last path specified, so you can put files with ROMs
-			// used only by FB Alpha there without causing problems with dat files
-			if (d < DIRS_MAX - 2) {
-				d = DIRS_MAX - 2;
-			} else {
-				if (d >= DIRS_MAX - 1) {
-					break;
-				}
-			}
-#endif
 		}
 
-		if (!bootApp && !bFound) {
+		if (!bootApp && !bFound)
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NOTFOUND), szName);
-		}
 	}
 
-	if (!bootApp) {
+	if (!bootApp)
 		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n"));
-	}
 
 	// Locate the ROM data in the archive files
 	int nFind = -1;
 	BurnRomInfo ri;
 
-	for (int z = 0; z < BZIP_MAX; z++) {
-		if (!szBArchiveName[z]) {
+	for (int z = 0; z < BZIP_MAX; z++)
+	{
+		if (!szBArchiveName[z])
 			continue;
-		}
 
-		if (archiveOpen(szBArchiveName[z])) {
+		if (archiveOpen(szBArchiveName[z]))
 			continue;
-		}
+
 		archiveGetList(&List, &nListCount);	// Get the list of entries
 
 		nCurrentArc = z;
 
-		for (int i = 0; i < nRomCount; i++) {
-			if (RomFind[i].nState == STAT_OK) {
-				continue;					// Already found this and it's okay
-			}
+		for (int i = 0; i < nRomCount; i++)
+		{
+			if (RomFind[i].nState == STAT_OK)
+				continue;				// Already found this and it's okay
 
 			nFind = findRom(i, List, nListCount);
-			if (nFind < 0) {				// Couldn't find this rom at all
+			if (nFind < 0)					// Couldn't find this rom at all
 				continue;
-			}
 
-			RomFind[i].nArchive = z;		// Remember which archive file it is in
+			RomFind[i].nArchive = z;			// Remember which archive file it is in
 			RomFind[i].nPos = nFind;
-			RomFind[i].nState = STAT_OK;	// Set to found okay
+			RomFind[i].nState = STAT_OK;			// Set to found okay
 
 			memset(&ri, 0, sizeof(ri));
 			BurnDrvGetRomInfo(&ri, i);		// Get info about the rom
 
 			// if size good & nodump, try to load the file with correct filename
-			if (!(ri.nType & BRF_OPT) && (ri.nCrc != 0)) {
+			if (!(ri.nType & BRF_OPT) && (ri.nCrc != 0))
 				nTotalSize += ri.nLen;
-			}
 
-			if (List[nFind].nLen == ri.nLen) {
-				if (ri.nCrc) {									// If we know the CRC
-					if (List[nFind].nCrc != ri.nCrc) {			// Length okay, but CRC wrong
-						//if (!(nLoadMenuShowX & DISABLECRC)) {	// disable crc check
-							RomFind[i].nState = STAT_CRC;
-						//}
-					}
+			if (List[nFind].nLen == ri.nLen)
+			{
+				if (ri.nCrc)
+				{									// If we know the CRC
+					if (List[nFind].nCrc != ri.nCrc)		// Length okay, but CRC wrong
+						RomFind[i].nState = STAT_CRC;
 				}
-			} else {
-				if (List[nFind].nLen < ri.nLen) {
-						RomFind[i].nState = STAT_SMALL;			// Too small
-					} else {
-						RomFind[i].nState = STAT_LARGE;			// Too big
-					}
+			}
+			else
+			{
+				if (List[nFind].nLen < ri.nLen)
+					RomFind[i].nState = STAT_SMALL;			// Too small
+				else
+					RomFind[i].nState = STAT_LARGE;			// Too big
 			}
 
-			if (!bootApp) {
-				if (RomFind[i].nState != STAT_OK) {
+			if (!bootApp)
+			{
+				if (RomFind[i].nState != STAT_OK)
 					RomDescribe(&ri);
-
-					 
-				}
 			}
 		}
 

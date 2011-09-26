@@ -41,7 +41,8 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 	(void) param;
 	(void) userdata;
 
-	switch (status) {
+	switch (status)
+	{
 		case CELL_SYSUTIL_REQUEST_EXITGAME:  
 			is_running = 0;
 			exitGame = 1;
@@ -80,7 +81,6 @@ static int AppInit()
 	// print a warning if we're running for the 1st time
 	if (nIniVersion < nBurnVer)
 	{
-		scrnInit();		 
 		configAppSaveXml(); // Create initial config file
 	}
 
@@ -88,10 +88,10 @@ static int AppInit()
 	BurnLibInit();
 
 	nVidSelect = VID_PSGL;
+
 	if (audio.select(audSelect))
-	{
 		audio.select(_T("CellAudio"));
-	}
+
 	// Build the ROM information
 
 	getAllRomsetInfo(); 
@@ -109,7 +109,6 @@ static int AppExit()
 {
 	BurnerDrvExit();				// Make sure any game driver is exited
 	mediaExit();					// Exit media
-	scrnExit();					// Exit the screen window
 	BurnLibExit();					// Exit the Burn library
 
 	freeAuditState();				// Free audit state 
@@ -117,13 +116,6 @@ static int AppExit()
  
 
 	return 0;
-}
-
-void AppCleanup()
-{
- 
-	AppExit();
-	strConvClean();
 }
 
 // Main program entry point
@@ -181,7 +173,6 @@ int  main(int argc, char **argv)
 	cell_pad_input_deinit();
 
 	configAppSaveXml();				// Save config for the application
-	strConvClean();					// Free string conversion
 
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     

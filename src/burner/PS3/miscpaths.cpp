@@ -23,7 +23,7 @@ TCHAR szAppRomPaths[DIRS_MAX][MAX_PATH] = {
 };
  
  
-const TCHAR* getMiscPath(unsigned int dirType)
+const char * getMiscPath(unsigned int dirType)
 {
 	if (dirType < PATH_PREVIEW || dirType >= PATH_SUM)
 		return NULL;
@@ -31,7 +31,7 @@ const TCHAR* getMiscPath(unsigned int dirType)
 	return szMiscPaths[dirType];
 }
 
-const TCHAR* getMiscArchiveName(unsigned int dirType)
+const char * getMiscArchiveName(unsigned int dirType)
 {
 	if (dirType < PATH_PREVIEW || dirType >= PATH_SUM)
 		return NULL;

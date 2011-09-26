@@ -85,7 +85,8 @@ static inline RomInfo* getSetHasRom(GameInfo* info, string romname)
 	lowerString(romname);
 
 	map<unsigned int, RomInfo>::iterator iter = info->roms.begin();
-	for (; iter != info->roms.end(); iter++) {
+	for (; iter != info->roms.end(); iter++)
+	{
 		if (iter->second.name == romname)
 			return &(iter->second);
 	}

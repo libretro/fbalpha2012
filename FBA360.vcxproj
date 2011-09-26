@@ -1,0 +1,1159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="CodeAnalysis|Win32">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="PGO Instrument|Win32">
+      <Configuration>PGO Instrument</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="PGO Instrument|Xbox 360">
+      <Configuration>PGO Instrument</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Win32">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Win32">
+      <Configuration>Profile</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Win32">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{40C83C90-1A54-47D2-B814-868F1BF8588F}</ProjectGuid>
+    <RootNamespace>FBA360</RootNamespace>
+    <Keyword>Xbox360Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">CodeAnalysis\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">CodeAnalysis\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">Profile\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">Profile\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">Profile_FastCap\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">Profile_FastCap\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">Release_LTCG\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">Release_LTCG\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;TIXML_USE_TICPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallAttributedProfiling>Disabled</CallAttributedProfiling>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilibd.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xboxkrnl.lib;xnetd.lib;xaudiod2.lib;xactd3.lib;x3daudiod.lib;xmcored.lib;xbdm.lib;vcompd.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;xuivideod.lib;xuihtml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <StackReserveSize>524288</StackReserveSize>
+      <StackCommitSize>524288</StackCommitSize>
+    </Link>
+    <Deploy>
+      <DeploymentFiles>$(RemoteRoot)=$(ImagePath);$(RemoteRoot)\media=$(OutDir)media;%(DeploymentFiles)</DeploymentFiles>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+      <PREfast>AnalyzeOnly</PREfast>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilibd.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xboxkrnl.lib;xnetd.lib;xaudiod2.lib;xactd3.lib;x3daudiod.lib;xmcored.lib;xbdm.lib;vcompd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilibi.lib;d3d9i.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3i.lib;x3daudioi.lib;xmcorei.lib;xbdm.lib;vcomp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>xapilib.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallAttributedProfiling>Fastcap</CallAttributedProfiling>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilib.lib;d3d9.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3.lib;x3daudio.lib;xmcore.lib;vcomp.lib;xbdm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <OpenMPSupport>true</OpenMPSupport>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TrapIntegerDividesOptimization>true</TrapIntegerDividesOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilib.lib;d3d9.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3.lib;x3daudio.lib;xmcore.lib;vcomp.lib;xuirender.lib;xuirun.lib;xmedia2.lib;xonline.lib;xuihtml.lib;xuivideo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <StackReserveSize>524288</StackReserveSize>
+      <StackCommitSize>524288</StackCommitSize>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <FunctionOrder>
+      </FunctionOrder>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Deploy>
+      <DeploymentFiles>$(RemoteRoot)=$(ImagePath);$(RemoteRoot)\media=$(OutDir)media;%(DeploymentFiles)</DeploymentFiles>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TrapIntegerDividesOptimization>true</TrapIntegerDividesOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilib.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3ltcg.lib;x3daudioltcg.lib;xmcoreltcg.lib;vcomp.lib;xuirender.lib;xuirun.lib;xmedia2.lib;xonline.lib;xuihtml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <StackReserveSize>524288</StackReserveSize>
+      <StackCommitSize>524288</StackCommitSize>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Deploy>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <OpenMPSupport>false</OpenMPSupport>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TrapIntegerDividesOptimization>true</TrapIntegerDividesOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xapilib.lib;d3d9.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3.lib;x3daudio.lib;xmcore.lib;vcomp.lib;xuirender.lib;xuirun.lib;xmedia2.lib;xonline.lib;xuihtml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <StackReserveSize>524288</StackReserveSize>
+      <StackCommitSize>524288</StackCommitSize>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Deploy>
+      <DeploymentFiles>$(RemoteRoot)=$(ImagePath);$(RemoteRoot)\media=$(OutDir)media;%(DeploymentFiles)</DeploymentFiles>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\burn\8255ppi.cpp" />
+    <ClCompile Include="src\burn\ay8910.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\burn.cpp" />
+    <ClCompile Include="src\burn\burn_gun.cpp" />
+    <ClCompile Include="src\burn\burn_led.cpp" />
+    <ClCompile Include="src\burn\burn_sound.cpp" />
+    <ClCompile Include="src\burn\burn_sound_c.cpp" />
+    <ClCompile Include="src\burn\burn_y8950.cpp" />
+    <ClCompile Include="src\burn\burn_ym2151.cpp" />
+    <ClCompile Include="src\burn\burn_ym2203.cpp" />
+    <ClCompile Include="src\burn\burn_ym2413.cpp" />
+    <ClCompile Include="src\burn\burn_ym2608.cpp" />
+    <ClCompile Include="src\burn\burn_ym2610.cpp" />
+    <ClCompile Include="src\burn\burn_ym2612.cpp" />
+    <ClCompile Include="src\burn\burn_ym3526.cpp" />
+    <ClCompile Include="src\burn\burn_ym3812.cpp" />
+    <ClCompile Include="src\burn\burn_ymf278b.cpp" />
+    <ClCompile Include="src\burn\cartridge.cpp" />
+    <ClCompile Include="src\burn\cheat.cpp" />
+    <ClCompile Include="src\burn\dac.cpp" />
+    <ClCompile Include="src\burn\eeprom.cpp" />
+    <ClCompile Include="src\burn\es8712.cpp" />
+    <ClCompile Include="src\burn\fm.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\fmopl.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\hd6309_intf.cpp" />
+    <ClCompile Include="src\burn\ics2115.cpp" />
+    <ClCompile Include="src\burn\k007232.cpp" />
+    <ClCompile Include="src\burn\k051649.cpp" />
+    <ClCompile Include="src\burn\k053260.cpp" />
+    <ClCompile Include="src\burn\k054539.cpp" />
+    <ClCompile Include="src\burn\load.cpp" />
+    <ClCompile Include="src\burn\m6502_intf.cpp" />
+    <ClCompile Include="src\burn\m6800_intf.cpp" />
+    <ClCompile Include="src\burn\m6809_intf.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_ashnojoe.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_lordgun.cpp" />
+    <ClCompile Include="src\burn\msm5205.cpp" />
+    <ClCompile Include="src\burn\msm6295.cpp" />
+    <ClCompile Include="src\burn\namco_snd.cpp" />
+    <ClCompile Include="src\burn\rf5c68.cpp" />
+    <ClCompile Include="src\burn\segapcm.cpp" />
+    <ClCompile Include="src\burn\seibusnd.cpp" />
+    <ClCompile Include="src\burn\sek.cpp" />
+    <ClCompile Include="src\burn\sn76496.cpp" />
+    <ClCompile Include="src\burn\tiles_generic.cpp" />
+    <ClCompile Include="src\burn\timer.cpp" />
+    <ClCompile Include="src\burn\upd7759.cpp" />
+    <ClCompile Include="src\burn\vez.cpp" />
+    <ClCompile Include="src\burn\x1010.cpp" />
+    <ClCompile Include="src\burn\ym2151.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\ym2413.cpp" />
+    <ClCompile Include="src\burn\ymdeltat.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\ymf278b.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\burn\ymz280b.cpp" />
+    <ClCompile Include="src\burn\zet.cpp" />
+    <ClCompile Include="src\burn\atari\d_gauntlet.cpp" />
+    <ClCompile Include="src\burn\capcom\cps.cpp" />
+    <ClCompile Include="src\burn\capcom\cps2crpt.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_config.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_draw.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_mem.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_obj.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_pal.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_run.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_rw.cpp" />
+    <ClCompile Include="src\burn\capcom\cps_scr.cpp" />
+    <ClCompile Include="src\burn\capcom\cpsr.cpp" />
+    <ClCompile Include="src\burn\capcom\cpsrd.cpp" />
+    <ClCompile Include="src\burn\capcom\cpst.cpp" />
+    <ClCompile Include="src\burn\capcom\ctv.cpp" />
+    <ClCompile Include="src\burn\capcom\d_cps1.cpp" />
+    <ClCompile Include="src\burn\capcom\d_cps2.cpp" />
+    <ClCompile Include="src\burn\capcom\kabuki.cpp" />
+    <ClCompile Include="src\burn\capcom\ps.cpp" />
+    <ClCompile Include="src\burn\capcom\ps_m.cpp" />
+    <ClCompile Include="src\burn\capcom\ps_z.cpp" />
+    <ClCompile Include="src\burn\capcom\qs.cpp" />
+    <ClCompile Include="src\burn\capcom\qs_c.cpp" />
+    <ClCompile Include="src\burn\capcom\qs_z.cpp" />
+    <ClCompile Include="src\burn\cave\cave.cpp" />
+    <ClCompile Include="src\burn\cave\cave_palette.cpp" />
+    <ClCompile Include="src\burn\cave\cave_sprite.cpp" />
+    <ClCompile Include="src\burn\cave\cave_tile.cpp" />
+    <ClCompile Include="src\burn\cave\d_dodonpachi.cpp" />
+    <ClCompile Include="src\burn\cave\d_donpachi.cpp" />
+    <ClCompile Include="src\burn\cave\d_esprade.cpp" />
+    <ClCompile Include="src\burn\cave\d_feversos.cpp" />
+    <ClCompile Include="src\burn\cave\d_gaia.cpp" />
+    <ClCompile Include="src\burn\cave\d_guwange.cpp" />
+    <ClCompile Include="src\burn\cave\d_hotdogst.cpp" />
+    <ClCompile Include="src\burn\cave\d_mazinger.cpp" />
+    <ClCompile Include="src\burn\cave\d_metmqstr.cpp" />
+    <ClCompile Include="src\burn\cave\d_pwrinst2.cpp" />
+    <ClCompile Include="src\burn\cave\d_sailormn.cpp" />
+    <ClCompile Include="src\burn\cave\d_uopoko.cpp" />
+    <ClCompile Include="src\burn\cps3\cps3run.cpp" />
+    <ClCompile Include="src\burn\cps3\cps3snd.cpp" />
+    <ClCompile Include="src\burn\cps3\d_cps3.cpp" />
+    <ClCompile Include="src\burn\galaxian\d_galaxian.cpp" />
+    <ClCompile Include="src\burn\galaxian\gal_gfx.cpp" />
+    <ClCompile Include="src\burn\galaxian\gal_run.cpp" />
+    <ClCompile Include="src\burn\galaxian\gal_sound.cpp" />
+    <ClCompile Include="src\burn\galaxian\gal_stars.cpp" />
+    <ClCompile Include="src\burn\konami\d_88games.cpp" />
+    <ClCompile Include="src\burn\konami\d_ajax.cpp" />
+    <ClCompile Include="src\burn\konami\d_aliens.cpp" />
+    <ClCompile Include="src\burn\konami\d_blockhl.cpp" />
+    <ClCompile Include="src\burn\konami\d_bottom9.cpp" />
+    <ClCompile Include="src\burn\konami\d_contra.cpp" />
+    <ClCompile Include="src\burn\konami\d_crimfght.cpp" />
+    <ClCompile Include="src\burn\konami\d_gbusters.cpp" />
+    <ClCompile Include="src\burn\konami\d_gradius3.cpp" />
+    <ClCompile Include="src\burn\konami\d_hcastle.cpp" />
+    <ClCompile Include="src\burn\konami\d_hexion.cpp" />
+    <ClCompile Include="src\burn\konami\d_mainevt.cpp" />
+    <ClCompile Include="src\burn\konami\d_parodius.cpp" />
+    <ClCompile Include="src\burn\konami\d_rollerg.cpp" />
+    <ClCompile Include="src\burn\konami\d_simpsons.cpp" />
+    <ClCompile Include="src\burn\konami\d_spy.cpp" />
+    <ClCompile Include="src\burn\konami\d_surpratk.cpp" />
+    <ClCompile Include="src\burn\konami\d_thunderx.cpp" />
+    <ClCompile Include="src\burn\konami\d_tmnt.cpp" />
+    <ClCompile Include="src\burn\konami\d_twin16.cpp" />
+    <ClCompile Include="src\burn\konami\d_ultraman.cpp" />
+    <ClCompile Include="src\burn\konami\d_vendetta.cpp" />
+    <ClCompile Include="src\burn\konami\d_xmen.cpp" />
+    <ClCompile Include="src\burn\konami\k051316.cpp" />
+    <ClCompile Include="src\burn\konami\k051733.cpp" />
+    <ClCompile Include="src\burn\konami\k051960.cpp" />
+    <ClCompile Include="src\burn\konami\k052109.cpp" />
+    <ClCompile Include="src\burn\konami\K053245.cpp" />
+    <ClCompile Include="src\burn\konami\k053247.cpp" />
+    <ClCompile Include="src\burn\konami\K053251.cpp" />
+    <ClCompile Include="src\burn\konami\k053936.cpp" />
+    <ClCompile Include="src\burn\konami\k054000.cpp" />
+    <ClCompile Include="src\burn\konami\konamiic.cpp" />
+    <ClCompile Include="src\burn\misc\d_parent.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_1945kiii.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_aerofgt.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_aquarium.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_biomtoy.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_bloodbro.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_crospang.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_crshrace.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_darkseal.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_dcon.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_ddragon3.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_deniam.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_diverboy.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_drtomy.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_egghunt.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_esd16.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_f1gp.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_fstarfrc.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_funybubl.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_fuukifg3.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_gaiden.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_galpanic.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_gotcha.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_gumbo.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_hyperpac.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_kaneko16.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_m90.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_m92.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_mcatadv.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_midas.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_mogura.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_mugsmash.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_news.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_nmg5.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_nmk16.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_ohmygod.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_pass.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_pirates.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_powerins.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_pushman.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_raiden.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_seta2.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_shadfrce.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_silkroad.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_speedspn.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_suna16.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_suprnova.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_taotaido.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_tumbleb.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_unico.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_vmetal.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_welltris.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_wwfwfest.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_yunsun16.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\d_zerozone.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\irem_cpu.cpp" />
+    <ClCompile Include="src\burn\misc\post90s\nmk004.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_1942.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_1943.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_4enraya.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_airbustr.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_ambush.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_angelkds.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_arabian.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_arkanoid.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_armedf.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_bankp.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_baraduke.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_bionicc.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_blktiger.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_blockout.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_blueprnt.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_bombjack.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_commando.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_ddragon.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_dec0.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_dec8.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_dotrikun.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_epos.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_exedexes.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_flstory.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_funkybee.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_galaga.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_gberet.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_ginganin.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_gng.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_gunsmoke.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_gyruss.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_higemaru.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_ikki.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_jack.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_kangaroo.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_karnov.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_kyugo.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_ladybug.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_lkage.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_lwings.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_madgear.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_markham.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_meijinsn.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_minivdr.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_mitchell.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_mole.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_mrdo.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_mrflea.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_mystston.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_pacman.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_pkunwar.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_pooyan.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_prehisle.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_quizo.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_rallyx.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_renegade.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_retofinv.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_route16.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_royalmah.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_scotrsht.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_scregg.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_sf.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_skyarmy.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_skyfox.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_skykid.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_snk68.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_solomon.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_sonson.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_srumbler.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_tecmo.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_tigerheli.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_tigeroad.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_tnzs.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_toki.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_vigilant.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_vulgus.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_wallc.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_wc90.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\d_wwfsstar.cpp" />
+    <ClCompile Include="src\burn\misc\pre90s\tnzs_prot.cpp" />
+    <ClCompile Include="src\burn\neogeo\d_neogeo.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_decrypt.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_palette.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_run.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_sprite.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_text.cpp" />
+    <ClCompile Include="src\burn\neogeo\neo_upd4990a.cpp" />
+    <ClCompile Include="src\burn\neogeo\neogeo.cpp" />
+    <ClCompile Include="src\burn\neogeo\romsave.cpp" />
+    <ClCompile Include="src\burn\pgm\d_pgm.cpp" />
+    <ClCompile Include="src\burn\pgm\pgm_crypt.cpp" />
+    <ClCompile Include="src\burn\pgm\pgm_draw.cpp" />
+    <ClCompile Include="src\burn\pgm\pgm_prot.cpp" />
+    <ClCompile Include="src\burn\pgm\pgm_run.cpp" />
+    <ClCompile Include="src\burn\psikyo\d_psikyo.cpp" />
+    <ClCompile Include="src\burn\psikyo\d_psikyosh.cpp" />
+    <ClCompile Include="src\burn\psikyo\psikyo_palette.cpp" />
+    <ClCompile Include="src\burn\psikyo\psikyo_sprite.cpp" />
+    <ClCompile Include="src\burn\psikyo\psikyo_tile.cpp" />
+    <ClCompile Include="src\burn\psikyo\psikyosh_render.cpp" />
+    <ClCompile Include="src\burn\sega\d_hangon.cpp" />
+    <ClCompile Include="src\burn\sega\d_outrun.cpp" />
+    <ClCompile Include="src\burn\sega\d_sys1.cpp" />
+    <ClCompile Include="src\burn\sega\d_sys16a.cpp" />
+    <ClCompile Include="src\burn\sega\d_sys16b.cpp" />
+    <ClCompile Include="src\burn\sega\d_sys18.cpp" />
+    <ClCompile Include="src\burn\sega\d_xbrd.cpp" />
+    <ClCompile Include="src\burn\sega\d_ybrd.cpp" />
+    <ClCompile Include="src\burn\sega\fd1089.cpp" />
+    <ClCompile Include="src\burn\sega\fd1094.cpp" />
+    <ClCompile Include="src\burn\sega\genesis_vid.cpp" />
+    <ClCompile Include="src\burn\sega\mc8123.cpp" />
+    <ClCompile Include="src\burn\sega\sys16_fd1094.cpp" />
+    <ClCompile Include="src\burn\sega\sys16_gfx.cpp" />
+    <ClCompile Include="src\burn\sega\sys16_run.cpp" />
+    <ClCompile Include="src\burn\taito\cchip.cpp" />
+    <ClCompile Include="src\burn\taito\d_asuka.cpp" />
+    <ClCompile Include="src\burn\taito\d_bublbobl.cpp" />
+    <ClCompile Include="src\burn\taito\d_darius2.cpp" />
+    <ClCompile Include="src\burn\taito\d_taitof2.cpp" />
+    <ClCompile Include="src\burn\taito\d_taitomisc.cpp" />
+    <ClCompile Include="src\burn\taito\d_taitox.cpp" />
+    <ClCompile Include="src\burn\taito\d_taitoz.cpp" />
+    <ClCompile Include="src\burn\taito\pc080sn.cpp" />
+    <ClCompile Include="src\burn\taito\pc090oj.cpp" />
+    <ClCompile Include="src\burn\taito\taito.cpp" />
+    <ClCompile Include="src\burn\taito\taito_ic.cpp" />
+    <ClCompile Include="src\burn\taito\taito_m68705.cpp" />
+    <ClCompile Include="src\burn\taito\tc0100scn.cpp" />
+    <ClCompile Include="src\burn\taito\tc0110pcr.cpp" />
+    <ClCompile Include="src\burn\taito\tc0140syt.cpp" />
+    <ClCompile Include="src\burn\taito\tc0150rod.cpp" />
+    <ClCompile Include="src\burn\taito\tc0220ioc.cpp" />
+    <ClCompile Include="src\burn\taito\tc0280grd.cpp" />
+    <ClCompile Include="src\burn\taito\tc0360pri.cpp" />
+    <ClCompile Include="src\burn\taito\tc0480scp.cpp" />
+    <ClCompile Include="src\burn\taito\tc0510nio.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_batrider.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_batsugun.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_battleg.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_bbakraid.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_demonwld.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_dogyuun.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_hellfire.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_kbash.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_kbash2.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_mahoudai.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_outzone.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_rallybik.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_samesame.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_shippumd.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_snowbro2.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_tekipaki.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_truxton.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_truxton2.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_vfive.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_vimana.cpp" />
+    <ClCompile Include="src\burn\toaplan\d_zerowing.cpp" />
+    <ClCompile Include="src\burn\toaplan\toa_bcu2.cpp" />
+    <ClCompile Include="src\burn\toaplan\toa_extratext.cpp" />
+    <ClCompile Include="src\burn\toaplan\toa_gp9001.cpp" />
+    <ClCompile Include="src\burn\toaplan\toa_palette.cpp" />
+    <ClCompile Include="src\burn\toaplan\toaplan.cpp" />
+    <ClCompile Include="src\burn\toaplan\toaplan1.cpp" />
+    <ClCompile Include="src\burn\megadrive\d_megadrive.cpp" />
+    <ClCompile Include="src\burn\megadrive\megadrive.cpp" />
+    <ClCompile Include="src\cpu\arm7\arm7.cpp" />
+    <ClCompile Include="src\cpu\arm7\arm7_intf.cpp" />
+    <ClCompile Include="src\cpu\hd6309\hd6309.cpp" />
+    <ClCompile Include="src\cpu\i8039\i8039.cpp" />
+    <ClCompile Include="src\cpu\konami\konami.cpp" />
+    <ClCompile Include="src\cpu\konami\konami_intf.cpp" />
+    <ClCompile Include="src\cpu\m68k\m68kcpu.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\cpu\m68k\m68kopac.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\cpu\m68k\m68kopdm.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\cpu\m68k\m68kopnz.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\cpu\m68k\m68kops.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\cpu\m6502\m6502.cpp" />
+    <ClCompile Include="src\cpu\z80\z80.cpp" />
+    <ClCompile Include="src\cpu\z80\z80daisy.cpp" />
+    <ClCompile Include="src\cpu\sh2\sh2.cpp" />
+    <ClCompile Include="src\cpu\m6805\m6805.cpp" />
+    <ClCompile Include="src\cpu\m6805\m6805_intf.cpp" />
+    <ClCompile Include="src\cpu\m6800\m6800.cpp" />
+    <ClCompile Include="src\cpu\m6809\m6809.cpp" />
+    <ClCompile Include="src\cpu\nec\nec.cpp" />
+    <ClCompile Include="src\cpu\s2650\s2650.cpp" />
+    <ClCompile Include="src\cpu\s2650\s2650_intf.cpp" />
+    <ClCompile Include="src\burner\archive.cpp" />
+    <ClCompile Include="src\burner\autofire.cpp" />
+    <ClCompile Include="src\burner\combo.cpp" />
+    <ClCompile Include="src\burner\cong.cpp" />
+    <ClCompile Include="src\burner\dat.cpp" />
+    <ClCompile Include="src\burner\dynhuff.cpp" />
+    <ClCompile Include="src\burner\gamc.cpp" />
+    <ClCompile Include="src\burner\gami.cpp" />
+    <ClCompile Include="src\burner\ips.cpp" />
+    <ClCompile Include="src\burner\misc.cpp" />
+    <ClCompile Include="src\burner\sshot.cpp" />
+    <ClCompile Include="src\burner\state.cpp" />
+    <ClCompile Include="src\burner\statec.cpp" />
+    <ClCompile Include="src\burner\tracklst.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\burner\wave_writer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\burner\Xbox360\audit.cpp" />
+    <ClCompile Include="src\burner\Xbox360\barchive.cpp" />
+    <ClCompile Include="src\burner\Xbox360\config.cpp" />
+    <ClCompile Include="src\burner\Xbox360\drv.cpp" />
+    <ClCompile Include="src\burner\Xbox360\inpc.cpp" />
+    <ClCompile Include="src\burner\Xbox360\inpcheat.cpp" />
+    <ClCompile Include="src\burner\Xbox360\inpd.cpp" />
+    <ClCompile Include="src\burner\Xbox360\inpdipsw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\burner\Xbox360\inps.cpp" />
+    <ClCompile Include="src\burner\Xbox360\localise.cpp" />
+    <ClCompile Include="src\burner\Xbox360\main.cpp" />
+    <ClCompile Include="src\burner\Xbox360\media.cpp" />
+    <ClCompile Include="src\burner\Xbox360\misc_win32.cpp" />
+    <ClCompile Include="src\burner\Xbox360\miscpaths.cpp" />
+    <ClCompile Include="src\burner\Xbox360\popup_Xbox360.cpp" />
+    <ClCompile Include="src\burner\Xbox360\run.cpp" />
+    <ClCompile Include="src\burner\Xbox360\scrn.cpp" />
+    <ClCompile Include="src\burner\Xbox360\stated.cpp" />
+    <ClCompile Include="src\burner\Xbox360\strconv.cpp" />
+    <ClCompile Include="src\interface\aud_dsp.cpp" />
+    <ClCompile Include="src\interface\aud_interface.cpp" />
+    <ClCompile Include="src\interface\inp_interface.cpp" />
+    <ClCompile Include="src\interface\interface.cpp" />
+    <ClCompile Include="src\interface\lowpass2.cpp" />
+    <ClCompile Include="src\interface\prf_interface.cpp" />
+    <ClCompile Include="src\interface\vid_filter.cpp" />
+    <ClCompile Include="src\interface\vid_interface.cpp" />
+    <ClCompile Include="src\interface\vid_support.cpp" />
+    <ClCompile Include="src\interface\filter\2xpm.cpp" />
+    <ClCompile Include="src\interface\filter\2xsai.cpp" />
+    <ClCompile Include="src\interface\filter\admame.cpp" />
+    <ClCompile Include="src\interface\filter\epx.cpp" />
+    <ClCompile Include="src\interface\filter\hq2x.cpp" />
+    <ClCompile Include="src\interface\filter\hq2xs_16.cpp" />
+    <ClCompile Include="src\interface\filter\hq3x.cpp" />
+    <ClCompile Include="src\interface\filter\hq_shared32.cpp" />
+    <ClCompile Include="src\interface\filter\interpolated_scanline.cpp" />
+    <ClCompile Include="src\interface\filter\scanline.cpp" />
+    <ClCompile Include="src\interface\sdl\aud_sdl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\interface\sdl\inp_sdl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\interface\sdl\vid_sdlfx.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\interface\Xbox360\InGameOptions.cpp" />
+    <ClCompile Include="src\interface\Xbox360\inp_xinput2.cpp" />
+    <ClCompile Include="src\interface\Xbox360\RomList.cpp" />
+    <ClCompile Include="src\interface\Xbox360\Splash.cpp" />
+    <ClCompile Include="src\interface\Xbox360\vid_d3d9.cpp" />
+    <ClCompile Include="src\interface\Xbox360\vid_directx_support.cpp" />
+    <ClCompile Include="src\lib\ticpp\ticpp.cpp" />
+    <ClCompile Include="src\lib\ticpp\ticpp_sugar.cpp" />
+    <ClCompile Include="src\lib\ticpp\tinystr.cpp" />
+    <ClCompile Include="src\lib\ticpp\tinyxml.cpp" />
+    <ClCompile Include="src\lib\ticpp\tinyxmlerror.cpp" />
+    <ClCompile Include="src\lib\ticpp\tinyxmlparser.cpp" />
+    <ClCompile Include="src\lib\libpng\png.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngerror.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngget.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngmem.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngpread.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngread.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngrio.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngrtran.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngrutil.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngset.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngtrans.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngwio.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngwrite.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngwtran.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\libpng\pngwutil.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zAlloc.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zBuf.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zCrc.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zDecode.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zExtract.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zHeader.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zIn.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zItem.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\7zStream.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\Bcj2.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\fex\Binary_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\blargg_common.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\blargg_errors.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\7z_C\Bra86.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\fex\Data_Reader.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\fex.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\File_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\Gzip_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\Gzip_Reader.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\7z_C\Lzma2Dec.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\7z_C\LzmaDec.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\File_Extractor\fex\Rar_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\Zip7_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\Zip_Extractor.cpp" />
+    <ClCompile Include="src\lib\File_Extractor\fex\Zlib_Inflater.cpp" />
+    <ClCompile Include="src\lib\zlib\adler32.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\compress.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\crc32.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\deflate.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\inffast.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\inflate.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\inftrees.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\trees.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\uncompr.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\lib\zlib\zutil.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\burn\capcom\ctv_do.h" />
+    <ClInclude Include="src\burn\cave\cave_tile_render.h" />
+    <ClInclude Include="src\burn\misc\post90s\irem_cpu.h" />
+    <ClInclude Include="src\burn\misc\post90s\kanekotb.h" />
+    <ClInclude Include="src\burn\misc\post90s\nmk004.h" />
+    <ClInclude Include="src\burn\psikyo\psikyo_render.h" />
+    <ClInclude Include="src\burn\psikyo\psikyo_sprite_func.h" />
+    <ClInclude Include="src\burn\toaplan\toa_gp9001_render.h" />
+    <ClInclude Include="src\burn\megadrive\megadrive.h" />
+    <ClInclude Include="src\interface\Xbox360\main.h" />
+    <ClInclude Include="src\interface\Xbox360\InGameOptions.h" />
+    <ClInclude Include="src\interface\Xbox360\RomList.h" />
+    <ClInclude Include="src\interface\Xbox360\Splash.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\interface\Xbox360\Skin\FBA.ttf">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">copy %(FullPath) $(OutDir)media\FBA.ttf
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(OutDir)media\FBA.ttf;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">copy %(FullPath) $(OutDir)media\FBA.ttf
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">$(OutDir)media\FBA.ttf;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">copy %(FullPath) $(OutDir)media\FBA.ttf
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(OutDir)media\FBA.ttf;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\interface\Xbox360\Skin\skin.xui">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">xuipkg /nologo /d /o "$(OutDir)media\FBNext.xzp" src\Interface\Xbox360\Skin\*  src\Interface\Xbox360\Skin\Graphics\*
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(OutDir)media\FBNext.xzp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">xuipkg /nologo /d /a "$(OutDir)media\FBNext.xzp" src\Interface\Xbox360\Skin\*  src\Interface\Xbox360\Skin\Graphics\*
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='PGO Instrument|Xbox 360'">$(OutDir)media\FBNext.xzp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">xuipkg /nologo /d /o "$(OutDir)media\FBNext.xzp" src\Interface\Xbox360\Skin\*  src\Interface\Xbox360\Skin\Graphics\*
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(OutDir)media\FBNext.xzp;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,250 @@
+CELL_BUILD_TOOLS = GCC
+CELL_SDK ?= /usr/local/cell
+CELL_MK_DIR             ?= $(CELL_SDK)/samples/mk
+include $(CELL_MK_DIR)/sdk.makedef.mk
+MKFSELF_NPDRM           = $(CELL_HOST_PATH)/bin/make_fself_npdrm
+MKPKG_NPDRM             = $(CELL_HOST_PATH)/bin/make_package_npdrm
+
+STRIP                   = $(CELL_HOST_PATH)/ppu/bin/ppu-lv2-strip
+
+#Python binary - only useful for PSL1ght scripts
+PYTHONBIN		         = python2.7
+MKSELF                  = make_self_npdrm
+MKPKG_PSLIGHT           = buildtools/PS3Py/pkg.py
+PKG_FINALIZE	         = package_finalize
+
+SRC_DIR                 = ./src
+ZLIB_DIR                = ./src/lib/zlib
+TICPP_DIR               = ./src/lib/ticpp
+FEX_DIR                 = ./src/lib/File_Extractor
+BURN_DIR                = ./src/burn
+BURNER_DIR              = ./src/burner
+CPU_DIR                 = ./src/cpu
+GENERATED_DIR   = ./src/generated
+INTERFACE_DIR   = ./src/interface
+
+REVISION_NO = 487
+
+INCLUDE                 =       -Isrc/burn              \
+                                        -Isrc/burner            \
+                                        -Isrc/generated \
+                                        -Isrc/cpu/m6809 \
+                                        -Isrc/cpu/m6805 \
+                                        -Isrc/cpu/m6800 \
+                                        -Isrc/cpu/nec           \
+                                        -Isrc/cpu/hd6309        \
+                                        -Isrc/cpu/arm7  \
+                                        -Isrc/cpu/i8039 \
+                                        -Isrc/cpu/konami        \
+                                        -Isrc/cpu/m68k  \
+                                        -Isrc/cpu/m6502 \
+                                        -Isrc/cpu/z80           \
+                                        -Isrc/cpu/sh2           \
+                                        -Isrc/cpu/s2650 \
+                                        -Isrc/burner/PS3        \
+                                        -Isrc/interface \
+                                        -Isrc/interface/PS3     \
+                                        -Isrc/interface/PS3/cellframework2     \
+                                        -Isrc/lib/zlib  \
+                                        -Isrc/burn/capcom       \
+                                        -Isrc/burn/cave \
+                                        -Isrc/burn/neogeo       \
+                                        -Isrc/burn/psikyo       \
+                                        -Isrc/burn/sega \
+                                        -Isrc/burn/toaplan
+                                        
+DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0
+ifeq ($(CELL_BUILD_TOOLS),SNC)
+DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
+else
+INCLUDE                 += -I$(CELL_HOST_PATH)/ppu/lib/gcc/ppu-lv2/4.1.1/include
+DEFINES                 += -D__GCC__ -funroll-loops -finline-functions -funit-at-a-time -finline-functions-called-once --param inline-unit-growth=200 --param large-function-growth=1000 --param max-inline-insns-single=900
+endif
+
+PPU_CFLAGS              +=  $(DEFINES) $(INCLUDE)
+PPU_CXXFLAGS            +=  $(DEFINES) $(INCLUDE)
+PPU_SRCS                +=  $(INTERFACE_DIR)/PS3/cellframework2/audio/audioport.c \
+                            $(INTERFACE_DIR)/PS3/cellframework2/audio/buffer.c \
+                            $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/inp_cell.cpp $(INTERFACE_DIR)/PS3/vid_psgl.cpp $(INTERFACE_DIR)/PS3/vid_psgl_support.cpp
+PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3snd.cpp $(BURN_DIR)/cps3/d_cps3.cpp \
+                                    $(CPU_DIR)/sh2/sh2.cpp \
+                            $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp $(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound.cpp $(BURN_DIR)/burn_sound_c.cpp $(BURN_DIR)/burn_y8950.cpp \
+            $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp $(BURN_DIR)/burn_ym2413.cpp $(BURN_DIR)/burn_ym2608.cpp $(BURN_DIR)/burn_ym2610.cpp $(BURN_DIR)/burn_ym2612.cpp $(BURN_DIR)/burn_ym3526.cpp \
+                                        $(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/cheat.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
+                                        $(BURN_DIR)/ics2115.cpp $(BURN_DIR)/k007232.cpp $(BURN_DIR)/k051649.cpp $(BURN_DIR)/k053260.cpp $(BURN_DIR)/k054539.cpp $(BURN_DIR)/load.cpp $(BURN_DIR)/m6502_intf.cpp $(BURN_DIR)/m6800_intf.cpp $(BURN_DIR)/m6809_intf.cpp \
+                                        $(BURN_DIR)/msm5205.cpp $(BURN_DIR)/msm6295.cpp $(BURN_DIR)/namco_snd.cpp $(BURN_DIR)/rf5c68.cpp $(BURN_DIR)/segapcm.cpp $(BURN_DIR)/seibusnd.cpp $(BURN_DIR)/sek.cpp $(BURN_DIR)/sn76496.cpp $(BURN_DIR)/tiles_generic.cpp \
+                                        $(BURN_DIR)/timer.cpp $(BURN_DIR)/upd7759.cpp $(BURN_DIR)/vez.cpp $(BURN_DIR)/x1010.cpp $(BURN_DIR)/ym2151.c $(BURN_DIR)/ym2413.cpp $(BURN_DIR)/ymdeltat.c $(BURN_DIR)/ymf278b.c $(BURN_DIR)/ymz280b.cpp $(BURN_DIR)/zet.cpp \
+                                        $(BURN_DIR)/es8712.cpp \
+                                        \
+                                        $(BURN_DIR)/atari/d_gauntlet.cpp \
+                                        \
+                                        $(BURN_DIR)/capcom/cps.cpp $(BURN_DIR)/capcom/cps2crpt.cpp $(BURN_DIR)/capcom/cps_config.cpp $(BURN_DIR)/capcom/cps_draw.cpp $(BURN_DIR)/capcom/cps_mem.cpp $(BURN_DIR)/capcom/cps_obj.cpp \
+                                        $(BURN_DIR)/capcom/cps_pal.cpp $(BURN_DIR)/capcom/cps_run.cpp $(BURN_DIR)/capcom/cps_rw.cpp $(BURN_DIR)/capcom/cps_scr.cpp $(BURN_DIR)/capcom/cpsr.cpp $(BURN_DIR)/capcom/cpsrd.cpp $(BURN_DIR)/capcom/cpst.cpp $(BURN_DIR)/capcom/ctv.cpp \
+                                        $(BURN_DIR)/capcom/d_cps1.cpp $(BURN_DIR)/capcom/d_cps2.cpp $(BURN_DIR)/capcom/kabuki.cpp $(BURN_DIR)/capcom/ps.cpp $(BURN_DIR)/capcom/ps_m.cpp $(BURN_DIR)/capcom/ps_z.cpp $(BURN_DIR)/capcom/qs.cpp $(BURN_DIR)/capcom/qs_c.cpp $(BURN_DIR)/capcom/qs_z.cpp \
+                                        \
+                                        $(BURN_DIR)/cave/cave.cpp $(BURN_DIR)/cave/cave_palette.cpp $(BURN_DIR)/cave/cave_sprite.cpp $(BURN_DIR)/cave/cave_tile.cpp $(BURN_DIR)/cave/d_dodonpachi.cpp $(BURN_DIR)/cave/d_donpachi.cpp $(BURN_DIR)/cave/d_esprade.cpp $(BURN_DIR)/cave/d_feversos.cpp \
+                                        $(BURN_DIR)/cave/d_gaia.cpp $(BURN_DIR)/cave/d_guwange.cpp $(BURN_DIR)/cave/d_hotdogst.cpp $(BURN_DIR)/cave/d_mazinger.cpp $(BURN_DIR)/cave/d_metmqstr.cpp $(BURN_DIR)/cave/d_pwrinst2.cpp $(BURN_DIR)/cave/d_sailormn.cpp $(BURN_DIR)/cave/d_uopoko.cpp \
+                                        \
+                                        \
+                                        $(BURN_DIR)/galaxian/d_galaxian.cpp $(BURN_DIR)/galaxian/gal_gfx.cpp $(BURN_DIR)/galaxian/gal_run.cpp $(BURN_DIR)/galaxian/gal_sound.cpp $(BURN_DIR)/galaxian/gal_stars.cpp \
+                                        \
+                                        $(BURN_DIR)/konami/d_88games.cpp $(BURN_DIR)/konami/d_ajax.cpp $(BURN_DIR)/konami/d_aliens.cpp $(BURN_DIR)/konami/d_blockhl.cpp $(BURN_DIR)/konami/d_bottom9.cpp $(BURN_DIR)/konami/d_contra.cpp $(BURN_DIR)/konami/d_crimfght.cpp $(BURN_DIR)/konami/d_gbusters.cpp \
+                                        $(BURN_DIR)/konami/d_gradius3.cpp $(BURN_DIR)/konami/d_hcastle.cpp $(BURN_DIR)/konami/d_hexion.cpp $(BURN_DIR)/konami/d_mainevt.cpp $(BURN_DIR)/konami/d_parodius.cpp $(BURN_DIR)/konami/d_rollerg.cpp $(BURN_DIR)/konami/d_simpsons.cpp $(BURN_DIR)/konami/d_spy.cpp \
+                                        $(BURN_DIR)/konami/d_surpratk.cpp $(BURN_DIR)/konami/d_thunderx.cpp $(BURN_DIR)/konami/d_tmnt.cpp $(BURN_DIR)/konami/d_twin16.cpp $(BURN_DIR)/konami/d_ultraman.cpp $(BURN_DIR)/konami/d_vendetta.cpp $(BURN_DIR)/konami/d_xmen.cpp $(BURN_DIR)/konami/k051316.cpp \
+                                        $(BURN_DIR)/konami/k051733.cpp $(BURN_DIR)/konami/k051960.cpp $(BURN_DIR)/konami/k052109.cpp $(BURN_DIR)/konami/K053245.cpp $(BURN_DIR)/konami/k053247.cpp $(BURN_DIR)/konami/K053251.cpp $(BURN_DIR)/konami/k053936.cpp $(BURN_DIR)/konami/k054000.cpp $(BURN_DIR)/konami/konamiic.cpp \
+                                        \
+                                        $(BURN_DIR)/megadrive/d_megadrive.cpp $(BURN_DIR)/megadrive/megadrive.cpp \
+                                        \
+                                        $(BURN_DIR)/misc/d_parent.cpp \
+                                        \
+                                        $(BURN_DIR)/misc/post90s/d_1945kiii.cpp $(BURN_DIR)/misc/post90s/d_aerofgt.cpp $(BURN_DIR)/misc/post90s/d_aquarium.cpp $(BURN_DIR)/misc/post90s/d_biomtoy.cpp $(BURN_DIR)/misc/post90s/d_bloodbro.cpp $(BURN_DIR)/misc/post90s/d_crospang.cpp $(BURN_DIR)/misc/post90s/d_crshrace.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_darkseal.cpp $(BURN_DIR)/misc/post90s/d_dcon.cpp $(BURN_DIR)/misc/post90s/d_ddragon3.cpp $(BURN_DIR)/misc/post90s/d_deniam.cpp $(BURN_DIR)/misc/post90s/d_diverboy.cpp $(BURN_DIR)/misc/post90s/d_drtomy.cpp $(BURN_DIR)/misc/post90s/d_egghunt.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_esd16.cpp $(BURN_DIR)/misc/post90s/d_f1gp.cpp $(BURN_DIR)/misc/post90s/d_fstarfrc.cpp $(BURN_DIR)/misc/post90s/d_funybubl.cpp $(BURN_DIR)/misc/post90s/d_fuukifg3.cpp $(BURN_DIR)/misc/post90s/d_gaiden.cpp $(BURN_DIR)/misc/post90s/d_galpanic.cpp $(BURN_DIR)/misc/post90s/d_gotcha.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_gumbo.cpp $(BURN_DIR)/misc/post90s/d_hyperpac.cpp $(BURN_DIR)/misc/post90s/d_kaneko16.cpp $(BURN_DIR)/misc/post90s/d_m90.cpp $(BURN_DIR)/misc/post90s/d_m92.cpp $(BURN_DIR)/misc/post90s/d_mcatadv.cpp $(BURN_DIR)/misc/post90s/d_midas.cpp $(BURN_DIR)/misc/post90s/d_mogura.cpp $(BURN_DIR)/misc/post90s/d_mugsmash.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_news.cpp $(BURN_DIR)/misc/post90s/d_nmg5.cpp $(BURN_DIR)/misc/post90s/d_nmk16.cpp $(BURN_DIR)/misc/post90s/d_ohmygod.cpp $(BURN_DIR)/misc/post90s/d_pass.cpp $(BURN_DIR)/misc/post90s/d_pirates.cpp $(BURN_DIR)/misc/post90s/d_powerins.cpp $(BURN_DIR)/misc/post90s/d_pushman.cpp $(BURN_DIR)/misc/post90s/d_raiden.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_seta2.cpp $(BURN_DIR)/misc/post90s/d_shadfrce.cpp $(BURN_DIR)/misc/post90s/d_silkroad.cpp $(BURN_DIR)/misc/post90s/d_speedspn.cpp $(BURN_DIR)/misc/post90s/d_suna16.cpp $(BURN_DIR)/misc/post90s/d_suprnova.cpp $(BURN_DIR)/misc/post90s/d_taotaido.cpp $(BURN_DIR)/misc/post90s/d_tumbleb.cpp $(BURN_DIR)/misc/post90s/d_unico.cpp \
+                                        $(BURN_DIR)/misc/post90s/d_welltris.cpp $(BURN_DIR)/misc/post90s/d_wwfwfest.cpp $(BURN_DIR)/misc/post90s/d_yunsun16.cpp $(BURN_DIR)/misc/post90s/d_zerozone.cpp $(BURN_DIR)/misc/post90s/irem_cpu.cpp $(BURN_DIR)/misc/post90s/nmk004.cpp $(BURN_DIR)/misc/post90s/d_vmetal.cpp $(BURN_DIR)/misc/post90s/d_lordgun.cpp $(BURN_DIR)/misc/post90s/d_ashnojoe.cpp\
+                                        \
+                                        $(BURN_DIR)/misc/pre90s/d_1942.cpp $(BURN_DIR)/misc/pre90s/d_1943.cpp $(BURN_DIR)/misc/pre90s/d_4enraya.cpp $(BURN_DIR)/misc/pre90s/d_airbustr.cpp $(BURN_DIR)/misc/pre90s/d_ambush.cpp $(BURN_DIR)/misc/pre90s/d_angelkds.cpp $(BURN_DIR)/misc/pre90s/d_arabian.cpp $(BURN_DIR)/misc/pre90s/d_arkanoid.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_armedf.cpp $(BURN_DIR)/misc/pre90s/d_bankp.cpp $(BURN_DIR)/misc/pre90s/d_baraduke.cpp $(BURN_DIR)/misc/pre90s/d_bionicc.cpp $(BURN_DIR)/misc/pre90s/d_blktiger.cpp $(BURN_DIR)/misc/pre90s/d_blockout.cpp $(BURN_DIR)/misc/pre90s/d_blueprnt.cpp $(BURN_DIR)/misc/pre90s/d_bombjack.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_commando.cpp $(BURN_DIR)/misc/pre90s/d_ddragon.cpp $(BURN_DIR)/misc/pre90s/d_dec0.cpp $(BURN_DIR)/misc/pre90s/d_dec8.cpp $(BURN_DIR)/misc/pre90s/d_dotrikun.cpp $(BURN_DIR)/misc/pre90s/d_epos.cpp $(BURN_DIR)/misc/pre90s/d_exedexes.cpp $(BURN_DIR)/misc/pre90s/d_flstory.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_funkybee.cpp $(BURN_DIR)/misc/pre90s/d_galaga.cpp $(BURN_DIR)/misc/pre90s/d_gberet.cpp $(BURN_DIR)/misc/pre90s/d_ginganin.cpp $(BURN_DIR)/misc/pre90s/d_gng.cpp $(BURN_DIR)/misc/pre90s/d_gunsmoke.cpp $(BURN_DIR)/misc/pre90s/d_gyruss.cpp $(BURN_DIR)/misc/pre90s/d_higemaru.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_ikki.cpp $(BURN_DIR)/misc/pre90s/d_jack.cpp $(BURN_DIR)/misc/pre90s/d_kangaroo.cpp $(BURN_DIR)/misc/pre90s/d_karnov.cpp $(BURN_DIR)/misc/pre90s/d_kyugo.cpp $(BURN_DIR)/misc/pre90s/d_ladybug.cpp $(BURN_DIR)/misc/pre90s/d_lkage.cpp $(BURN_DIR)/misc/pre90s/d_lwings.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_madgear.cpp $(BURN_DIR)/misc/pre90s/d_markham.cpp $(BURN_DIR)/misc/pre90s/d_meijinsn.cpp $(BURN_DIR)/misc/pre90s/d_minivdr.cpp $(BURN_DIR)/misc/pre90s/d_mitchell.cpp $(BURN_DIR)/misc/pre90s/d_mole.cpp $(BURN_DIR)/misc/pre90s/d_mrdo.cpp $(BURN_DIR)/misc/pre90s/d_mrflea.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_mystston.cpp $(BURN_DIR)/misc/pre90s/d_pacman.cpp $(BURN_DIR)/misc/pre90s/d_pkunwar.cpp $(BURN_DIR)/misc/pre90s/d_pooyan.cpp $(BURN_DIR)/misc/pre90s/d_prehisle.cpp $(BURN_DIR)/misc/pre90s/d_quizo.cpp $(BURN_DIR)/misc/pre90s/d_rallyx.cpp $(BURN_DIR)/misc/pre90s/d_renegade.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_retofinv.cpp $(BURN_DIR)/misc/pre90s/d_route16.cpp $(BURN_DIR)/misc/pre90s/d_royalmah.cpp $(BURN_DIR)/misc/pre90s/d_scotrsht.cpp $(BURN_DIR)/misc/pre90s/d_scregg.cpp $(BURN_DIR)/misc/pre90s/d_sf.cpp $(BURN_DIR)/misc/pre90s/d_skyarmy.cpp $(BURN_DIR)/misc/pre90s/d_skyfox.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_skykid.cpp $(BURN_DIR)/misc/pre90s/d_snk68.cpp $(BURN_DIR)/misc/pre90s/d_solomon.cpp $(BURN_DIR)/misc/pre90s/d_sonson.cpp $(BURN_DIR)/misc/pre90s/d_srumbler.cpp $(BURN_DIR)/misc/pre90s/d_tecmo.cpp $(BURN_DIR)/misc/pre90s/d_tigerheli.cpp $(BURN_DIR)/misc/pre90s/d_tigeroad.cpp \
+                                        $(BURN_DIR)/misc/pre90s/d_tnzs.cpp $(BURN_DIR)/misc/pre90s/d_toki.cpp $(BURN_DIR)/misc/pre90s/d_vigilant.cpp $(BURN_DIR)/misc/pre90s/d_vulgus.cpp $(BURN_DIR)/misc/pre90s/d_wallc.cpp $(BURN_DIR)/misc/pre90s/d_wc90.cpp $(BURN_DIR)/misc/pre90s/d_wwfsstar.cpp $(BURN_DIR)/misc/pre90s/tnzs_prot.cpp \
+                                        \
+                                        $(BURN_DIR)/neogeo/d_neogeo.cpp $(BURN_DIR)/neogeo/neo_decrypt.cpp $(BURN_DIR)/neogeo/neo_palette.cpp $(BURN_DIR)/neogeo/neo_run.cpp $(BURN_DIR)/neogeo/neo_sprite.cpp $(BURN_DIR)/neogeo/neo_text.cpp $(BURN_DIR)/neogeo/neo_upd4990a.cpp $(BURN_DIR)/neogeo/neogeo.cpp $(BURN_DIR)/neogeo/romsave.cpp \
+                                        \
+                                        $(BURN_DIR)/pgm/d_pgm.cpp $(BURN_DIR)/pgm/pgm_crypt.cpp $(BURN_DIR)/pgm/pgm_draw.cpp $(BURN_DIR)/pgm/pgm_prot.cpp $(BURN_DIR)/pgm/pgm_run.cpp \
+                                        \
+                                        $(BURN_DIR)/psikyo/d_psikyo.cpp $(BURN_DIR)/psikyo/d_psikyosh.cpp $(BURN_DIR)/psikyo/psikyo_palette.cpp $(BURN_DIR)/psikyo/psikyo_sprite.cpp $(BURN_DIR)/psikyo/psikyo_tile.cpp \
+                                        $(BURN_DIR)/psikyo/psikyosh_render.cpp \
+                                        \
+                                        $(BURN_DIR)/sega/d_hangon.cpp $(BURN_DIR)/sega/d_outrun.cpp $(BURN_DIR)/sega/d_sys1.cpp $(BURN_DIR)/sega/d_sys16a.cpp $(BURN_DIR)/sega/d_sys16b.cpp $(BURN_DIR)/sega/d_sys18.cpp $(BURN_DIR)/sega/d_xbrd.cpp \
+                                        $(BURN_DIR)/sega/d_ybrd.cpp $(BURN_DIR)/sega/fd1089.cpp $(BURN_DIR)/sega/fd1094.cpp $(BURN_DIR)/sega/genesis_vid.cpp $(BURN_DIR)/sega/mc8123.cpp $(BURN_DIR)/sega/sys16_fd1094.cpp $(BURN_DIR)/sega/sys16_gfx.cpp $(BURN_DIR)/sega/sys16_run.cpp \
+                                        \
+                                        $(BURN_DIR)/taito/cchip.cpp $(BURN_DIR)/taito/d_asuka.cpp $(BURN_DIR)/taito/d_bublbobl.cpp $(BURN_DIR)/taito/d_darius2.cpp $(BURN_DIR)/taito/d_taitof2.cpp $(BURN_DIR)/taito/d_taitomisc.cpp $(BURN_DIR)/taito/d_taitox.cpp \
+                                        $(BURN_DIR)/taito/d_taitoz.cpp $(BURN_DIR)/taito/pc080sn.cpp $(BURN_DIR)/taito/pc090oj.cpp $(BURN_DIR)/taito/taito.cpp $(BURN_DIR)/taito/taito_ic.cpp $(BURN_DIR)/taito/taito_m68705.cpp $(BURN_DIR)/taito/tc0100scn.cpp \
+                                        $(BURN_DIR)/taito/tc0110pcr.cpp $(BURN_DIR)/taito/tc0140syt.cpp $(BURN_DIR)/taito/tc0150rod.cpp $(BURN_DIR)/taito/tc0220ioc.cpp  $(BURN_DIR)/taito/tc0280grd.cpp $(BURN_DIR)/taito/tc0360pri.cpp $(BURN_DIR)/taito/tc0480scp.cpp $(BURN_DIR)/taito/tc0510nio.cpp \
+                                        \
+                                        $(BURN_DIR)/toaplan/d_batrider.cpp $(BURN_DIR)/toaplan/d_batsugun.cpp $(BURN_DIR)/toaplan/d_battleg.cpp $(BURN_DIR)/toaplan/d_bbakraid.cpp $(BURN_DIR)/toaplan/d_demonwld.cpp $(BURN_DIR)/toaplan/d_dogyuun.cpp $(BURN_DIR)/toaplan/d_hellfire.cpp $(BURN_DIR)/toaplan/d_kbash.cpp \
+                                        $(BURN_DIR)/toaplan/d_kbash2.cpp $(BURN_DIR)/toaplan/d_mahoudai.cpp $(BURN_DIR)/toaplan/d_outzone.cpp $(BURN_DIR)/toaplan/d_rallybik.cpp $(BURN_DIR)/toaplan/d_samesame.cpp $(BURN_DIR)/toaplan/d_shippumd.cpp $(BURN_DIR)/toaplan/d_snowbro2.cpp $(BURN_DIR)/toaplan/d_tekipaki.cpp \
+                                        $(BURN_DIR)/toaplan/d_truxton.cpp $(BURN_DIR)/toaplan/d_truxton2.cpp $(BURN_DIR)/toaplan/d_vfive.cpp $(BURN_DIR)/toaplan/d_vimana.cpp \
+                                        $(BURN_DIR)/toaplan/d_zerowing.cpp $(BURN_DIR)/toaplan/toa_bcu2.cpp $(BURN_DIR)/toaplan/toa_extratext.cpp $(BURN_DIR)/toaplan/toa_gp9001.cpp $(BURN_DIR)/toaplan/toa_palette.cpp \
+                                        $(BURN_DIR)/toaplan/toaplan.cpp $(BURN_DIR)/toaplan/toaplan1.cpp \
+                                        \
+                                        $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpc.cpp $(BURNER_DIR)/PS3/inpcheat.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/inps.cpp \
+                                        $(BURNER_DIR)/PS3/localise.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
+                                        $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/scrn.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/strconv.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
+                                        \
+                                        $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/autofire.cpp $(BURNER_DIR)/combo.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp $(BURNER_DIR)/misc.cpp $(BURNER_DIR)/sshot.cpp \
+                                        $(BURNER_DIR)/state.cpp $(BURNER_DIR)/statec.cpp $(BURNER_DIR)/tracklst.cpp \
+                                        \
+                                        $(CPU_DIR)/arm7/arm7.cpp $(CPU_DIR)/arm7/arm7_intf.cpp \
+                                        \
+                                        $(CPU_DIR)/hd6309/hd6309.cpp \
+                                        \
+                                        $(CPU_DIR)/i8039/i8039.cpp\
+                                        \
+                                        $(CPU_DIR)/konami/konami.cpp $(CPU_DIR)/konami/konami_intf.cpp \
+                                        \
+                                        $(CPU_DIR)/m6502/m6502.cpp \
+                                        \
+                                        $(CPU_DIR)/m6800/m6800.cpp \
+                                        \
+                                        $(CPU_DIR)/m6805/m6805.cpp $(CPU_DIR)/m6805/m6805_intf.cpp \
+                                        \
+                                        $(CPU_DIR)/m6809/m6809.cpp \
+                                        \
+                                        $(CPU_DIR)/m68k/m68kcpu.c $(CPU_DIR)/m68k/m68kopac.c $(CPU_DIR)/m68k/m68kopdm.c $(CPU_DIR)/m68k/m68kopnz.c $(CPU_DIR)/m68k/m68kops.c\
+                                        \
+                                        $(CPU_DIR)/nec/nec.cpp \
+                                        \
+                                        $(CPU_DIR)/s2650/s2650.cpp $(CPU_DIR)/s2650/s2650_intf.cpp \
+                                        \
+                                        $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
+                                        \
+                                        $(INTERFACE_DIR)/aud_interface.cpp $(INTERFACE_DIR)/inp_interface.cpp $(INTERFACE_DIR)/interface.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/vid_interface.cpp $(INTERFACE_DIR)/vid_support.cpp \
+                                        \
+                                        $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
+                                        $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \
+                                        \
+                                        $(FEX_DIR)/fex/Binary_Extractor.cpp $(FEX_DIR)/fex/blargg_common.cpp $(FEX_DIR)/fex/blargg_errors.cpp $(FEX_DIR)/fex/Data_Reader.cpp $(FEX_DIR)/fex/File_Extractor.cpp $(FEX_DIR)/fex/Gzip_Extractor.cpp $(FEX_DIR)/fex/Gzip_Reader.cpp $(FEX_DIR)/fex/Rar_Extractor.cpp $(FEX_DIR)/fex/Zip7_Extractor.cpp $(FEX_DIR)/fex/Zip_Extractor.cpp \
+                                        $(FEX_DIR)/fex/Zlib_Inflater.cpp $(FEX_DIR)/fex/fex.cpp \
+                                        $(TICPP_DIR)/ticpp.cpp $(TICPP_DIR)/ticpp_sugar.cpp $(TICPP_DIR)/tinystr.cpp $(TICPP_DIR)/tinyxml.cpp $(TICPP_DIR)/tinyxmlerror.cpp $(TICPP_DIR)/tinyxmlparser.cpp\
+                                        \
+                                        $(ZLIB_DIR)/adler32.c $(ZLIB_DIR)/compress.c $(ZLIB_DIR)/crc32.c $(ZLIB_DIR)/deflate.c $(ZLIB_DIR)/inffast.c $(ZLIB_DIR)/inflate.c $(ZLIB_DIR)/inftrees.c $(ZLIB_DIR)/trees.c $(ZLIB_DIR)/uncompr.c $(ZLIB_DIR)/zutil.c
+
+PPU_TARGET                =       bin/fbanext-ps3.ppu.elf
+
+CELL_DEBUG_CONSOLE = 0
+CELL_DEBUG_LOGGER  = 0
+CELL_DEBUG_MEMORY  = 0
+MULTIMAN_SUPPORT   = 0
+
+ifeq ($(CELL_DEBUG_CONSOLE),1)
+PPU_CFLAGS                +=       -DCELL_DEBUG_CONSOLE
+PPU_CXXFLAGS              +=       -DCELL_DEBUG_CONSOLE
+L_CONTROL_CONSOLE_LDLIBS = -lcontrol_console_ppu
+L_NET_CTL_LDLIBS = -lnetctl_stub
+L_NET_LDLIBS   += -lnet_stub
+endif
+
+ifeq ($(CELL_DEBUG_MEMORY),1)
+PPU_CFLAGS                +=       -DCELL_DEBUG_MEMORY
+PPU_CXXFLAGS              +=       -DCELL_DEBUG_MEMORY
+endif
+
+ifeq ($(CELL_DEBUG_LOGGER),1)
+PPU_CFLAGS		+= -DPS3_DEBUG_IP=\"192.168.1.7\" -DPS3_DEBUG_PORT=9002
+PPU_CXXFLAGS	+= -DPS3_DEBUG_IP=\"192.168.1.7\" -DPS3_DEBUG_PORT=9002
+L_NET_LDLIBS   += -lnet_stub
+endif
+
+ifeq ($(MULTIMAN_SUPPORT),1)
+PPU_CFLAGS     += -DMULTIMAN_SUPPORT=1
+PPU_CXXFLAGS   += -DMULTIMAN_SUPPORT=1
+   ifeq ($(shell uname), Linux)
+      MKFSELF_WC		= $(HOME)/bin/make_self_wc
+   else
+      MKFSELF_WC		= $(CELL_SDK)/../bin/make_self_wc
+   endif
+endif
+
+PPU_LDLIBS                 +=      -L. -L$(CELL_SDK)/target/ppu/lib/PSGL/RSX/opt -lrtc_stub -ldbgfont -lPSGL -lPSGLcgc -lcgc -lgcm_cmd -lgcm_sys_stub -lresc_stub -lm -lio_stub -lfs_stub -lsysutil_stub $(L_CONTROL_CONSOLE_LDLIBS) -lsysmodule_stub -laudio_stub -lpthread $(L_NET_LDLIBS) $(L_NET_CTL_LDLIBS)
+
+include $(CELL_MK_DIR)/sdk.target.mk
+
+.PHONY: pkg
+pkg:
+		$(STRIP) $(PPU_TARGET)
+ifeq ($(MULTIMAN_SUPPORT),1)
+	   $(MKFSELF_WC) $(PPU_TARGET) pkg/USRDIR/RELOAD.SELF
+else
+		$(MAKE_FSELF_NPDRM) $(PPU_TARGET) pkg/USRDIR/EBOOT.BIN
+endif
+		$(MAKE_PACKAGE_NPDRM) pkg/package.conf pkg
+
+#massively reduced filesize using MKSELF_GEOHOT - use this for normal jailbreak builds
+.PHONY: pkg-signed
+pkg-signed: $(PPU_TARGET)
+ifeq ($(MULTIMAN_SUPPORT),1)
+	$(MKFSELF_WC) $(PPU_TARGET) pkg/USRDIR/RELOAD.SELF
+else
+		$(MKSELF) $(PPU_TARGET) pkg/USRDIR/EBOOT.BIN FBAN00000
+endif
+		$(PYTHONBIN) $(MKPKG_PSLIGHT) --contentid IV0002-FBAN00000_00-FBANEXT000000001 pkg/ fbanext-ps3-r$(REVISION_NO)-fw3.41.pkg
+
+#use this to create a PKG for use with Geohot CFW 3.55
+.PHONY: pkg-signed-cfw
+pkg-signed-cfw: $(PPU_TARGET)
+ifeq ($(MULTIMAN_SUPPORT),1)
+	   $(MKFSELF_WC) $(PPU_TARGET) pkg/USRDIR/RELOAD.SELF
+else
+		$(MKSELF) $(PPU_TARGET) pkg/USRDIR/EBOOT.BIN  FBAN00000
+endif
+		$(PYTHONBIN) $(MKPKG_PSLIGHT) --contentid IV0002-FBAN00000_00-FBANEXT000000001 pkg/ fbanext-ps3-r$(REVISION_NO)-cfw3.55.pkg
+		$(PKG_FINALIZE) fbanext-ps3-r$(REVISION_NO)-cfw3.55.pkg

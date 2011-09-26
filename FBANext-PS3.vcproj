@@ -2143,14 +2143,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\src\burner\PS3\inpc.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\inpcheat.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\src\burner\PS3\inpd.cpp"
 							>
 						</File>

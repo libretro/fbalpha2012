@@ -157,8 +157,8 @@ int mediaReInitScrn();
 // misc_win32.cpp
 void createNeedDir();
 bool directoryExists(const TCHAR* dirname);
-void pathCheck(TCHAR* path);
-int directLoadGame(TCHAR* name);
+void pathCheck(char * path);
+int directLoadGame(const char * name);
 int getClientScreenRect(HWND hWnd, RECT* pRect);
 int wndInMid(HWND hMid, HWND hBase);
 void setWindowAspect(bool first_boot = false);

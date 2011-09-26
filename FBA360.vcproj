@@ -2393,10 +2393,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\src\burner\Xbox360\inpc.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\src\burner\Xbox360\inpcheat.cpp"
 							>
 						</File>

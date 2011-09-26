@@ -157,9 +157,7 @@ static TCHAR* GetDefaultInputFilename()
 	if (flag == HARDWARE_SNK_NEOGEO)
 		fileName = defaultNeoInpFilename;
 	else if (flag == HARDWARE_CAPCOM_CPS1 || flag == HARDWARE_CAPCOM_CPS1_QSOUND || flag == HARDWARE_CAPCOM_CPS1_GENERIC || flag == HARDWARE_CAPCOM_CPSCHANGER || flag == HARDWARE_CAPCOM_CPS2 || flag == HARDWARE_CAPCOM_CPS3)
-	{
 		fileName = defaultCpsInpFilename;
-	}
 
 	return fileName;
 }

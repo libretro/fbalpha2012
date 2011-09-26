@@ -130,7 +130,7 @@ int MakeScreenShot(bool bScrShot, int Type);
 
 // state.cpp
 int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)());
-int BurnStateLoad(TCHAR* szName, int bAll, int (*pLoadGame)());
+int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)());
 int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll);
 int BurnStateSave(TCHAR* szName, int bAll);
 

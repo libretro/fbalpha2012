@@ -133,23 +133,22 @@ static int CheckMouseState(struct DinpMouseProperties* Mouse, unsigned int nSubC
  
 int DinpState(int nCode)
 {
-	DWORD dwResultP1;
-	DWORD dwResultP2;
-	DWORD dwResultP3;
-	DWORD dwResultP4;
+	uint32_t dwResultP1;
+	uint32_t dwResultP2;
+	uint32_t dwResultP3;
+	uint32_t dwResultP4;
 
 	XINPUT_STATE stateJoy1;
 	XINPUT_STATE stateJoy2;	 	 	
 	XINPUT_STATE stateJoy3;	 	 	
 	XINPUT_STATE stateJoy4;	 	 	
 
-	if (nCode < 0) {
+	if (nCode < 0)
 		return 0;
-	}
 
-    // Simply get the state of the controller from XInput.
+	// Simply get the state of the controller from XInput.
 
-    dwResultP1 = XInputGetState( 0, &stateJoy1 );
+	dwResultP1 = XInputGetState( 0, &stateJoy1 );
 	dwResultP2 = XInputGetState( 1, &stateJoy2 );
 	dwResultP3 = XInputGetState( 2, &stateJoy3 );
 	dwResultP4 = XInputGetState( 3, &stateJoy4 );
@@ -157,7 +156,7 @@ int DinpState(int nCode)
 	if (ArcadeJoystick==1)
 	{
 		if (stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_BACK  && 
-			stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_START )
+				stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_START )
 		{
 			Sleep(200);
 			setPauseMode(1);			
@@ -168,25 +167,25 @@ int DinpState(int nCode)
 	{
 
 		if( ( stateJoy1.Gamepad.bLeftTrigger > 128 ) &&
-			( stateJoy1.Gamepad.bRightTrigger > 128 ) &&
-			( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ) ) // Reboot the dev kit
+				( stateJoy1.Gamepad.bRightTrigger > 128 ) &&
+				( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ) ) // Reboot the dev kit
 		{
 			setPauseMode(1);			
 			return 0;
 
 		}
 	}
-	
+
 
 	if (DoReset)
 	{
-		
+
 		if (nCode == FBK_F3)
 		{
 			DoReset = false;
 			return 1;
 		}
-		
+
 	}
 
 	switch (nCode)
@@ -208,21 +207,21 @@ int DinpState(int nCode)
 		case 0x20: return (stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ? 1 : 0);			// fire 6		
 
 		case 0x88:
-			return ( stateJoy1.Gamepad.bLeftTrigger > 128 ? 1 : 0);
+			   return ( stateJoy1.Gamepad.bLeftTrigger > 128 ? 1 : 0);
 		case 0x8A:			 
-			return ( stateJoy1.Gamepad.bRightTrigger > 128 ? 1 : 0);
+			   return ( stateJoy1.Gamepad.bRightTrigger > 128 ? 1 : 0);
 
 		case 0x3b:
-			return ( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
+			   return ( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
 		case 0x3c:
-			return ( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
-					
-							 
-		
-		//case 0x2F: return ((stateJoy1.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) ? 1 : 0);			 	
+			   return ( stateJoy1.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
+
+
+
+			   //case 0x2F: return ((stateJoy1.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) ? 1 : 0);			 	
 		case 0x21: return ((stateJoy1.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) ? 1 : 0);			 
-		// Fire buttons
- 
+			   // Fire buttons
+
 	}
 
 	if (dwResultP2 == ERROR_SUCCESS)
@@ -247,14 +246,14 @@ int DinpState(int nCode)
 			case 0x4085: return (stateJoy2.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ? 1 : 0);			// fire 6	
 
 			case 0x4088:
-				return ( stateJoy2.Gamepad.bLeftTrigger > 128 ? 1 : 0);
+				     return ( stateJoy2.Gamepad.bLeftTrigger > 128 ? 1 : 0);
 			case 0x408A:			 
-				return ( stateJoy2.Gamepad.bRightTrigger > 128 ? 1 : 0);
+				     return ( stateJoy2.Gamepad.bRightTrigger > 128 ? 1 : 0);
 
 			case 0x403b:
-				return ( stateJoy2.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB ? 1 : 0);
+				     return ( stateJoy2.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB ? 1 : 0);
 			case 0x403c:
-				return ( stateJoy2.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
+				     return ( stateJoy2.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
 
 
 		}
@@ -282,14 +281,14 @@ int DinpState(int nCode)
 			case 0x4185: return (stateJoy3.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ? 1 : 0);			// fire 6	
 
 			case 0x4188:
-				return ( stateJoy3.Gamepad.bLeftTrigger > 128 ? 1 : 0);
+				     return ( stateJoy3.Gamepad.bLeftTrigger > 128 ? 1 : 0);
 			case 0x418A:			 
-				return ( stateJoy3.Gamepad.bRightTrigger > 128 ? 1 : 0);
+				     return ( stateJoy3.Gamepad.bRightTrigger > 128 ? 1 : 0);
 
 			case 0x413b:
-				return ( stateJoy3.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
+				     return ( stateJoy3.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
 			case 0x413c:
-				return ( stateJoy3.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
+				     return ( stateJoy3.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
 
 		}
 	}
@@ -316,14 +315,14 @@ int DinpState(int nCode)
 			case 0x4285: return (stateJoy4.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ? 1 : 0);			// fire 6	
 
 			case 0x4288:
-				return ( stateJoy4.Gamepad.bLeftTrigger > 128 ? 1 : 0);
+				     return ( stateJoy4.Gamepad.bLeftTrigger > 128 ? 1 : 0);
 			case 0x428A:			 
-				return ( stateJoy4.Gamepad.bRightTrigger > 128 ? 1 : 0);
+				     return ( stateJoy4.Gamepad.bRightTrigger > 128 ? 1 : 0);
 
 			case 0x423b:
-				return ( stateJoy4.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
+				     return ( stateJoy4.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB  ? 1 : 0);
 			case 0x423c:
-				return ( stateJoy4.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
+				     return ( stateJoy4.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB  ? 1 : 0);
 
 		}
 	}
@@ -345,22 +344,20 @@ int DinpJoyAxis(int i, int nAxis)
 // Read one mouse axis
 int DinpMouseAxis(int i, int nAxis)
 {
-
-	DWORD dwResultP1;
-
+	uint32_t dwResultP1;
 
 	XINPUT_STATE stateJoy1;
-	 
- 
-    // Simply get the state of the controller from XInput.
 
-    dwResultP1 = XInputGetState( 0, &stateJoy1 );
+
+	// Simply get the state of the controller from XInput.
+
+	dwResultP1 = XInputGetState( 0, &stateJoy1 );
 
 	if(nAxis == 1)
 		return ((stateJoy1.Gamepad.sThumbLY/8000 ) * -1);
 	else 
 		return (stateJoy1.Gamepad.sThumbLX/8000);
-	 
+
 }
 
 // This function finds which key is pressed

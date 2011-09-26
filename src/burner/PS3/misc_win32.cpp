@@ -201,7 +201,7 @@ bool directoryExists(const TCHAR* dirname)
 }
 
 
-int directLoadGame(TCHAR* name)
+int directLoadGame(const char * name)
 {
 	int RomOK = 1;
 
@@ -218,7 +218,7 @@ int directLoadGame(TCHAR* name)
 	else
 	{
 		// get game name
-		TCHAR* p = getBaseName(name);
+		char * p = getBaseName(name);
 
 
 		// load game
@@ -241,7 +241,7 @@ int directLoadGame(TCHAR* name)
 // ---------------------------------------------------------------------------
 // For DAT files printing and Kaillera windows
 
-char* decorateGameName(unsigned int drv)
+char * decorateGameName(unsigned int drv)
 {
 	if (drv >= nBurnDrvCount)
 		return "";

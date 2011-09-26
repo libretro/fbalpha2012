@@ -102,7 +102,7 @@ int RunMessageLoop(int argc, char **argv)
 #ifdef MULTIMAN_SUPPORT
 	if(argc > 1)
 	{
-		char *pathpos = strrchr(strdup(argv[1]), '/');
+		const char *pathpos = strrchr(strdup(argv[1]), '/');
 		directLoadGame(strdup(pathpos));
 		mediaInit();
 		RunInit();

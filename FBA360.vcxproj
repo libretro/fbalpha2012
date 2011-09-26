@@ -879,7 +879,6 @@
     <ClCompile Include="src\burner\Xbox360\barchive.cpp" />
     <ClCompile Include="src\burner\Xbox360\config.cpp" />
     <ClCompile Include="src\burner\Xbox360\drv.cpp" />
-    <ClCompile Include="src\burner\Xbox360\inpc.cpp" />
     <ClCompile Include="src\burner\Xbox360\inpcheat.cpp" />
     <ClCompile Include="src\burner\Xbox360\inpd.cpp" />
     <ClCompile Include="src\burner\Xbox360\inpdipsw.cpp">

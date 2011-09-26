@@ -210,7 +210,7 @@ const float	GAMESEL_cfMediumScrollMult = 5.0f;
 const float	GAMESEL_cfSpeedBandLowest =	0.5f;
 const float	GAMESEL_cfLowestScrollMult = 2.0f;	 
 
-static DWORD cols=0xFFFF7F7f;
+static uint32_t cols=0xFFFF7F7f;
 
 std::vector<std::string> m_ListData;
 std::vector<std::string> m_ListShaderData;
@@ -253,12 +253,13 @@ void InpDIPSWResetDIPs()
 
 	InpDIPSWGetOffset();
 
-	while (BurnDrvGetDIPInfo(&bdi, i) == 0) {
-		if (bdi.nFlags == 0xFF) {
+	while (BurnDrvGetDIPInfo(&bdi, i) == 0)
+	{
+		if (bdi.nFlags == 0xFF)
+		{
 			pgi = GameInp + bdi.nInput + nDIPOffset;
-			if (pgi) {
+			if (pgi)
 				pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
-			}
 		}
 		i++;
 	}
@@ -270,26 +271,29 @@ bool CheckSetting(int i)
 	BurnDrvGetDIPInfo(&bdi, i);
 	struct GameInp* pgi = GameInp + bdi.nInput + nDIPOffset;
 
-	if (!pgi) {
+	if (!pgi)
 		return false;
-	}
 
-	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting) {
+	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting)
+	{
 		unsigned char nFlags = bdi.nFlags;
-		if ((nFlags & 0x0F) <= 1) {
+		if ((nFlags & 0x0F) <= 1)
 			return true;
-		} else {
-			for (int j = 1; j < (nFlags & 0x0F); j++) {
+		else
+		{
+			for (int j = 1; j < (nFlags & 0x0F); j++)
+			{
 				BurnDrvGetDIPInfo(&bdi, i + j);
 				pgi = GameInp + bdi.nInput + nDIPOffset;
-				if (nFlags & 0x80) {
-					if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting) {
+				if (nFlags & 0x80)
+				{
+					if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting)
 						return false;
-					}
-				} else {
-					if ((pgi->Input.Constant.nConst & bdi.nMask) != bdi.nSetting) {
+				}
+				else
+				{
+					if ((pgi->Input.Constant.nConst & bdi.nMask) != bdi.nSetting)
 						return false;
-					}
 				}
 			}
 			return true;
@@ -315,9 +319,9 @@ static int InpDIPSWExit()
 {
 	hInpDIPSWList = NULL;
 	 
-	if (!bAltPause && bRunPause) {
+	if (!bAltPause && bRunPause)
 		bRunPause = 0;
-	}
+
 	GameInpCheckMouse();
 	return 0;
 }
@@ -328,10 +332,13 @@ static void InpDIPSWCancel()
 	BurnDIPInfo bdi;
 	struct GameInp* pgi = NULL;
 
-	while (BurnDrvGetDIPInfo(&bdi, i) == 0) {
-		if (bdi.nInput >= 0 && bdi.nFlags == 0xFF) {
+	while (BurnDrvGetDIPInfo(&bdi, i) == 0)
+	{
+		if (bdi.nInput >= 0 && bdi.nFlags == 0xFF)
+		{
 			pgi = GameInp + bdi.nInput + nDIPOffset;
-			if (pgi) {
+			if (pgi)
+			{
 				pgi->Input.Constant.nConst = nPrevDIPSettings[j];
 				j++;
 			}
@@ -366,15 +373,21 @@ void LoadDIPS()
 	BurnDIPInfo bdi;
 	unsigned int i = 0, j = 0, k = 0;
 	char* pDIPGroup = NULL;
-	while (BurnDrvGetDIPInfo(&bdi, i) == 0) {
-		if ((bdi.nFlags & 0xF0) == 0xF0) {
-		   	if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD) {
+	while (BurnDrvGetDIPInfo(&bdi, i) == 0)
+	{
+		if ((bdi.nFlags & 0xF0) == 0xF0)
+		{
+		   	if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD)
+			{
 				pDIPGroup = bdi.szText;
 				k = i;
 			}
 			i++;
-		} else {
-			if (CheckSetting(i)) { 
+		}
+		else
+		{
+			if (CheckSetting(i))
+			{ 
 				if (pDIPGroup)
 				{
 					m_DipList[std::string(pDIPGroup)] = std::string(bdi.szText);
@@ -464,12 +477,10 @@ void LoadInputs()
 		BurnDrvGetInputInfo(&bii, i);
 
 		// skip unused inputs
-		if (bii.pVal == NULL) {
+		if (bii.pVal == NULL)
 			continue;
-		}
-		if (bii.szName == NULL)	{
+		if (bii.szName == NULL)
 			bii.szName = "";
-		}
 
 
 		TCHAR* pszVal = InpToDesc(pgi);
@@ -2856,8 +2867,10 @@ void FrameMove()
 			bClampCursor = TRUE;
 
 			// advance gameselect
-			if(fGameSelect == 0) fGameSelect +=	(fCursorPos	- m_iWindowMiddle);
-			else fGameSelect ++;
+			if(fGameSelect == 0)
+				fGameSelect +=	(fCursorPos	- m_iWindowMiddle);
+			else
+				fGameSelect ++;
 
 			// clamp game window range (high)
 			if((fGameSelect	+ m_iMaxWindowList)	> iNumGames)
@@ -3051,7 +3064,7 @@ void FrameMove()
 			nBurnFPS = 6000;
 			nFMInterpolation = 0;
 
-			if (directLoadGame((TCHAR *)m_vecAvailRomIndex[entryselected].c_str()) == 0)
+			if (directLoadGame(m_vecAvailRomIndex[entryselected].c_str()) == 0)
 			{
 				nPrevGame = m_vecAvailRomBurnDrvIndex[entryselected];
 

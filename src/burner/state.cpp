@@ -165,28 +165,25 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 }
 
 // State load
-int BurnStateLoad(TCHAR* szName, int bAll, int (*pLoadGame)())
+int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)())
 {
 	const char szHeader[] = "FB1 ";						// File identifier
 	char szReadHeader[4] = "";
 	int nRet = 0;
 
 	FILE* fp = _tfopen(szName, _T("rb"));
-	if (fp == NULL) {
+	if (fp == NULL)
 		return 1;
-	}
 
-	fread(szReadHeader, 1, 4, fp);						// Read identifier
-	if (memcmp(szReadHeader, szHeader, 4) == 0) {		// Check filetype
+	fread(szReadHeader, 1, 4, fp); // Read identifier
+	if (memcmp(szReadHeader, szHeader, 4) == 0) // Check filetype
 		nRet = BurnStateLoadEmbed(fp, -1, bAll, pLoadGame);
-	}
-    fclose(fp);
+	fclose(fp);
 
-	if (nRet < 0) {
+	if (nRet < 0)
 		return -nRet;
-	} else {
+	else
 		return 0;
-	}
 }
 
 // Write a savestate as a chunk of an "FB1 " file

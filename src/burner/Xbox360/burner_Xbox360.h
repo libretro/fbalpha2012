@@ -145,7 +145,7 @@ int mediaReInitScrn();
 // misc_win32.cpp
 void createNeedDir();
 bool directoryExists(const TCHAR* dirname);
-void pathCheck(TCHAR* path);
+void pathCheck(char * path);
 int directLoadGame(TCHAR* name);
 bool createToolTip(int toolID, HWND hDlg, TCHAR* pText);
 int appDirectory();

@@ -24,7 +24,7 @@ public:
 	IUnknown* pXAPO;
 	bool effectEnable;
 
-	BYTE* pAudioBuffers;
+	uint8_t * pAudioBuffers;
 	int currentBuffer;
 
 	struct StreamingVoiceContext : public IXAudio2VoiceCallback
@@ -381,7 +381,7 @@ public:
 
 		// create own buffers to store sound data because it must not be
 		// manipulated while the voice plays from it
-		pAudioBuffers = (BYTE *)malloc(loopLen);
+		pAudioBuffers = (uint8_t *)malloc(loopLen);
 		if (pAudioBuffers == NULL) {
 			exit();
 			return 1;
@@ -533,7 +533,7 @@ public:
 
 		// create own buffers to store sound data because it must not be
 		// manipulated while the voice plays from it
-		pAudioBuffers = (BYTE *)malloc(loopLen);
+		pAudioBuffers = (uint8_t *)malloc(loopLen);
 		if (pAudioBuffers == NULL) {
 			exit();
 			return 1;

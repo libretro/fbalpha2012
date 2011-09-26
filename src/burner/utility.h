@@ -65,18 +65,17 @@ inline void getLine(char* p)
 }
 
 // path check (add trailing backslash)
-inline void pathCheck(TCHAR* path)
+inline void pathCheck(char * path)
 {
-	if (!path) {
+	if (!path)
 		return;
-	}
 
 	size_t len = _tcslen(path);
-	if (len == 0) {
+	if (len == 0)
 		return;
-	}
 
-	if (path[len - 1] != '\\') {
+	if (path[len - 1] != '\\')
+	{
 		path[len] = '\\';
 		path[len + 1] = '\0';
 	}

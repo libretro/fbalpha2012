@@ -245,17 +245,18 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 	if (!(i & DRV_ASCIIONLY)) {
 		switch (i & 0xFF) {
 			case DRV_FULLNAME:
-				if (i & DRV_NEXTNAME) {
-					if (pszCurrentNameW && pDriver[nBurnDrvSelect]->szFullNameW) {
+				if (i & DRV_NEXTNAME)
+				{
+					if (pszCurrentNameW && pDriver[nBurnDrvSelect]->szFullNameW)
+					{
 						pszCurrentNameW += wcslen(pszCurrentNameW) + 1;
-						if (!pszCurrentNameW[0]) {
+						if (!pszCurrentNameW[0])
 							return NULL;
-						}
 						pszStringW = pszCurrentNameW;
 					}
-				} else {
-					pszStringW = pszCurrentNameW = pDriver[nBurnDrvSelect]->szFullNameW;
 				}
+				else
+					pszStringW = pszCurrentNameW = pDriver[nBurnDrvSelect]->szFullNameW;
 				break;
 			case DRV_COMMENT:
 				pszStringW = pDriver[nBurnDrvSelect]->szCommentW;
@@ -267,14 +268,12 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 				pszStringW = pDriver[nBurnDrvSelect]->szSystemW;
 		}
 
-		if (pszStringW && pszStringW[0]) {
+		if (pszStringW && pszStringW[0])
 			return (TCHAR *)pszStringW;
-		}
 	}
 
-	if (i & DRV_UNICODEONLY) {
+	if (i & DRV_UNICODEONLY)
 		return NULL;
-	}
 
 	switch (i & 0xFF) {
 		case DRV_NAME:
@@ -285,11 +284,11 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 			break;
 		case DRV_FULLNAME:
 			if (i & DRV_NEXTNAME) {
-				if (!pszCurrentNameW && pDriver[nBurnDrvSelect]->szFullNameA) {
+				if (!pszCurrentNameW && pDriver[nBurnDrvSelect]->szFullNameA)
+				{
 					pszCurrentNameA += strlen(pszCurrentNameA) + 1;
-					if (!pszCurrentNameA[0]) {
+					if (!pszCurrentNameA[0])
 						return NULL;
-					}
 					pszStringA = pszCurrentNameA;
 				}
 			} else {
@@ -342,10 +341,10 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 			break;
 	}
 
-	if (pszStringW && pszStringA && pszStringA[0]) {
-		if (mbstowcs(pszStringW, pszStringA, 256) != -1U) {
+	if (pszStringW && pszStringA && pszStringA[0])
+	{
+		if (mbstowcs(pszStringW, pszStringA, 256) != -1U)
 			return (TCHAR *)pszStringW;
-		}
 	}
 
 	return NULL;
@@ -407,11 +406,10 @@ extern "C" const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type)
 // Get the archive names for the driver
 extern "C" int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext /*=true*/, unsigned int type /*=0*/)
 {
-	if (pDriver[nBurnDrvSelect]->GetZipName) {									// Forward to drivers function
+	if (pDriver[nBurnDrvSelect]->GetZipName) // Forward to drivers function
 		return pDriver[nBurnDrvSelect]->GetZipName(pszName, i);
-	}
 
-	return BurnGetArchiveName(pszName, i, ext, type);							// Forward to general function
+	return BurnGetArchiveName(pszName, i, ext, type); // Forward to general function
 }
 
 extern "C" int BurnDrvGetRomInfo(struct BurnRomInfo* pri, unsigned int i)		// Forward to drivers function
@@ -431,11 +429,10 @@ extern "C" int BurnDrvGetInputInfo(struct BurnInputInfo* pii, unsigned int i)	//
 
 extern "C" int BurnDrvGetDIPInfo(struct BurnDIPInfo* pdi, unsigned int i)
 {
-	if (pDriver[nBurnDrvSelect]->GetDIPInfo) {									// Forward to drivers function
+	if (pDriver[nBurnDrvSelect]->GetDIPInfo)	// Forward to drivers function
 		return pDriver[nBurnDrvSelect]->GetDIPInfo(pdi, i);
-	}
 
-	return 1;																	// Fail automatically
+	return 1; // Fail automatically
 }
 
 // Get the screen size
@@ -529,9 +526,8 @@ extern "C" int BurnDrvInit()
 {
 	int nReturnValue;
 
-	if (nBurnDrvSelect >= nBurnDrvCount) {
+	if (nBurnDrvSelect >= nBurnDrvCount)
 		return 1;
-	}
 
 #if defined (FBA_DEBUG)
 	{
@@ -540,9 +536,8 @@ extern "C" int BurnDrvInit()
 		TCHAR* pszName = BurnDrvGetText(DRV_FULLNAME);
 		int nName = 1;
 
-		while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL) {
+		while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL)
 			nName++;
-		}
 
 		// Print the title
 
@@ -550,17 +545,18 @@ extern "C" int BurnDrvInit()
 
 		// Then print the alternative titles
 
-		if (nName > 1) {
+		if (nName > 1)
+		{
 			bprintf(PRINT_IMPORTANT, _T("    Alternative %s "), (nName > 2) ? _T("titles are") : _T("title is"));
 			pszName = BurnDrvGetText(DRV_FULLNAME);
 			nName = 1;
-			while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL) {
-				if (pszPosition + _tcslen(pszName) - 1022 > szText) {
+			while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL)
+			{
+				if (pszPosition + _tcslen(pszName) - 1022 > szText)
 					break;
-				}
-				if (nName > 1) {
+				if (nName > 1)
 					bprintf(PRINT_IMPORTANT, _T(SEPERATOR_1));
-				}
+
 				bprintf(PRINT_IMPORTANT, _T("%s"), pszName);
 				nName++;
 			}
@@ -574,14 +570,12 @@ extern "C" int BurnDrvInit()
 	cheatInit();
 	BurnStateInit();
 #ifndef NO_COMBO
-	if (BurnInitCombo) {
+	if (BurnInitCombo)
 		BurnInitCombo();
-	}
 #endif
 #ifndef NO_AUTOFIRE
-	if (BurnInitAutofire) {
+	if (BurnInitAutofire)
 		BurnInitAutofire();
-	}
 #endif
 
 	nReturnValue = pDriver[nBurnDrvSelect]->Init();	// Forward to drivers function
@@ -589,14 +583,15 @@ extern "C" int BurnDrvInit()
 	nMaxPlayers = pDriver[nBurnDrvSelect]->players;
 
 #if defined (FBA_DEBUG)
-	if (!nReturnValue) {
+	if (!nReturnValue)
+	{
 		starttime = clock();
 		nFramesEmulated = 0;
 		nFramesRendered = 0;
 		nCurrentFrame = 0;
-	} else {
-		starttime = 0;
 	}
+	else
+		starttime = 0;
 #endif
 
 	return nReturnValue;
@@ -632,14 +627,12 @@ extern "C" int BurnDrvFrame()
 {
 	cheatApply();									// Apply cheats (if any)
 #ifndef NO_COMBO
-	if (BurnProcessCombo) {
+	if (BurnProcessCombo)
 		BurnProcessCombo();
-	}
 #endif
 #ifndef NO_AUTOFIRE
-	if (BurnDoAutofire) {
+	if (BurnDoAutofire)
 		BurnDoAutofire();
-	}
 #endif
 
 	return pDriver[nBurnDrvSelect]->Frame();		// Forward to drivers function

@@ -18,10 +18,6 @@ typedef int32_t HFONT;
 typedef int32_t HBITMAP;
 typedef uint32_t BOOL;
 typedef char WCHAR;
-typedef uint32_t DWORD;
-typedef uint8_t BYTE;
-typedef uint16_t WORD;
-typedef float FLOAT;
 #else
 typedef char				TCHAR;
 typedef int					HWND;
@@ -29,10 +25,6 @@ typedef int					HFONT;
 typedef int					HBITMAP;
 typedef int					BOOL;
 typedef char				WCHAR;
-typedef unsigned long       DWORD;
-typedef unsigned char       BYTE;
-typedef unsigned short      WORD;
-typedef float               FLOAT;
 #endif
 #define _T(x) x
 #define __forceinline	__attribute((always_inline))

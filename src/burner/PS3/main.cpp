@@ -107,9 +107,9 @@ static int AppInit()
 
 static int AppExit()
 {
-	BurnerDrvExit();				// Make sure any game driver is exitted
+	BurnerDrvExit();				// Make sure any game driver is exited
 	mediaExit();					// Exit media
-	scrnExit();						// Exit the screen window
+	scrnExit();					// Exit the screen window
 	BurnLibExit();					// Exit the Burn library
 
 	freeAuditState();				// Free audit state 
@@ -168,7 +168,6 @@ int  main(int argc, char **argv)
 	createNeedDir();				// Make sure there are roms and cfg subdirectories
 
 	AppInit();
-
 
 	psglInitGL();
 	dbgFontInit();

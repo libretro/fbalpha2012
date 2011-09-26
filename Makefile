@@ -136,7 +136,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         $(BURN_DIR)/toaplan/d_zerowing.cpp $(BURN_DIR)/toaplan/toa_bcu2.cpp $(BURN_DIR)/toaplan/toa_extratext.cpp $(BURN_DIR)/toaplan/toa_gp9001.cpp $(BURN_DIR)/toaplan/toa_palette.cpp \
                                         $(BURN_DIR)/toaplan/toaplan.cpp $(BURN_DIR)/toaplan/toaplan1.cpp \
                                         \
-                                        $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpc.cpp $(BURNER_DIR)/PS3/inpcheat.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/inps.cpp \
+                                        $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/inps.cpp \
                                         $(BURNER_DIR)/PS3/localise.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
                                         $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/scrn.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/strconv.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
                                         \

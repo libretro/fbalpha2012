@@ -1,5 +1,14 @@
+#define MAX_PATH 260
+
+#define PUF_TYPE_ERROR 1
+#define PUF_TYPE_WARNING 2
+
+#define AUDIO_SEGMENT_LENGTH 801
+#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS 1602
+
 #include "libsnes.hpp"
 #include "../burner.h"
+#include "../gameinp.h"
 
 #include <stdio.h>
 
@@ -16,21 +25,32 @@ int16_t * pAudNextsound = NULL;
 int bDrvOkay = 0;
 static bool bInputOkay = false;
 static bool bAudOkay = false;
+static bool bAudPlaying = false;
 static bool bVidOkay = false;
 static bool bAltPause = false;
 static int bRunPause = 0;
 static int nAppVirtualFps = 6000;
-//nBurnSoundRate;					
-//pBurnSoundOut;
-//nBurnSoundLen;
-static int nVidImageWidth = 640;
-static int nVidImageHeight = 480;
-static int nVidImageDepth = 0; // todo
-static int nVidImageBPP = 0; // todo
+int16_t * pAudNextSound = NULL;
+int nAudAllocSegLen = 0;		// Allocated seg length in samples
 static unsigned char * pVidTransImage = NULL;
 static unsigned int * pVidTransPalette = NULL;
+static const int transPaletteSize = 65536;
 extern unsigned int nCurrentFrame;
 extern bool DoReset;
+
+unsigned char* pVidImage = NULL;				// Memory buffer
+int nVidImageWidth = DEFAULT_IMAGE_WIDTH;		// Memory buffer size
+int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;		//
+int nVidImageLeft = 0, nVidImageTop = 0;		// Memory buffer visible area offsets
+int nVidImagePitch = 0, nVidImageBPP = 0;		// Memory buffer pitch and bytes per pixel
+int nVidImageDepth = 0;							// Memory buffer bits per pixel
+static int nGameImageWidth;
+static int nGameImageHeight;
+static bool bVidRecalcPalette;
+static int nBaseFps;
+static bool bSaveRAM = false;
+
+#define ARGB(r, g, b) ((r << 16) | (g << 8) | b)
 
 unsigned snes_library_revision_major(void)
 {
@@ -85,7 +105,7 @@ static unsigned serialize_size = 0;
 static void configAppLoadXml()
 {}
 
-static int AudWriteSilence(int)
+static int AudWriteSilence(void)
 {
 	if(pAudNextSound)
 		memset(pAudNextSound, 0, nAudAllocSegLen);
@@ -98,11 +118,13 @@ static int audioInit()
 	return 0;
 }
 
+#if 0
 static bool lock(unsigned int *&data, unsigned &pitch)
 {
-	pitch = iwidth * sizeof(unsigned int);
+	pitch = nGameImageWidth * sizeof(unsigned int);
 	return data = buffer;
 }
+#endif
 
 #define VidSCopyImage32(dst_ori) \
    register uint16_t lineSize = nVidImageWidth << 2; \
@@ -115,6 +137,7 @@ static bool lock(unsigned int *&data, unsigned &pitch)
       dst += pitch; \
    }while(height);
 
+#if 0
 static void VidCopyFrame(void)
 {
 	unsigned int* pd;
@@ -127,6 +150,7 @@ static void VidCopyFrame(void)
 	unsigned int inheight = nGameImageHeight;
 
 }
+#endif
 
 static void VidFrame(void)
 {
@@ -190,7 +214,6 @@ static int VidExit()
 	if (!bVidOkay)
 		return 1;
 
-	//int nRet = VidDriver(nVidActive)->Exit();
 	bAudOkay = false;
 	bAudPlaying = false;
 
@@ -207,7 +230,16 @@ static int VidExit()
 	free(pVidTransImage);
 	pVidTransImage = NULL;
 
-	return nRet;
+	return 1;
+}
+
+static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
+{
+	unsigned int t;
+	t  = (r << 7) & 0x7C00;
+	t |= (g << 2) & 0x03E0;
+	t |= (b >> 3) & 0x001F;
+	return t;
 }
 
 static int VidInit()
@@ -218,26 +250,22 @@ static int VidInit()
 
 	if (bDrvOkay)
 	{
-		nVidActive = nVidSelect;						 
-		if ((nRet = VidDriver(nVidActive)->Init()) == 0)
+		nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
+		bVidOkay = true;
+
+		if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nVidImageBPP > 2)
 		{
-			nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
-			bVidOkay = true;
+			nBurnBpp = 2;
 
-			if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nVidImageBPP > 2)
+			pVidTransPalette = (unsigned int*)malloc(transPaletteSize * sizeof(int));
+			pVidTransImage = (unsigned char*)malloc(nVidImageWidth * nVidImageHeight * (nVidImageBPP >> 1) * sizeof(short));
+
+			BurnHighCol = HighCol15;
+
+			if (pVidTransPalette == NULL || pVidTransImage == NULL)
 			{
-				nBurnBpp = 2;
-
-				pVidTransPalette = (unsigned int*)malloc(transPaletteSize * sizeof(int));
-				pVidTransImage = (unsigned char*)malloc(nVidImageWidth * nVidImageHeight * (nVidImageBPP >> 1) * sizeof(short));
-
-				BurnHighCol = HighCol15;
-
-				if (pVidTransPalette == NULL || pVidTransImage == NULL)
-				{
-					VidExit();
-					nRet = 1;
-				}
+				VidExit();
+				nRet = 1;
 			}
 		}
 	}
@@ -284,70 +312,24 @@ static int mediaInit()
 		VidInit(); // Reinit the video plugin
 
 		if (bVidOkay && ((bRunPause && bAltPause) || !bDrvOkay))
-			VidRedraw();
+			VidFrame();
 	}
 
 	return 0;
 }
 
-int directLoadGame(const char * name)
+static void VidReinit()
 {
-	int RomOK = 1;
+	VidInit();
 
-	if (!name)
-		return 1;
-
-	nVidFullscreen = 1;
-
-	if (strcasecmp(&name[strlen(name) - 3], ".fs") == 0)
-	{
-		if (BurnStateLoad(name, 1, &DrvInitCallback))
-			return 1;
-	}
-	else
-	{
-		char * p = getBaseName(name);			// get game name
-		unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
-
-		if (i < nBurnDrvCount)
-		{
-			RomOK = BurnerDrvInit(i, true);
-			bAltPause = 0;
-		}
-	}
-
-	return RomOK;
+	if (bRunPause || !bDrvOkay)
+		VidFrame();
 }
 
-static void fba_init(const char *tmppath)
+static void scrnReinit()
 {
-	configAppLoadXml(); // no, this isn't actually XML at all
-	BurnLibInit();
-	getAllRomsetInfo();
-	nVidFullscreen = 1;
-	BurnExtLoadOneRom = archiveLoadoneFIle;
-	InitRomList();
-	InitInputList();
-	InitDipList();
-
-	BuildRomList();
-
-	directLoadGame(strdup(tmppath));
-	mediaInit();
-	bVidOkay = bAudOkay = true;
-	//serialize_size = CPUWriteState_libgba(state_buf, 2000000);
+	VidReinit();
 }
-
-void snes_term(void)
-{
-   delete[] state_buf;
-}
-
-void snes_power(void)
-{}
-
-void snes_reset(void)
-{}
 
 static int CinpState(int nCode)
 {
@@ -357,11 +339,13 @@ static int CinpState(int nCode)
 	if (DoReset)
 	{
 
+		#if 0
 		if (nCode == FBK_F3)
 		{
 			DoReset = false;
 			return 1;
 		}
+		#endif
 
 	}
 
@@ -646,10 +630,260 @@ static void InputMake(void)
 	}
 }
 
+static int BurnerDrvExit()
+{
+	if (bDrvOkay)
+	{
+
+		VidExit();
+
+		if (nBurnDrvSelect < nBurnDrvCount)
+		{
+			//MemCardEject();				// Eject memory card if present
+
+			//ConfigGameSave(true);		// save game config
+
+			GameInpExit();				// Exit game input
+			BurnDrvExit();				// Exit the driver
+		}
+	}
+
+	BurnExtLoadRom = NULL;
+
+	bDrvOkay = 0;					// Stop using the BurnDrv functions
+
+	bRunPause = 0;					// Don't pause when exitted
+
+	if (bAudOkay)
+		AudWriteSilence();	// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
+
+	nBurnDrvSelect = ~0U;			// no driver selected
+	nBurnLayer = 0xFF;				// show all layers
+
+	return 0;
+}
+
+// get all romsets info, only do once
+#if 0
+static int getAllRomsetInfo()
+{
+	if (getinfo)
+		return 0;
+
+	char* sname = NULL;
+	BurnRomInfo ri;
+	unsigned int romCount = 0;
+	string name = "";
+
+	unsigned int tempBurnDrvSelect = nBurnDrvSelect;
+
+	// get all romset basic info
+	for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++)
+	{
+		// get game info
+		GameInfo* gameInfo = new GameInfo;
+		gameInfo->parent = BurnDrvGetTextA(DRV_PARENT) ? BurnDrvGetTextA(DRV_PARENT) : "";
+		gameInfo->board = BurnDrvGetTextA(DRV_BOARDROM) ? BurnDrvGetTextA(DRV_BOARDROM) : "";
+		name = BurnDrvGetTextA(DRV_NAME);
+
+		// get rom info
+		romCount = getRomCount();
+		for (unsigned int i = 0; i < romCount; i++)
+		{
+			memset(&ri, 0, sizeof(ri));
+			BurnDrvGetRomInfo(&ri, i); // doesn't contain rom name
+
+			RomInfo romInfo;
+			BurnDrvGetRomName(&sname, i, 0); // get rom name
+			romInfo.name = sname;
+			romInfo.size = ri.nLen;
+			romInfo.type = ri.nType;
+			if (ri.nCrc == 0)
+				romInfo.state = STAT_OK; // pass no_dump rom
+			else
+				romInfo.state = STAT_NOFIND;
+
+			gameInfo->roms[ri.nCrc] = romInfo;
+		}
+
+		// add gameinfo to list
+		allGameMap[name] = gameInfo;
+	}
+
+	nBurnDrvSelect = tempBurnDrvSelect;
+
+	getAllRomsetCloneInfo();
+
+	getinfo = true;
+
+	return 0;
+}
+#endif
+
+
+static int DoLibInit() // Do Init of Burn library driver
+{
+	int nRet = 0;
+
+	BArchiveOpen(false);
+
+	// If there is a problem with the romset, report it
+	switch (BArchiveStatus())
+	{
+		case BARC_STATUS_BADDATA:
+			BArchiveClose();
+			return 1;
+			break;
+		case BARC_STATUS_ERROR:
+			break;
+	}
+
+	nRet = BurnDrvInit();
+	BArchiveClose();
+
+	if (nRet)
+		return 3;
+	else
+		return 0;
+}
+
+// Catch calls to BurnLoadRom() once the emulation has started;
+// Intialise the zip module before forwarding the call, and exit cleanly.
+static int __cdecl DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
+{
+	int nRet;
+
+	BArchiveOpen(false);
+
+	if ((nRet = BurnExtLoadRom(Dest, pnWrote, i)) != 0)
+	{
+		char* pszFilename;
+
+		BurnDrvGetRomName(&pszFilename, i, 0);
+	}
+
+	BArchiveClose();
+	BurnExtLoadRom = DrvLoadRom;
+
+	return nRet;
+}
+
+static int BurnerDrvInit(int nDrvNum, bool bRestore)
+{
+	BurnerDrvExit();
+
+	nBurnDrvSelect = nDrvNum;	// Set the driver number
+
+	mediaInit();
+
+	nMaxPlayers = BurnDrvGetMaxPlayers();
+
+	GameInpInit(); // Init game input
+	#if 0
+	if (ConfigGameLoad(true))
+		loadDefaultInput();
+	#endif
+
+	InputMake();
+	GameInpDefault();
+
+	BurnReinitScrn = scrnReinit;
+
+	int nStatus = DoLibInit(); // Init the burn library's driver
+	if (nStatus)
+	{
+		if (nStatus & 2)
+			BurnDrvExit(); // exit the driver
+
+		return 1;
+	}
+
+	BurnExtLoadRom = DrvLoadRom;
+
+	bDrvOkay = 1;
+
+	bSaveRAM = false;
+
+	//RunReset();
+
+	return 0;
+}
+
+static int DrvInitCallback(void)
+{
+	return BurnerDrvInit(nBurnDrvSelect, false);
+}
+
+static int directLoadGame(const char * name)
+{
+	int RomOK = 1;
+
+	if (!name)
+		return 1;
+
+	if (strcasecmp(&name[strlen(name) - 3], ".fs") == 0)
+	{
+		if (BurnStateLoad(name, 1, &DrvInitCallback))
+			return 1;
+	}
+	else
+	{
+		char * p = getBaseName(name);			// get game name
+		unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
+
+		if (i < nBurnDrvCount)
+		{
+			RomOK = BurnerDrvInit(i, true);
+			bAltPause = 0;
+		}
+	}
+
+	return RomOK;
+}
+
+static int fba_init(const char *tmppath)
+{
+	configAppLoadXml(); // no, this isn't actually XML at all
+	BurnLibInit();
+	//getAllRomsetInfo();
+	//nVidFullscreen = 1;
+	BurnExtLoadOneRom = archiveLoadOneFile;
+	//InitRomList();
+	//InitInputList();
+	//InitDipList();
+
+	//BuildRomList();
+
+	directLoadGame(strdup(tmppath));
+	mediaInit();
+	bVidOkay = bAudOkay = true;
+	//serialize_size = CPUWriteState_libgba(state_buf, 2000000);
+	return 1;
+}
+
+void snes_term(void)
+{
+   delete[] state_buf;
+}
+
+void snes_power(void)
+{}
+
+void snes_reset(void)
+{}
+
+static void fba_audio(int16_t * audio_buf, int length)
+{
+	pBurnSoundOut = audio_buf;
+
+	int16_t * currentSound = audio_buf;
+	for (int i = 0; i < length; i += 2)
+		audio_cb(currentSound[i + 0], currentSound[i + 1]);
+}
 
 void snes_run(void)
 {
-	fba_audio(pAudNextSound);
+	fba_audio(pAudNextSound, AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
 	nCurrentFrame++;
 	VidFrame();
 	InputMake();
@@ -733,7 +967,6 @@ uint8_t *snes_get_memory_data(unsigned id)
 {
    if (id != SNES_MEMORY_CARTRIDGE_RAM)
       return 0;
-   return flashSaveMemory;
 }
 
 unsigned snes_get_memory_size(unsigned id)
@@ -743,18 +976,6 @@ unsigned snes_get_memory_size(unsigned id)
 
    return 0x10000;
 }
-
-void fba_audio(int16_t * audio_buf, int length)
-{
-	pBurnSoundOut = audio_buf;
-
-	int16_t * currentSound = audio_buf;
-	for (int i = 0; i < length; i += 2)
-		audio_cb(currentSound[i + 0], currentSound[i + 1]);
-}
-#endif
-
-static uint16_t pix_buf[160 * 1024];
 
 // Stubs
 

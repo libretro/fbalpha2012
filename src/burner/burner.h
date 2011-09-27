@@ -22,7 +22,11 @@
 #include <ctype.h>
 
 #include "title.h"
+#ifdef __LIBSNES__
+#include "../burn/burn.h"
+#else
 #include "burn.h"
+#endif
 
 #include "utility.h"
 
@@ -54,8 +58,9 @@
 // ---------------------------------------------------------------------------
 // OS independent functionality
 
-#ifdef SN_TARGET_PS3
+#if defined(SN_TARGET_PS3)
 #include "interface-ps3.h"
+#elif defined (__LIBSNES__)
 #else
 #include "interface.h"
 #endif
@@ -74,22 +79,22 @@ extern bool bLeftAltkeyMapped;
 
 int GameInpInit();
 int GameInpExit();
-TCHAR* InputCodeDesc(int c);
-TCHAR* InpToDesc(struct GameInp* pgi);
-TCHAR* InpMacroToDesc(struct GameInp* pgi);
+char * InputCodeDesc(int c);
+char * InpToDesc(struct GameInp* pgi);
+char * InpMacroToDesc(struct GameInp* pgi);
 void GameInpCheckLeftAlt();
 void GameInpCheckMouse();
 int GameInpBlank(int bDipSwitch);
 int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite);
 int GameInpDefault();
 int GameInpWrite(FILE* h, bool bWriteConst = true);
-int GameInpRead(TCHAR* szVal, bool bOverWrite);
-int GameInpMacroRead(TCHAR* szVal, bool bOverWrite);
-int GameInpCustomRead(TCHAR* szVal, bool bOverWrite);
+int GameInpRead(char * szVal, bool bOverWrite);
+int GameInpMacroRead(char * szVal, bool bOverWrite);
+int GameInpCustomRead(char * szVal, bool bOverWrite);
 
 // Player Default Controls
 extern int nPlayerDefaultControls[4];
-extern TCHAR szPlayerDefaultIni[4][MAX_PATH];
+extern char szPlayerDefaultIni[4][MAX_PATH];
 
 // cong.cpp
 extern const int nConfigMinVersion;					// Minimum version of application for which input files are valid
@@ -124,9 +129,9 @@ extern unsigned int autofireDefaultDelay;
 extern void UpdateConsole(char *text);
 
 // dat.cpp
-int write_xmlfile(const TCHAR* szFilename, FILE* file);
+int write_xmlfile(const char * szFilename, FILE* file);
 int write_datfile(FILE* file);
-int create_datfile(TCHAR* szFilename, int type);
+int create_datfile(char* szFilename, int type);
 
 // sshot.cpp
 unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical = 0);
@@ -136,7 +141,7 @@ int MakeScreenShot(bool bScrShot, int Type);
 int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)());
 int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)());
 int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll);
-int BurnStateSave(TCHAR* szName, int bAll);
+int BurnStateSave(char* szName, int bAll);
 
 // statec.cpp
 int BurnStateCompress(unsigned char** pDef, int* pnDefLen, int bAll);
@@ -147,13 +152,13 @@ struct ArcEntry { char* szName; unsigned int nLen; unsigned int nCrc; };
 
 enum ARCTYPE { ARC_NONE = -1, ARC_ZIP = 0, ARC_7Z, ARC_NUM };
 
-int archiveCheck(TCHAR* name, int zipOnly = 0);
-int archiveOpen(const TCHAR* archive);
+int archiveCheck(char* name, int zipOnly = 0);
+int archiveOpen(const char* archive);
 int archiveOpenA(const char* archive);
 int archiveClose();
 int archiveGetList(ArcEntry** list, int* count = NULL);
 int archiveLoadFile(unsigned char* dest, int len, int entry, int* wrote = NULL);
-int __cdecl archiveLoadOneFile(const TCHAR* arc, const TCHAR* file, void** dest, int* wrote = NULL);
+int __cdecl archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote = NULL);
 
 // barchive.cpp
 enum BARC_STATUS { BARC_STATUS_OK = 0, BARC_STATUS_BADDATA, BARC_STATUS_ERROR };

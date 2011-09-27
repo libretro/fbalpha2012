@@ -16,7 +16,7 @@
 #else
 #include <unistd.h>
 #endif
-#include "fbatypes.h"
+#include "../burn/fbatypes.h"
 
 // macro for getting array size
 #define sizearray(a) (sizeof(a) / sizeof((a)[0]))
@@ -70,7 +70,7 @@ inline void pathCheck(char * path)
 	if (!path)
 		return;
 
-	size_t len = _tcslen(path);
+	size_t len = strlen(path);
 	if (len == 0)
 		return;
 
@@ -82,22 +82,21 @@ inline void pathCheck(char * path)
 }
 
 // "foo/bar.c" -> "bar"
-inline TCHAR* getBaseName(const TCHAR* name)
+inline char * getBaseName(const char * name)
 {
-	static TCHAR filename[256];
+	static char filename[256];
 
 #if defined (_XBOX)
-	const TCHAR* p = _tcsrchr(name, '\\');
+	const char * p = strrchr(name, '\\');
 #else
-	const TCHAR* p = _tcsrchr(name, '/');
+	const char * p = strrchr(name, '/');
 #endif
-	if (p) {
-		_tcscpy(filename, p + 1);
-	} else {
-		_tcscpy(filename, name);
-	}
+	if(p)
+		strcpy(filename, p + 1);
+	else
+		strcpy(filename, name);
 
-	for (size_t i = _tcslen(filename); i > 0; i--) {
+	for (size_t i = strlen(filename); i > 0; i--) {
 		if (filename[i] == '.') {
 			filename[i] = '\0';
 		}
@@ -111,9 +110,9 @@ inline char* getBaseNameA(const char* name)
 	static char filename[256];
 
 #if defined (_XBOX)
-	const TCHAR* p = _tcsrchr(name, '\\');
+	const char * p = strrchr(name, '\\');
 #else
-	const TCHAR* p = _tcsrchr(name, '/');
+	const char * p = strrchr(name, '/');
 #endif
 	if (p) {
 		strcpy(filename, p + 1);
@@ -146,15 +145,15 @@ inline char* getFilenameA(char* fullname)
 	return fullname;
 }
 
-inline TCHAR* getFilenameW(TCHAR* fullname)
+inline char * getFilenameW(char * fullname)
 {
-	size_t len = _tcslen(fullname);
+	size_t len = strlen(fullname);
 	if (len == 0) {
 		return fullname;
 	}
 
 	for (size_t i = len - 1; i >= 1; i--) {
-		if (fullname[i] == _T('\\') || fullname[i] == _T('/')) {
+		if (fullname[i] == '\\' || fullname[i] == '/') {
 			return fullname + i + 1;
 		}
 	}
@@ -162,13 +161,13 @@ inline TCHAR* getFilenameW(TCHAR* fullname)
 	return fullname;
 }
 
-inline TCHAR* getFileExt(const TCHAR* filename)
+inline char * getFileExt(const char * filename)
 {
-	static TCHAR ext[32] = _T("");
+	static char ext[32] = "";
 
-	const TCHAR* p = _tcsrchr(filename, '.');
+	const char * p = strrchr(filename, '.');
 	if (p) {
-		_tcscpy(ext, p + 1);
+		strcpy(ext, p + 1);
 		return ext;
 	}
 	return NULL;
@@ -186,11 +185,11 @@ inline long getFileSize(FILE* file)
 }
 
 // read file content to buffer, return file size
-inline size_t getFileBuffer(const TCHAR* filename, void** buffer)
+inline size_t getFileBuffer(const char * filename, void** buffer)
 {
 	assert(!(*buffer));
 
-	FILE* file = _tfopen(filename, _T("rt"));
+	FILE* file = fopen(filename, "rt");
 	if (!file) {
 		return 0;
 	}
@@ -215,7 +214,7 @@ inline size_t getFileBuffer(const TCHAR* filename, void** buffer)
 }
 
 // check file state
-inline bool fileExists(const TCHAR* filename)
+inline bool fileExists(const char * filename)
 {
 
 #if defined (_XBOX)
@@ -240,7 +239,7 @@ inline bool fileExists(const TCHAR* filename)
 
 }
 
-inline bool fileReadable(const TCHAR* filename)
+inline bool fileReadable(const char* filename)
 {
 #if defined (_XBOX)
 	return true;
@@ -252,55 +251,55 @@ inline bool fileReadable(const TCHAR* filename)
 }
 
 // Macros for parsing text
-#define SKIP_WS(s) while (_istspace(*s)) { s++; }			// Skip whitespace
-#define FIND_WS(s) while (*s && !_istspace(*s)) { s++; }	// Find whitespace
-#define FIND_QT(s) while (*s && *s != _T('\"')) { s++; }	// Find quote
+#define SKIP_WS(s) while (isspace(*s)) { s++; }			// Skip whitespace
+#define FIND_WS(s) while (*s && !isspace(*s)) { s++; }	// Find whitespace
+#define FIND_QT(s) while (*s && *s != '\"') { s++; }	// Find quote
 
 // config file parsing
 #define QUOTE_MAX (128)										// Maximum length of "quoted strings"
 
-inline TCHAR* labelCheck(TCHAR* s, TCHAR* label)
+inline char* labelCheck(char* s, char* label)
 {
 	if (!s || !label) {
 		return NULL;
 	}
-	size_t len = _tcslen(label);
+	size_t len = strlen(label);
 
 	SKIP_WS(s);							// Skip whitespace
 
-	if (_tcsncmp(s, label, len)) {		// Doesn't match
+	if (strncmp(s, label, len)) {		// Doesn't match
 		return NULL;
 	}
 	return s + len;
 }
 
 // Read a (quoted) string from szSrc and point to the end
-inline int quoteRead(TCHAR** ppQuote, TCHAR** ppEnd, TCHAR* src)
+inline int quoteRead(char** ppQuote, char** ppEnd, char* src)
 {
-	static TCHAR quote[QUOTE_MAX];
-	TCHAR* s = src;
-	TCHAR* e;
+	static char quote[QUOTE_MAX];
+	char* s = src;
+	char* e;
 
 	// Skip whitespace
 	SKIP_WS(s);
 
 	e = s;
 
-	if (*s == _T('\"')) {					// Quoted string
+	if (*s == '\"') {					// Quoted string
 		s++;
 		e++;
 		// Find end quote
 		FIND_QT(e);
-		_tcsncpy(quote, s, e - s);
+		strncpy(quote, s, e - s);
 		// Zero-terminate
-		quote[e - s] = _T('\0');
+		quote[e - s] = '\0';
 		e++;
 	} else {								// Non-quoted string
 		// Find whitespace
 		FIND_WS(e);
-		_tcsncpy(quote, s, e - s);
+		strncpy(quote, s, e - s);
 		// Zero-terminate
-		quote[e - s] = _T('\0');
+		quote[e - s] = '\0';
 	}
 
 	if (ppQuote) {
@@ -313,13 +312,13 @@ inline int quoteRead(TCHAR** ppQuote, TCHAR** ppEnd, TCHAR* src)
 	return 0;
 }
 
-inline bool skipComma(TCHAR** s)
+inline bool skipComma(char** s)
 {
-	while (**s && **s != _T(',')) {
+	while (**s && **s != ',') {
 		(*s)++;
 	}
 
-	if (**s == _T(',')) {
+	if (**s == ',') {
 		(*s)++;
 	}
 

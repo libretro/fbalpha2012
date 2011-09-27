@@ -77,7 +77,7 @@ typedef char				WCHAR;
 #define _ftprintf   fprintf
 #define _strnicmp(s1, s2, n) strncasecmp(s1, s2, (n))
 #else
-#include "tchar.h"
+//#include "tchar.h"
 #endif
 
 #ifdef _MSC_VER

@@ -39,11 +39,11 @@ extern int nBurnVer;					// Version number of the library
 
 // Application-defined rom loading function
 extern int (__cdecl *BurnExtLoadRom)(unsigned char* Dest, int* pnWrote, int i);
-extern int (__cdecl *BurnExtLoadOneRom)(const TCHAR* arcName, const TCHAR* fileName, void** Dest, int* pnWrote);
+extern int (__cdecl *BurnExtLoadOneRom)(const char* arcName, const char* fileName, void** Dest, int* pnWrote);
 
 // Application-defined progress indicator functions
 extern int (__cdecl *BurnExtProgressRangeCallback)(double dProgressRange);
-extern int (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const TCHAR* pszText, bool bAbs);
+extern int (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const char* pszText, bool bAbs);
 
 // Application-defined colour conversion function
 extern unsigned int (__cdecl *BurnHighCol)(int r, int g, int b, int i);
@@ -190,7 +190,7 @@ extern int nFMInterpolation;			// Desired interpolation level for FM sound
 #define PRINT_IMPORTANT (2)
 #define PRINT_ERROR		(3)
 
-extern int (__cdecl *bprintf) (int nStatus, TCHAR* szFormat, ...);
+extern int (__cdecl *bprintf) (int nStatus, char* szFormat, ...);
 
 int BurnLibInit();
 int BurnLibExit();
@@ -202,7 +202,7 @@ int BurnDrvRedraw();
 int BurnRecalcPal();
 
 int BurnSetProgressRange(double dProgressRange);
-int BurnUpdateProgress(double dProgressStep, const TCHAR* pszText, bool bAbs);
+int BurnUpdateProgress(double dProgressStep, const char* pszText, bool bAbs);
 
 int BurnAfterReset(); // call after reset
 
@@ -224,9 +224,9 @@ int BurnAfterReset(); // call after reset
 #define DRV_UNICODEONLY	 (1 << 13)
 
 unsigned int BurnDrvGetIndexByNameA(const char* name);
-unsigned int BurnDrvGetIndexByName(const TCHAR* name);
+unsigned int BurnDrvGetIndexByName(const char* name);
 
-TCHAR* BurnDrvGetText(unsigned int i);
+char* BurnDrvGetText(unsigned int i);
 const char * BurnDrvGetTextA(unsigned int i);
 const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type); // get my driver info
 

@@ -11,7 +11,6 @@ FBA_CPU_DIR := ../../cpu
 FBA_LIB_DIR := ../../lib
 FBA_INTERFACE_DIR := ../../interface
 
-FBA_SRC_DIRS := $(FBA_BURN_DIR) $(FBA_CPU_DIRS) $(FBA_BURNER_DIR)
 
 FBA_BURN_DIRS := $(FBA_BURN_DIR) $(FBA_BURN_DIR)/atari $(FBA_BURN_DIR)/capcom $(FBA_BURN_DIR)/cave $(FBA_BURN_DIR)/cps3 $(FBA_BURN_DIR)/galaxian $(FBA_BURN_DIR)/konami $(FBA_BURN_DIR)/megadrive $(FBA_BURN_DIR)/misc $(FBA_BURN_DIR)/neogeo $(FBA_BURN_DIR)/pgm $(FBA_BURN_DIR)/psikyo $(FBA_BURN_DIR)/sega $(FBA_BURN_DIR)/snes $(FBA_BURN_DIR)/taito $(FBA_BURN_DIR)/toaplan $(FBA_BURN_DIR)/misc/post90s $(FBA_BURN_DIR)/misc/pre90s
 
@@ -20,6 +19,8 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR)/arm7 $(FBA_CPU_DIR)/hd6309 $(FBA_CPU_DIR)/i8039 $
 FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib $(FBA_LIB_DIR)/File_Extractor
 
 FBA_BURNER_DIRS := $(FBA_BURNER_DIR) libsnes.cpp
+
+FBA_SRC_DIRS := $(FBA_BURNER_DIRS) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
 
 FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)

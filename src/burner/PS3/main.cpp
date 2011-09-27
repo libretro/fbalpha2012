@@ -16,10 +16,10 @@
 #include <cell/control_console.h>
 #endif
 
-BOOL IsCurrentlyInGame = false; 
-TCHAR szAppBurnVer[16] = _T("");
-TCHAR szSVNVer[16] = _T("");
-TCHAR szSVNDate[30] = _T("");
+bool IsCurrentlyInGame = false; 
+char szAppBurnVer[16] = "";
+char szSVNVer[16] = "";
+char szSVNDate[30] = "";
 
 bool bCmdOptUsed = 0;
 bool bAlwaysProcessKey = false;
@@ -28,8 +28,8 @@ bool DoReset = false;
 int ArcadeJoystick = 0;
 int exitGame = 0;
 
-// Used for the load/save dialog in commdlg.h (savestates, input replay, wave logging)
-TCHAR szChoice[MAX_PATH] = _T("");
+// Used for the load/save dialog in commdlg.h (savestates)
+char szChoice[MAX_PATH] = "";
  
 extern std::vector<std::string> m_ListShaderData;
 extern void reset_frame_counter();
@@ -54,35 +54,11 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 	}
 }
 
-
-int dprintf(TCHAR* pszFormat, ...)
-{
- 
-	return 0;
-}
-
-void CloseDebugLog()
-{
- 
-}
-
-int OpenDebugLog()
-{
- 
-	return 0;
-}
-
-void DebugMsg(const char* fmt, ...)
-{
-}
-
 static int AppInit()
 {
 	// print a warning if we're running for the 1st time
 	if (nIniVersion < nBurnVer)
-	{
 		configAppSaveXml(); // Create initial config file
-	}
 
 	// Init the Burn library
 	BurnLibInit();
@@ -90,7 +66,7 @@ static int AppInit()
 	nVidSelect = VID_PSGL;
 
 	if (audio.select(audSelect))
-		audio.select(_T("CellAudio"));
+		audio.select("CellAudio");
 
 	// Build the ROM information
 
@@ -141,16 +117,16 @@ int  main(int argc, char **argv)
 	if (nBurnVer & 0xFF)
 	{
 		// private version (alpha)
-		_stprintf(szAppBurnVer, _T("%x.%x.%x.%02x"), nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF, nBurnVer & 0xFF);
-		_stprintf(szSVNVer, _T("%s"), SVN_VERSION);
-		_stprintf(szSVNDate, _T("%s"), SVN_DATE);
+		sprintf(szAppBurnVer, "%x.%x.%x.%02x", nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF, nBurnVer & 0xFF);
+		sprintf(szSVNVer, "%s", SVN_VERSION);
+		sprintf(szSVNDate, "%s", SVN_DATE);
 	}
 	else
 	{
 		// public version
-		_stprintf(szAppBurnVer, _T("%x.%x.%x"), nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF);
-		_stprintf(szSVNVer, _T("%s"), SVN_VERSION);
-		_stprintf(szSVNDate, _T("%s"), SVN_DATE);
+		sprintf(szAppBurnVer, "%x.%x.%x", nBurnVer >> 20, (nBurnVer >> 16) & 0x0F, (nBurnVer >> 8) & 0xFF);
+		sprintf(szSVNVer, "%s", SVN_VERSION);
+		sprintf(szSVNDate, "%s", SVN_DATE);
 	}
 
 	configAppLoadXml();				// Load config for the application
@@ -180,12 +156,6 @@ int  main(int argc, char **argv)
 	cellSysutilUnregisterCallback(0);
 
 	exit(0);
-}
-
-int ProcessCmdLine()
-{
-
-	return 0;
 }
 
 int ProgressUpdateBurner(double dProgress, const TCHAR* pszText, bool bAbs)

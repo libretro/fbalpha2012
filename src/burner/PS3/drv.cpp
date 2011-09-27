@@ -25,17 +25,13 @@ static int DoLibInit() // Do Init of Burn library driver
 	switch (BArchiveStatus())
 	{
 		case BARC_STATUS_BADDATA:
-			{
-				FBAPopupDisplay(PUF_TYPE_WARNING);
-				BArchiveClose();
-				return 1;
-				break;
-			}
+			FBAPopupDisplay(PUF_TYPE_WARNING);
+			BArchiveClose();
+			return 1;
+			break;
 		case BARC_STATUS_ERROR:
-			{
-				FBAPopupDisplay(PUF_TYPE_ERROR);
-				break;
-			}
+			FBAPopupDisplay(PUF_TYPE_ERROR);
+			break;
 	}
 
 	nRet = BurnDrvInit();
@@ -170,8 +166,7 @@ int BurnerDrvExit()
 
 	if (bAudOkay)
 	{
-		// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
-		AudWriteSlience();
+		AudWriteSlience();	// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
 	}
 
 	nBurnDrvSelect = ~0U; // no driver selected

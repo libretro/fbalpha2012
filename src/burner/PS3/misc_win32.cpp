@@ -217,12 +217,8 @@ int directLoadGame(const char * name)
 	}
 	else
 	{
-		// get game name
-		char * p = getBaseName(name);
-
-
-		// load game
-		unsigned int i = BurnDrvGetIndexByNameA(p);
+		char * p = getBaseName(name);			// get game name
+		unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
 
 		if (i < nBurnDrvCount)
 		{
@@ -342,11 +338,15 @@ int findRom(int i, ArcEntry* list, int count)
 	{	// Failing that, search for possible names
 		char* szPossibleName = NULL;
 		nRet = BurnDrvGetRomName(&szPossibleName, i, nAka);
+
 		if (nRet) // No more rom names
 			break;
+
 		nRet = findRomByName(szPossibleName, list, count);
+
 		if (nRet >= 0)
 			return nRet;
+
 		nAka++;
 	}while(nAka < 0x10000);
 

@@ -244,8 +244,6 @@ int configAppLoadXml()
 		getAttr(child, "auto-pause", &bAutoPause);
 		child = findElement(element, "macro");
 		getAttr(child, "enable", &nInputMacroEnabled);
-		child = findElement(element, "misc");
-		getAttr(child, "effect", &nShowEffect);
 
 		child = findElement(element, "controls");
 		if (child)
@@ -475,21 +473,9 @@ int configAppSaveXml()
 	setAttr(settings, "always-processkey", bAlwaysProcessKey);
 	setAttr(settings, "auto-pause", bAutoPause);
 
-#ifndef SN_TARGET_PS3
-	ticpp::Element fastforward("fastforward");
-	preference.LinkEndChild(&fastforward);
-	setAttr(fastforward, "speed", nFastSpeed);
-	ticpp::Element thread("thread");
-#endif
-
 	ticpp::Element macro("macro");
 	preference.LinkEndChild(&macro);
 	setAttr(macro, "enable", nInputMacroEnabled);
-
-	// pref misc
-	ticpp::Element pref_misc("misc");
-	preference.LinkEndChild(&pref_misc);
-	setAttr(pref_misc, "effect", nShowEffect);
 
 	ticpp::Element controls("controls");
 	preference.LinkEndChild(&controls);

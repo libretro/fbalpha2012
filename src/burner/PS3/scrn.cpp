@@ -60,15 +60,6 @@ void setPauseMode(bool bPause)
 		audio.blank();
 }
  
-
-// Returns true if a VidInit is needed when the window is resized
-static inline bool vidInitNeeded()
-{
-	if (nVidSelect == VID_PSGL)
-		return true;
-	return false;
-}
-
 // simply reinit screen, added by regret
 void simpleReinitScrn(const bool& reinitVid)
 {

@@ -147,7 +147,6 @@ int mediaInit();
 int mediaExit();
 int mediaChangeFps(int scale);
 int mediaReInitAudio();
-int mediaReInitScrn();
 
 // misc_win32.cpp
 void createNeedDir();
@@ -160,7 +159,7 @@ void setWindowAspect(bool first_boot = false);
 int findRom(int i, struct ArcEntry* list, int count);
 
 // drv.cpp
-extern int bDrvOkay;				// 1 if the Driver has been initted okay, and it's okay to use the BurnDrv functions
+extern int bDrvOkay;				// 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
 int BurnerDrvInit(int nDrvNum, bool bRestore);
 int DrvInitCallback();				// Used when Burn library needs to load a game. DrvInit(nBurnSelect, false)
 int BurnerDrvExit();
@@ -174,7 +173,6 @@ extern bool bShowFPS;
 extern bool bAppDoFast;
 extern bool bAppDoStep;
 extern unsigned int nFastSpeed;
-extern int nShowEffect;
 
 void RunIdle();
 int RunMessageLoop(int argc, char ** argv);
@@ -194,7 +192,6 @@ extern RECT SystemWorkArea;			// The full screen area
 extern int nWindowPosX, nWindowPosY;
 
 extern int nSavestateSlot;
-//extern int nScrnVisibleOffset[4];
 
 extern int nXOffset;
 extern int nYOffset;

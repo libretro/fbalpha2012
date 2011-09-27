@@ -28,8 +28,6 @@ extern void apply_rotation_settings(void);
 void dbgFontDraw(void);
 extern PSGLdevice* psgl_device;
 
-namespace OpenGL {
-
 // normal vertex
 static const GLfloat   verts  [] = {
       -1.0f, -1.0f, 0.0f,			// bottom left
@@ -200,8 +198,6 @@ static void setlinear(unsigned int smooth)
 {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
-}
-
 }
 
 #endif

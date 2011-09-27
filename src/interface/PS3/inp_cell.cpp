@@ -4,7 +4,6 @@
 
 #include "burner.h"
 #include "cellframework2/input/pad_input.h"
-#include <math.h>
 // Key codes
 #include "inp_keys.h"
 #include "menu.h"
@@ -16,14 +15,65 @@
 #define MAX_MOUSE		(0)
 #define MAX_MOUSEAXIS	(0)
 
-int	 nPlayerToGamepad[4] = {0, 1, 2, 3};
+int nPlayerToGamepad[4] = {0, 1, 2, 3};
 static int nJoystickCount = 4;		// We poll all 4 gamepad ps3 ports by default
 extern int ArcadeJoystick;
 extern bool DoReset;
 extern int GameStatus;
 
-// ----------------------------------------------------------------------------
+#define P1_COIN	0x06
+#define P1_START 0x02
+#define P1_LEFT 0xCB
+#define P1_RIGHT 0xCD
+#define P1_UP 0xC8
+#define P1_DOWN 0xD0
+#define P1_FIRE1 0x2C
+#define P1_FIRE2 0x2D
+#define P1_FIRE3 0x2E
+#define P1_FIRE4 0x2F
+#define P1_FIRE5 0x1F
+#define P1_FIRE6 0x20
+#define P1_SERVICE 0x3C
 
+#define P2_COIN 0x07
+#define P2_START 0x03
+#define P2_LEFT 0x4000
+#define P2_RIGHT 0x4001
+#define P2_UP 0x4002
+#define P2_DOWN 0x4003
+#define P2_FIRE1 0x4080
+#define P2_FIRE2 0x4081
+#define P2_FIRE3 0x4082
+#define P2_FIRE4 0x4083
+#define P2_FIRE5 0x4084
+#define P2_FIRE6 0x4085
+
+#define P3_COIN 0x08
+#define P3_START 0x04
+#define P3_LEFT 0x4100
+#define P3_RIGHT 0x4101
+#define P3_UP 0x4102
+#define P3_DOWN 0x4103
+#define P3_FIRE1 0x4180
+#define P3_FIRE2 0x4181
+#define P3_FIRE3 0x4182
+#define P3_FIRE4 0x4183
+#define P3_FIRE5 0x4184
+#define P3_FIRE6 0x4185
+
+#define P4_COIN 0x09
+#define P4_START 0x05
+#define P4_LEFT 0x4200
+#define P4_RIGHT 0x4201
+#define P4_UP 0x4202
+#define P4_DOWN 0x4203
+#define P4_FIRE1 0x4280
+#define P4_FIRE2 0x4281
+#define P4_FIRE3 0x4282
+#define P4_FIRE4 0x4283
+#define P4_FIRE5 0x4284
+#define P4_FIRE6 0x4285
+// ----------------------------------------------------------------------------
 // Get the state (pressed = 1, not pressed = 0) of a particular input code
 
 int CellinpState(int nCode)
@@ -62,37 +112,37 @@ int CellinpState(int nCode)
 
 	switch (nCode)
 	{
-		case 0x06:
+		case P1_COIN:
 			return CTRL_SELECT(new_state_p1);
-		case 0x02:
+		case P1_START:
 			return CTRL_START(new_state_p1);
-		case 0xC8:
+		case P1_UP:
 			return ((CTRL_UP(new_state_p1) | CTRL_LSTICK_UP(new_state_p1)) != 0);
-		case 0xD0: 
+		case P1_DOWN: 
 			return ((CTRL_DOWN(new_state_p1) | CTRL_LSTICK_DOWN(new_state_p1)) != 0);
-		case 0xCB:
+		case P1_LEFT:
 			return ((CTRL_LEFT(new_state_p1) | CTRL_LSTICK_LEFT(new_state_p1)) != 0);
-		case 0xCD:
+		case P1_RIGHT:
 			return ((CTRL_RIGHT(new_state_p1) | CTRL_LSTICK_RIGHT(new_state_p1)) != 0);
-		case 0x2C:
-			return CTRL_CROSS(new_state_p1);                                        // fire 1
-		case 0x2D:
-			return CTRL_CIRCLE(new_state_p1);                                       // fire 2
-		case 0x2E:
-			return CTRL_SQUARE(new_state_p1);                                       // fire 3
-		case 0x2F: 
-			return CTRL_TRIANGLE(new_state_p1);                                     // fire 4
-		case 0x1F:
-			return CTRL_L1(new_state_p1);                                           // fire 5
-		case 0x20:
-			return CTRL_R1(new_state_p1);                                           // fire 6
+		case P1_FIRE1:
+			return CTRL_CROSS(new_state_p1);
+		case P1_FIRE2:
+			return CTRL_CIRCLE(new_state_p1);
+		case P1_FIRE3:
+			return CTRL_SQUARE(new_state_p1);
+		case P1_FIRE4: 
+			return CTRL_TRIANGLE(new_state_p1);
+		case P1_FIRE5:
+			return CTRL_L1(new_state_p1);
+		case P1_FIRE6:
+			return CTRL_R1(new_state_p1);
 		case 0x88:
 			return CTRL_L2(new_state_p1);
 		case 0x8A:			 
 			return CTRL_R2(new_state_p1);
 		case 0x3b:
 			return CTRL_L3(new_state_p1);
-		case 0x3c:
+		case P1_SERVICE:
 			return CTRL_R3(new_state_p1);
 		case 0x21:
 			return CTRL_R2(new_state_p1);
@@ -106,30 +156,30 @@ int CellinpState(int nCode)
 
 		switch (nCode)
 		{
-			case 0x07:
+			case P2_COIN:
 				return CTRL_SELECT(new_state_p2);
-			case 0x03:
+			case P2_START:
 				return CTRL_START(new_state_p2);
-			case 0x4002:
+			case P2_UP:
 				return ((CTRL_UP(new_state_p2) | CTRL_LSTICK_UP(new_state_p2)) != 0);
-			case 0x4003:
+			case P2_DOWN:
 				return ((CTRL_DOWN(new_state_p2) | CTRL_LSTICK_DOWN(new_state_p2)) != 0);
-			case 0x4000:
+			case P2_LEFT:
 				return ((CTRL_LEFT(new_state_p2) | CTRL_LSTICK_LEFT(new_state_p2)) != 0);
-			case 0x4001:
+			case P2_RIGHT:
 				return ((CTRL_RIGHT(new_state_p2) | CTRL_LSTICK_RIGHT(new_state_p2)) != 0);
-			case 0x4080:
-				return CTRL_CROSS(new_state_p2);                                        // fire 1
-			case 0x4081:
-				return CTRL_CIRCLE(new_state_p2);                                       // fire 2
-			case 0x4082:
-				return CTRL_SQUARE(new_state_p2);                                       // fire 3
-			case 0x4083:
-				return CTRL_TRIANGLE(new_state_p2);                                     // fire 4
-			case 0x4084:
-				return CTRL_L1(new_state_p2);                                           // fire 5
-			case 0x4085:
-				return CTRL_R1(new_state_p2);                                           // fire 6
+			case P2_FIRE1:
+				return CTRL_CROSS(new_state_p2);
+			case P2_FIRE2:
+				return CTRL_CIRCLE(new_state_p2);
+			case P2_FIRE3:
+				return CTRL_SQUARE(new_state_p2);
+			case P2_FIRE4: 
+				return CTRL_TRIANGLE(new_state_p2);
+			case P2_FIRE5:
+				return CTRL_L1(new_state_p2);
+			case P2_FIRE6:
+				return CTRL_R1(new_state_p2);
 			case 0x4088:
 				return CTRL_L2(new_state_p2);
 			case 0x408A:			 
@@ -148,30 +198,30 @@ int CellinpState(int nCode)
 
 		switch (nCode)
 		{ 
-			case 0x08:
+			case P3_COIN:
 				return CTRL_SELECT(new_state_p3);
-			case 0x04:
+			case P3_START:
 				return CTRL_START(new_state_p3);
-			case 0x4102:
+			case P3_UP:
 				return ((CTRL_UP(new_state_p3) | CTRL_LSTICK_UP(new_state_p3)) != 0);
-			case 0x4103:
+			case P3_DOWN:
 				return ((CTRL_DOWN(new_state_p3) | CTRL_LSTICK_DOWN(new_state_p3)) != 0);
-			case 0x4100:
+			case P3_LEFT:
 				return ((CTRL_LEFT(new_state_p3) | CTRL_LSTICK_LEFT(new_state_p3)) != 0);
-			case 0x4101:
+			case P3_RIGHT:
 				return ((CTRL_RIGHT(new_state_p3) | CTRL_LSTICK_RIGHT(new_state_p3)) != 0);
-			case 0x4180:
-				return CTRL_CROSS(new_state_p3);                                                          // fire 1
-			case 0x4181:
-				return CTRL_CIRCLE(new_state_p3);                                                         // fire 2
-			case 0x4182:
-				return CTRL_SQUARE(new_state_p3);                                                         // fire 3
-			case 0x4183:
-				return CTRL_TRIANGLE(new_state_p3);                                                       // fire 4
-			case 0x4184:
-				return CTRL_L1(new_state_p3);                                                             // fire 5
-			case 0x4185:
-				return CTRL_R1(new_state_p3);                                                             // fire 6
+			case P3_FIRE1:
+				return CTRL_CROSS(new_state_p3);
+			case P3_FIRE2:
+				return CTRL_CIRCLE(new_state_p3);
+			case P3_FIRE3:
+				return CTRL_SQUARE(new_state_p3);
+			case P3_FIRE4:
+				return CTRL_TRIANGLE(new_state_p3);
+			case P3_FIRE5:
+				return CTRL_L1(new_state_p3);
+			case P3_FIRE6:
+				return CTRL_R1(new_state_p3);
 			case 0x4188:
 				return CTRL_L2(new_state_p3);
 			case 0x418A:			 
@@ -189,30 +239,30 @@ int CellinpState(int nCode)
 
 		switch (nCode)
 		{
-			case 0x09:
+			case P4_COIN:
 				return CTRL_SELECT(new_state_p4);
-			case 0x05:
+			case P4_START:
 				return CTRL_START(new_state_p4);
-			case 0x4202:
+			case P4_UP:
 				return ((CTRL_UP(new_state_p4) | CTRL_LSTICK_UP(new_state_p4)) != 0);
-			case 0x4203:
+			case P4_DOWN:
 				return ((CTRL_DOWN(new_state_p4) | CTRL_LSTICK_DOWN(new_state_p4)) != 0);
-			case 0x4200:
+			case P4_LEFT:
 				return ((CTRL_LEFT(new_state_p4) | CTRL_LSTICK_LEFT(new_state_p4)) != 0);
-			case 0x4201:
+			case P4_RIGHT:
 				return ((CTRL_RIGHT(new_state_p4) | CTRL_LSTICK_RIGHT(new_state_p4)) != 0);
-			case 0x4280:
-				return CTRL_CROSS(new_state_p4);                                              // fire 1
-			case 0x4281:
-				return CTRL_CIRCLE(new_state_p4);                                             // fire 2
-			case 0x4282:
-				return CTRL_SQUARE(new_state_p4);                                             // fire 3
-			case 0x4283:
-				return CTRL_TRIANGLE(new_state_p4);                                           // fire 4
-			case 0x4284:
-				return CTRL_L1(new_state_p4);                                                 // fire 5
-			case 0x4285:
-				return CTRL_R1(new_state_p4);                                                 // fire 6
+			case P4_FIRE1:
+				return CTRL_CROSS(new_state_p4);
+			case P4_FIRE2:
+				return CTRL_CIRCLE(new_state_p4);
+			case P4_FIRE3:
+				return CTRL_SQUARE(new_state_p4);
+			case P4_FIRE4:
+				return CTRL_TRIANGLE(new_state_p4);
+			case P4_FIRE5:
+				return CTRL_L1(new_state_p4);
+			case P4_FIRE6:
+				return CTRL_R1(new_state_p4);
 			case 0x4288:
 				return CTRL_L2(new_state_p4);
 			case 0x428A:			 

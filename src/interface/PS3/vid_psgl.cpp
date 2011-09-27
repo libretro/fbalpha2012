@@ -48,26 +48,26 @@ void _psglExitCG();
    {	\
 		if (nRotateGame & 2) \
       { \
-			glVertexPointer(3, GL_FLOAT, 0, OpenGL::verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, OpenGL::tvertsFlippedRotated); \
+			glVertexPointer(3, GL_FLOAT, 0, verts); \
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated); \
 		} \
       else \
       { \
-			glVertexPointer(3, GL_FLOAT, 0, OpenGL::verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, OpenGL::tvertsVertical); \
+			glVertexPointer(3, GL_FLOAT, 0, verts); \
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical); \
 		} \
 	} \
    else \
    { \
 		if (nRotateGame & 2) \
       { \
-			glVertexPointer(3, GL_FLOAT, 0, OpenGL::verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, OpenGL::tvertsFlipped); \
+			glVertexPointer(3, GL_FLOAT, 0, verts); \
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped); \
 		} \
       else \
       { \
-			glVertexPointer(3, GL_FLOAT, 0, OpenGL::verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, OpenGL::tverts); \
+			glVertexPointer(3, GL_FLOAT, 0, verts); \
+			glTexCoordPointer(2, GL_FLOAT, 0, tverts); \
 		} \
 	}
 
@@ -460,7 +460,7 @@ static inline int _psglInit()
 
 	_apply_rotation_settings();
 
-	OpenGL::setlinear(vidFilterLinear);
+	setlinear(vidFilterLinear);
 
 	setVSync(bVidVSync);
 

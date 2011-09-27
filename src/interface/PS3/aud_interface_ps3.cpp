@@ -186,8 +186,6 @@ int AudioInterface::stop()
 
 int AudioInterface::exit()
 {
-	IntInfoFree(&AudInfo);
-
 	bAudOkay = false;
 
 	int ret = 0;

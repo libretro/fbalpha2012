@@ -76,12 +76,11 @@ static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 	return t;
 }
 
-	extern struct VidOut VidOutPSGL;
+extern struct VidOut VidOutPSGL;
 
 VidOut* VidDriver(unsigned int driver)
 {
-	if (driver == VID_PSGL)
-		return &VidOutPSGL;
+	return &VidOutPSGL;
 }
 
 int VidSelect(unsigned int driver)
@@ -96,8 +95,6 @@ int VidInit()
 	VidExit();
 
 	int nRet = 1;
-
-	nShowEffect = 0;
 
 	if (bDrvOkay)
 	{
@@ -130,8 +127,6 @@ int VidInit()
 
 int VidExit()
 {
-	IntInfoFree(&VidInfo);
-
 	if (!bVidOkay)
 		return 1;
 
@@ -255,59 +250,4 @@ int VidReinit()
 
 	CalculateViewports();
 	return 0;
-}
-
-const TCHAR* VidDriverName(unsigned int driver)
-{
-	return FBALoadStringEx(1);
-}
-
-const TCHAR* VidGetName()
-{
-	return VidDriverName(nVidActive);
-}
-
-InterfaceInfo* VidGetInfo()
-{
-	if (IntInfoInit(&VidInfo))
-	{
-		IntInfoFree(&VidInfo);
-		return NULL;
-	}
-
-	if (bVidOkay) {
-		TCHAR szString[MAX_PATH] = _T("");
-		RECT rect;
-
-		VidInfo.pszModuleName = VidGetName();
-
-		IntInfoAddStringInterface(&VidInfo, szString);
-
-		_sntprintf(szString, sizearray(szString), _T("Source image %ix%i, %ibpp"), nVidImageWidth, nVidImageHeight, nVidImageDepth);
-		IntInfoAddStringInterface(&VidInfo, szString);
-
-		if (pVidTransImage) {
-			_sntprintf(szString, sizearray(szString), _T("Using generic software 15->%ibpp wrapper"), nVidImageDepth);
-			IntInfoAddStringInterface(&VidInfo, szString);
-		}
-
-		if (bVidVSync) {
-			_sntprintf(szString, sizearray(szString), _T("VSync enabled"));
-			IntInfoAddStringInterface(&VidInfo, szString);
-		}
-
-#ifndef SN_TARGET_PS3
-		if (vidUseFilter) {
-			_sntprintf(szString, sizearray(szString), _T("Using pixel filter: %s (%ix zoom)"), VidFilterGetEffect(nVidFilter), nPreScaleZoom);
-			IntInfoAddStringInterface(&VidInfo, szString);
-		}
-#endif
-
-		if (VidDriver(nVidActive)->GetSetting)
-			VidDriver(nVidActive)->GetSetting(&VidInfo);
-	}
-	else
-		IntInfoAddStringInterface(&VidInfo, _T("Video plugin not initialised"));
-
-	return &VidInfo;
 }

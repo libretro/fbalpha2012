@@ -5,7 +5,8 @@
 // ---------------------------------------------------------------------------
 // General
 
-int nGameWidth = 0, nGameHeight = 0;
+int nGameWidth = 0;
+int nGameHeight = 0;
 int nRotateGame = 0;
 
 static unsigned char* pVidSFullImage = NULL;

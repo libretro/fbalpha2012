@@ -1,12 +1,14 @@
 TARGET = libsnes.so
 
-FBA_BURN_DIR = := ../../burn
+all: $(TARGET)
+
+FBA_BURN_DIR := ../../burn
 FBA_BURNER_DIR := ../
 FBA_CPU_DIR := ../../cpu
 FBA_LIB_DIR := ../../lib
 FBA_INTERFACE_DIR := ../../interface
 
-FBA_SRC_DIRS := $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
+FBA_SRC_DIRS := $(FBA_BURN_DIR) $(FBA_CPU_DIRS) $(FBA_BURNER_DIR)
 
 FBA_BURN_DIRS := $(FBA_BURN_DIR) $(FBA_BURN_DIR)/atari $(FBA_BURN_DIR)/capcom $(FBA_BURN_DIR)/cave $(FBA_BURN_DIR)/cps3 $(FBA_BURN_DIR)/galaxian $(FBA_BURN_DIR)/konami $(FBA_BURN_DIR)/megadrive $(FBA_BURN_DIR)/misc $(FBA_BURN_DIR)/neogeo $(FBA_BURN_DIR)/pgm $(FBA_BURN_DIR)/psikyo $(FBA_BURN_DIR)/sega $(FBA_BURN_DIR)/snes $(FBA_BURN_DIR)/taito $(FBA_BURN_DIR)/toaplan $(FBA_BURN_DIR)/misc/post90s $(FBA_BURN_DIR)/misc/pre90s
 
@@ -29,7 +31,7 @@ CFLAGS += -O3 -g -std=gnu99 -fPIC $(FBA_DEFINES)
 CXXFLAGS += -O3 -g -fPIC $(FBA_DEFINES)
 LDFLAGS += -Wl,-no-undefined
 
-INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURNER_DIR) -I$(FBA_BURNER_DIR)/generated -I$(FBA_CPU_DIR)/m6809 -I$(FBA_CPU_DIR)/m6805 -I$(FBA_CPU_DIR)/m6800 -I$(FBA_CPU_DIR)/nec -I$(FBA_CPU_DIR)/hd6309 -I$(FBA_CPU_DIR)/arm7 -I$(FBA_CPU_DIR)/i8039 -I$(FBA_CPU_DIR)/konami -I$(FBA_CPU_DIR)/m68k -I$(FBA_CPU_DIR)/m6502 -I$(FBA_CPU_DIR)/z80 -I$(FBA_CPU_DIR)/sh2 -I$(FBA_CPU_DIR)/s2650 -I$(FBA_BURNER_DIR)/libsnes -I$(FBA_LIB_DIR)/zlib $(FBA_LIB_DIR)/File_Extractor -I$(FBA_BURN_DIR)/capcom -I$(FBA_BURN_DIR)/cave -I$(FBA_BURN_DIR)/neogeo -I$(FBA_BURN_DIR)/psikyo -I$(FBA_BURN_DIR)/sega -I$(FBA_BURN_DIR)/toaplan
+INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURNER_DIR) -I$(FBA_BURNER_DIR)/generated -I$(FBA_CPU_DIR)/m6809 -I$(FBA_CPU_DIR)/m6805 -I$(FBA_CPU_DIR)/m6800 -I$(FBA_CPU_DIR)/nec -I$(FBA_CPU_DIR)/hd6309 -I$(FBA_CPU_DIR)/arm7 -I$(FBA_CPU_DIR)/i8039 -I$(FBA_CPU_DIR)/konami -I$(FBA_CPU_DIR)/m68k -I$(FBA_CPU_DIR)/m6502 -I$(FBA_CPU_DIR)/z80 -I$(FBA_CPU_DIR)/sh2 -I$(FBA_CPU_DIR)/s2650 -I$(FBA_BURNER_DIR)/libsnes -I$(FBA_LIB_DIR)/zlib -I$(FBA_LIB_DIR)/File_Extractor -I$(FBA_BURN_DIR)/capcom -I$(FBA_BURN_DIR)/cave -I$(FBA_BURN_DIR)/neogeo -I$(FBA_BURN_DIR)/psikyo -I$(FBA_BURN_DIR)/sega -I$(FBA_BURN_DIR)/toaplan
 LIBS := -lz
 
 $(TARGET): $(OBJS)

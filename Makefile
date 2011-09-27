@@ -166,7 +166,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         \
                                         $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
                                         \
-                                        $(INTERFACE_DIR)/aud_interface.cpp $(INTERFACE_DIR)/inp_interface.cpp $(INTERFACE_DIR)/interface.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/vid_interface.cpp $(INTERFACE_DIR)/vid_support.cpp \
+                                        $(INTERFACE_DIR)/PS3/aud_interface_ps3.cpp $(INTERFACE_DIR)/PS3/inp_interface_ps3.cpp $(INTERFACE_DIR)/interface.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/PS3/vid_interface_ps3.cpp $(INTERFACE_DIR)/vid_support.cpp \
                                         \
                                         $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
                                         $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \

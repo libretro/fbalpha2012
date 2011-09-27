@@ -2212,11 +2212,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\aud_interface.cpp"
+						RelativePath=".\src\interface\PS3\aud_interface_ps3.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\inp_interface.cpp"
+						RelativePath=".\src\interface\PS3\inp_interface_ps3.cpp"
 						>
 					</File>
 					<File
@@ -2232,7 +2232,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\vid_interface.cpp"
+						RelativePath=".\src\interface\PS3\vid_interface_ps3.cpp"
 						>
 					</File>
 					<File

@@ -374,14 +374,9 @@ void setVSync(int interval)
 
 static inline int _psglExit()
 {
-	//VidFilterExit();
-
 	term();
-
 	VidSFreeVidImage();
-
 	nRotateGame = 0;
-
 	return 0;
 }
 

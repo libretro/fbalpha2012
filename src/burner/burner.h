@@ -54,7 +54,11 @@
 // ---------------------------------------------------------------------------
 // OS independent functionality
 
+#ifdef SN_TARGET_PS3
+#include "interface-ps3.h"
+#else
 #include "interface.h"
+#endif
 
 // gami.cpp
 extern struct GameInp* GameInp;

@@ -47,13 +47,12 @@ int audio_exit()
 	return 0;
 }
 
-int audio_check()
+void audio_check()
 {
 	pBurnSoundOut = pAudNextSound;
 
 	int16_t * currentSound = pAudNextSound;
 	driver->write(audio_handle, currentSound, AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
-	return 0;
 }
 
 static int audio_init()

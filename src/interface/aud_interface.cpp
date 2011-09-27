@@ -26,16 +26,13 @@ static InterfaceInfo AudInfo = { NULL, };
 // Write silence into the buffer
 int AudWriteSlience(int)
 {
-	if (pAudNextSound) {
+	if (pAudNextSound)
 		memset(pAudNextSound, 0, nAudAllocSegLen);
-	}
 	return 0;
 }
 
 // AudioInterface
-#if defined (SN_TARGET_PS3)
-  #include "aud_ps3.cpp"
-#elif defined (_XBOX)
+#if defined (_XBOX)
   #include "aud_xaudio2.cpp"
 #elif defined (_WIN32)
   #include "aud_dsound.cpp"
@@ -54,14 +51,11 @@ int AudWriteSlience(int)
 
 AudioInterface audio;
 
-#ifndef SN_TARGET_PS3
 const TCHAR* AudioInterface::driver_list()
 {
 	return
 #if defined (_XBOX)
 	_T("XAudio2;")
-#elif defined (SN_TARGET_PS3)
-	_T("CellAudio;");
 #elif defined (_WIN32)
 	_T("DirectSound;")
  #ifndef NO_XAUDIO2
@@ -80,20 +74,7 @@ const TCHAR* AudioInterface::driver_list()
 
   _T("None");
 }
-#endif
 
-#ifdef SN_TARGET_PS3
-void AudioInterface::driver(const TCHAR* _driver)
-{
-	if (p) {
-		term();
-	}
-
-	if (!_tcscmp(_driver, _T("CellAudio"))) {
-		p = audio_new();
-	}
-}
-#else
 void AudioInterface::driver(const TCHAR* _driver)
 {
 	if (p) {
@@ -108,10 +89,6 @@ void AudioInterface::driver(const TCHAR* _driver)
 #if defined (_XBOX)
 	if (!_tcscmp(_driver, _T("XAudio2"))) {
 		p = new AudioXaudio2();
-	}
-#elif defined (SN_TARGET_PS3)
-	if (!_tcscmp(_driver, _T("CellAudio"))) {
-		p = new Audio();
 	}
 #elif defined (_WIN32)
 	else if (!_tcscmp(_driver, _T("DirectSound"))) {
@@ -138,148 +115,73 @@ void AudioInterface::driver(const TCHAR* _driver)
 	}
 #endif
 
-	else {
+	else
 		p = new Audio();
-	}
 }
-#endif
 
-#ifdef SN_TARGET_PS3
 void AudioInterface::term()
 {
-	if (p) {
-      audio_destructor();
-		p = 0;
-	}
-}
-#else
-void AudioInterface::term()
-{
-	if (p) {
+	if (p)
+	{
 		delete p;
 		p = 0;
 	}
 }
-#endif
 
-#ifdef SN_TARGET_PS3
 int AudioInterface::blank()
 {
-   //return p->blank();
-   AudWriteSlience(1);
-}
-#else
-int AudioInterface::blank()
-{
-	if (!bAudOkay) {
+	if (!bAudOkay)
 		return 1;
-	}
+
 	return p ? p->blank() : 1;
 }
-#endif
 
 // This function checks the Sound loop, and if necessary gets some more sound
-#ifdef SN_TARGET_PS3
-int AudioInterface::check()
-{
-   //NOTE: Just do p->check() here directly
-   return audio_check();
-}
-#else
 int AudioInterface::check()
 {
 	return p ? p->check() : 1;
 }
-#endif
 
-#ifdef SN_TARGET_PS3
 int AudioInterface::init()
 {
 	int nRet;
 
 	_tcscpy(audActive, audSelect);
 
-	if (!p) {
+	if (!p)
 		driver(audActive);
-	}
 
-   if ((nRet = audio_init()) == 0) {
+	if ((nRet = p->init()) == 0)
 		bAudOkay = true;
-	}
 
 	return nRet;
 }
-#else
-int AudioInterface::init()
-{
-	int nRet;
 
-	_tcscpy(audActive, audSelect);
-
-	if (!p) {
-		driver(audActive);
-	}
-
-	if ((nRet = p->init()) == 0) {
-		bAudOkay = true;
-	}
-
-	return nRet;
-}
-#endif
-
-#ifdef SN_TARGET_PS3
-int AudioInterface::set(int (*callback)(int))
-{
-   return 0;
-}
-#else
 int AudioInterface::set(int (*callback)(int))
 {
 	return p ? p->set(callback) : 1;
 }
-#endif
 
-#ifdef SN_TARGET_PS3
 int AudioInterface::play()
 {
-   int ret = 0;
-   if(!ret)
-		bAudPlaying = true;
-	return ret;
-}
-#else
-int AudioInterface::play()
-{
-//this will always be false with the current code - so why bother?
+	//this will always be false with the current code - so why bother?
 	if (!p) {
 		return 1;
 	}
 
 	int ret = p->play();
-//no check needed here - play function always returns 0
+	//no check needed here - play function always returns 0
 	if (!ret)
 		bAudPlaying = true;
 	return ret;
 }
-#endif
 
-#ifdef SN_TARGET_PS3
-int AudioInterface::stop()
-{
-	bAudPlaying = false;
-   int returnvalue = !bAudOkay ? 1 : 0;
-	return p ? returnvalue : 1;
-}
-#else
 int AudioInterface::stop()
 {
 	bAudPlaying = false;
 	return p ? p->stop() : 1;
 }
-#endif
 
-#ifdef SN_TARGET_PS3
 int AudioInterface::exit()
 {
 	IntInfoFree(&AudInfo);
@@ -287,67 +189,39 @@ int AudioInterface::exit()
 	bAudOkay = false;
 
 	int ret = 0;
-	if (p) {
-      ret = audio_exit();
-		term();
-	}
-	return ret;
-}
-#else
-int AudioInterface::exit()
-{
-	IntInfoFree(&AudInfo);
-
-	bAudOkay = false;
-
-	int ret = 0;
-	if (p) {
+	if (p)
+	{
 		ret = p->exit();
 		term();
 	}
 	return ret;
 }
-#endif
 
-#ifdef SN_TARGET_PS3
-int AudioInterface::setvolume(int vol)
-{
-   return 0;
-}
-#else
 int AudioInterface::setvolume(int vol)
 {
 	return p ? p->setvolume(vol) : 1;
 }
-#endif
 
-#ifndef SN_TARGET_PS3
 int AudioInterface::setfps()
 {
 	return p ? p->setfps() : 1;
 }
-#endif
 
-#ifndef SN_TARGET_PS3
 const TCHAR* AudioInterface::getName()
 {
 	const TCHAR* pszName = NULL;
 
-	if (bAudOkay) {
+	if (bAudOkay)
 		pszName = audActive;
-	} else {
+	else
 		pszName = audSelect;
-	}
 
-	if (pszName) {
+	if (pszName)
 		return pszName;
-	}
 
 	return FBALoadStringEx(1);
 }
-#endif
 
-#ifndef SN_TARGET_PS3
 void AudioInterface::setdevice(int device)
 {
 #if defined (_WIN32)
@@ -368,15 +242,9 @@ void AudioInterface::setdevice(int device)
 		oalDevice = device;
 	}
 	#endif
-#elif defined (SN_TARGET_PS3)
-	if (!_tcscmp(audSelect, _T("CellAudio"))) {
-		cellAudioDevice = device;
-	}
 #endif
 }
-#endif
 
-#ifndef SN_TARGET_PS3
 int AudioInterface::getdevice(const TCHAR* _driver)
 {
 	TCHAR* driver = audSelect;
@@ -402,17 +270,10 @@ int AudioInterface::getdevice(const TCHAR* _driver)
 		return oalDevice;
 	}
 	#endif
-#elif defined (SN_TARGET_PS3)
-	if (!_tcscmp(_driver, _T("CellAudio"))) {
-		return cellAudioDevice;
-	}
-#endif
 
 	return 0;
 }
-#endif
 
-#ifndef SN_TARGET_PS3
 InterfaceInfo* AudioInterface::get()
 {
 	if (IntInfoInit(&AudInfo)) {
@@ -447,7 +308,6 @@ InterfaceInfo* AudioInterface::get()
 
 	return &AudInfo;
 }
-#endif
 
 int AudioInterface::select(const TCHAR* _driver)
 {

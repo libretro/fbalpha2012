@@ -88,9 +88,11 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	nMaxPlayers = BurnDrvGetMaxPlayers();
 
 	GameInpInit();					// Init game input
+
 	if (ConfigGameLoad(true))
 		loadDefaultInput();			// load default input mapping
-	InputMake(true);
+
+	InputMake();
 	GameInpDefault();
 
 
@@ -128,8 +130,6 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	}
 
 	// Reset the speed throttling code, so we don't 'jump' after the load
-	RunReset();
-
 	return 0;
 }
 

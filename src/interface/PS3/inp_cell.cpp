@@ -22,93 +22,7 @@ extern int ArcadeJoystick;
 extern bool DoReset;
 extern int GameStatus;
 
-// Set up a single joystick
-static int CellinpJoystickInitSingle(int i)
-{
-
-	return 0;
-}
-
-// Get a DI interface to each joystick
-static int CellinpJoystickInitMaster()
-{
-
-	return 0;
-}
-
 // ----------------------------------------------------------------------------
-
-// Get a DI interface to all mice
-static int CellinpMouseInitMaster()
-{
-
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
-
-int CellinpSetCooperativeLevel(bool bExclusive, bool bForeGround)
-{
-
-
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
-
-int CellinpExit()
-{		 
-	return 0;
-}
-
-int CellinpInit()
-{	 
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
-
-// Call before checking for Input in a frame
-int CellinpStart()
-{	
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
-
-// Read the keyboard
-static int ReadKeyboard(struct DinpKeyboardProperties* Keyboard)
-{
-	return 0;
-}
- 
-
-// Read one of the joysticks
-static int ReadJoystick(struct DinpJoyProperties* Joystick)
-{
-	return 0;
-}
-
-// Check a subcode (the 40xx bit in 4001, 4102 etc) for a joystick input code
-static int JoystickState(struct DinpJoyProperties* Joystick, unsigned int nSubCode)
-{
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
-
-// Read the mouse
-static int ReadMouse(struct DinpMouseProperties* Mouse)
-{
-	return 0;
-}
-
-// Check a subcode (the 80xx bit in 8001, 8102 etc) for a mouse input code
-static int CheckMouseState(struct DinpMouseProperties* Mouse, unsigned int nSubCode)
-{
-	return 0;
-}
-
 
 // Get the state (pressed = 1, not pressed = 0) of a particular input code
 
@@ -326,18 +240,6 @@ int CellinpMouseAxis(int i, int nAxis)
 
 }
 
-// This function finds which key is pressed
-// To ensure analog joystick axes are handled correctly, call with CreateBaseline = true the 1st time
-int CellinpFind(bool CreateBaseline)
-{
-	return 0;
-}
-
-int CellinpGetControlName(int nCode, TCHAR* pszDeviceName, TCHAR* pszControlName)
-{
-	return 0;
-}
-
 void doStretch(void)
 {
 	static uint64_t old_state;
@@ -380,4 +282,4 @@ void doStretch(void)
 
 // ----------------------------------------------------------------------------
 
-struct InputInOut InputInOutCellInput = { CellinpInit, CellinpExit, CellinpSetCooperativeLevel, CellinpStart, CellinpState, CellinpJoyAxis, CellinpMouseAxis, CellinpFind, CellinpGetControlName, NULL };
+struct InputInOut InputInOutCellInput = { CellinpState, CellinpJoyAxis};

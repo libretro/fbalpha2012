@@ -22,7 +22,6 @@ int nAppVirtualFps = 6000;				// App fps * 100
 int bOnce = 0;
 int is_running = 0;
 bool bShowFPS = false;
-static unsigned int nDoFPS = 0;
 TCHAR fpsString[16];
 int custom_aspect_ratio_mode = 0;
 
@@ -50,26 +49,15 @@ static uint64_t inline GetTickCount()
 	return ticks.tick;
 }
 
-int RunReset()
-{
-	// Reset FPS display
-	nDoFPS = 0;
-
-	return 0;
-}
-
 int RunInit()
 {
 	// Try to run with sound
 	audio.play();
-
-	RunReset();
-
 	bOnce = 0;
 	return 0;
 }
 
-extern int audio_check();
+extern void audio_check();
 
 int RunExit()
 {
@@ -99,8 +87,8 @@ int RunMessageLoop(int argc, char **argv)
 #ifdef MULTIMAN_SUPPORT
 	if(argc > 1)
 	{
-		const char *pathpos = strrchr(strdup(argv[1]), '/');
-		directLoadGame(strdup(pathpos));
+		const char * current_game = strrchr(strdup(argv[1]), '/');
+		directLoadGame(strdup(current_game));
 		mediaInit();
 		RunInit();
 		GameStatus = EMULATING;	
@@ -182,7 +170,7 @@ int RunMessageLoop(int argc, char **argv)
 					nCurrentFrame++;
 
 					// GET INPUT
-					InputMake(true);                 // get input
+					InputMake(); // get input
 					VidFrame();
 
 					bPrevPause  = 0;

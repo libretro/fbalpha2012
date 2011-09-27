@@ -13,15 +13,13 @@ static int nAudSampleRate = 48000;
 static int nAudSegCount = 6;
 static int nAudSegLen = 0;
 int16_t * pAudNextsound = NULL;
-
 int bDrvOkay = 0;
 static bool bInputOkay = false;
 static bool bAudOkay = false;
 static bool bVidOkay = false;
-//bAltPause
+static bool bAltPause = false;
 static int bRunPause = 0;
 static int nAppVirtualFps = 6000;
-//nBurnFPS
 //nBurnSoundRate;					
 //pBurnSoundOut;
 //nBurnSoundLen;
@@ -32,7 +30,7 @@ static int nVidImageBPP = 0; // todo
 static unsigned char * pVidTransImage = NULL;
 static unsigned int * pVidTransPalette = NULL;
 extern unsigned int nCurrentFrame;
-
+extern bool DoReset;
 
 unsigned snes_library_revision_major(void)
 {
@@ -301,7 +299,7 @@ int directLoadGame(const char * name)
 
 	nVidFullscreen = 1;
 
-	if (_tcsicmp(&name[_tcslen(name) - 3], _T(".fs")) == 0)
+	if (strcasecmp(&name[strlen(name) - 3], ".fs") == 0)
 	{
 		if (BurnStateLoad(name, 1, &DrvInitCallback))
 			return 1;
@@ -350,6 +348,192 @@ void snes_power(void)
 
 void snes_reset(void)
 {}
+
+static int CinpState(int nCode)
+{
+	if (nCode < 0)
+		return 0;
+
+	if (DoReset)
+	{
+
+		if (nCode == FBK_F3)
+		{
+			DoReset = false;
+			return 1;
+		}
+
+	}
+
+	#if 0
+	switch (nCode)
+	{
+		case P1_COIN:
+			return CTRL_SELECT(new_state_p1);
+		case P1_START:
+			return CTRL_START(new_state_p1);
+		case P1_UP:
+			return ((CTRL_UP(new_state_p1) | CTRL_LSTICK_UP(new_state_p1)) != 0);
+		case P1_DOWN: 
+			return ((CTRL_DOWN(new_state_p1) | CTRL_LSTICK_DOWN(new_state_p1)) != 0);
+		case P1_LEFT:
+			return ((CTRL_LEFT(new_state_p1) | CTRL_LSTICK_LEFT(new_state_p1)) != 0);
+		case P1_RIGHT:
+			return ((CTRL_RIGHT(new_state_p1) | CTRL_LSTICK_RIGHT(new_state_p1)) != 0);
+		case P1_FIRE1:
+			return CTRL_CROSS(new_state_p1);
+		case P1_FIRE2:
+			return CTRL_CIRCLE(new_state_p1);
+		case P1_FIRE3:
+			return CTRL_SQUARE(new_state_p1);
+		case P1_FIRE4: 
+			return CTRL_TRIANGLE(new_state_p1);
+		case P1_FIRE5:
+			return CTRL_L1(new_state_p1);
+		case P1_FIRE6:
+			return CTRL_R1(new_state_p1);
+		case 0x88:
+			return CTRL_L2(new_state_p1);
+		case 0x8A:			 
+			return CTRL_R2(new_state_p1);
+		case 0x3b:
+			return CTRL_L3(new_state_p1);
+		case P1_SERVICE:
+			return CTRL_R3(new_state_p1);
+		case 0x21:
+			return CTRL_R2(new_state_p1);
+		default:
+			break;
+	}
+
+	if (numPadsConnected > 1)
+	{
+		uint64_t new_state_p2 = cell_pad_input_poll_device(1);
+
+		switch (nCode)
+		{
+			case P2_COIN:
+				return CTRL_SELECT(new_state_p2);
+			case P2_START:
+				return CTRL_START(new_state_p2);
+			case P2_UP:
+				return ((CTRL_UP(new_state_p2) | CTRL_LSTICK_UP(new_state_p2)) != 0);
+			case P2_DOWN:
+				return ((CTRL_DOWN(new_state_p2) | CTRL_LSTICK_DOWN(new_state_p2)) != 0);
+			case P2_LEFT:
+				return ((CTRL_LEFT(new_state_p2) | CTRL_LSTICK_LEFT(new_state_p2)) != 0);
+			case P2_RIGHT:
+				return ((CTRL_RIGHT(new_state_p2) | CTRL_LSTICK_RIGHT(new_state_p2)) != 0);
+			case P2_FIRE1:
+				return CTRL_CROSS(new_state_p2);
+			case P2_FIRE2:
+				return CTRL_CIRCLE(new_state_p2);
+			case P2_FIRE3:
+				return CTRL_SQUARE(new_state_p2);
+			case P2_FIRE4: 
+				return CTRL_TRIANGLE(new_state_p2);
+			case P2_FIRE5:
+				return CTRL_L1(new_state_p2);
+			case P2_FIRE6:
+				return CTRL_R1(new_state_p2);
+			case 0x4088:
+				return CTRL_L2(new_state_p2);
+			case 0x408A:			 
+				return CTRL_R2(new_state_p2);
+			case 0x408b:
+				return CTRL_L3(new_state_p2);
+			case 0x408c:
+				return CTRL_R3(new_state_p2);
+		}
+	}
+
+
+	if (numPadsConnected > 2)
+	{
+		uint64_t new_state_p3 = cell_pad_input_poll_device(2);
+
+		switch (nCode)
+		{ 
+			case P3_COIN:
+				return CTRL_SELECT(new_state_p3);
+			case P3_START:
+				return CTRL_START(new_state_p3);
+			case P3_UP:
+				return ((CTRL_UP(new_state_p3) | CTRL_LSTICK_UP(new_state_p3)) != 0);
+			case P3_DOWN:
+				return ((CTRL_DOWN(new_state_p3) | CTRL_LSTICK_DOWN(new_state_p3)) != 0);
+			case P3_LEFT:
+				return ((CTRL_LEFT(new_state_p3) | CTRL_LSTICK_LEFT(new_state_p3)) != 0);
+			case P3_RIGHT:
+				return ((CTRL_RIGHT(new_state_p3) | CTRL_LSTICK_RIGHT(new_state_p3)) != 0);
+			case P3_FIRE1:
+				return CTRL_CROSS(new_state_p3);
+			case P3_FIRE2:
+				return CTRL_CIRCLE(new_state_p3);
+			case P3_FIRE3:
+				return CTRL_SQUARE(new_state_p3);
+			case P3_FIRE4:
+				return CTRL_TRIANGLE(new_state_p3);
+			case P3_FIRE5:
+				return CTRL_L1(new_state_p3);
+			case P3_FIRE6:
+				return CTRL_R1(new_state_p3);
+			case 0x4188:
+				return CTRL_L2(new_state_p3);
+			case 0x418A:			 
+				return CTRL_R2(new_state_p3);
+			case 0x418b:
+				return CTRL_L3(new_state_p3);
+			case 0x418c:
+				return CTRL_R3(new_state_p3);
+		}
+	}
+
+	if (numPadsConnected > 3)
+	{
+		uint64_t new_state_p4 = cell_pad_input_poll_device(3);
+
+		switch (nCode)
+		{
+			case P4_COIN:
+				return CTRL_SELECT(new_state_p4);
+			case P4_START:
+				return CTRL_START(new_state_p4);
+			case P4_UP:
+				return ((CTRL_UP(new_state_p4) | CTRL_LSTICK_UP(new_state_p4)) != 0);
+			case P4_DOWN:
+				return ((CTRL_DOWN(new_state_p4) | CTRL_LSTICK_DOWN(new_state_p4)) != 0);
+			case P4_LEFT:
+				return ((CTRL_LEFT(new_state_p4) | CTRL_LSTICK_LEFT(new_state_p4)) != 0);
+			case P4_RIGHT:
+				return ((CTRL_RIGHT(new_state_p4) | CTRL_LSTICK_RIGHT(new_state_p4)) != 0);
+			case P4_FIRE1:
+				return CTRL_CROSS(new_state_p4);
+			case P4_FIRE2:
+				return CTRL_CIRCLE(new_state_p4);
+			case P4_FIRE3:
+				return CTRL_SQUARE(new_state_p4);
+			case P4_FIRE4:
+				return CTRL_TRIANGLE(new_state_p4);
+			case P4_FIRE5:
+				return CTRL_L1(new_state_p4);
+			case P4_FIRE6:
+				return CTRL_R1(new_state_p4);
+			case 0x4288:
+				return CTRL_L2(new_state_p4);
+			case 0x428A:			 
+				return CTRL_R2(new_state_p4);
+			case 0x428b:
+				return CTRL_L3(new_state_p4);
+			case 0x428c:
+				return CTRL_R3(new_state_p4);
+
+		} 
+	}
+	#endif
+
+	return 0;
+}
 
 // This will process all PC-side inputs and optionally update the emulated game side.
 static void InputMake(void)

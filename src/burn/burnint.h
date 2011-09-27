@@ -94,8 +94,8 @@ static inline uint64_t _byteswap_uint64(uint64_t x)
            uint32_t l,h;
         } l;
     } r;
-    r.l.l = _byteswap_ulong (x);
-    r.l.h = _byteswap_ulong (x>>32);
+    r.l.l = swapLong (x);
+    r.l.h = swapLong (x>>32);
     return r.ll;
 }
 #endif

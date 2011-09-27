@@ -3,6 +3,9 @@ TARGET = libsnes.so
 all: $(TARGET)
 
 FBA_BURN_DIR := ../../burn
+
+BURN_BLACKLIST := $(FBA_BURN_DIR)/zet_c68k.cpp
+
 FBA_BURNER_DIR := ../
 FBA_CPU_DIR := ../../cpu
 FBA_LIB_DIR := ../../lib
@@ -18,7 +21,7 @@ FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib $(FBA_LIB_DIR)/File_Extractor
 
 FBA_BURNER_DIRS := $(FBA_BURNER_DIR) libsnes.cpp
 
-FBA_CXXSRCS := $(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))
+FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)
 FBA_CSRCS := $(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))
 FBA_COBJ := $(FBA_CSRCS:.c=.o)

@@ -171,7 +171,7 @@ int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)())
 	char szReadHeader[4] = "";
 	int nRet = 0;
 
-	FILE* fp = _tfopen(szName, _T("rb"));
+	FILE* fp = fopen(szName, "rb");
 	if (fp == NULL)
 		return 1;
 
@@ -276,7 +276,7 @@ int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll)
 }
 
 // State save
-int BurnStateSave(TCHAR* szName, int bAll)
+int BurnStateSave(char* szName, int bAll)
 {
 	const char szHeader[] = "FB1 ";						// File identifier
 	int nLen = 0, nVer = 0;
@@ -291,7 +291,7 @@ int BurnStateSave(TCHAR* szName, int bAll)
 		return 0;										// Don't return an error code
 	}
 
-	FILE* fp = _tfopen(szName, _T("wb"));
+	FILE* fp = fopen(szName, "wb");
 	if (fp == NULL) {
 		return 1;
 	}

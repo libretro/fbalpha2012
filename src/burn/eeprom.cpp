@@ -68,13 +68,13 @@ static bool eeprom_command_match(const char* buf, const char* cmd, int len)
 // ==> nvram hack, added by regret
 void EEPROMHack(int size)
 {
-	if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3u"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3ur1"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3j"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3jr1"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3jr2"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3ar1"))
+	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3u")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3ur1")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3j")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr1")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr2")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3ar1")
 	) {
 		UINT8 eeprom[] = {
 			0x00,0x01,0x00,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -87,15 +87,15 @@ void EEPROMHack(int size)
 			0x00,0x00,0x00,0x9b,0x00,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		};  /* sfz3jr2p */
 
-		if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3jr1"))) {
+		if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr1")) {
 			eeprom[0x21] = eeprom[0x51] = 0x07;
 			eeprom[0x22] = eeprom[0x52] = 0x27;
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3j"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3j")) {
 			eeprom[0x21] = eeprom[0x51] = 0x09;
 			eeprom[0x22] = eeprom[0x52] = 0x04;
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3")) {
 			eeprom[0x00] = eeprom[0x30] = 0x09;
 			eeprom[0x06] = eeprom[0x36] = 0x01;
 			eeprom[0x08] = eeprom[0x38] = 0x02;
@@ -114,7 +114,7 @@ void EEPROMHack(int size)
 			eeprom[0x2e] = eeprom[0x5e] = 'A';
 			eeprom[0x2f] = eeprom[0x5f] = '3';
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3u"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3u")) {
 			eeprom[0x21] = eeprom[0x51] = 0x09;
 			eeprom[0x22] = eeprom[0x52] = 0x04;
 			eeprom[0x08] = eeprom[0x23] = eeprom[0x38] = eeprom[0x53] = 0x02;
@@ -127,7 +127,7 @@ void EEPROMHack(int size)
 			eeprom[0x2b] = eeprom[0x5b] = 'H';
 			eeprom[0x2c] = eeprom[0x5c] = 'A';
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfa3ur1"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3ur1")) {
 			eeprom[0x08] = eeprom[0x23] = eeprom[0x38] = eeprom[0x53] = 0x02;
 			eeprom[0x06] = eeprom[0x36] = 0x01;
 			eeprom[0x10] = eeprom[0x40] = 0x04;
@@ -138,7 +138,7 @@ void EEPROMHack(int size)
 			eeprom[0x2b] = eeprom[0x5b] = 'H';
 			eeprom[0x2c] = eeprom[0x5c] = 'A';
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("sfz3ar1"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3ar1")) {
 			eeprom[0x08] = eeprom[0x38] = 0x02;
 			eeprom[0x06] = eeprom[0x22] = eeprom[0x36] = eeprom[0x52] = 0x01;
 			eeprom[0x10] = eeprom[0x21] = eeprom[0x40] = eeprom[0x51] = 0x07;
@@ -155,8 +155,8 @@ void EEPROMHack(int size)
 		return;
 	}
 
-	if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("batcir4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("btcirj4p"))
+	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "batcir4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "btcirj4p")
 	) {
 		UINT8 eeprom[] = {
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -169,7 +169,7 @@ void EEPROMHack(int size)
 			0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
 		};  /* btcirj4p */
 
-		if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("batcir4p"))) {
+		if (!strcasecmp(BurnDrvGetText(DRV_NAME), "batcir4p")) {
 			eeprom[0x2b] = eeprom[0x5b] = 0x08;
 		}
 
@@ -177,10 +177,10 @@ void EEPROMHack(int size)
 		return;
 	}
 
-	if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avsp3p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avspu3p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avspj3p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avspa3p"))
+	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "avsp3p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspu3p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspj3p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspa3p")
 	) {
 		UINT8 eeprom[] = {
 			0x00,0x01,0x00,0x01,0x01,0x00,0x01,0xc3,0x00,0X02,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -193,10 +193,10 @@ void EEPROMHack(int size)
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		};  /* avspu */
 
-		if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avsp3p"))) {
+		if (!strcasecmp(BurnDrvGetText(DRV_NAME), "avsp3p")) {
 			eeprom[0x23] = eeprom[0x53] = 0x08;
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avspj3p"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "avspj3p")) {
 			eeprom[0x09] = eeprom[0x23] = eeprom[0x39] = eeprom[0x53] = 0x00;
 			eeprom[0x29] = eeprom[0x59] = 0x52;
 			eeprom[0x2a] = eeprom[0x5a] = 0x45;
@@ -206,7 +206,7 @@ void EEPROMHack(int size)
 			eeprom[0x2e] = eeprom[0x5e] = 0x4f;
 			eeprom[0x2f] = eeprom[0x5f] = 0x52;
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("avspa3p"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "avspa3p")) {
 			eeprom[0x03] = eeprom[0x33] = 0x00;
 			eeprom[0x23] = eeprom[0x53] = 0x06;
 			eeprom[0x29] = eeprom[0x59] = 0x52;
@@ -222,13 +222,13 @@ void EEPROMHack(int size)
 		return;
 	}
 
-	if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsom4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomr4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomu4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsmur4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomj4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsmjr4p"))
-		|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsoma4p"))
+	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsom4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomu4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmur4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmjr4p")
+		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsoma4p")
 	) {
 		UINT8 eeprom[] = {
 			0x00,0x0b,0x01,0x00,0x01,0x01,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -241,33 +241,33 @@ void EEPROMHack(int size)
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		};  /* ddsom4p */
 
-		if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsmur4p"))) {
+		if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmur4p")) {
 			eeprom[0x63] = 0x01;
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsom4p"))
-			|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomr4p"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsom4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")) {
 			eeprom[0x07] = eeprom[0x37] = 0x02;
 			eeprom[0x23] = eeprom[0x53] = 0x08;
 			eeprom[0x2d] = eeprom[0x5d] = 0x45; // E
 			eeprom[0x2e] = eeprom[0x5e] = 0x55; // U
 			eeprom[0x2f] = eeprom[0x5f] = 0x52; // R
 
-			if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsom4p"))) {
+			if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsom4p")) {
 				eeprom[0x63] = 0x01;
 			}
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsmjr4p"))
-			|| !_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomj4p"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmjr4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")) {
 			eeprom[0x07] = eeprom[0x23] = eeprom[0x37] = eeprom[0x53] = 0x00;
 			eeprom[0x2d] = eeprom[0x5d] = 0x4a; // J
 			eeprom[0x2e] = eeprom[0x5e] = 0x50; // P
 			eeprom[0x2f] = eeprom[0x5f] = 0x4e; // N
 
-			if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsomj4p"))) {
+			if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")) {
 				eeprom[0x63] = 0x01;
 			}
 		}
-		else if (!_tcsicmp(BurnDrvGetText(DRV_NAME), _T("ddsoma4p"))) {
+		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsoma4p")) {
 			eeprom[0x23] = eeprom[0x53] = 0x06;
 			eeprom[0x06] = eeprom[0x36] = 0x01;
 			eeprom[0x2d] = eeprom[0x5d] = 0x41; // A
@@ -297,7 +297,7 @@ void EEPROMInit(const eeprom_interface* interface)
 	unsigned int intfSize = (1 << intf->address_bits) * intf->data_bits / 8;
 	if (intfSize > MEMORY_SIZE)
 	{
-		bprintf(0, _T("EEPROM larger than eeprom allows"));
+		bprintf(0, "EEPROM larger than eeprom allows");
 	}
 
 	memset(eeprom_data, 0xff, intfSize);
@@ -352,7 +352,7 @@ void EEPROMExit()
 static void eeprom_write(int bit)
 {
 	if (serial_count >= SERIAL_BUFFER_LENGTH - 1) {
-		bprintf(0, _T("error: EEPROM serial buffer overflow\n"));
+		bprintf(0, "error: EEPROM serial buffer overflow\n");
 		return;
 	}
 

@@ -6,7 +6,7 @@
 // Software gamma, brightness and contrast adjust, added by regret
 // ref: bsnes
 
-#if defined (SN_TARGET_PS3)
+#if defined (SN_TARGET_PS3) || defined(__LIBSNES__)
 #define min(a,b) (((a)<(b))?(a):(b)) 
 #define max(a,b) (((a)>(b))?(a):(b))
 #endif
@@ -118,6 +118,7 @@ static unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
 	return t;
 }
 
+#ifndef __LIBSNES__
 int SetBurnHighCol(int nDepth)
 {
 	VidRecalcPal();
@@ -138,3 +139,4 @@ int SetBurnHighCol(int nDepth)
 
 	return 0;
 }
+#endif

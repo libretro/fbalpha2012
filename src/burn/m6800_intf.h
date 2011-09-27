@@ -4,7 +4,7 @@
 #ifdef __CELLOS_LV2__
 #include "../cpu/m6800/m6800.h"
 #else
-#include "M6800.h"
+#include "m6800.h"
 #endif
 
 typedef unsigned char (*pReadByteHandler)(unsigned short a);

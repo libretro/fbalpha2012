@@ -4,7 +4,7 @@ all: $(TARGET)
 
 FBA_BURN_DIR := ../../burn
 
-BURN_BLACKLIST := $(FBA_BURN_DIR)/zet_c68k.cpp
+BURN_BLACKLIST := $(FBA_BURN_DIR)/zet_c68k.cpp $(FBA_BURN_DIR)/sek_c68k.cpp $(FBA_BURNER_DIR)/tracklst.cpp
 
 FBA_BURNER_DIR := ../
 FBA_CPU_DIR := ../../cpu

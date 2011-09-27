@@ -14,6 +14,8 @@ Otherwise, use the Transfer code as usual.
 ================================================================================================*/
 #if defined (_XBOX)
 #include <xtl.h>
+#else
+#include "ssnes-typedefs.h"
 #endif
 #include "tiles_generic.h"
 

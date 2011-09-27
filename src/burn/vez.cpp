@@ -21,7 +21,7 @@ void __fastcall VezDummyWritePort(unsigned int, unsigned char) { }
 
 int VezDummyIrqCallBack(int i)
 {
-	bprintf(PRINT_NORMAL, _T("CPU #%d IrqCallBack(%x)\n"), nOpenedCPU, i);
+	bprintf(PRINT_NORMAL, "CPU #%d IrqCallBack(%x)\n", nOpenedCPU, i);
 	return 0;
 }
 

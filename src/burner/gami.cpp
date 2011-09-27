@@ -1,11 +1,16 @@
 // Burner Game Input
 #include "burner.h"
 // Key codes
-#include "inp_keys.h"
+#include "../interface/inp_keys.h"
+
+#ifdef __LIBSNES__
+#include "../interface/interface-ssnes.h"
+#include "../burn/ssnes-typedefs.h"
+#endif
 
 // Player Default Controls
 int nPlayerDefaultControls[4] = {0, 1, 2, 3};
-TCHAR szPlayerDefaultIni[4][MAX_PATH] = { _T(""), _T(""), _T(""), _T("") };
+char szPlayerDefaultIni[4][MAX_PATH] = { "", "", "", ""};
 
 // Mapping of PC inputs to game inputs
 struct GameInp* GameInp = NULL;
@@ -66,7 +71,7 @@ void GameInpCheckLeftAlt()
 // Check if the sytem mouse is mapped and set the cooperative level apropriately
 void GameInpCheckMouse()
 {
-#if !defined (_XBOX) && !defined (SN_TARGET_PS3)
+#if !defined (_XBOX) && !defined (SN_TARGET_PS3) && !defined (__LIBSNES__)
 	bool bMouseMapped = false;
 	struct GameInp* pgi;
 	unsigned int i;
@@ -192,62 +197,62 @@ static void GameInpInitMacros()
 				}
 			}
 
-			if (_stricmp(" Weak Punch", bii.szName + 2) == 0) {
+			if (strcasecmp(" Weak Punch", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 1;
 				nPunchInputs[nPlayer][0] = i;
 			}
-			if (_stricmp(" Medium Punch", bii.szName + 2) == 0) {
+			if (strcasecmp(" Medium Punch", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 2;
 				nPunchInputs[nPlayer][1] = i;
 			}
-			if (_stricmp(" Strong Punch", bii.szName + 2) == 0) {
+			if (strcasecmp(" Strong Punch", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 4;
 				nPunchInputs[nPlayer][2] = i;
 			}
-			if (_stricmp(" Weak Kick", bii.szName + 2) == 0) {
+			if (strcasecmp(" Weak Kick", bii.szName + 2) == 0) {
 				nKickx3[nPlayer] |= 1;
 				nKickInputs[nPlayer][0] = i;
 			}
-			if (_stricmp(" Medium Kick", bii.szName + 2) == 0) {
+			if (strcasecmp(" Medium Kick", bii.szName + 2) == 0) {
 				nKickx3[nPlayer] |= 2;
 				nKickInputs[nPlayer][1] = i;
 			}
-			if (_stricmp(" Strong Kick", bii.szName + 2) == 0) {
+			if (strcasecmp(" Strong Kick", bii.szName + 2) == 0) {
 				nKickx3[nPlayer] |= 4;
 				nKickInputs[nPlayer][2] = i;
 			}
-			if (_stricmp(" Attack", bii.szName + 2) == 0) {
+			if (strcasecmp(" Attack", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 1;
 				nPunchInputs[nPlayer][0] = i;
 			}
-			if (_stricmp(" Jump", bii.szName + 2) == 0) {
+			if (strcasecmp(" Jump", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 2;
 				nPunchInputs[nPlayer][1] = i;
 			}
 
-			if (_stricmp(" Button A", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button A", bii.szName + 2) == 0) {
 				nNeogeoButtons[nPlayer][0] = i;
 			}
-			if (_stricmp(" Button B", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button B", bii.szName + 2) == 0) {
 				nNeogeoButtons[nPlayer][1] = i;
 			}
-			if (_stricmp(" Button C", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button C", bii.szName + 2) == 0) {
 				nNeogeoButtons[nPlayer][2] = i;
 			}
-			if (_stricmp(" Button D", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button D", bii.szName + 2) == 0) {
 				nNeogeoButtons[nPlayer][3] = i;
 			}
 
-			if (_stricmp(" Button 1", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 1", bii.szName + 2) == 0) {
 				nPgmButtons[nPlayer][0] = i;
 			}
-			if (_stricmp(" Button 2", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 2", bii.szName + 2) == 0) {
 				nPgmButtons[nPlayer][1] = i;
 			}
-			if (_stricmp(" Button 3", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 3", bii.szName + 2) == 0) {
 				nPgmButtons[nPlayer][2] = i;
 			}
-			if (_stricmp(" Button 4", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 4", bii.szName + 2) == 0) {
 				nPgmButtons[nPlayer][3] = i;
 			}
 		}
@@ -547,7 +552,9 @@ int GameInpInit()
 
 	GameInpBlank(1);
 
+	#ifndef __LIBSNES__
 	InpDIPSWResetDIPs();
+	#endif
 
 	GameInpInitMacros();
 
@@ -575,18 +582,18 @@ int GameInpExit()
 // ---------------------------------------------------------------------------
 // Convert a string from a config file to an input
 
-static TCHAR* SliderInfo(struct GameInp* pgi, TCHAR* s)
+static char* SliderInfo(struct GameInp* pgi, char* s)
 {
 	pgi->Input.Slider.nSliderSpeed = 0x700;				// defaults
 	pgi->Input.Slider.nSliderCenter = 0;
 	pgi->Input.Slider.nSliderValue = 0x8000;
 
-	TCHAR* szRet = labelCheck(s, _T("speed"));
+	char* szRet = labelCheck(s, _T("speed"));
 	s = szRet;
 	if (s == NULL) {
 		return s;
 	}
-	pgi->Input.Slider.nSliderSpeed = (short)_tcstol(s, &szRet, 0);
+	pgi->Input.Slider.nSliderSpeed = (short)strtol(s, &szRet, 0);
 	s = szRet;
 	if (s==NULL) {
 		return s;
@@ -596,7 +603,7 @@ static TCHAR* SliderInfo(struct GameInp* pgi, TCHAR* s)
 	if (s == NULL) {
 		return s;
 	}
-	pgi->Input.Slider.nSliderCenter = (short)_tcstol(s, &szRet, 0);
+	pgi->Input.Slider.nSliderCenter = (short)strtol(s, &szRet, 0);
 	s = szRet;
 	if (s == NULL) {
 		return s;
@@ -605,16 +612,16 @@ static TCHAR* SliderInfo(struct GameInp* pgi, TCHAR* s)
 	return szRet;
 }
 
-static int StringToJoyAxis(struct GameInp* pgi, TCHAR* s)
+static int StringToJoyAxis(struct GameInp* pgi, char* s)
 {
-	TCHAR* szRet = s;
+	char* szRet = s;
 
-	pgi->Input.JoyAxis.nJoy = (unsigned char)_tcstol(s, &szRet, 0);
+	pgi->Input.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
 	if (szRet == NULL) {
 		return 1;
 	}
 	s = szRet;
-	pgi->Input.JoyAxis.nAxis = (unsigned char)_tcstol(s, &szRet, 0);
+	pgi->Input.JoyAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
 	if (szRet == NULL) {
 		return 1;
 	}
@@ -622,11 +629,11 @@ static int StringToJoyAxis(struct GameInp* pgi, TCHAR* s)
 	return 0;
 }
 
-static int StringToMouseAxis(struct GameInp* pgi, TCHAR* s)
+static int StringToMouseAxis(struct GameInp* pgi, char* s)
 {
-	TCHAR* szRet = s;
+	char* szRet = s;
 
-	pgi->Input.MouseAxis.nAxis = (unsigned char)_tcstol(s, &szRet, 0);
+	pgi->Input.MouseAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
 	if (szRet == NULL) {
 		return 1;
 	}
@@ -634,23 +641,23 @@ static int StringToMouseAxis(struct GameInp* pgi, TCHAR* s)
 	return 0;
 }
 
-static int StringToMacro(struct GameInp* pgi, TCHAR* s)
+static int StringToMacro(struct GameInp* pgi, char* s)
 {
-	TCHAR* szRet = labelCheck(s, _T("switch"));
+	char* szRet = labelCheck(s, _T("switch"));
 	if (szRet) {
 		s = szRet;
 		pgi->Macro.nMode = 0x01;
-		pgi->Macro.Switch.nCode = (unsigned short)_tcstol(s, &szRet, 0);
+		pgi->Macro.Switch.nCode = (unsigned short)strtol(s, &szRet, 0);
 		return 0;
 	}
 
 	return 1;
 }
 
-static int StringToInp(struct GameInp* pgi, TCHAR* s)
+static int StringToInp(struct GameInp* pgi, char* s)
 {
 	SKIP_WS(s);											// skip whitespace
-	TCHAR* szRet = labelCheck(s, _T("undefined"));
+	char* szRet = labelCheck(s, _T("undefined"));
 	if (szRet) {
 		pgi->nInput = 0;
 		return 0;
@@ -660,7 +667,7 @@ static int StringToInp(struct GameInp* pgi, TCHAR* s)
 	if (szRet) {
 		pgi->nInput = GIT_CONSTANT;
 		s = szRet;
-		pgi->Input.Constant.nConst=(unsigned char)_tcstol(s, &szRet, 0);
+		pgi->Input.Constant.nConst=(unsigned char)strtol(s, &szRet, 0);
 		*(pgi->Input.pVal) = pgi->Input.Constant.nConst;
 		return 0;
 	}
@@ -669,7 +676,7 @@ static int StringToInp(struct GameInp* pgi, TCHAR* s)
 	if (szRet) {
 		pgi->nInput = GIT_SWITCH;
 		s = szRet;
-		pgi->Input.Switch.nCode = (unsigned short)_tcstol(s, &szRet, 0);
+		pgi->Input.Switch.nCode = (unsigned short)strtol(s, &szRet, 0);
 		return 0;
 	}
 
@@ -704,12 +711,12 @@ static int StringToInp(struct GameInp* pgi, TCHAR* s)
 		pgi->Input.Slider.SliderAxis.nSlider[0] = 0;	// defaults
 		pgi->Input.Slider.SliderAxis.nSlider[1] = 0;	//
 
-		pgi->Input.Slider.SliderAxis.nSlider[0] = (unsigned short)_tcstol(s, &szRet, 0);
+		pgi->Input.Slider.SliderAxis.nSlider[0] = (unsigned short)strtol(s, &szRet, 0);
 		s = szRet;
 		if (s == NULL) {
 			return 1;
 		}
-		pgi->Input.Slider.SliderAxis.nSlider[1] = (unsigned short)_tcstol(s, &szRet, 0);
+		pgi->Input.Slider.SliderAxis.nSlider[1] = (unsigned short)strtol(s, &szRet, 0);
 		s = szRet;
 		if (s == NULL) {
 			return 1;
@@ -730,12 +737,12 @@ static int StringToInp(struct GameInp* pgi, TCHAR* s)
 		pgi->Input.Slider.JoyAxis.nJoy = 0;				// defaults
 		pgi->Input.Slider.JoyAxis.nAxis = 0;			//
 
-		pgi->Input.Slider.JoyAxis.nJoy = (unsigned char)_tcstol(s, &szRet, 0);
+		pgi->Input.Slider.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
 		s = szRet;
 		if (s == NULL) {
 			return 1;
 		}
-		pgi->Input.Slider.JoyAxis.nAxis = (unsigned char)_tcstol(s, &szRet, 0);
+		pgi->Input.Slider.JoyAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
 		s = szRet;
 		if (s == NULL) {
 			return 1;
@@ -754,56 +761,56 @@ static int StringToInp(struct GameInp* pgi, TCHAR* s)
 // ---------------------------------------------------------------------------
 // Convert an input to a string for config files
 
-static TCHAR* InpToString(struct GameInp* pgi)
+static char* InpToString(struct GameInp* pgi)
 {
-	static TCHAR szString[80];
+	static char szString[80];
 
 	if (pgi->nInput == 0) {
 		return _T("undefined");
 	}
 	if (pgi->nInput == GIT_CONSTANT) {
-		_stprintf(szString, _T("constant 0x%.2X"), pgi->Input.Constant.nConst);
+		sprintf(szString, _T("constant 0x%.2X"), pgi->Input.Constant.nConst);
 		return szString;
 	}
 	if (pgi->nInput == GIT_SWITCH) {
-		_stprintf(szString, _T("switch 0x%.2X"), pgi->Input.Switch.nCode);
+		sprintf(szString, _T("switch 0x%.2X"), pgi->Input.Switch.nCode);
 		return szString;
 	}
 	if (pgi->nInput == GIT_KEYSLIDER) {
-		_stprintf(szString, _T("slider 0x%.2x 0x%.2x speed 0x%x center %d"), pgi->Input.Slider.SliderAxis.nSlider[0], pgi->Input.Slider.SliderAxis.nSlider[1], pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
+		sprintf(szString, _T("slider 0x%.2x 0x%.2x speed 0x%x center %d"), pgi->Input.Slider.SliderAxis.nSlider[0], pgi->Input.Slider.SliderAxis.nSlider[1], pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
 		return szString;
 	}
 	if (pgi->nInput == GIT_JOYSLIDER) {
-		_stprintf(szString, _T("joyslider %d %d speed 0x%x center %d"), pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis, pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
+		sprintf(szString, _T("joyslider %d %d speed 0x%x center %d"), pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis, pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
 		return szString;
 	}
 	if (pgi->nInput == GIT_MOUSEAXIS) {
-		_stprintf(szString, _T("mouseaxis %d"), pgi->Input.MouseAxis.nAxis);
+		sprintf(szString, _T("mouseaxis %d"), pgi->Input.MouseAxis.nAxis);
 		return szString;
 	}
 	if (pgi->nInput == GIT_JOYAXIS_FULL) {
-		_stprintf(szString, _T("joyaxis %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+		sprintf(szString, _T("joyaxis %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 		return szString;
 	}
 	if (pgi->nInput == GIT_JOYAXIS_NEG) {
-		_stprintf(szString, _T("joyaxis-neg %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+		sprintf(szString, _T("joyaxis-neg %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 		return szString;
 	}
 	if (pgi->nInput == GIT_JOYAXIS_POS) {
-		_stprintf(szString, _T("joyaxis-pos %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+		sprintf(szString, _T("joyaxis-pos %d %d"), pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 		return szString;
 	}
 
 	return _T("unknown");
 }
 
-static TCHAR* InpMacroToString(struct GameInp* pgi)
+static char* InpMacroToString(struct GameInp* pgi)
 {
-	static TCHAR szString[MAX_PATH];
+	static char szString[MAX_PATH];
 
 	if (pgi->nInput == GIT_MACRO_AUTO) {
 		if (pgi->Macro.nMode) {
-			_stprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
+			sprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
 			return szString;
 		}
 	}
@@ -812,15 +819,15 @@ static TCHAR* InpMacroToString(struct GameInp* pgi)
 		struct BurnInputInfo bii;
 
 		if (pgi->Macro.nMode) {
-			_stprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
+			sprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
 		} else {
-			_stprintf(szString, _T("undefined"));
+			sprintf(szString, _T("undefined"));
 		}
 
 		for (int i = 0; i < 4; i++) {
 			if (pgi->Macro.pVal[i]) {
 				BurnDrvGetInputInfo(&bii, pgi->Macro.nInput[i]);
-				_stprintf(szString + _tcslen(szString), _T(" \"%hs\" 0x%02X"), bii.szName, pgi->Macro.nVal[i]);
+				sprintf(szString + strlen(szString), _T(" \"%hs\" 0x%02X"), bii.szName, pgi->Macro.nVal[i]);
 			}
 		}
 
@@ -833,7 +840,7 @@ static TCHAR* InpMacroToString(struct GameInp* pgi)
 // ---------------------------------------------------------------------------
 // Generate a user-friendly name for a control (PC-side)
 
-static struct { int nCode; TCHAR* szName; } KeyNames[] = {
+static struct { int nCode; char* szName; } KeyNames[] = {
 
 #define FBK_DEFNAME(k) k, _T(#k)
 
@@ -1023,26 +1030,26 @@ static struct { int nCode; TCHAR* szName; } KeyNames[] = {
 	{ 0,				NULL }
 };
 
-TCHAR* InputCodeDesc(int c)
+char* InputCodeDesc(int c)
 {
-	static TCHAR szString[64];
-	TCHAR* szName = _T("");
+	static char szString[64];
+	char* szName = _T("");
 
 	// Mouse
 	if (c >= 0x8000) {
 		int nMouse = (c >> 8) & 0x3F;
 		int nCode = c & 0xFF;
 		if (nCode >= 0x80) {
-			_stprintf(szString, _T("Mouse %d Button %d"), nMouse, nCode & 0x7F);
+			sprintf(szString, _T("Mouse %d Button %d"), nMouse, nCode & 0x7F);
 			return szString;
 		}
 		if (nCode < 0x06) {
-			TCHAR szAxis[3][3] = { _T("X"), _T("Y"), _T("Z") };
-			TCHAR szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
+			char szAxis[3][3] = { _T("X"), _T("Y"), _T("Z") };
+			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
 			if (nCode < 4) {
-				_stprintf(szString, _T("Mouse %d %s (%s %s)"), nMouse, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, _T("Mouse %d %s (%s %s)"), nMouse, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
 			} else {
-				_stprintf(szString, _T("Mouse %d %s %s"), nMouse, szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, _T("Mouse %d %s %s"), nMouse, szAxis[nCode >> 1], szDir[nCode & 1]);
 			}
 			return szString;
 		}
@@ -1061,32 +1068,32 @@ TCHAR* InputCodeDesc(int c)
 			case 0x4080:
 			case 0x4180:
 			case 0x4280:
-				_stprintf(szString, _T("A Button"));
+				sprintf(szString, _T("A Button"));
 				break;
 			case 0x4081:
 			case 0x4181:
 			case 0x4281:
-				_stprintf(szString, _T("B Button"));
+				sprintf(szString, _T("B Button"));
 				break;
 			case 0x4082:
 			case 0x4182:
 			case 0x4282:
-				_stprintf(szString, _T("X Button"));
+				sprintf(szString, _T("X Button"));
 				break;
 			case 0x4083:
 			case 0x4183:
 			case 0x4283:
-				_stprintf(szString, _T("Y Button"));
+				sprintf(szString, _T("Y Button"));
 				break;
 			case 0x4084:
 			case 0x4184:
 			case 0x4284:
-				_stprintf(szString, _T("Left Shoulder"));
+				sprintf(szString, _T("Left Shoulder"));
 				break;
 			case 0x4085:
 			case 0x4185:
 			case 0x4285:
-				_stprintf(szString, _T("Right Shoulder"));
+				sprintf(szString, _T("Right Shoulder"));
 				break;
 			 
 			}
@@ -1097,74 +1104,74 @@ TCHAR* InputCodeDesc(int c)
 			case 0x4080:
 			case 0x4180:
 			case 0x4280:
-				_stprintf(szString, _T("Cross Button"));
+				sprintf(szString, _T("Cross Button"));
 				break;
 			case 0x4081:
 			case 0x4181:
 			case 0x4281:
-				_stprintf(szString, _T("Circle Button"));
+				sprintf(szString, _T("Circle Button"));
 				break;
 			case 0x4082:
 			case 0x4182:
 			case 0x4282:
-				_stprintf(szString, _T("Square Button"));
+				sprintf(szString, _T("Square Button"));
 				break;
 			case 0x4083:
 			case 0x4183:
 			case 0x4283:
-				_stprintf(szString, _T("Triangle Button"));
+				sprintf(szString, _T("Triangle Button"));
 				break;
 			case 0x4084:
 			case 0x4184:
 			case 0x4284:
-				_stprintf(szString, _T("L1 Button"));
+				sprintf(szString, _T("L1 Button"));
 				break;
 			case 0x4085:
 			case 0x4185:
 			case 0x4285:
-				_stprintf(szString, _T("R1 Button"));
+				sprintf(szString, _T("R1 Button"));
 				break;
 			// forgot these
 			case 0x4088:
 			case 0x4188:
 			case 0x4288:
-				_stprintf(szString, _T("L2 Button"));
+				sprintf(szString, _T("L2 Button"));
 				break;
 			case 0x408A:
 			case 0x418A:
 			case 0x428A:
-				_stprintf(szString, _T("R2 Button"));
+				sprintf(szString, _T("R2 Button"));
 				break;
 			case 0x408B:
 			case 0x418B:
 			case 0x428B:
-				_stprintf(szString, _T("L3 Button"));
+				sprintf(szString, _T("L3 Button"));
 				break;
 			case 0x408C:
 			case 0x418C:
 			case 0x428C:
-				_stprintf(szString, _T("R3 Button"));
+				sprintf(szString, _T("R3 Button"));
 				break;
 			 
 			}			
 #else
-			_stprintf(szString, _T("Joy %d Button %d"), nJoy, nCode & 0x7F);
+			sprintf(szString, _T("Joy %d Button %d"), nJoy, nCode & 0x7F);
 #endif
 			return szString;
 		}
 		if (nCode < 0x10) {
-			TCHAR szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
-			TCHAR szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
+			char szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
+			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
 			if (nCode < 4) {
-				_stprintf(szString, _T("Joy %d %s (%s %s)"), nJoy, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, _T("Joy %d %s (%s %s)"), nJoy, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
 			} else {
-				_stprintf(szString, _T("Joy %d %s %s"), nJoy, szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, _T("Joy %d %s %s"), nJoy, szAxis[nCode >> 1], szDir[nCode & 1]);
 			}
 			return szString;
 		}
 		if (nCode < 0x20) {
-			TCHAR szDir[4][16] = { _T("Left"), _T("Right"), _T("Up"), _T("Down") };
-			_stprintf(szString, _T("Joy %d POV-hat %d %s"), nJoy, (nCode & 0x0F) >> 2, szDir[nCode & 3]);
+			char szDir[4][16] = { _T("Left"), _T("Right"), _T("Up"), _T("Down") };
+			sprintf(szString, _T("Joy %d POV-hat %d %s"), nJoy, (nCode & 0x0F) >> 2, szDir[nCode & 3]);
 			return szString;
 		}
 	}
@@ -1179,17 +1186,17 @@ TCHAR* InputCodeDesc(int c)
 	}
 
 	if (szName[0]) {
-		_stprintf(szString, _T("%s"), szName);
+		sprintf(szString, _T("%s"), szName);
 	} else {
-		_stprintf(szString, _T("code 0x%.2X"), c);
+		sprintf(szString, _T("code 0x%.2X"), c);
 	}
 
 	return szString;
 }
 
-TCHAR* InpToDesc(struct GameInp* pgi)
+char* InpToDesc(struct GameInp* pgi)
 {
-	static TCHAR szInputName[64] = _T("");
+	static char szInputName[64] = _T("");
 
 	if (pgi->nInput == 0) {
 		return _T("");
@@ -1212,7 +1219,7 @@ TCHAR* InpToDesc(struct GameInp* pgi)
 		return InputCodeDesc(pgi->Input.Switch.nCode);
 	}
 	if (pgi->nInput == GIT_MOUSEAXIS) {
-		TCHAR nAxis = _T('?');
+		char nAxis = _T('?');
 		switch (pgi->Input.MouseAxis.nAxis) {
 			case 0:
 				nAxis = _T('X');
@@ -1224,12 +1231,12 @@ TCHAR* InpToDesc(struct GameInp* pgi)
 				nAxis = _T('Z');
 				break;
 		}
-		_stprintf(szInputName, _T("Mouse %i %c axis"), pgi->Input.MouseAxis.nMouse, nAxis);
+		sprintf(szInputName, _T("Mouse %i %c axis"), pgi->Input.MouseAxis.nMouse, nAxis);
 		return szInputName;
 	}
 	if (pgi->nInput & GIT_GROUP_JOYSTICK) {
-		TCHAR szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
-		TCHAR szRange[4][16] = { _T("unknown"), _T("full"), _T("negative"), _T("positive") };
+		char szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
+		char szRange[4][16] = { _T("unknown"), _T("full"), _T("negative"), _T("positive") };
 		int nRange = 0;
 		switch (pgi->nInput) {
 			case GIT_JOYAXIS_FULL:
@@ -1243,14 +1250,14 @@ TCHAR* InpToDesc(struct GameInp* pgi)
 				break;
 		}
 
-		_stprintf(szInputName, _T("Joy %d %s axis (%s range)"), pgi->Input.JoyAxis.nJoy, szAxis[pgi->Input.JoyAxis.nAxis], szRange[nRange]);
+		sprintf(szInputName, _T("Joy %d %s axis (%s range)"), pgi->Input.JoyAxis.nJoy, szAxis[pgi->Input.JoyAxis.nAxis], szRange[nRange]);
 		return szInputName;
 	}
 
 	return InpToString(pgi); // Just do the rest as they are in the config file
 }
 
-TCHAR* InpMacroToDesc(struct GameInp* pgi)
+char* InpMacroToDesc(struct GameInp* pgi)
 {
 	if (pgi->nInput & GIT_GROUP_MACRO) {
 		if (pgi->Macro.nMode) {
@@ -1264,7 +1271,7 @@ TCHAR* InpMacroToDesc(struct GameInp* pgi)
 // ---------------------------------------------------------------------------
 
 // Find the input number by info
-static unsigned int InputInfoToNum(TCHAR* szName)
+static unsigned int InputInfoToNum(char* szName)
 {
 	struct BurnInputInfo bii;
 	for (unsigned int i = 0; i < nGameInpCount; i++) {
@@ -1273,7 +1280,7 @@ static unsigned int InputInfoToNum(TCHAR* szName)
 			continue;
 		}
 
-		if (_tcsicmp(szName, bii.szInfo) == 0) {
+		if (strcasecmp(szName, bii.szInfo) == 0) {
 			return i;
 		}
 	}
@@ -1281,7 +1288,7 @@ static unsigned int InputInfoToNum(TCHAR* szName)
 }
 
 // Find the input number by name
-static unsigned int InputNameToNum(TCHAR* szName)
+static unsigned int InputNameToNum(char* szName)
 {
 	struct BurnInputInfo bii;
 	for (unsigned int i = 0; i < nGameInpCount; i++) {
@@ -1290,7 +1297,7 @@ static unsigned int InputNameToNum(TCHAR* szName)
 			continue;
 		}
 
-		if (_tcsicmp(szName, bii.szName) == 0) {
+		if (strcasecmp(szName, bii.szName) == 0) {
 			return i;
 		}
 	}
@@ -1298,7 +1305,7 @@ static unsigned int InputNameToNum(TCHAR* szName)
 }
 
 // Get the input name by number
-static TCHAR* InputNumToName(unsigned int i)
+static char* InputNumToName(unsigned int i)
 {
 	struct BurnInputInfo bii;
 	bii.szName = NULL;
@@ -1306,11 +1313,11 @@ static TCHAR* InputNumToName(unsigned int i)
 	if (bii.szName == NULL) {
 		return _T("unknown");
 	}
-	return (TCHAR *)bii.szName;
+	return (char *)bii.szName;
 }
 
 // Get the input info by number, added by regret
-static TCHAR* InputNumToInfo(unsigned int i)
+static char* InputNumToInfo(unsigned int i)
 {
 	struct BurnInputInfo bii;
 	bii.szName = NULL;
@@ -1318,15 +1325,15 @@ static TCHAR* InputNumToInfo(unsigned int i)
 	if (bii.szInfo == NULL) {
 		return _T("unknown");
 	}
-	return (TCHAR *)bii.szInfo;
+	return (char *)bii.szInfo;
 }
 
-static unsigned int MacroNameToNum(TCHAR* szName)
+static unsigned int MacroNameToNum(char* szName)
 {
 	struct GameInp* pgi = GameInp + nGameInpCount;
 	for (unsigned int i = 0; i < nMacroCount; i++, pgi++) {
 		if (pgi->nInput & GIT_GROUP_MACRO) {
-			if (_tcsicmp(szName, pgi->Macro.szName) == 0) {
+			if (strcasecmp(szName, pgi->Macro.szName) == 0) {
 				return i;
 			}
 		}
@@ -1398,10 +1405,10 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 	return 0;
 }
 
-static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
+static int AddCustomMacro(char* szValue, bool bOverWrite)
 {
-	TCHAR* szQuote = NULL;
-	TCHAR* szEnd = NULL;
+	char* szQuote = NULL;
+	char* szEnd = NULL;
 	if (quoteRead(&szQuote, &szEnd, szValue)) {
 		return 1;
 	}
@@ -1413,7 +1420,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 
 	for (unsigned int j = nGameInpCount; j < nGameInpCount + nMacroCount; j++) {
 		if (GameInp[j].nInput == GIT_MACRO_CUSTOM) {
-			if (labelCheck(szQuote, (TCHAR *)GameInp[j].Macro.szName)) {
+			if (labelCheck(szQuote, (char *)GameInp[j].Macro.szName)) {
 				nInput = j;
 				break;
 			}
@@ -1428,7 +1435,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 		bCreateNew = true;
 	}
 
-	_tcscpy(szQuote, GameInp[nInput].Macro.szName);
+	strcpy(szQuote, GameInp[nInput].Macro.szName);
 
 	if ((szValue = labelCheck(szEnd, _T("undefined"))) != NULL) {
 		nMode = 0;
@@ -1436,7 +1443,7 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 		if ((szValue = labelCheck(szEnd, _T("switch"))) != NULL) {
 
 			if (bOverWrite || GameInp[nInput].Macro.nMode == 0) {
-				GameInp[nInput].Macro.Switch.nCode = (unsigned short)_tcstol(szValue, &szValue, 0);
+				GameInp[nInput].Macro.Switch.nCode = (unsigned short)strtol(szValue, &szValue, 0);
 			}
 
 			nMode = 1;
@@ -1466,12 +1473,12 @@ static int AddCustomMacro(TCHAR* szValue, bool bOverWrite)
 					continue;
 				}
 
-				TCHAR* szString = labelCheck(szQuote, (TCHAR *)bii.szName);
+				char* szString = labelCheck(szQuote, (char *)bii.szName);
 				if (szString && szEnd) {
 					GameInp[nInput].Macro.pVal[i] = bii.pVal;
 					GameInp[nInput].Macro.nInput[i] = j;
 
-					GameInp[nInput].Macro.nVal[i] = (unsigned char)_tcstol(szEnd, &szValue, 0);
+					GameInp[nInput].Macro.nVal[i] = (unsigned char)strtol(szEnd, &szValue, 0);
 
 					nFound++;
 
@@ -1499,19 +1506,19 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 {
 	nAnalogSpeed = 0x0100;
 
-	FILE* h = _tfopen(lpszFile, _T("rt"));
+	FILE* h = fopen(lpszFile, "rt");
 	if (h == NULL) {
 		return 1;
 	}
 
-	TCHAR szLine[1024];
+	char szLine[1024];
 	int nFileVersion = 0;
 	unsigned int i;
 
 	// Go through each line of the config file and process inputs
-	while (_fgetts(szLine, sizeof(szLine), h)) {
-		TCHAR* szValue;
-		size_t nLen = _tcslen(szLine);
+	while (fgets(szLine, sizeof(szLine), h)) {
+		char* szValue;
+		size_t nLen = strlen(szLine);
 
 		// Get rid of the linefeed at the end
 		if (szLine[nLen - 1] == 10) {
@@ -1521,18 +1528,18 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 
 		szValue = labelCheck(szLine, _T("version"));
 		if (szValue) {
-			nFileVersion = _tcstol(szValue, NULL, 0);
+			nFileVersion = strtol(szValue, NULL, 0);
 		}
 		szValue = labelCheck(szLine, _T("analog"));
 		if (szValue) {
-			nAnalogSpeed = _tcstol(szValue, NULL, 0);
+			nAnalogSpeed = strtol(szValue, NULL, 0);
 		}
 
 		if (nConfigMinVersion <= nFileVersion && nFileVersion <= nBurnVer) {
 			szValue = labelCheck(szLine, _T("input"));
 			if (szValue) {
-				TCHAR* szQuote = NULL;
-				TCHAR* szEnd = NULL;
+				char* szQuote = NULL;
+				char* szEnd = NULL;
 				if (quoteRead(&szQuote, &szEnd, szValue)) {
 					continue;
 				}
@@ -1564,8 +1571,8 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 
 			szValue = labelCheck(szLine, _T("macro"));
 			if (szValue) {
-				TCHAR* szQuote = NULL;
-				TCHAR* szEnd = NULL;
+				char* szQuote = NULL;
+				char* szEnd = NULL;
 				if (quoteRead(&szQuote, &szEnd, szValue)) {
 					continue;
 				}
@@ -1658,27 +1665,27 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 		}
 
 		// save input info name instead, modified by regret
-		TCHAR* szName = NULL;
+		char* szName = NULL;
 		if (pgi->nInput == GIT_CONSTANT) {
 			szName = InputNumToName(i);
 		} else {
 			szName = InputNumToInfo(i);//InputNumToName(i);
 		}
 #if defined (_XBOX)
-		_ftprintf(h, _T("input  \"%S\" "), szName);
+		fprintf(h, _T("input  \"%S\" "), szName);
 #else
-		_ftprintf(h, _T("input  \"%s\" "), szName);
+		fprintf(h, _T("input  \"%s\" "), szName);
 #endif
 
-		int nPad = 16 - _tcslen(szName);
+		int nPad = 16 - strlen(szName);
 		for (int j = 0; j < nPad; j++) {
-			_ftprintf(h, _T(" "));
+			fprintf(h, _T(" "));
 		}
 
-		_ftprintf(h, _T("%s\n"), InpToString(GameInp + i));
+		fprintf(h, _T("%s\n"), InpToString(GameInp + i));
 	}
 
-	_ftprintf(h, _T("\n"));
+	fprintf(h, _T("\n"));
 
 	struct GameInp* pgi = GameInp + nGameInpCount;
 	for (unsigned int i = 0; i < nMacroCount; i++, pgi++) {
@@ -1687,10 +1694,10 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 		if (pgi->nInput & GIT_GROUP_MACRO) {
 			switch (pgi->nInput) {
 				case GIT_MACRO_AUTO:									// Auto-assigned macros
-					_ftprintf(h, _T("macro  \"%hs\" "), pgi->Macro.szName);
+					fprintf(h, _T("macro  \"%hs\" "), pgi->Macro.szName);
 					break;
 				case GIT_MACRO_CUSTOM:									// Custom macros
-					_ftprintf(h, _T("custom \"%hs\" "), pgi->Macro.szName);
+					fprintf(h, _T("custom \"%hs\" "), pgi->Macro.szName);
 					break;
 				default:												// Unknown -- ignore
 					continue;
@@ -1698,9 +1705,9 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 
 			nPad = 16 - strlen(pgi->Macro.szName);
 			for (int j = 0; j < nPad; j++) {
-				_ftprintf(h, _T(" "));
+				fprintf(h, _T(" "));
 			}
-			_ftprintf(h, _T("%s\n"), InpMacroToString(pgi));
+			fprintf(h, _T("%s\n"), InpMacroToString(pgi));
 		}
 	}
 
@@ -1710,10 +1717,10 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 // ---------------------------------------------------------------------------
 
 // Read a GameInp in
-int GameInpRead(TCHAR* szVal, bool bOverWrite)
+int GameInpRead(char* szVal, bool bOverWrite)
 {
-	TCHAR* szQuote = NULL;
-	TCHAR* szEnd = NULL;
+	char* szQuote = NULL;
+	char* szEnd = NULL;
 
 	int nRet = quoteRead(&szQuote, &szEnd, szVal);
 	if (nRet) {
@@ -1737,10 +1744,10 @@ int GameInpRead(TCHAR* szVal, bool bOverWrite)
 	return 0;
 }
 
-int GameInpMacroRead(TCHAR* szVal, bool bOverWrite)
+int GameInpMacroRead(char* szVal, bool bOverWrite)
 {
-	TCHAR* szQuote = NULL;
-	TCHAR* szEnd = NULL;
+	char* szQuote = NULL;
+	char* szEnd = NULL;
 
 	int nRet = quoteRead(&szQuote, &szEnd, szVal);
 	if (nRet) {
@@ -1758,7 +1765,7 @@ int GameInpMacroRead(TCHAR* szVal, bool bOverWrite)
 	return 0;
 }
 
-int GameInpCustomRead(TCHAR* szVal, bool bOverWrite)
+int GameInpCustomRead(char* szVal, bool bOverWrite)
 {
 	return AddCustomMacro(szVal, bOverWrite);
 }

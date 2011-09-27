@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include "cartridge.h"
 
-TCHAR* pBurnCartridgeFileExtFilter = NULL;
-int (*pBurnInsertCartridgeCallBack)(const TCHAR *) = NULL;
+char * pBurnCartridgeFileExtFilter = NULL;
+int (*pBurnInsertCartridgeCallBack)(const char *) = NULL;
 
 unsigned int BurnCartridgeGameLoaded = CARTRIDGE_NO_INIT;
 
-int BurnCartridgeGameInit(TCHAR* pExtFilter, int (*pInsertCartridgeCallBack)(const TCHAR *))
+int BurnCartridgeGameInit(char * pExtFilter, int (*pInsertCartridgeCallBack)(const char *))
 {
 	pBurnCartridgeFileExtFilter = pExtFilter;
 	pBurnInsertCartridgeCallBack = pInsertCartridgeCallBack;

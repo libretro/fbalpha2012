@@ -8,7 +8,8 @@
 #include "../lib/ticpp/ticpp.h"
 
 // ==> write clrmamepro xml dat, added by regret
-int write_xmlfile(const TCHAR* szFilename, FILE* file)
+#ifndef __LIBSNES__
+int write_xmlfile(const char* szFilename, FILE* file)
 {
 #ifndef SN_TARGET_PS3
 	try {
@@ -318,8 +319,11 @@ int write_xmlfile(const TCHAR* szFilename, FILE* file)
 
 	return 0;
 }
+#endif
+
 // <== write clrmamepro xml dat
 
+#ifndef __LIBSNES__
 int write_datfile(FILE* file)
 {
 	int nRet = 0;
@@ -575,13 +579,15 @@ int write_datfile(FILE* file)
 
 	return 0;
 }
+#endif
 
-int create_datfile(TCHAR* szFilename, int type)
+#ifndef __LIBSNES__
+int create_datfile(char* szFilename, int type)
 {
 	if (type == 1)
 		return write_xmlfile(szFilename, NULL);	// write clrmamepro xml dat
 
-	FILE* file = _tfopen(szFilename, _T("w"));
+	FILE* file = fopen(szFilename, "w");
 	if (!file)
 		return 1;
 
@@ -605,3 +611,4 @@ int create_datfile(TCHAR* szFilename, int type)
 
 	return ret;
 }
+#endif

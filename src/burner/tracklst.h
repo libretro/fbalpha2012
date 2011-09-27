@@ -8,7 +8,7 @@ extern bool bNoSect;
 void sendSoundCode(UINT16 nCode);
 
 int getTrackCode(int nSect, int nTrack);
-TCHAR* getTrackDesc(int nSect, int nTrack, bool bIsSect);
+char * getTrackDesc(int nSect, int nTrack, bool bIsSect);
 
 void playNextTrack();
 void playPreviousTrack();

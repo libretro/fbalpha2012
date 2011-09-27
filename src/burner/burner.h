@@ -4,6 +4,8 @@
 #ifndef BURNER_H
 #define BURNER_H
 
+#define MAX_PATH 260
+
 #if defined (_XBOX)
 #include <xtl.h>
 #include <xui.h>

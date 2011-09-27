@@ -1,16 +1,20 @@
 // Burner Config for Game file module
 #include "burner.h"
 
+#ifdef __LIBSNES__
+#include "../burn/ssnes-typedefs.h"
+#endif
+
 const int nConfigMinVersion = 0x020921;
 
-static TCHAR* GameConfigName()
+static char* GameConfigName()
 {
 	// Return the path of the config file for this game
-	static TCHAR szName[MAX_PATH];
+	static char szName[MAX_PATH];
 #ifdef _XBOX
-	_stprintf(szName, _T("game:\\config\\games\\%S.ini"), BurnDrvGetText(DRV_NAME));
+	sprintf(szName, "game:\\config\\games\\%S.ini", BurnDrvGetText(DRV_NAME));
 #else
-	_stprintf(szName, _T("/dev_hdd0/game/FBAN00000/USRDIR/config/games/%s.ini"), BurnDrvGetTextA(DRV_NAME));
+	sprintf(szName, "/dev_hdd0/game/FBAN00000/USRDIR/config/games/%s.ini", BurnDrvGetTextA(DRV_NAME));
 #endif
 	return szName;
 }
@@ -18,10 +22,10 @@ static TCHAR* GameConfigName()
 // Read in the config file for the game-specific inputs
 int ConfigGameLoad(bool bOverWrite)
 {
-	TCHAR szLine[MAX_PATH];
+	char szLine[MAX_PATH];
 	int nFileVersion = 0;
 
-	FILE* h = _tfopen(GameConfigName(), _T("rt"));
+	FILE* h = fopen(GameConfigName(), "rt");
 	if (h == NULL) {
 		return 1;
 	}
@@ -35,9 +39,9 @@ int ConfigGameLoad(bool bOverWrite)
 	}
 
 	// Go through each line of the config file and process inputs
-	while (_fgetts(szLine, sizeof(szLine), h)) {
-		TCHAR *szValue;
-		size_t nLen = _tcslen(szLine);
+	while (fgets(szLine, sizeof(szLine), h)) {
+		char *szValue;
+		size_t nLen = strlen(szLine);
 
 		// Get rid of the linefeed at the end
 		if (szLine[nLen - 1] == 10) {
@@ -45,42 +49,40 @@ int ConfigGameLoad(bool bOverWrite)
 			nLen--;
 		}
 
-		szValue = labelCheck(szLine, _T("version"));
+		szValue = labelCheck(szLine, "version");
 		if (szValue) {
-			nFileVersion = _tcstol(szValue, NULL, 0);
+			nFileVersion = strtol(szValue, NULL, 0);
 		}
 
 		if (bOverWrite) {
-			szValue = labelCheck(szLine, _T("analog"));
+			szValue = labelCheck(szLine, "analog");
 			if (szValue) {
-				nAnalogSpeed = _tcstol(szValue, NULL, 0);
+				nAnalogSpeed = strtol(szValue, NULL, 0);
 			}
-			szValue = labelCheck(szLine, _T("cpu"));
+			szValue = labelCheck(szLine, "cpu");
 			if (szValue) {
-				nBurnCPUSpeedAdjust = _tcstol(szValue, NULL, 0);
+				nBurnCPUSpeedAdjust = strtol(szValue, NULL, 0);
 			}
 #ifndef NO_AUTOFIRE
 			szValue = labelCheck(szLine, _T("autofire-delay"));
 			if (szValue) {
-				autofireDelay = _tcstol(szValue, NULL, 0);
+				autofireDelay = strtol(szValue, NULL, 0);
 			}
 #endif
 #if 0
 			szValue = labelCheck(szLine, _T("top"));
 			if (szValue) {
-				nScrnVisibleOffset[0] = _tcstol(szValue, NULL, 0);
-			}
-			szValue = labelCheck(szLine, _T("left"));
-			if (szValue) {
-				nScrnVisibleOffset[1] = _tcstol(szValue, NULL, 0);
+				nScrnVisibleOffset[0] = strtol(szValue, NULL, 0);
+			} szValue = labelCheck(szLine, _T("left")); if (szValue) {
+				nScrnVisibleOffset[1] = strtol(szValue, NULL, 0);
 			}
 			szValue = labelCheck(szLine, _T("bottom"));
 			if (szValue) {
-				nScrnVisibleOffset[2] = _tcstol(szValue, NULL, 0);
+				nScrnVisibleOffset[2] = strtol(szValue, NULL, 0);
 			}
 			szValue = labelCheck(szLine, _T("right"));
 			if (szValue) {
-				nScrnVisibleOffset[3] = _tcstol(szValue, NULL, 0);
+				nScrnVisibleOffset[3] = strtol(szValue, NULL, 0);
 			}
 #endif
 		}
@@ -118,40 +120,42 @@ int ConfigGameSave(bool bSave)
 		ConfigGameLoad(false);
 	}
 
-	FILE* h = _tfopen(GameConfigName(), _T("w+"));
+	FILE* h = fopen(GameConfigName(), _T("w+"));
 	if (h == NULL) {
 		return 1;
 	}
 
 	// Write title
-	_ftprintf(h, _T("// ") _T(APP_TITLE) _T(" v%s --- Config File for %s (%hs)\n\n"),
+	#ifndef __LIBSNES__
+	fprintf(h, _T("// ") _T(APP_TITLE) _T(" v%s --- Config File for %s (%hs)\n\n"),
 		szAppBurnVer, BurnDrvGetText(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME));
+	#endif
 
-	_ftprintf(h, _T("// --- Miscellaneous ----------------------------------------------------------\n\n"));
+	fprintf(h, "// --- Miscellaneous ----------------------------------------------------------\n\n");
 	// Write version number
-	_ftprintf(h, _T("version 0x%06X\n\n"), nBurnVer);
+	fprintf(h, "version 0x%06X\n\n", nBurnVer);
 	// Write speed for relative analog controls
-	_ftprintf(h, _T("analog  0x%04X\n"), nAnalogSpeed);
+	fprintf(h, "analog  0x%04X\n", nAnalogSpeed);
 	// Write CPU speed adjustment
-	_ftprintf(h, _T("cpu     0x%04X\n"), nBurnCPUSpeedAdjust);
+	fprintf(h, "cpu     0x%04X\n", nBurnCPUSpeedAdjust);
 
 	// Write autofire delay
 #ifndef NO_AUTOFIRE
-	_ftprintf(h, _T("\n"));
-	_ftprintf(h, _T("autofire-delay %d\n"), autofireDelay);
+	fprintf(h, "\n");
+	fprintf(h, "autofire-delay %d\n", autofireDelay);
 #endif
 
 #if 0
 	// Write screen visible size
-	_ftprintf(h, _T("\n"));
-	_ftprintf(h, _T("top     %d\n"), nScrnVisibleOffset[0]);
-	_ftprintf(h, _T("left    %d\n"), nScrnVisibleOffset[1]);
-	_ftprintf(h, _T("bottom  %d\n"), nScrnVisibleOffset[2]);
-	_ftprintf(h, _T("right   %d\n"), nScrnVisibleOffset[3]);
+	fprintf(h, _T("\n"));
+	fprintf(h, _T("top     %d\n"), nScrnVisibleOffset[0]);
+	fprintf(h, _T("left    %d\n"), nScrnVisibleOffset[1]);
+	fprintf(h, _T("bottom  %d\n"), nScrnVisibleOffset[2]);
+	fprintf(h, _T("right   %d\n"), nScrnVisibleOffset[3]);
 #endif
 
-	_ftprintf(h, _T("\n\n"));
-	_ftprintf(h, _T("// --- Inputs -----------------------------------------------------------------\n\n"));
+	fprintf(h, "\n\n");
+	fprintf(h, "// --- Inputs -----------------------------------------------------------------\n\n");
 
 	GameInpWrite(h);
 

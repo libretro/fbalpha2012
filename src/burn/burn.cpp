@@ -3,6 +3,8 @@
 #include <xtl.h>
 #include <xui.h>
 #include <xuiapp.h>
+#else
+#include "ssnes-typedefs.h"
 #endif
 
 #if defined (SN_TARGET_PS3)
@@ -16,19 +18,20 @@
 #include <stddef.h>
 #include <math.h>
 #include <sysutil/sysutil_sysparam.h>
-#include <wchar.h>
 #endif
+#include <wchar.h>
 
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#include "driverlist.h"
+#include "../generated/driverlist.h"
 #include "cheat.h"
 
+
 // filler function, used if the application is not printing debug messages
-static int __cdecl BurnbprintfFiller(int, TCHAR* , ...) { return 0; }
+static int __cdecl BurnbprintfFiller(int, char* , ...) { return 0; }
 // pointer to burner printing function
-int (__cdecl *bprintf)(int nStatus, TCHAR* szFormat, ...) = BurnbprintfFiller;
+int (__cdecl *bprintf)(int nStatus, char* szFormat, ...) = BurnbprintfFiller;
 
 // reinitialise gui screen
 void (__cdecl *BurnReinitScrn)() = NULL;
@@ -129,7 +132,7 @@ unsigned int BurnDrvGetIndexByNameA(const char* name)
 	unsigned int nOldSelect = nBurnDrvSelect;
 	for (unsigned int i = 0; i < nBurnDrvCount; i++) {
 		nBurnDrvSelect = i;
-		if (_stricmp(BurnDrvGetTextA(DRV_NAME), name) == 0) {
+		if (strcasecmp(BurnDrvGetTextA(DRV_NAME), name) == 0) {
 			ret = i;
 			break;
 		}
@@ -138,13 +141,13 @@ unsigned int BurnDrvGetIndexByNameA(const char* name)
 	return ret;
 }
 
-unsigned int BurnDrvGetIndexByName(const TCHAR* name)
+unsigned int BurnDrvGetIndexByName(const char* name)
 {
 	unsigned int ret = ~0U;
 	unsigned int nOldSelect = nBurnDrvSelect;
 	for (unsigned int i = 0; i < nBurnDrvCount; i++) {
 		nBurnDrvSelect = i;
-		if (_tcsicmp(BurnDrvGetText(DRV_NAME), name) == 0) {
+		if (strcasecmp(BurnDrvGetText(DRV_NAME), name) == 0) {
 			ret = i;
 			break;
 		}
@@ -225,8 +228,8 @@ int BurnStateMAMEScan(int nAction, int* pnMin);
 void BurnStateExit();
 int BurnStateInit();
 
-// Get the text fields for the driver in TCHARs
-extern "C" TCHAR* BurnDrvGetText(unsigned int i)
+// Get the text fields for the driver in chars
+extern "C" char* BurnDrvGetText(unsigned int i)
 {
 	const char* pszStringA = NULL;
 	wchar_t* pszStringW = NULL;
@@ -269,7 +272,7 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 		}
 
 		if (pszStringW && pszStringW[0])
-			return (TCHAR *)pszStringW;
+			return (char *)pszStringW;
 	}
 
 	if (i & DRV_UNICODEONLY)
@@ -344,7 +347,7 @@ extern "C" TCHAR* BurnDrvGetText(unsigned int i)
 	if (pszStringW && pszStringA && pszStringA[0])
 	{
 		if (mbstowcs(pszStringW, pszStringA, 256) != -1U)
-			return (TCHAR *)pszStringW;
+			return (char *)pszStringW;
 	}
 
 	return NULL;
@@ -531,9 +534,9 @@ extern "C" int BurnDrvInit()
 
 #if defined (FBA_DEBUG)
 	{
-		TCHAR szText[1024] = _T("");
-		TCHAR* pszPosition = szText;
-		TCHAR* pszName = BurnDrvGetText(DRV_FULLNAME);
+		char szText[1024] = "";
+		char* pszPosition = szText;
+		char* pszName = BurnDrvGetText(DRV_FULLNAME);
 		int nName = 1;
 
 		while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL)
@@ -663,7 +666,7 @@ extern "C" int BurnRecalcPal()
 // ---------------------------------------------------------------------------
 
 int (__cdecl *BurnExtProgressRangeCallback)(double fProgressRange) = NULL;
-int (__cdecl *BurnExtProgressUpdateCallback)(double fProgress, const TCHAR* pszText, bool bAbs) = NULL;
+int (__cdecl *BurnExtProgressUpdateCallback)(double fProgress, const char* pszText, bool bAbs) = NULL;
 
 int BurnSetProgressRange(double fProgressRange)
 {
@@ -673,7 +676,7 @@ int BurnSetProgressRange(double fProgressRange)
 	return 1;
 }
 
-int BurnUpdateProgress(double fProgress, const TCHAR* pszText, bool bAbs)
+int BurnUpdateProgress(double fProgress, const char* pszText, bool bAbs)
 {
 
 #if defined (_XBOX) || defined (SN_TARGET_PS3)
@@ -756,7 +759,7 @@ void BurnSwitch68kCore(bool useAsmCore, bool restore)
 
 // Application-defined rom loading function:
 int (__cdecl *BurnExtLoadRom)(unsigned char *Dest, int *pnWrote, int i) = NULL;
-int (__cdecl *BurnExtLoadOneRom)(const TCHAR* arcName, const TCHAR* fileName, void** Dest, int* pnWrote) = NULL;
+int (__cdecl *BurnExtLoadOneRom)(const char* arcName, const char* fileName, void** Dest, int* pnWrote) = NULL;
 
 // Application-defined colour conversion function
 static unsigned int __cdecl BurnHighColFiller(int, int, int, int) { return (unsigned int)(~0); }

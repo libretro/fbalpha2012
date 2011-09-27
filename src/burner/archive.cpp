@@ -30,16 +30,16 @@ static inline bool error(const char* error)
 
 // check if input name has 7z or zip file, the name will link with extension
 // return value: 0:zip; 1:7z; -1:none
-int archiveCheck(TCHAR* name, int zipOnly)
+int archiveCheck(char* name, int zipOnly)
 {
 	if (!name)
 		return ARC_NONE;
 
-	static TCHAR archiveName[MAX_PATH] = _T("");
+	static char archiveName[MAX_PATH] = "";
 	int ret = ARC_NONE;
 
 	// try zip first
-	_stprintf(archiveName, _T("%s.zip"), name);
+	sprintf(archiveName, "%s.zip", name);
 
 #if !defined(_WIN32)
 	static File_Extractor* fex_scan = NULL;
@@ -49,16 +49,16 @@ int archiveCheck(TCHAR* name, int zipOnly)
 
 	if (!error(err_scan)) {
 		ret = ARC_ZIP;
-		_tcscat(name, _T(".zip"));
+		strcat(name, ".zip");
 	} else {
 		if (!zipOnly) {
 			// try 7z
-			_stprintf(archiveName, _T("%s.7z"), name);
+			sprintf(archiveName, "%s.7z", name);
 
 			err_scan = fex_open(&fex_scan, archiveName);
 			if (!error(err_scan)) {
 				ret = ARC_7Z;
-				_tcscat(name, _T(".7z"));
+				strcat(name, ".7z");
 			}
 		}
 	}
@@ -70,14 +70,14 @@ int archiveCheck(TCHAR* name, int zipOnly)
 #else
 	if (fileExists(archiveName)) {
 		ret = ARC_ZIP;
-		_tcscat(name, _T(".zip"));
+		strcat(name, ".zip");
 	} else {
 		if (!zipOnly) {
 			// try 7z
-			_stprintf(archiveName, _T("%s.7z"), name);
+			sprintf(archiveName, "%s.7z", name);
 			if (fileExists(archiveName)) {
 				ret = ARC_ZIP;
-				_tcscat(name, _T(".zip"));
+				strcat(name, ".zip");
 			}
 		}
 	}
@@ -86,7 +86,7 @@ int archiveCheck(TCHAR* name, int zipOnly)
 	return ret;
 }
 
-int archiveOpen(const TCHAR* archive)
+int archiveOpen(const char* archive)
 {
 	if (!archive)
 		return 1;
@@ -240,7 +240,7 @@ int archiveLoadFile(unsigned char* dest, int nLen, int nEntry, int* wrote)
 	return 0;
 }
 
-int __cdecl archiveLoadOneFile(const TCHAR* arc, const TCHAR* file, void** dest, int* wrote)
+int __cdecl archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote)
 {
 	File_Extractor* fex_one = NULL;
 	fex_err_t err_one = fex_open(&fex_one, arc);

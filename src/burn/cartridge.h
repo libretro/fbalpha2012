@@ -13,10 +13,10 @@
 #define CARTRIDGE_GAME		3
 
 extern unsigned int BurnCartridgeGameLoaded;
-extern TCHAR* pBurnCartridgeFileExtFilter;
-extern int (*pBurnInsertCartridgeCallBack)(const TCHAR*);
+extern char * pBurnCartridgeFileExtFilter;
+extern int (*pBurnInsertCartridgeCallBack)(const char *);
 
-int BurnCartridgeGameInit(TCHAR* pExtFilter, int (*pInsertCartridgeCallBack)(const TCHAR*));
+int BurnCartridgeGameInit(char * pExtFilter, int (*pInsertCartridgeCallBack)(const char *));
 int BurnCartridgeGameExit();
 
 #ifdef __cplusplus

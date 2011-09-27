@@ -47,11 +47,8 @@ void setPauseModeScreen(bool bPause)
 	bRunPause = bPause;
 	bAltPause = bPause;
 
-	if (bPause) {
+	if (bPause)
 		audio.blank();		
-	} else {
-		GameInpCheckMouse();
-	}
 }
 
 void setPauseMode(bool bPause)
@@ -59,14 +56,8 @@ void setPauseMode(bool bPause)
 	bRunPause = bPause;
 	bAltPause = bPause;
 
-	if (bPause) {
-
+	if (bPause)
 		audio.blank();
- 
-	} else {
-		GameInpCheckMouse();
-	}
- 
 }
  
 
@@ -83,10 +74,6 @@ void simpleReinitScrn(const bool& reinitVid)
 {
 	VidReinit();
 }
-
-bool bLoading = false;
- 
-// <== switch fullscreen
 
 void __cdecl scrnReinit()
 {

@@ -32,8 +32,8 @@ static inline void VidSCpyImg32(unsigned char* dst, unsigned int dstPitch, unsig
 	// srcPitch and dstPitch are the number of garbage bytes after a scanline
 	register unsigned short lineSize = width << 2;
 
-   do{
-      height--;
+	do{
+		height--;
 		memcpy(dst, src, lineSize);
 		src += srcPitch;
 		dst += dstPitch;

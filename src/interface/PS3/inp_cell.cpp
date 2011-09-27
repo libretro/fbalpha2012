@@ -228,18 +228,6 @@ int CellinpState(int nCode)
 	return 0;
 }
  
-// Read one joystick axis
-int CellinpJoyAxis(int i, int nAxis)
-{	
-	return 0;
-}
-
-// Read one mouse axis
-int CellinpMouseAxis(int i, int nAxis)
-{
-
-}
-
 void doStretch(void)
 {
 	static uint64_t old_state;
@@ -279,7 +267,3 @@ void doStretch(void)
 
 	old_state = new_state;
 }
-
-// ----------------------------------------------------------------------------
-
-struct InputInOut InputInOutCellInput = { CellinpState, CellinpJoyAxis};

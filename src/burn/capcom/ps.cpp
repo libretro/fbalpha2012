@@ -28,9 +28,8 @@ int PsndInit()
 	nSyncPeriod = nCpsZ80Cycles / 32;
 
 	// Init PSound z80
-	if (PsndZInit()!= 0) {
+	if (PsndZInit()!= 0)
 		return 1;
-	}
 
 	// Init PSound mixing (not critical if it fails)
 	PsmInit();

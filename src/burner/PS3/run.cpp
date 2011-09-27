@@ -168,13 +168,9 @@ int RunMessageLoop(int argc, char **argv)
 
 					// RUN FRAME
 					nCurrentFrame++;
-
-					// GET INPUT
-					InputMake(); // get input
 					VidFrame();
-
-					bPrevPause  = 0;
-					bPrevDraw   = 1;
+					// GET INPUT
+					InputMake();
 #ifdef CELL_DEBUG_CONSOLE
 					cellConsolePoll();
 #endif

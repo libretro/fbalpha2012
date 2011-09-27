@@ -63,11 +63,6 @@ static int AppInit()
 	// Init the Burn library
 	BurnLibInit();
 
-	nVidSelect = VID_PSGL;
-
-	if (audio.select(audSelect))
-		audio.select("CellAudio");
-
 	// Build the ROM information
 
 	getAllRomsetInfo(); 

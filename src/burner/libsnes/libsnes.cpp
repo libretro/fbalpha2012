@@ -1,8 +1,5 @@
 #define MAX_PATH 260
 
-#define PUF_TYPE_ERROR 1
-#define PUF_TYPE_WARNING 2
-
 #define PUF_TYPE_ERROR			(1)
 #define PUF_TYPE_WARNING		(2)
 #define PUF_TYPE_INFO			(3)
@@ -84,7 +81,12 @@ static int RomDescribe(struct BurnRomInfo* pri)
 	return 0;
 }
 
-static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
+int BArchiveStatus()
+{
+   return true;
+}
+
+static int BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 {
 	if (i < 0 || i >= nRomCount || !RomFind)
 		return 1;
@@ -117,7 +119,7 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	else
 		sprintf(szText + strlen(szText), " %hs...", pszRomName);
 
-	ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
+	//ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
 
 #ifndef LOAD_OPT_ROM
 	// skip loading optional rom
@@ -366,11 +368,11 @@ int BArchiveOpen(bool bootApp)
 
 		for (int d = 0; d < DIRS_MAX; d++)
 		{
-			if (!strcasecmp(szAppRomPaths[d], ""))
-				continue; // skip empty path
+			//if (!strcasecmp(szAppRomPaths[d], ""))
+			//	continue; // skip empty path
 
 			// check the archived rom file, modified by regret
-			sprintf(szFullName, "%s%hs", szAppRomPaths[d], szName);
+			//sprintf(szFullName, "%s%hs", szAppRomPaths[d], szName);
 
 			checkvalue = archiveCheck(szFullName,  0  );
 			if (checkvalue == ARC_NONE)
@@ -422,7 +424,7 @@ int BArchiveOpen(bool bootApp)
 			if (RomFind[i].nState == STAT_OK)
 				continue;				// Already found this and it's okay
 
-			nFind = findRom(i, List, nListCount);
+			//nFind = findRom(i, List, nListCount);
 			if (nFind < 0)					// Couldn't find this rom at all
 				continue;
 

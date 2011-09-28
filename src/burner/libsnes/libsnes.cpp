@@ -28,7 +28,6 @@ static snes_input_state_t input_cb = NULL;
 static int nAudSampleRate = 48000;
 static int nAudSegCount = 6;
 static int nAudSegLen = 0;
-int16_t * pAudNextsound = NULL;
 int bDrvOkay = 0;
 static bool bInputOkay = false;
 static bool bAudOkay = false;
@@ -768,8 +767,10 @@ static int mediaInit()
 	{
 		VidInit(); // Reinit the video plugin
 
+		#if 0
 		if (bVidOkay && ((bRunPause && bAltPause) || !bDrvOkay))
 			VidFrame();
+		#endif
 	}
 
 	return 0;
@@ -1347,6 +1348,7 @@ static void fba_audio(int length)
 
 void snes_run(void)
 {
+	bAudPlaying = true;
 	fba_audio(AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
 	nCurrentFrame++;
 	VidFrame();
@@ -1377,6 +1379,7 @@ void snes_cheat_set(unsigned, bool, const char*)
 
 bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
+	pAudNextSound = (int16_t*)malloc(AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS * sizeof(int16_t));
 	return fba_init(g_rom_path);
 }
 

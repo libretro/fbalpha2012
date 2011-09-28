@@ -71,6 +71,10 @@ static int nListCount = 0;							// List of entries for current archive file
 static int nTotalSize = 0;
 static int nCurrentArc = -1;						// Archive which is currently open
 
+int ArcadeJoystick = 0;
+unsigned int JukeboxSoundCommand = 0;
+unsigned int JukeboxSoundLatch = 0;
+
 #define ARGB(r, g, b) ((r << 16) | (g << 8) | b)
 
 static int RomDescribe(struct BurnRomInfo* pri)

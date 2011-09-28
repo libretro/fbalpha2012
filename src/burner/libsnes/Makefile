@@ -36,15 +36,16 @@ INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURNER_DIR) -I$(FBA_BURNER_DIR)/generated -
 LIBS := -lz
 
 $(TARGET): $(OBJS)
-	$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
+	@echo "LD $@"
+	@$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
-	@$(CXX) -c -o $@ $< $(CXXFLAGS) $(INCDIRS)
 	@echo "CXX $<"
+	@$(CXX) -c -o $@ $< $(CXXFLAGS) $(INCDIRS)
 
 %.o: %.c
-	@$(CC) -c -o $@ $< $(CFLAGS) $(INCDIRS)
 	@echo "CC $<"
+	@$(CC) -c -o $@ $< $(CFLAGS) $(INCDIRS)
 
 clean:
 	rm -f $(TARGET)

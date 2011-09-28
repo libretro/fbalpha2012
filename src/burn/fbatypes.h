@@ -12,6 +12,7 @@
 #endif
 
 #ifdef SN_TARGET_PS3
+#include <stdint.h>
 typedef char  TCHAR;
 typedef int32_t HWND;
 typedef int32_t HFONT;

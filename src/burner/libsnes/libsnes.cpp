@@ -1338,17 +1338,17 @@ void snes_run(void)
 
 unsigned snes_serialize_size(void)
 {
-   return serialize_size;
+   return 0;
 }
 
 bool snes_serialize(uint8_t *data, unsigned size)
 {
-   //return CPUWriteState_libgba(data, size);
+   return false;
 }
 
 bool snes_unserialize(const uint8_t *data, unsigned size)
 {
-   //return CPUReadState_libgba(data, size);
+   return false;
 }
 
 void snes_cheat_reset(void)
@@ -1411,16 +1411,12 @@ bool snes_get_region(void)
 
 uint8_t *snes_get_memory_data(unsigned id)
 {
-   if (id != SNES_MEMORY_CARTRIDGE_RAM)
-      return 0;
+   return 0;
 }
 
 unsigned snes_get_memory_size(unsigned id)
 {
-   if (id != SNES_MEMORY_CARTRIDGE_RAM)
-      return 0;
-
-   return 0x10000;
+   return 0;
 }
 
 // Stubs

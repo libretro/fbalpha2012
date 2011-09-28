@@ -1174,6 +1174,7 @@ static int DoLibInit() // Do Init of Burn library driver
 	BArchiveOpen(false);
 
 	// If there is a problem with the romset, report it
+#if 0
 	switch (BArchiveStatus())
 	{
 		case BARC_STATUS_BADDATA:
@@ -1183,6 +1184,7 @@ static int DoLibInit() // Do Init of Burn library driver
 		case BARC_STATUS_ERROR:
 			break;
 	}
+#endif
 
 	nRet = BurnDrvInit();
 	BArchiveClose();
@@ -1236,6 +1238,7 @@ static int BurnerDrvInit(int nDrvNum, bool bRestore)
 	BurnReinitScrn = scrnReinit;
 
 	int nStatus = DoLibInit(); // Init the burn library's driver
+#if 0
 	if (nStatus)
 	{
 		if (nStatus & 2)
@@ -1243,6 +1246,7 @@ static int BurnerDrvInit(int nDrvNum, bool bRestore)
 
 		return 1;
 	}
+#endif
 
 	BurnExtLoadRom = DrvLoadRom;
 
@@ -1274,8 +1278,12 @@ static int directLoadGame(const char * name)
 	}
 	else
 	{
-		char * p = getBaseName(name);			// get game name
-		unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
+		//char * p = getBaseName(name);			// get game name
+		//unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
+      unsigned i = 0xffffffffu;
+      const char *drv = getenv("FBA_ROM");
+      if (drv)
+         i = BurnDrvGetIndexByNameA(drv);
 
 		if (i < nBurnDrvCount)
 		{
@@ -1300,7 +1308,7 @@ static int fba_init(const char *tmppath)
 
 	//BuildRomList();
 
-	directLoadGame(strdup(tmppath));
+	directLoadGame(tmppath);
 	mediaInit();
 	bVidOkay = bAudOkay = true;
 	//serialize_size = CPUWriteState_libgba(state_buf, 2000000);

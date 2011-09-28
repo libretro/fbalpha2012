@@ -103,7 +103,7 @@ static void set_oki_bank(int data)
 	*DrvOkiBank = data;
 	memcpy (MSM6295ROM, DrvSndROM + (data << 12), 0x40000);
 
-bprintf (PRINT_NORMAL, _T("%2.2x\n"), data);
+//bprintf (PRINT_NORMAL, _T("%2.2x\n"), data);
 }
 
 void __fastcall pirates_write_byte(unsigned int address, unsigned char data)

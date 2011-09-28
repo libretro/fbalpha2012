@@ -2,11 +2,7 @@
 // Based on MAME driver by Nicola Salmoria
 
 #include "tiles_generic.h"
-#ifdef __CELLOS_LV2__
 #include "k051649.h"
-#else
-#include "K051649.h"
-#endif
 #include "msm6295.h"
 
 static unsigned char *AllMem;

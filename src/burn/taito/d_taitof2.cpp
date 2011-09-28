@@ -4529,10 +4529,11 @@ void __fastcall Cameltry68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4554,10 +4555,11 @@ unsigned short __fastcall Cameltry68KReadWord(unsigned int a)
 			if (Temp <= 0x3ec && Temp > 0x80) Temp = 0x3ec;
 			return Temp;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -4617,10 +4619,11 @@ unsigned char __fastcall Deadconx68KReadByte(unsigned int a)
 		case 0xa00002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -4643,10 +4646,11 @@ void __fastcall Deadconx68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4702,10 +4706,11 @@ void __fastcall Deadconx68KWriteWord(unsigned int a, unsigned short d)
 			// ???
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4717,10 +4722,11 @@ unsigned char __fastcall Dinorex68KReadByte(unsigned int a)
 		case 0xa00002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -4745,10 +4751,11 @@ void __fastcall Dinorex68KWriteByte(unsigned int a, unsigned char d)
 			// nop
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4774,10 +4781,11 @@ void __fastcall Dinorex68KWriteWord(unsigned int a, unsigned short d)
 			// nop
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4789,10 +4797,11 @@ unsigned char __fastcall Dondokod68KReadByte(unsigned int a)
 		case 0x320002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -4814,10 +4823,11 @@ void __fastcall Dondokod68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4841,6 +4851,7 @@ void __fastcall Dondokod68KWriteWord(unsigned int a, unsigned short d)
 	TC0280GRDCtrlWordWrite_Map(0xa02000)
 	TC0360PRIHalfWordWrite_Map(0xb00000)
 
+	#if 0
 	switch (a) {
 		case 0x360000: {
 			//???
@@ -4851,6 +4862,7 @@ void __fastcall Dondokod68KWriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Driftout68KReadByte(unsigned int a)
@@ -4880,10 +4892,11 @@ void __fastcall Driftout68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4892,19 +4905,21 @@ unsigned short __fastcall Driftout68KReadWord(unsigned int a)
 	TC0510NIOHalfWordRead_Map(0xb00000)
 
 	switch (a) {
+		#if 0
 		case 0x200000: {
 			return 0;
 		}
-
+		#endif
 		case 0xb00018:
 		case 0xb0001a: {
 			//driftout_paddle_r
 			return 0xff;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -4917,6 +4932,7 @@ void __fastcall Driftout68KWriteWord(unsigned int a, unsigned short d)
 	TC0360PRIHalfWordSwapWrite_Map(0xa00000)
 	TC0510NIOHalfWordWrite_Map(0xb00000)
 
+	#if 0
 	switch (a) {
 		case 0xa00000: {
 			//???
@@ -4927,6 +4943,7 @@ void __fastcall Driftout68KWriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 void __fastcall Driveout68KWriteByte(unsigned int a, unsigned char d)
@@ -4950,10 +4967,11 @@ void __fastcall Driveout68KWriteByte(unsigned int a, unsigned char d)
 			}
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4984,10 +5002,11 @@ void __fastcall Finalb68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4999,10 +5018,11 @@ unsigned short __fastcall Finalb68KReadWord(unsigned int a)
 		case 0x200002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5021,10 +5041,11 @@ void __fastcall Finalb68KWriteWord(unsigned int a, unsigned short d)
 			TC0110PCRWordWrite(0, (a - 0x200000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5051,10 +5072,11 @@ void __fastcall Footchmp68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5088,10 +5110,11 @@ unsigned short __fastcall Footchmp68KReadWord(unsigned int a)
 		case 0x700010: {
 			return TaitoInput[4];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0xffff;
@@ -5133,10 +5156,11 @@ void __fastcall Footchmp68KWriteWord(unsigned int a, unsigned short d)
 			// ????
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5162,10 +5186,11 @@ unsigned char __fastcall Growl68KReadByte(unsigned int a)
 		case 0x508001: {
 			return TaitoInput[3];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5183,10 +5208,11 @@ void __fastcall Growl68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5212,10 +5238,11 @@ unsigned short __fastcall Growl68KReadWord(unsigned int a)
 		case 0x50c000: {
 			return TaitoInput[5];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5227,6 +5254,7 @@ void __fastcall Growl68KWriteWord(unsigned int a, unsigned short d)
 	TC0100SCNCtrlWordWrite_Map(0x820000)
 
 	switch (a) {
+		#if 0
 		case 0x300004: {
 			// coin write
 			return;
@@ -5236,7 +5264,7 @@ void __fastcall Growl68KWriteWord(unsigned int a, unsigned short d)
 			// watchdog
 			return;
 		}
-
+		#endif
 		case 0x500000:
 		case 0x500002:
 		case 0x500004:
@@ -5248,15 +5276,15 @@ void __fastcall Growl68KWriteWord(unsigned int a, unsigned short d)
 			TaitoF2SpriteBankWrite((a - 0x500000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0x504000: {
 			// nop
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5268,10 +5296,11 @@ unsigned char __fastcall Gunfront68KReadByte(unsigned int a)
 		case 0x320002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5291,7 +5320,7 @@ void __fastcall Gunfront68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0xa00000: {
 			// nop
 			return;
@@ -5300,6 +5329,7 @@ void __fastcall Gunfront68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5355,7 +5385,7 @@ void __fastcall Koshien68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x340000: {
 			//???
 			return;
@@ -5364,6 +5394,7 @@ void __fastcall Koshien68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5398,10 +5429,11 @@ void __fastcall Koshien68KWriteWord(unsigned int a, unsigned short d)
 			SpriteBankBuffered[7] = SpriteBankBuffered[6] + 0x400;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5432,10 +5464,11 @@ void __fastcall Liquidk68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5477,10 +5510,11 @@ unsigned char __fastcall Megablst68KReadByte(unsigned int a)
 		case 0x100002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5506,10 +5540,11 @@ void __fastcall Megablst68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5547,10 +5582,11 @@ unsigned char __fastcall Metalb68KReadByte(unsigned int a)
 		case 0x900002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5570,15 +5606,15 @@ void __fastcall Metalb68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0xa00000: {
 			//???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5599,22 +5635,22 @@ void __fastcall Metalb68KWriteWord(unsigned int a, unsigned short d)
 	TC0360PRIHalfWordWrite_Map(0x600000)
 	TC0510NIOHalfWordSwapWrite_Map(0x800000)
 
+	#if 0
 	switch (a) {
 		case 0x42000c:
 		case 0x42000e: {
 			//???
 			return;
 		}
-
 		case 0xa00000: {
 			//???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Mjnquest68KReadByte(unsigned int a)
@@ -5639,10 +5675,11 @@ unsigned char __fastcall Mjnquest68KReadByte(unsigned int a)
 		case 0x360002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5666,15 +5703,15 @@ void __fastcall Mjnquest68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x360005: {
 			//???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5691,10 +5728,11 @@ unsigned short __fastcall Mjnquest68KReadWord(unsigned int a)
 			}
 			return 0xff;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5735,10 +5773,11 @@ void __fastcall Mjnquest68KWriteWord(unsigned int a, unsigned short d)
 			TC0100SCNSetGfxBank(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5776,10 +5815,11 @@ unsigned char __fastcall Ninjak68KReadByte(unsigned int a)
 		case 0x400002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5807,10 +5847,11 @@ void __fastcall Ninjak68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5830,21 +5871,23 @@ void __fastcall Ninjak68KWriteWord(unsigned int a, unsigned short d)
 	TC0100SCNCtrlWordWrite_Map(0x820000)
 	TC0360PRIHalfWordWrite_Map(0xb00000)
 
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x300000:
 		case 0x300012:
 		case 0x300014:
 		case 0x300016:
 		case 0x300018: {
-			//???
-			return;
-		}
+				       //???
+				       return;
+			       }
 
 		case 0x380000: {
-			//watchdog
-			return;
-		}
-
+				       //watchdog
+				       return;
+			       }
+		#endif
 		case 0x600000:
 		case 0x600002:
 		case 0x600004:
@@ -5853,13 +5896,14 @@ void __fastcall Ninjak68KWriteWord(unsigned int a, unsigned short d)
 		case 0x60000a:
 		case 0x60000c:
 		case 0x60000e: {
-			TaitoF2SpriteBankWrite((a - 0x600000) >> 1, d);
-			return;
-		}
-
+				       TaitoF2SpriteBankWrite((a - 0x600000) >> 1, d);
+				       return;
+			       }
+#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
-		}
+				 bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
+			 }
+#endif
 	}
 }
 
@@ -5871,10 +5915,11 @@ unsigned char __fastcall Pulirula68KReadByte(unsigned int a)
 		case 0x200002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5894,10 +5939,11 @@ void __fastcall Pulirula68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -5919,16 +5965,17 @@ void __fastcall Pulirula68KWriteWord(unsigned int a, unsigned short d)
 	TC0360PRIHalfWordSwapWrite_Map(0xa00000)
 	TC0510NIOHalfWordWrite_Map(0xb00000)
 
+	#if 0
 	switch (a) {
 		case 0x500000: {
 			//???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Qcrayon68KReadByte(unsigned int a)
@@ -5939,10 +5986,11 @@ unsigned char __fastcall Qcrayon68KReadByte(unsigned int a)
 		case 0x500002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -5952,12 +6000,14 @@ void __fastcall Qcrayon68KWriteByte(unsigned int a, unsigned char d)
 {
 	TC0510NIOHalfWordWrite_Map(0xa00000)
 
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x200000: {
 			//???
 			return;
 		}
-
+		#endif
 		case 0x500000: {
 			TC0140SYTPortWrite(d);
 			return;
@@ -5967,10 +6017,11 @@ void __fastcall Qcrayon68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6006,10 +6057,11 @@ unsigned char __fastcall Qcrayon268KReadByte(unsigned int a)
 		case 0xa00002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6019,11 +6071,14 @@ void __fastcall Qcrayon268KWriteByte(unsigned int a, unsigned char d)
 {
 	TC0510NIOHalfWordWrite_Map(0x700000)
 
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x800000: {
 			//???
 			return;
 		}
+		#endif
 
 		case 0xa00000: {
 			TC0140SYTPortWrite(d);
@@ -6034,10 +6089,11 @@ void __fastcall Qcrayon268KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6073,10 +6129,11 @@ unsigned char __fastcall Qjinsei68KReadByte(unsigned int a)
 		case 0x200002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6096,10 +6153,11 @@ void __fastcall Qjinsei68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6120,6 +6178,7 @@ void __fastcall Qjinsei68KWriteWord(unsigned int a, unsigned short d)
 	TC0360PRIHalfWordWrite_Map(0xa00000)
 	TC0510NIOHalfWordWrite_Map(0xb00000)
 
+	#if 0
 	switch (a) {
 		case 0x500000: {
 			//nop
@@ -6130,6 +6189,7 @@ void __fastcall Qjinsei68KWriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Qtorimon68KReadByte(unsigned int a)
@@ -6140,10 +6200,11 @@ unsigned char __fastcall Qtorimon68KReadByte(unsigned int a)
 		case 0x600002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6163,10 +6224,11 @@ void __fastcall Qtorimon68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6176,10 +6238,11 @@ unsigned short __fastcall Qtorimon68KReadWord(unsigned int a)
 		case 0x200002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6198,10 +6261,11 @@ void __fastcall Qtorimon68KWriteWord(unsigned int a, unsigned short d)
 			TC0110PCRWordWrite(0, (a - 0x200000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6227,10 +6291,11 @@ unsigned char __fastcall Quizhq68KReadByte(unsigned int a)
 		case 0x580005: {
 			return TaitoInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6238,7 +6303,9 @@ unsigned char __fastcall Quizhq68KReadByte(unsigned int a)
 
 void __fastcall Quizhq68KWriteByte(unsigned int a, unsigned char d)
 {
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x500005: {
 			//coin write
 			return;
@@ -6253,6 +6320,7 @@ void __fastcall Quizhq68KWriteByte(unsigned int a, unsigned char d)
 			//nop
 			return;
 		}
+		#endif
 
 		case 0x600001: {
 			TC0140SYTPortWrite(d);
@@ -6263,10 +6331,11 @@ void __fastcall Quizhq68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6292,10 +6361,11 @@ unsigned short __fastcall Quizhq68KReadWord(unsigned int a)
 		case 0x580004: {
 			return TaitoInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6313,7 +6383,7 @@ void __fastcall Quizhq68KWriteWord(unsigned int a, unsigned short d)
 			TC0110PCRWordWrite(0, (a - 0x200000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0x680000: {
 			//nop
 			return;
@@ -6322,6 +6392,7 @@ void __fastcall Quizhq68KWriteWord(unsigned int a, unsigned short d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6352,10 +6423,11 @@ void __fastcall Qzchikyu68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6409,10 +6481,11 @@ void __fastcall Qzquest68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6465,10 +6538,11 @@ unsigned char __fastcall Solfigtr68KReadByte(unsigned int a)
 		case 0x400002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6476,11 +6550,14 @@ unsigned char __fastcall Solfigtr68KReadByte(unsigned int a)
 
 void __fastcall Solfigtr68KWriteByte(unsigned int a, unsigned char d)
 {
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x300005: {
 			//coin write
 			return;
 		}
+		#endif
 
 		case 0x400000: {
 			TC0140SYTPortWrite(d);
@@ -6491,7 +6568,7 @@ void __fastcall Solfigtr68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x504000: {
 			//nop
 			return;
@@ -6500,6 +6577,7 @@ void __fastcall Solfigtr68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6519,7 +6597,9 @@ void __fastcall Solfigtr68KWriteWord(unsigned int a, unsigned short d)
 	TC0100SCNCtrlWordWrite_Map(0x820000)
 	TC0360PRIHalfWordWrite_Map(0xb00000)
 
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x300006: {
 			//???
 			return;
@@ -6534,6 +6614,7 @@ void __fastcall Solfigtr68KWriteWord(unsigned int a, unsigned short d)
 			//watchdog
 			return;
 		}
+		#endif
 
 		case 0x500000:
 		case 0x500002:
@@ -6546,10 +6627,11 @@ void __fastcall Solfigtr68KWriteWord(unsigned int a, unsigned short d)
 			TaitoF2SpriteBankWrite((a - 0x500000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6561,10 +6643,11 @@ unsigned char __fastcall Ssi68KReadByte(unsigned int a)
 		case 0x400002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6584,7 +6667,7 @@ void __fastcall Ssi68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x500000: {
 			// nop
 			return;
@@ -6593,6 +6676,7 @@ void __fastcall Ssi68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6631,10 +6715,11 @@ unsigned char __fastcall Yesnoj68KReadByte(unsigned int a)
 		case 0xa00001: {
 			return TaitoInput[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6642,7 +6727,9 @@ unsigned char __fastcall Yesnoj68KReadByte(unsigned int a)
 
 void __fastcall Yesnoj68KWriteByte(unsigned int a, unsigned char d)
 {
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x700015:
 		case 0x70001b:
 		case 0x70001d:
@@ -6650,6 +6737,7 @@ void __fastcall Yesnoj68KWriteByte(unsigned int a, unsigned char d)
 			//???
 			return;
 		}
+		#endif
 
 		case 0x800000: {
 			TC0140SYTPortWrite(d);
@@ -6660,7 +6748,7 @@ void __fastcall Yesnoj68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x900003: {
 			//nop
 			return;
@@ -6669,6 +6757,7 @@ void __fastcall Yesnoj68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6688,10 +6777,11 @@ unsigned short __fastcall Yesnoj68KReadWord(unsigned int a)
 				return TaitoDip[1];
 			}
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6701,6 +6791,7 @@ void __fastcall Yesnoj68KWriteWord(unsigned int a, unsigned short d)
 {
 	TC0100SCNCtrlWordWrite_Map(0x520000)
 
+	#if 0
 	switch (a) {
 		case 0x900002:
 		case 0x900006:
@@ -6714,6 +6805,7 @@ void __fastcall Yesnoj68KWriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Yuyugogo68KReadByte(unsigned int a)
@@ -6724,10 +6816,11 @@ unsigned char __fastcall Yuyugogo68KReadByte(unsigned int a)
 		case 0x400002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6747,10 +6840,11 @@ void __fastcall Yuyugogo68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6787,24 +6881,26 @@ unsigned char __fastcall TaitoF2Z80Read(unsigned short a)
 		case 0xe002: {
 			return BurnYM2610Read(2);
 		}
+		#if 0
 
 		case 0xe200: {
 			// NOP
 			return 0;
 		}
+		#endif
 
 		case 0xe201: {
 			return TC0140SYTSlaveCommRead();
 		}
-
+		#if 0
 		case 0xea00: {
 			// NOP
 			return 0;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6868,10 +6964,11 @@ void __fastcall TaitoF2Z80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x4000, 0x7fff, 2, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6889,10 +6986,11 @@ unsigned char __fastcall CamltryaZ80Read(unsigned short a)
 		case 0xb000: {
 			return MSM6295ReadStatus(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6926,10 +7024,11 @@ void __fastcall CamltryaZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -6943,10 +7042,11 @@ unsigned char __fastcall DriveoutZ80Read(unsigned short a)
 		case 0xa000: {
 			return TaitoSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -6967,10 +7067,11 @@ void __fastcall DriveoutZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -9795,7 +9896,7 @@ static void PulirulaDraw()
 	RozPriority = (TC0360PRIRegs[8 + (RozPriority / 2)] >> 4 * (RozPriority & 1)) & 0x0f;
 	TC0280GRDBaseColour = (TC0360PRIRegs[1] & 0x3f) << 2;
 
-	bprintf(PRINT_NORMAL, _T("TCBL %x, Blend %x, Roz %x, RozBase %x, T0 %x, T1 %x, T2 %x, S0 %x, S1 %x, S2 %x, S3 %x\n"), TC0100SCNBottomLayer(), SpriteBlendMode, RozPriority, TC0280GRDBaseColour, TilePriority[0], TilePriority[1], TilePriority[2], SpritePriority[0], SpritePriority[1], SpritePriority[2], SpritePriority[3]);
+	//bprintf(PRINT_NORMAL, _T("TCBL %x, Blend %x, Roz %x, RozBase %x, T0 %x, T1 %x, T2 %x, S0 %x, S1 %x, S2 %x, S3 %x\n"), TC0100SCNBottomLayer(), SpriteBlendMode, RozPriority, TC0280GRDBaseColour, TilePriority[0], TilePriority[1], TilePriority[2], SpritePriority[0], SpritePriority[1], SpritePriority[2], SpritePriority[3]);
 
 	BurnTransferClear();
 	QzquestCalcPalette();

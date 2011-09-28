@@ -5,6 +5,10 @@
 #include "tiles_generic.h"
 #include "taito_ic.h"
 
+#ifdef __LIBSNES__
+#include "ssnes-typedefs.h"
+#endif
+
 unsigned char *TC0480SCPRam = NULL;
 static unsigned char *TC0480SCPChars;
 UINT16 TC0480SCPCtrl[0x18];
@@ -344,7 +348,7 @@ void TC0480SCPCtrlWordWrite(int Offset, UINT16 Data)
 		case 0x0f: {
 			// Double-width and flip stuff here			
 			TC0480SCPPriReg = Data;
-			if (Data & 0x40) bprintf(PRINT_NORMAL, _T("Flip\n"));	
+			//if (Data & 0x40) bprintf(PRINT_NORMAL, _T("Flip\n"));	
 			break;
 		}
 	}

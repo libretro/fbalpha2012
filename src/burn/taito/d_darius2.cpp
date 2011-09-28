@@ -410,10 +410,11 @@ unsigned short __fastcall Darius268K1ReadWord(unsigned int a)
 		case 0x360002: {
 			return TC0110PCRWordRead(2);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -480,17 +481,17 @@ void __fastcall Darius268K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1WordWrite(2, (a - 0x360000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0x340004:
 		case 0x350004:
 		case 0x360004: {
 			//nop
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -520,10 +521,11 @@ unsigned short __fastcall Darius268K2ReadWord(unsigned int a)
 		case 0x200000: {
 			return TC0220IOCPortRegRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -543,10 +545,12 @@ void __fastcall Darius268K2WriteWord(unsigned int a, unsigned short d)
 	}
 
 	switch (a) {
+		#if 0
 		case 0x210000: {
 			//???
 			return;
 		}
+		#endif
 
 		case 0x340000:
 		case 0x340002: {
@@ -565,17 +569,17 @@ void __fastcall Darius268K2WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1WordWrite(2, (a - 0x360000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0x340004:
 		case 0x350004:
 		case 0x360004: {
 			//nop
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -593,7 +597,7 @@ unsigned char __fastcall Darius2Z80Read(unsigned short a)
 		case 0xe201: {
 			return TC0140SYTSlaveCommRead();
 		}
-
+		#if 0
 		case 0xea00: {
 			// NOP
 			return 0;
@@ -602,6 +606,7 @@ unsigned char __fastcall Darius2Z80Read(unsigned short a)
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -639,7 +644,7 @@ void __fastcall Darius2Z80Write(unsigned short a, unsigned char d)
 			TC0140SYTSlaveCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0xe400:
 		case 0xe401:
 		case 0xe402:
@@ -662,17 +667,18 @@ void __fastcall Darius2Z80Write(unsigned short a, unsigned char d)
 			//nop
 			return;
 		}
-
+		#endif
 		case 0xf200: {
 			TaitoZ80Bank = (d - 1) & 7;
 			ZetMapArea(0x4000, 0x7fff, 0, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			ZetMapArea(0x4000, 0x7fff, 2, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

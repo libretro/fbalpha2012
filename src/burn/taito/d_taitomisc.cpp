@@ -1531,10 +1531,11 @@ unsigned char __fastcall Darius68K1ReadByte(unsigned int a)
 		case 0xc00011: {
 			return TaitoDip[0];
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 	
 	return 0;
@@ -1542,11 +1543,13 @@ unsigned char __fastcall Darius68K1ReadByte(unsigned int a)
 
 void __fastcall Darius68K1WriteByte(unsigned int a, unsigned char d)
 {
+	#if 0
 	switch (a) {
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned short __fastcall Darius68K1ReadWord(unsigned int a)
@@ -1571,10 +1574,11 @@ unsigned short __fastcall Darius68K1ReadWord(unsigned int a)
 		case 0xc0000e: {
 			return DariusCoinWord;
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 	
 	return 0;
@@ -1644,46 +1648,54 @@ void __fastcall Darius68K1WriteWord(unsigned int a, unsigned short d)
 			//???
 			return;
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall Darius68K2ReadByte(unsigned int a)
 {
+	#if 0
 	switch (a) {
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read byte => %06X\n"), a);
 		}
 	}
+	#endif
 	
 	return 0;
 }
 
 void __fastcall Darius68K2WriteByte(unsigned int a, unsigned char d)
 {
+	#if 0
 	switch (a) {
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write byte => %06X, %02X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned short __fastcall Darius68K2ReadWord(unsigned int a)
 {
+	#if 0
 	switch (a) {
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
 	}
+	#endif
 	
 	return 0;
 }
 
 void __fastcall Darius68K2WriteWord(unsigned int a, unsigned short d)
 {
+	#if 0
 	switch (a) {
 		case 0xc00050: {
 			//nop
@@ -1694,6 +1706,7 @@ void __fastcall Darius68K2WriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall Opwolf68KReadByte(unsigned int a)
@@ -2208,10 +2221,11 @@ unsigned char __fastcall DariusZ80Read(unsigned short a)
 		case 0xb001: {
 			return TC0140SYTSlaveCommRead();
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2291,10 +2305,11 @@ void __fastcall DariusZ80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x0000, 0x7fff, 2, TaitoZ80Rom1 + 0x10000 + (TaitoZ80Bank * 0x8000));
 			return;
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2316,10 +2331,11 @@ unsigned char __fastcall DariusZ802ReadPort(unsigned short a)
 			//???
 			return 0;
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2345,10 +2361,11 @@ void __fastcall DariusZ802WritePort(unsigned short a, unsigned char d)
 			MSM5205ResetWrite(0, !(d & 0x20));
 			return;
 		}
-		
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

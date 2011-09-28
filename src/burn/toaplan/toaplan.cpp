@@ -54,7 +54,7 @@ int ToaLoadGP9001Tiles(unsigned char* pDest, int nStart, int nNumFiles, int nROM
 		BurnLoadRom(pDest + (i * 2 * nROMSize / nNumFiles) + 1, nStart + (nNumFiles >> 1) + i, 2);
 	}
 
-	BurnUpdateProgress(0.0, _T("Decoding graphics..."), 0);
+	BurnUpdateProgress(0.0, "Decoding graphics...", 0);
 
 	if (bSwap) {
 		nSwap = 2;

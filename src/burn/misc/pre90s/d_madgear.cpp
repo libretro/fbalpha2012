@@ -595,10 +595,11 @@ unsigned char __fastcall Madgear68KReadByte(unsigned int a)
 		case 0xfc4006: {
 			return 0xff - DrvInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -607,10 +608,12 @@ unsigned char __fastcall Madgear68KReadByte(unsigned int a)
 void __fastcall Madgear68KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0xfc4000: {
 			// flip
 			return;
 		}
+		#endif
 
 		case 0xfc4002: {
 			DrvSoundLatch = d & 0xff;
@@ -636,16 +639,16 @@ void __fastcall Madgear68KWriteWord(unsigned int a, unsigned short d)
 			DrvBgScrollX = d & 0x3ff;
 			return;
 		}
-
+		#if 0
 		case 0xfd0008:
 		case 0xfd000e: {
 			// ???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -663,10 +666,11 @@ unsigned char __fastcall MadgearZ80Read(unsigned short a)
 		case 0xf006: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -706,29 +710,32 @@ void __fastcall MadgearZ80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + 0x8000 + DrvZ80RomBank * 0x4000 );
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 void __fastcall Lastduel68KWriteByte(unsigned int a, unsigned char d)
 {
 	switch (a) {
+		#if 0
 		case 0xfc4001: {
 			// flip
 			return;
 		}
-
+		#endif
 		case 0xfc4003: {
 			DrvSoundLatch = d & 0xff;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -750,10 +757,11 @@ unsigned short __fastcall Lastduel68KReadWord(unsigned int a)
 		case 0xfc4006: {
 			return DrvDip[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read Word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -762,11 +770,13 @@ unsigned short __fastcall Lastduel68KReadWord(unsigned int a)
 void __fastcall Lastduel68KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0xfc0000:
 		case 0xfc0002: {
 			// NOP
 			return;
 		}
+		#endif
 
 		case 0xfc8000: {
 			DrvFgScrollY = d & 0x1ff;
@@ -787,7 +797,7 @@ void __fastcall Lastduel68KWriteWord(unsigned int a, unsigned short d)
 			DrvBgScrollX = d & 0x3ff;
 			return;
 		}
-
+		#if 0
 		case 0xfc8008:
 		case 0xfc800e: {
 			// ???
@@ -797,6 +807,7 @@ void __fastcall Lastduel68KWriteWord(unsigned int a, unsigned short d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -814,10 +825,11 @@ unsigned char __fastcall LastduelZ80Read(unsigned short a)
 		case 0xf800: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -845,10 +857,11 @@ void __fastcall LastduelZ80Write(unsigned short a, unsigned char d)
 			BurnYM2203Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

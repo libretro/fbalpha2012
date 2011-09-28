@@ -1279,9 +1279,9 @@ static void tmp68301_update_timer( int i )
 			tmp68301_timer[i] = (int) (M68K_CYCS / duration);
 			//tmp68301_timer_counter[i] = 0;
 			//bprintf(PRINT_NORMAL, _T("Tmp68301: update timer #%d duration to %d (%8.3f)\n"), i, tmp68301_timer[i], duration);
-		} else
+		}// else
 			//logerror("CPU #0 PC %06X: TMP68301 error, timer %d duration is 0\n",activecpu_get_pc(),i);
-			bprintf(PRINT_ERROR, _T("Tmp68301: error timer %d duration is 0\n"), i, TCR, MAX1, MAX2);
+			//bprintf(PRINT_ERROR, _T("Tmp68301: error timer %d duration is 0\n"), i, TCR, MAX1, MAX2);
 	}
 }
 
@@ -1410,9 +1410,11 @@ void __fastcall grdiansWriteByte(unsigned int sekAddress, unsigned char byteValu
 void __fastcall grdiansWriteWord(unsigned int sekAddress, unsigned short wordValue)
 {
 	switch (sekAddress) {
+		#if 0
 		case 0x800000:
 			//bprintf(PRINT_NORMAL, _T("lockout 0x%04x\n"), wordValue);
 			break;
+		#endif
 
 		case 0xE00010:
 		case 0xE00012:
@@ -1434,7 +1436,7 @@ void __fastcall grdiansWriteWord(unsigned int sekAddress, unsigned short wordVal
 
 unsigned char __fastcall setaSoundRegReadByte(unsigned int sekAddress)
 {
-	bprintf(PRINT_NORMAL, _T("x1-010 to read byte value of location %x\n"), sekAddress);
+	//bprintf(PRINT_NORMAL, _T("x1-010 to read byte value of location %x\n"), sekAddress);
 	return 0;
 }
 
@@ -1491,7 +1493,7 @@ void __fastcall setaSoundRegWriteWord(unsigned int sekAddress, unsigned short wo
 
 void __fastcall grdiansPaletteWriteByte(unsigned int sekAddress, unsigned char byteValue)
 {
-	bprintf(PRINT_NORMAL, _T("Pal to write byte value %x to location %x\n"), byteValue, sekAddress);
+	//bprintf(PRINT_NORMAL, _T("Pal to write byte value %x to location %x\n"), byteValue, sekAddress);
 }
 
 void __fastcall grdiansPaletteWriteWord(unsigned int sekAddress, unsigned short wordValue)
@@ -2159,8 +2161,7 @@ unsigned short __fastcall pzlbowlReadWord(unsigned int sekAddress)
 			/*  The game checks for a specific value read from the ROM region.
     			The offset to use is stored in RAM at address 0x20BA16 */
 			unsigned int address = (*(unsigned short *)(Ram68K + 0x00ba16) << 16) | *(unsigned short *)(Ram68K + 0x00ba18);
-			bprintf(PRINT_NORMAL, _T("pzlbowl Protection read address %08x [%02x %02x %02x %02x]\n"), address,
-			        Rom68K[ address - 2 ], Rom68K[ address - 1 ], Rom68K[ address - 0 ], Rom68K[ address + 1 ]);
+			//bprintf(PRINT_NORMAL, _T("pzlbowl Protection read address %08x [%02x %02x %02x %02x]\n"), address, Rom68K[ address - 2 ], Rom68K[ address - 1 ], Rom68K[ address - 0 ], Rom68K[ address + 1 ]);
 			return Rom68K[ address - 2 ]; }
 //		default:
 //			bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %x\n"), sekAddress);
@@ -2191,11 +2192,13 @@ void __fastcall pzlbowlWriteWord(unsigned int sekAddress, unsigned short wordVal
 		case 0x40030E:
 			x1010_sound_bank_w( (sekAddress & 0xf) >> 1, wordValue );
 			break;
+			#if 0
 		case 0x500004:
 			//bprintf(PRINT_NORMAL, _T("Coin Counter %x\n"), wordValue);
 			break;
 //		default:
 //			bprintf(PRINT_NORMAL, _T("Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
+		#endif
 	}
 }
 
@@ -2335,11 +2338,13 @@ void __fastcall penbrosWriteWord(unsigned int sekAddress, unsigned short wordVal
 		case 0x50030E:
 			x1010_sound_bank_w( (sekAddress & 0xf) >> 1, wordValue );
 			break;
+		#if 0
 		case 0x600004:
 			//bprintf(PRINT_NORMAL, _T("Coin Counter %x\n"), wordValue);
 			break;
 //		default:
 //			bprintf(PRINT_NORMAL, _T("Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
+		#endif
 	}
 }
 

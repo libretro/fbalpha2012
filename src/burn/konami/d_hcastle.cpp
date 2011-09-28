@@ -4,11 +4,7 @@
 #include "tiles_generic.h"
 #include "konami_intf.h"
 #include "burn_ym3812.h"
-#ifdef __CELLOS_LV2__
 #include "../k051649.h"
-#else
-#include "K051649.h"
-#endif
 #include "k007232.h"
 
 static unsigned char *AllMem;

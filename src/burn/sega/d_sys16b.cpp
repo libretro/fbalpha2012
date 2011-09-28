@@ -4120,7 +4120,7 @@ unsigned char __fastcall AtomicpReadByte(unsigned int a)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 	bprintf(PRINT_NORMAL, _T("68000 Read Byte -> 0x%06X\n"), a);
 #endif
 
@@ -4173,7 +4173,7 @@ void __fastcall AtomicpWriteByte(unsigned int a, unsigned char d)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 	bprintf(PRINT_NORMAL, _T("68000 Write Byte -> 0x%06X, 0x%02X\n"), a, d);
 #endif
 }

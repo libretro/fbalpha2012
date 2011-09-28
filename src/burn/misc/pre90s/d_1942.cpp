@@ -419,10 +419,11 @@ unsigned char __fastcall Drv1942Read1(unsigned short a)
 		case 0xc004: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -470,10 +471,11 @@ void __fastcall Drv1942Write1(unsigned short a, unsigned char d)
 			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom1 + 0x10000 + DrvRomBank * 0x4000 );
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -483,10 +485,11 @@ unsigned char __fastcall Drv1942Read2(unsigned short a)
 		case 0x6000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -514,10 +517,11 @@ void __fastcall Drv1942Write2(unsigned short a, unsigned char d)
 			AY8910Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

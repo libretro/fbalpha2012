@@ -663,10 +663,11 @@ unsigned char __fastcall Ddragon368KReadByte(unsigned int a)
 		case 0x100007: {
 			return 0xff - DrvInput[3];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -684,10 +685,11 @@ void __fastcall Ddragon368KWriteByte(unsigned int a, unsigned char d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -701,10 +703,11 @@ unsigned short __fastcall Ddragon368KReadWord(unsigned int a)
 		case 0x100004: {
 			return (DrvDip[1] << 8) | DrvDip[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -713,11 +716,13 @@ unsigned short __fastcall Ddragon368KReadWord(unsigned int a)
 void __fastcall Ddragon368KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0x000004:
 		case 0x000006: {
 			// ???
 			return;
 		}
+		#endif
 
 		case 0x0c0000: {
 			DrvFgScrollX = d & 0x1ff;
@@ -738,10 +743,11 @@ void __fastcall Ddragon368KWriteWord(unsigned int a, unsigned short d)
 			DrvBgScrollY = d & 0x1ff;
 			return;
 		}
-
+		#if 0
 		case 0x0c0008: {
 			return;
 		}
+		#endif
 
 		case 0x0c000c: {
 			DrvBgTileBase = d & 0x1ff;
@@ -762,7 +768,7 @@ void __fastcall Ddragon368KWriteWord(unsigned int a, unsigned short d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		case 0x100004:
 		case 0x100006:
 		case 0x100008: {
@@ -773,6 +779,7 @@ void __fastcall Ddragon368KWriteWord(unsigned int a, unsigned short d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -798,10 +805,11 @@ unsigned char __fastcall Ddragon3b68KReadByte(unsigned int a)
 		case 0x180005: {
 			return 0xff - DrvInput[3];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -819,10 +827,11 @@ void __fastcall Ddragon3b68KWriteByte(unsigned int a, unsigned char d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -840,10 +849,11 @@ unsigned short __fastcall Ddragon3b68KReadWord(unsigned int a)
 		case 0x180006: {
 			return (DrvDip[3] << 8) | 0xff;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -852,11 +862,13 @@ unsigned short __fastcall Ddragon3b68KReadWord(unsigned int a)
 void __fastcall Ddragon3b68KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0x000004:
 		case 0x000006: {
 			// ???
 			return;
 		}
+		#endif
 
 		case 0x0c0000: {
 			DrvFgScrollX = d & 0x1ff;
@@ -877,10 +889,11 @@ void __fastcall Ddragon3b68KWriteWord(unsigned int a, unsigned short d)
 			DrvBgScrollY = d & 0x1ff;
 			return;
 		}
-
+		#if 0
 		case 0x0c0008: {
 			return;
 		}
+		#endif
 
 		case 0x0c000c: {
 			DrvBgTileBase = d & 0x1ff;
@@ -901,17 +914,17 @@ void __fastcall Ddragon3b68KWriteWord(unsigned int a, unsigned short d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		case 0x140004:
 		case 0x140006:
 		case 0x140008: {
 			// ???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -929,10 +942,11 @@ unsigned char __fastcall Ddragon3Z80Read(unsigned short a)
 		case 0xe000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -961,10 +975,11 @@ void __fastcall Ddragon3Z80Write(unsigned short a, unsigned char d)
 			memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -991,10 +1006,11 @@ unsigned char __fastcall Ctribeb68KReadByte(unsigned int a)
 		case 0x180005: {
 			return 0xff - DrvInput[3];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1012,10 +1028,11 @@ void __fastcall Ctribeb68KWriteByte(unsigned int a, unsigned char d)
 			DrvVReg = d;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1038,10 +1055,11 @@ unsigned short __fastcall Ctribeb68KReadWord(unsigned int a)
 		case 0x180006: {
 			return (DrvDip[3] << 8) | 0xff;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1069,10 +1087,11 @@ void __fastcall Ctribeb68KWriteWord(unsigned int a, unsigned short d)
 			DrvBgScrollY = d & 0x1ff;
 			return;
 		}
-
+		#if 0
 		case 0x0c0008: {
 			return;
 		}
+		#endif
 
 		case 0x0c000c: {
 			DrvBgTileBase = d & 0x1ff;
@@ -1093,17 +1112,17 @@ void __fastcall Ctribeb68KWriteWord(unsigned int a, unsigned short d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		case 0x140004:
 		case 0x140006:
 		case 0x140008: {
 			// ???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1121,10 +1140,11 @@ unsigned char __fastcall CtribeZ80Read(unsigned short a)
 		case 0xa000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1147,10 +1167,11 @@ void __fastcall CtribeZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

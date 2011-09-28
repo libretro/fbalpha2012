@@ -676,14 +676,15 @@ unsigned char DrvGngM6809ReadByte(unsigned short Address)
 		case 0x3004: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		case 0x3c00: {
 			// nop
 			return 0;
 		}
+		#endif
 	}
 
-	bprintf(PRINT_NORMAL, _T("M6809 Read Byte -> %04X\n"), Address);
+	//bprintf(PRINT_NORMAL, _T("M6809 Read Byte -> %04X\n"), Address);
 
 	return 0;
 }
@@ -716,7 +717,7 @@ void DrvGngM6809WriteByte(unsigned short Address, unsigned char Data)
 			DrvBgScrollY[1] = Data;
 			return;
 		}
-
+		#if 0
 		case 0x3c00: {
 			// nop
 			return;
@@ -731,6 +732,7 @@ void DrvGngM6809WriteByte(unsigned short Address, unsigned char Data)
 			// ???
 			return;
 		}
+		#endif
 
 		case 0x3e00: {
 			DrvRomBank = Data & 3;
@@ -744,7 +746,7 @@ void DrvGngM6809WriteByte(unsigned short Address, unsigned char Data)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("M6809 Write Byte -> %04X, %02X\n"), Address, Data);
+	//bprintf(PRINT_NORMAL, _T("M6809 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 unsigned char __fastcall DrvGngZ80Read(unsigned short a)
@@ -753,10 +755,11 @@ unsigned char __fastcall DrvGngZ80Read(unsigned short a)
 		case 0xc800: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -784,10 +787,11 @@ void __fastcall DrvGngZ80Write(unsigned short a, unsigned char d)
 			BurnYM2203Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

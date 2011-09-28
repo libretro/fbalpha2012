@@ -622,10 +622,11 @@ unsigned char RenegadeReadByte(unsigned short Address)
 		case 0x3805: {
 			return mcu_reset_r();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6502 Read Byte %04X\n"), Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -651,11 +652,12 @@ void RenegadeWriteByte(unsigned short Address, unsigned char Data)
 			M6809Close();
 			return;
 		}
-
+		#if 0
 		case 0x3803: {
 			// flipscreen
 			return;
 		}
+		#endif
 
 		case 0x3804: {
 			mcu_w(Data);
@@ -667,7 +669,7 @@ void RenegadeWriteByte(unsigned short Address, unsigned char Data)
 			m6502MapMemory(DrvM6502Rom + 0x8000 + (DrvRomBank * 0x4000), 0x4000, 0x7fff, M6502_ROM);
 			return;
 		}
-
+		#if 0
 		case 0x3806: {
 			// nop
 			return;
@@ -677,10 +679,10 @@ void RenegadeWriteByte(unsigned short Address, unsigned char Data)
 			// coin counter
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6502 Write Byte %04X, %02X\n"), Address, Data);
 		}
+		#endif
 	}
 }
 
@@ -690,10 +692,11 @@ unsigned char RenegadeM6809ReadByte(unsigned short Address)
 		case 0x1000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6809 Read Byte %04X\n"), Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -727,10 +730,12 @@ static WRITE8_HANDLER( adpcm_play_w )
 void RenegadeM6809WriteByte(unsigned short Address, unsigned char Data)
 {
 	switch (Address) {
+		#if 0
 		case 0x1800: {
 			// nop???
 			return;
 		}
+		#endif
 
 		case 0x2000: {
 			int Offset, Length;
@@ -758,15 +763,15 @@ void RenegadeM6809WriteByte(unsigned short Address, unsigned char Data)
 			BurnYM3526Write(1, Data);
 			return;
 		}
-
+		#if 0
 		case 0x3000: {
 			// nop???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6809 Write Byte %04X, %02X\n"), Address, Data);
 		}
+		#endif
 	}
 }
 

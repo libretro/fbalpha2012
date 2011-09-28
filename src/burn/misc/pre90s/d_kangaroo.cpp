@@ -211,7 +211,7 @@ void __fastcall kangaroo_main_write(unsigned short address, unsigned char data)
 		return;
 	}
 
-	if (address > 0x5fff) bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x wm\n"), address, data);
+	//if (address > 0x5fff) bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x wm\n"), address, data);
 
 	return;
 }
@@ -265,7 +265,7 @@ unsigned char __fastcall kangaroo_main_read(unsigned short address)
 			return ++kangaroo_clock & 0x0f;
 	}
 
-	bprintf (PRINT_NORMAL, _T("%4.4x, rm\n"), address);
+	//bprintf (PRINT_NORMAL, _T("%4.4x, rm\n"), address);
 
 	return 0;
 }
@@ -278,7 +278,7 @@ unsigned char __fastcall kangaroo_sound_read(unsigned short address)
 			return soundlatch;
 	}
 
-	bprintf (PRINT_NORMAL, _T("%4.4x, rs\n"), address);
+	//bprintf (PRINT_NORMAL, _T("%4.4x, rs\n"), address);
 
 	return 0;
 }
@@ -296,7 +296,7 @@ void __fastcall kangaroo_sound_write(unsigned short address, unsigned char data)
 			return;
 	}
 
-	bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x ws\n"), address, data);
+	//bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x ws\n"), address, data);
 
 	return;
 }

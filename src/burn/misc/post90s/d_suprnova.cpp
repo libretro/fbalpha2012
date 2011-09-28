@@ -408,6 +408,7 @@ static int DrvDoReset()
 
 unsigned char __fastcall CyvernReadByte(unsigned int a)
 {
+	#if 0
 	switch (a) {
 		case 0x20400007: {
 			//???
@@ -418,6 +419,7 @@ unsigned char __fastcall CyvernReadByte(unsigned int a)
 			bprintf(PRINT_NORMAL, _T("Read byte => %08X\n"), a);
 		}
 	}
+	#endif
 
 	return 0;
 }
@@ -425,6 +427,7 @@ unsigned char __fastcall CyvernReadByte(unsigned int a)
 void __fastcall CyvernWriteByte(unsigned int a, unsigned char d)
 {
 	switch (a) {
+		#if 0
 		case 0x0040000e: {
 			// unknown i/o write;
 			return;
@@ -435,12 +438,13 @@ void __fastcall CyvernWriteByte(unsigned int a, unsigned char d)
 			//sound write
 			return;
 		}
+		#endif
 
 		case 0x01800000: {
 			SknsHit2Write(0, d);
 			return;
 		}
-
+		#if 0
 		case 0x2040000e: {
 			//???
 			return;
@@ -449,13 +453,14 @@ void __fastcall CyvernWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("Write byte => %08X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned short __fastcall CyvernReadWord(unsigned int a)
 {
 	if (a >= 0x06000000 && a <= 0x06ffffff) {
-		if (a >= 0x06000028 && a <= 0x0600002b) bprintf(PRINT_NORMAL, _T("Read Word Bios Skip %x, %x\n"), a, Sh2GetPC(0));
+		//if (a >= 0x06000028 && a <= 0x0600002b) bprintf(PRINT_NORMAL, _T("Read Word Bios Skip %x, %x\n"), a, Sh2GetPC(0));
 		unsigned int Offset = (a - 0x06000000) / 2;
 		UINT16 *Ram = (UINT16*)DrvPrgRam;
 
@@ -473,6 +478,7 @@ unsigned short __fastcall CyvernReadWord(unsigned int a)
 
 void __fastcall CyvernWriteWord(unsigned int a, unsigned short d)
 {
+	#if 0
 	switch (a) {
 		case 0x05000000: {
 			// ???
@@ -483,6 +489,7 @@ void __fastcall CyvernWriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("Write word => %08X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned int __fastcall CyvernReadLong(unsigned int a)
@@ -494,7 +501,7 @@ unsigned int __fastcall CyvernReadLong(unsigned int a)
 	}
 
 	if (a >= 0x06000000 && a <= 0x06ffffff) {
-		if (a >= 0x06000028 && a <= 0x0600002b) bprintf(PRINT_NORMAL, _T("Read Long Bios Skip %x, %x\n"), a, Sh2GetPC(0) / 4);
+		//if (a >= 0x06000028 && a <= 0x0600002b) bprintf(PRINT_NORMAL, _T("Read Long Bios Skip %x, %x\n"), a, Sh2GetPC(0) / 4);
 		unsigned int Offset = (a - 0x06000000) / 4;
 		UINT32 *Ram = (UINT32*)DrvPrgRam;
 
@@ -673,7 +680,7 @@ static void DrvRenderTileALayer()
 			Code = VideoRam[TileIndex] & 0x001fffff;
 			Colour = (VideoRam[TileIndex] & 0x3f000000) >> 24;
 
-			if (Code) bprintf(PRINT_NORMAL, _T("%x, %x\n"), Code, Colour);
+			//if (Code) bprintf(PRINT_NORMAL, _T("%x, %x\n"), Code, Colour);
 
 			x = 16 * mx;
 			y = 16 * my;

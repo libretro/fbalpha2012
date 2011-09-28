@@ -410,10 +410,11 @@ unsigned char __fastcall Drv1943Read1(unsigned short a)
 		case 0xc007: {
 			return ZetBc(-1) >> 8;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -432,7 +433,7 @@ void __fastcall Drv1943Write1(unsigned short a, unsigned char d)
 			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom1 + 0x10000 + DrvRomBank * 0x1000 );
 			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom1 + 0x10000 + DrvRomBank * 0x1000 );
 
-			if (d & 0x40) bprintf(PRINT_NORMAL, _T("c804 write %x\n"), d);
+			//if (d & 0x40) bprintf(PRINT_NORMAL, _T("c804 write %x\n"), d);
 
 			DrvCharsOn = d & 0x80;
 			return;
@@ -480,16 +481,17 @@ void __fastcall Drv1943Write1(unsigned short a, unsigned char d)
 			DrvSpritesOn = d & 0x40;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall Drv1943PortRead1(unsigned short a)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -502,7 +504,7 @@ unsigned char __fastcall Drv1943PortRead1(unsigned short a)
 
 void __fastcall Drv1943PortWrite1(unsigned short a, unsigned char d)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -517,10 +519,11 @@ unsigned char __fastcall Drv1943Read2(unsigned short a)
 		case 0xc800: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -548,16 +551,17 @@ void __fastcall Drv1943Write2(unsigned short a, unsigned char d)
 			BurnYM2203Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall Drv1943PortRead2(unsigned short a)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -570,7 +574,7 @@ unsigned char __fastcall Drv1943PortRead2(unsigned short a)
 
 void __fastcall Drv1943PortWrite2(unsigned short a, unsigned char d)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {

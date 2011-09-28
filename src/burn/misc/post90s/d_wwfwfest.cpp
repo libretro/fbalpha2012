@@ -367,10 +367,11 @@ unsigned char __fastcall Wwfwfest68KReadByte(unsigned int a)
 		case 0x140027: {
 			return 0xff - DrvInput[3];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -389,10 +390,11 @@ void __fastcall Wwfwfest68KWriteByte(unsigned int a, unsigned char d)
 			DrvVReg = d;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -436,10 +438,11 @@ unsigned short __fastcall Wwfwfest68KReadWord(unsigned int a)
 			Temp |= ((DrvDip[0] & 0xc0) << 2);
 			return Temp;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -500,7 +503,7 @@ void __fastcall Wwfwfest68KWriteWord(unsigned int a, unsigned short d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		case 0x100008: {
 			// ???
 			return;
@@ -525,10 +528,10 @@ void __fastcall Wwfwfest68KWriteWord(unsigned int a, unsigned short d)
 			// ???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -546,10 +549,11 @@ unsigned char __fastcall WwfwfestZ80Read(unsigned short a)
 		case 0xe000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -578,10 +582,11 @@ void __fastcall WwfwfestZ80Write(unsigned short a, unsigned char d)
 			memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

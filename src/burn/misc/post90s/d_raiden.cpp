@@ -378,7 +378,7 @@ void __fastcall raidenWriteByte(unsigned int vezAddress, unsigned char byteValue
 {
 
 	switch (vezAddress) {
-
+		#if 0
 		case 0x0b000:
 		case 0x0b001:
 		case 0x0b002:
@@ -390,6 +390,7 @@ void __fastcall raidenWriteByte(unsigned int vezAddress, unsigned char byteValue
 			// raiden_control_w
 			// flip_screen not support
 			break;
+		#endif
 
 		case 0x0d060:
 		case 0x0d061:
@@ -456,7 +457,7 @@ void __fastcall raidenAltWriteByte(unsigned int vezAddress, unsigned char byteVa
 {
 
 	switch (vezAddress) {
-
+		#if 0
 		case 0x0b000:
 		case 0x0b001:
 		case 0x0b002:
@@ -468,6 +469,7 @@ void __fastcall raidenAltWriteByte(unsigned int vezAddress, unsigned char byteVa
 			// raiden_control_w
 			// flip_screen not support
 			break;
+		#endif
 
 		case 0x0f002: RamScroll[0] = byteValue; break;
 		case 0x0f004: RamScroll[1] = byteValue;	break;
@@ -506,10 +508,10 @@ unsigned char __fastcall raidenSubReadByte(unsigned int vezAddress)
 			unsigned char nRet = RamV30S[0x8];
 			//int pc = VezPC();
 			//if (pc==0xfcde6 && ret!=0x40) cpu_spin();
-			bprintf(PRINT_NORMAL, _T("sub_cpu_spin_r %02x%02x\n"), RamV30S[0x8], RamV30S[0x9]);
+			//bprintf(PRINT_NORMAL, _T("sub_cpu_spin_r %02x%02x\n"), RamV30S[0x8], RamV30S[0x9]);
 			return nRet; }
 		case 0x04009:
-			bprintf(PRINT_NORMAL, _T("sub_cpu_spin_r %02x%02x\n"), RamV30S[0x8], RamV30S[0x9]);
+			//bprintf(PRINT_NORMAL, _T("sub_cpu_spin_r %02x%02x\n"), RamV30S[0x8], RamV30S[0x9]);
 			return RamV30S[0x9];
 
 		//default:

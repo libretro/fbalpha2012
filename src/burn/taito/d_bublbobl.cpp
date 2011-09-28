@@ -651,10 +651,11 @@ unsigned char __fastcall BublboblRead1(unsigned short a)
 		case 0xfa00: {
 			return DrvSoundStatus;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -682,11 +683,12 @@ void __fastcall BublboblWrite1(unsigned short a, unsigned char d)
 			}
 			return;
 		}
-
+		#if 0
 		case 0xfa80: {
 			// watchdog reset
 			return;
 		}
+		#endif
 		case 0xfb40: {
 			DrvRomBank = (d ^ 0x04) & 0x07;
 			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom1 + 0x10000 + (DrvRomBank * 0x4000));
@@ -714,10 +716,11 @@ void __fastcall BublboblWrite1(unsigned short a, unsigned char d)
 			DrvFlipScreen = d & 0x80;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -759,10 +762,11 @@ unsigned char __fastcall BoblboblRead1(unsigned short a)
 		case 0xff03: {
 			return DrvInput[1];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -876,7 +880,7 @@ void __fastcall BoblboblWrite1(unsigned short a, unsigned char d)
 			IC43B = (d >> 4) ^ XorVal[Offset];
 			return;
 		}
-
+		#if 0
 		case 0xff94:
 		case 0xff98: {
 			// nop
@@ -886,6 +890,7 @@ void __fastcall BoblboblWrite1(unsigned short a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -907,7 +912,7 @@ unsigned char __fastcall DrvSoundRead3(unsigned short a)
 		case 0xb000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		case 0xb001: {
 			// nop
 			return 0;
@@ -916,10 +921,10 @@ unsigned char __fastcall DrvSoundRead3(unsigned short a)
 		case 0xe000: {
 			return 0;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #3 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -966,10 +971,11 @@ void __fastcall DrvSoundWrite3(unsigned short a, unsigned char d)
 			DrvSoundNmiEnable = 0;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #3 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1014,7 +1020,7 @@ unsigned char BublboblMcuReadByte(unsigned short Address)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("M6801 Read Byte -> %04X\n"), Address);
+	//bprintf(PRINT_NORMAL, _T("M6801 Read Byte -> %04X\n"), Address);
 
 	return 0;
 }
@@ -1095,7 +1101,7 @@ void BublboblMcuWriteByte(unsigned short Address, unsigned char Data)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("M6801 Write Byte -> %04X, %02X\n"), Address, Data);
+	//bprintf(PRINT_NORMAL, _T("M6801 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 static inline void DrvYM2203IRQHandler(int, int nStatus)

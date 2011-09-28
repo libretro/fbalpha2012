@@ -113,6 +113,9 @@ the decryption keys.
 #include "cps.h"
 #include "bitswap.h"
 
+#ifdef __LIBSNES__
+#include "../fbatypes.h"
+#endif
 
 /******************************************************************************/
 
@@ -692,8 +695,8 @@ static void cps2_decrypt(const UINT32 *master_key, UINT32 upper_limit)
 
 		if ((i & 0xff) == 0)
 		{
-			TCHAR loadingMessage[256]; // for displaying with UI
-			_stprintf(loadingMessage, _T("Decrypting Program ROMs %d%%"), i*100/0x10000);
+			char loadingMessage[256]; // for displaying with UI
+			sprintf(loadingMessage, "Decrypting Program ROMs %d%%", i*100/0x10000);
 			BurnUpdateProgress(0.0, loadingMessage, 0);
 		}
 
@@ -1028,22 +1031,22 @@ void save_xor()
 	FILE *fp = fopen(xorfile, "wb");
 	if (!fp) return;
 
-	UINT8 *xor = (UINT8 *)malloc(nCpsCodeLen);
-	if (xor == NULL)
+	UINT8 * xor_tmp = (UINT8 *)malloc(nCpsCodeLen);
+	if (xor_tmp == NULL)
 	{
 		fclose(fp);
 		return;
 	}
 
-	BurnUpdateProgress(0.0, _T("Saving decrypted XOR-ROM..."), 0);
+	BurnUpdateProgress(0.0, "Saving decrypted XOR-ROM...", 0);
 
 	for (UINT32 i = 0; i < nCpsCodeLen / 2; i++)
 	{
-		((UINT16 *)xor)[i] = ((UINT16 *)CpsRom)[i] ^ ((UINT16 *)CpsCode)[i];
+		((UINT16 *)xor_tmp)[i] = ((UINT16 *)CpsRom)[i] ^ ((UINT16 *)CpsCode)[i];
 	}
-	fwrite(xor, nCpsCodeLen, 1, fp);
+	fwrite(xor_tmp, nCpsCodeLen, 1, fp);
 
-	free(xor);
+	free(xor_tmp);
 	fclose(fp);
 #endif
 }
@@ -1060,8 +1063,8 @@ void save_dec_prom()
 	int nSize = 0x80000;
 	int nNum = nCpsCodeLen / nSize;
 
-	TCHAR szSavingMessage[64];
-	_stprintf(szSavingMessage, _T("Saving decrypted 68000 ROM..."));
+	char szSavingMessage[64];
+	sprintf(szSavingMessage, "Saving decrypted 68000 ROM...");
 
 	for (int i = 0; i < nNum; i++)
 	{

@@ -50,7 +50,7 @@ UINT8 TC0220IOCRead(UINT8 Port)
 		}
 	}
 	
-	bprintf(PRINT_IMPORTANT, _T("Unmapped TC0220IOC Read at %x\n"), Port);
+	//bprintf(PRINT_IMPORTANT, _T("Unmapped TC0220IOC Read at %x\n"), Port);
 	
 	return 0;
 }

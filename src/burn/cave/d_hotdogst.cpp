@@ -100,7 +100,7 @@ unsigned short __fastcall hotdogstReadWord(unsigned int sekAddress)
 			return (DrvInput[1] ^ 0xF7FF) | (EEPROMRead() << 11);
 
 		default: {
- 			bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %x\n"), sekAddress);
+ 			bprintf(PRINT_NORMAL, "Attempt to read word value of location %x\n", sekAddress);
 		}
 	}
 	return 0;
@@ -170,7 +170,7 @@ void __fastcall hotdogstWriteWord(unsigned int sekAddress, unsigned short wordVa
 		}
 
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write word value %x to location %x\n", wordValue, sekAddress);
 
 		}
 	}
@@ -198,7 +198,7 @@ unsigned char __fastcall hotdogstZIn(unsigned short nAddress)
 		}
 
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Port Read %x\n"), nAddress);
+			bprintf(PRINT_NORMAL, "Z80 Port Read %x\n", nAddress);
 		}
 	}
 
@@ -243,7 +243,7 @@ void __fastcall hotdogstZOut(unsigned short nAddress, unsigned char nValue)
 		}
 
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Port Write %x, %x\n"), nAddress, nValue);
+			bprintf(PRINT_NORMAL, "Z80 Port Write %x, %x\n", nAddress, nValue);
 		}
 	}
 }
@@ -252,7 +252,7 @@ unsigned char __fastcall hotdogstZRead(unsigned short a)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
+//			bprintf(PRINT_NORMAL, "Z80 Read => %04X\n", a);
 //		}
 //	}
 
@@ -263,7 +263,7 @@ void __fastcall hotdogstZWrite(unsigned short a, unsigned char d)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "Z80 Write => %04X, %02X\n", a, d);
 //		}
 //	}
 }
@@ -688,7 +688,7 @@ static int DrvInit()
 	bDrawScreen = true;
 
 #if defined FBA_DEBUG && defined USE_SPEEDHACKS
-	bprintf(PRINT_IMPORTANT, _T("  * Using speed-hacks (detecting idle loops).\n"));
+	bprintf(PRINT_IMPORTANT, "  * Using speed-hacks (detecting idle loops).\n");
 #endif
 
 	DrvDoReset(); // Reset machine

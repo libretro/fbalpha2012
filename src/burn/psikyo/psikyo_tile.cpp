@@ -26,7 +26,7 @@ typedef void (*RenderTileFunction)();
 static int nTilemapWith, nTileXPos, nTileYPos;
 
 // Include the tile rendering functions
-#include "psikyo_tile_func.h"
+#include "../../generated/psikyo_tile_func.h"
 
 static void PsikyoRenderLayer(int nLayer)
 {

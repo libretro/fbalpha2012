@@ -383,8 +383,8 @@ unsigned char __fastcall System16Z80PortRead(unsigned short a)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Read Port -> %02X\n"), a);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Read Port -> %02X\n", a);
 #endif
 
 	return 0;
@@ -407,7 +407,7 @@ unsigned char __fastcall System16PPIZ80PortRead(unsigned short a)
 	}
 
 #if 0 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Read Port -> %02X\n"), a);
+	bprintf(PRINT_NORMAL, "Z80 Read Port -> %02X\n", a);
 #endif
 
 	return 0;
@@ -481,24 +481,24 @@ void __fastcall System16Z80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Write Port -> %02X, %02X\n"), a, d);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Write Port -> %02X, %02X\n", a, d);
 #endif
 }
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 unsigned char __fastcall System16Z80Read(unsigned short a)
 {
-	bprintf(PRINT_NORMAL, _T("Z80 Read -> %04X\n"), a);
+	bprintf(PRINT_NORMAL, "Z80 Read -> %04X\n", a);
 
 	return 0;
 }
 #endif
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 void __fastcall System16Z80Write(unsigned short a, unsigned char d)
 {
-	bprintf(PRINT_NORMAL, _T("Z80 Write -> %04X, %02X\n"), a, d);
+	bprintf(PRINT_NORMAL, "Z80 Write -> %04X, %02X\n", a, d);
 }
 #endif
 
@@ -602,8 +602,8 @@ unsigned char __fastcall System18Z80PortRead(unsigned short a)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Read Port -> %02X\n"), a);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Read Port -> %02X\n", a);
 #endif
 
 	return 0;
@@ -662,8 +662,8 @@ void __fastcall System18Z80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Write Port -> %02X, %02X\n"), a, d);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Write Port -> %02X, %02X\n", a, d);
 #endif
 }
 
@@ -673,8 +673,8 @@ unsigned char __fastcall System18Z80Read(unsigned short a)
 		return RF5C68PCMRead(a - 0xd000);
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Read -> %04X\n"), a);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Read -> %04X\n", a);
 #endif
 
 	return 0;
@@ -692,8 +692,8 @@ void __fastcall System18Z80Write(unsigned short a, unsigned char d)
 		return;
 	}
 
-#if 1 && defined FBA_DEBUG
-	bprintf(PRINT_NORMAL, _T("Z80 Write -> %04X, %02X\n"), a, d);
+#if 0 && defined FBA_DEBUG
+	bprintf(PRINT_NORMAL, "Z80 Write -> %04X, %02X\n", a, d);
 #endif
 }
 
@@ -714,7 +714,7 @@ void System16N7751ControlWrite(unsigned int Port, unsigned int Data)
 		return;
 	}
 
-	bprintf(PRINT_NORMAL, _T("YM2151 Write Port %x, %02X\n"), Port, Data);
+	//bprintf(PRINT_NORMAL, "YM2151 Write Port %x, %02X\n", Port, Data);
 }
 
 unsigned char __fastcall N7751ReadIo(unsigned int Port)
@@ -1008,7 +1008,7 @@ static int System16LoadRoms(bool bLoad)
 			System16Z80RomSize = 0x210000;
 		}
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		bprintf(PRINT_NORMAL, _T("68K Rom Size: 0x%X (%i roms)\n"), System16RomSize, System16RomNum);
 		if (System16Rom2Size) bprintf(PRINT_NORMAL, _T("68K #2 Rom Size: 0x%X (%i roms)\n"), System16Rom2Size, System16Rom2Num);
 		if (System16Rom3Size) bprintf(PRINT_NORMAL, _T("68K #3 Rom Size: 0x%X (%i roms)\n"), System16Rom3Size, System16Rom3Num);

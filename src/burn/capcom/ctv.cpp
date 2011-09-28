@@ -11,7 +11,7 @@ int nCtvTileAdd=0; // Amount to add after each tile line
 unsigned char *pCtvLine=NULL; // Pointer to output bitmap
 
 // Include all tile variants:
-#include "ctv.h"
+#include "../../generated/ctv.h"
 
 static int nLastBpp=0;
 int CtvReady()

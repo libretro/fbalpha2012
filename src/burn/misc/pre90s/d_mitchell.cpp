@@ -1278,10 +1278,11 @@ unsigned char __fastcall MitchellZ80PortRead(unsigned short a)
 
 			return ((0xff - DrvInput[3]) & 0x76) | Bit;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -1356,11 +1357,12 @@ void __fastcall MitchellZ80PortWrite(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		case 0x06:{
 			// nop
 			return;
 		}
+		#endif
 
 		case 0x07: {
 			DrvVideoBank = d;
@@ -1381,10 +1383,11 @@ void __fastcall MitchellZ80PortWrite(unsigned short a, unsigned char d)
 			if (DrvHasEEPROM) EEPROMWriteBit(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1416,10 +1419,11 @@ unsigned char __fastcall MstworldZ80PortRead(unsigned short a)
 		case 0x06: {
 			return 0xff;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -1451,27 +1455,28 @@ void __fastcall MstworldZ80PortWrite(unsigned short a, unsigned char d)
 			ZetClose();
 			ZetOpen(0);
 		}
-
+		#if 0
 		case 0x06: {
 			// nop
 			return;
 		}
+		#endif
 
 		case 0x07: {
 			DrvVideoBank = d & 0x01;
 			return;
 		}
-
+		#if 0
 		case 0x08:
 		case 0x10:
 		case 0x18: {
 			// ???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1486,10 +1491,11 @@ unsigned char __fastcall MstworldSoundZ80Read(unsigned short a)
 			ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1508,10 +1514,11 @@ void __fastcall MstworldSoundZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

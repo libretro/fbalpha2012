@@ -202,29 +202,30 @@ void MegadriveCheckHardware()
 			}
 		}
 
-		bprintf(PRINT_IMPORTANT, _T("Autodetecting Cartridge (Hardware Code: %02x%02x%02x%02x):\n"), RomMain[0x1f0], RomMain[0x1f1], RomMain[0x1f2], RomMain[0x1f3]);
+		//bprintf(PRINT_IMPORTANT, "Autodetecting Cartridge (Hardware Code: %02x%02x%02x%02x):\n", RomMain[0x1f0], RomMain[0x1f1], RomMain[0x1f2], RomMain[0x1f3]);
 		Hardware = 0x80;
 		
 		if (support & 0x02) {
 			Hardware = 0x40; // Japan PAL
-			bprintf(PRINT_IMPORTANT, _T("Japan PAL supported ???\n"));
+			//bprintf(PRINT_IMPORTANT, "Japan PAL supported ???\n");
 		}
 		
 		if (support & 0x01) {
 			Hardware = 0x00; // Japan NTSC
-			bprintf(PRINT_IMPORTANT, _T("Japan NTSC supported\n"));
+			//bprintf(PRINT_IMPORTANT, "Japan NTSC supported\n");
 		}		
 		
 		if (support & 0x08) {
 			Hardware = 0xc0; // Europe PAL
-			bprintf(PRINT_IMPORTANT, _T("Europe PAL supported\n"));
+			//bprintf(PRINT_IMPORTANT, "Europe PAL supported\n");
 		}
 		
 		if (support & 0x04) {
 			Hardware = 0x80; // USA NTSC
-			bprintf(PRINT_IMPORTANT, _T("USA NTSC supported\n"));
+			//bprintf(PRINT_IMPORTANT, "USA NTSC supported\n");
 		}
 		
+		#if 0
 		if ((Hardware & 0xc0) == 0xc0) {
 			bprintf(PRINT_IMPORTANT, _T("Emulating Europe PAL Machine\n"));
 		} else {
@@ -240,12 +241,13 @@ void MegadriveCheckHardware()
 				}
 			}
 		}
+		#endif
 		
 		// CD-ROM
 		Hardware |= MegadriveDIP[0] & 0x20;
 	}
 	
-	if ((Hardware & 0x20) != 0x20) bprintf(PRINT_IMPORTANT, _T("Emulating Mega-CD Add-on\n"));
+	//if ((Hardware & 0x20) != 0x20) bprintf(PRINT_IMPORTANT, "Emulating Mega-CD Add-on\n");
 
 	SRamSize = 0;
 	RamMisc->SRamReg = 0;
@@ -267,7 +269,7 @@ void MegadriveCheckHardware()
 		}
 		SekClose();
 		RamMisc->SRamReg |= 0x10;
-		bprintf(PRINT_IMPORTANT, _T("SRAM Detected: Start %06x, End %06x\n"), RamMisc->SRamStart, RamMisc->SRamEnd);
+		//bprintf(PRINT_IMPORTANT, "SRAM Detected: Start %06x, End %06x\n", RamMisc->SRamStart, RamMisc->SRamEnd);
 	}
 	
 //	if (SRamSize <= 0 || SRamSize > MAX_SRAM_SIZE) {
@@ -365,10 +367,11 @@ unsigned short __fastcall MegadriveReadWord(unsigned int sekAddress)
 			}
 			return retVal;
 		}
-		
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %x\n"), sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to read word value of location %x\n", sekAddress);
 		}
+		#endif
 	}
 	return 0;
 }
@@ -396,10 +399,11 @@ unsigned char __fastcall MegadriveReadByte(unsigned int sekAddress)
 			}
 			return retVal;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to read byte value of location %x\n"), sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to read byte value of location %x\n", sekAddress);
 		}
+		#endif
 	}
 	return 0;
 }
@@ -469,10 +473,11 @@ void __fastcall MegadriveWriteByte(unsigned int sekAddress, unsigned char byteVa
 			RamMisc->SRamReg = byteValue & 0x03;
 			return;
 		}
-			
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 		}		
+		#endif
 	}
 }
 
@@ -503,10 +508,11 @@ void __fastcall MegadriveWriteWord(unsigned int sekAddress, unsigned short wordV
 			}
 			return;
 		}
-		
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write word value %x to location %x\n", wordValue, sekAddress);
 		}
+		#endif
 	}
 }
 
@@ -713,9 +719,11 @@ static void CommandChange()
 		case 0x03:
 			DmaCopy(len);	// VRAM Copy
 			break;
+		#if 0
 		case 0x02:			// DMA Fill Flag ???
 		default:
-			;//bprintf(PRINT_NORMAL, _T("Video Command DMA Unknown %02x len %d\n"), RamVReg->reg[0x17]>>6, len);
+			//bprintf(PRINT_NORMAL, _T("Video Command DMA Unknown %02x len %d\n"), RamVReg->reg[0x17]>>6, len);
+		#endif
 		}
 	}
 }
@@ -798,8 +806,10 @@ unsigned short __fastcall MegadriveVideoReadWord(unsigned int sekAddress)
 	//bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %x\n"), sekAddress);
 	//return MegadriveVDPRead((sekAddress - 0xc00000) >> 1);
 	
+	#if 0
 	if (sekAddress > 0xC0001F)
-		bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %x\n"), sekAddress);
+		bprintf(PRINT_NORMAL, "Video Attempt to read word value of location %x\n", sekAddress);
+	#endif
 	
 	unsigned short res = 0;
 	
@@ -853,10 +863,11 @@ unsigned short __fastcall MegadriveVideoReadWord(unsigned int sekAddress)
 			res |= hc;
 		}
 		break;
-		
+	#if 0
 	default:	
-		bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %x, %x\n"), sekAddress, sekAddress & 0x1c);
+		bprintf(PRINT_NORMAL, "Video Attempt to read word value of location %x, %x\n", sekAddress, sekAddress & 0x1c);
 		break;
+	#endif
 	}	
 	
 	return res;
@@ -864,7 +875,7 @@ unsigned short __fastcall MegadriveVideoReadWord(unsigned int sekAddress)
 
 unsigned char __fastcall MegadriveVideoReadByte(unsigned int sekAddress)
 {
-	//bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %x\n"), sekAddress);
+	//bprintf(PRINT_NORMAL, "Video Attempt to read byte value of location %x\n", sekAddress);
 	unsigned short res = MegadriveVideoReadWord(sekAddress & ~1);
 	if ((sekAddress&1)==0) res >>= 8;
 	return res & 0xff;
@@ -872,8 +883,10 @@ unsigned char __fastcall MegadriveVideoReadByte(unsigned int sekAddress)
 
 void __fastcall MegadriveVideoWriteWord(unsigned int sekAddress, unsigned short wordValue)
 {
+	#if 0
 	if (sekAddress > 0xC0001F)
-		bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
+		bprintf(PRINT_NORMAL, "Video Attempt to write word value %x to location %x\n", wordValue, sekAddress);
+	#endif
 
 	switch (sekAddress & 0x1c) {
 	case 0x00:	// data
@@ -890,7 +903,7 @@ void __fastcall MegadriveVideoWriteWord(unsigned int sekAddress, unsigned short 
 			case 1: 
 				// If address is odd, bytes are swapped (which game needs this?)
 				if (RamVReg->addr & 1) {
-					bprintf(PRINT_NORMAL, _T("Video address is odd, bytes are swapped!!!\n"));
+					//bprintf(PRINT_NORMAL, "Video address is odd, bytes are swapped!!!\n");
 					wordValue = (wordValue<<8)|(wordValue>>8);
 				}
 				RamVid[(RamVReg->addr >> 1) & 0x7fff] = swapWord(wordValue);
@@ -951,7 +964,7 @@ void __fastcall MegadriveVideoWriteWord(unsigned int sekAddress, unsigned short 
 	case 0x10:
 	case 0x14:
 		// PSG Sound
-		//bprintf(PRINT_NORMAL, _T("PSG Attempt to write word value %04x to location %08x\n"), wordValue, sekAddress);
+		//bprintf(PRINT_NORMAL, "PSG Attempt to write word value %04x to location %08x\n", wordValue, sekAddress);
 		SN76496Write(0, wordValue & 0xFF);
 		return;
 	
@@ -960,7 +973,7 @@ void __fastcall MegadriveVideoWriteWord(unsigned int sekAddress, unsigned short 
 
 void __fastcall MegadriveVideoWriteByte(unsigned int sekAddress, unsigned char byteValue)
 {
-	//bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
+	//bprintf(PRINT_NORMAL, "Video Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 	MegadriveVideoWriteWord(sekAddress, (byteValue << 8) | byteValue);
 }
 
@@ -977,7 +990,7 @@ unsigned char __fastcall MegadriveZ80RamReadByte(unsigned int sekAddress)
 
 unsigned short __fastcall MegadriveZ80RamReadWord(unsigned int sekAddress)
 {
-	bprintf(PRINT_NORMAL, _T("Z80Ram Attempt to read word value of location %x\n"), sekAddress);
+	//bprintf(PRINT_NORMAL, "Z80Ram Attempt to read word value of location %x\n", sekAddress);
 	return 0;
 }
 
@@ -987,7 +1000,7 @@ void __fastcall MegadriveZ80RamWriteByte(unsigned int sekAddress, unsigned char 
 		RamZ80[sekAddress & 0x1fff] = byteValue;
 		return;
 	}
-	bprintf(PRINT_NORMAL, _T("Z80Ram Attempt to write byte value %x to location %x and didn't have the Bus!\n"), byteValue, sekAddress);
+	//bprintf(PRINT_NORMAL, "Z80Ram Attempt to write byte value %x to location %x and didn't have the Bus!\n", byteValue, sekAddress);
 }
 
 void __fastcall MegadriveZ80RamWriteWord(unsigned int sekAddress, unsigned short wordValue)
@@ -997,7 +1010,7 @@ void __fastcall MegadriveZ80RamWriteWord(unsigned int sekAddress, unsigned short
 		return;
 	}
 	
-	bprintf(PRINT_NORMAL, _T("Z80Ram Attempt to write word value %x to location %x and didn't have the Bus!\n"), wordValue, sekAddress);
+	//bprintf(PRINT_NORMAL, "Z80Ram Attempt to write word value %x to location %x and didn't have the Bus!\n", wordValue, sekAddress);
 //	MegadriveZ80RamWriteByte(sekAddress, wordValue >> 0x08);
 }
 
@@ -1037,8 +1050,10 @@ end:
 
 unsigned char __fastcall MegadriveIOReadByte(unsigned int sekAddress)
 {
+	#if 0
 	if (sekAddress > 0xA1001F)
-		bprintf(PRINT_NORMAL, _T("IO Attempt to read byte value of location %x\n"), sekAddress);
+		bprintf(PRINT_NORMAL, "IO Attempt to read byte value of location %x\n", sekAddress);
+	#endif
 
 	int offset = (sekAddress >> 1) & 0xf;
 	switch (offset) {
@@ -1058,7 +1073,7 @@ unsigned char __fastcall MegadriveIOReadByte(unsigned int sekAddress)
 unsigned short __fastcall MegadriveIOReadWord(unsigned int sekAddress)
 {
 	//if (sekAddress > 0xA1001F)
-	//	bprintf(PRINT_NORMAL, _T("IO Attempt to read word value of location %x\n"), sekAddress);
+	//	bprintf(PRINT_NORMAL, "IO Attempt to read word value of location %x\n", sekAddress);
 
 	unsigned char res = MegadriveIOReadByte(sekAddress);
 	return res | (res << 8);
@@ -1066,8 +1081,10 @@ unsigned short __fastcall MegadriveIOReadWord(unsigned int sekAddress)
 
 void __fastcall MegadriveIOWriteByte(unsigned int sekAddress, unsigned char byteValue)
 {
+	#if 0
 	if (sekAddress > 0xA1001F)
-		bprintf(PRINT_NORMAL, _T("IO Attempt to byte byte value %x to location %x\n"), byteValue, sekAddress);
+		bprintf(PRINT_NORMAL, "IO Attempt to byte byte value %x to location %x\n", byteValue, sekAddress);
+	#endif
 
 	int offset = (sekAddress >> 1) & 0xf;
 	// 6-Button Support
@@ -1128,12 +1145,12 @@ unsigned char __fastcall MegadriveSRamReadByte(unsigned int sekAddress)
 	
 	if(sreg & 0x04) { // EEPROM read
 		//d = SRAMReadEEPROM();
-		bprintf(PRINT_NORMAL, _T("EEPROM Attempt to read byte value of location   %02x\n"), sekAddress);
+		//bprintf(PRINT_NORMAL, "EEPROM Attempt to read byte value of location   %02x\n", sekAddress);
 		return 0;
     } else if(sreg & 0x01) {
 		return SRam[ sekAddress - RamMisc->SRamStart ];
     } else {
-		//bprintf(PRINT_NORMAL, _T("SRam Attempt to read byte value of location   %02x\n"), sekAddress);
+		//bprintf(PRINT_NORMAL, "SRam Attempt to read byte value of location   %02x\n", sekAddress);
     	if (sekAddress < RomSize) {
     		return RomMain[ sekAddress ^ 1];
     	}
@@ -1144,7 +1161,7 @@ unsigned char __fastcall MegadriveSRamReadByte(unsigned int sekAddress)
 
 unsigned short __fastcall MegadriveSRamReadWord(unsigned int sekAddress)
 {
-	//bprintf(PRINT_NORMAL, _T("SRam Attempt to read word value of location %04x\n"), sekAddress);
+	//bprintf(PRINT_NORMAL, "SRam Attempt to read word value of location %04x\n", sekAddress);
 	unsigned short res;
 	res  = MegadriveSRamReadByte(sekAddress) << 8;
 	res |= MegadriveSRamReadByte(sekAddress + 1);
@@ -1158,7 +1175,7 @@ void __fastcall MegadriveSRamWriteByte(unsigned int sekAddress, unsigned char by
 	if(!(sreg & 0x10)) {
 		// not detected SRAM
 		if((sekAddress&~1)==0x200000) {
-			//bprintf(2, _T("SRam Not Detected and Now Enable it!!!\n"));
+			//bprintf(2, "SRam Not Detected and Now Enable it!!!\n");
 			RamMisc->SRamReg |= 4; // this should be a game with EEPROM (like NBA Jam)
 			RamMisc->SRamStart=0x200000; 
 			RamMisc->SRamEnd = RamMisc->SRamStart + 1;
@@ -1169,12 +1186,15 @@ void __fastcall MegadriveSRamWriteByte(unsigned int sekAddress, unsigned char by
 	
 	if (sreg * 0x04) {
 
-//		bprintf(PRINT_NORMAL, _T("EEPROM Attempt to write byte value   %02x to location %08x\n"), byteValue, sekAddress);
+//		bprintf(PRINT_NORMAL, "EEPROM Attempt to write byte value   %02x to location %08x\n", byteValue, sekAddress);
 		
 	} else if(!(sreg & 0x02)) {
 		SRam[ sekAddress - RamMisc->SRamStart ] = byteValue;
-	} else
-		bprintf(PRINT_NORMAL, _T("SRam Attempt to write byte value   %02x to location %08x\n"), byteValue, sekAddress);
+	}
+	#if 0
+	else
+		//bprintf(PRINT_NORMAL, "SRam Attempt to write byte value   %02x to location %08x\n", byteValue, sekAddress);
+	#endif
 }
 
 void __fastcall MegadriveSRamWriteWord(unsigned int sekAddress, unsigned short wordValue)
@@ -1266,26 +1286,30 @@ int __fastcall MegadriveIrqCallback(int irq)
 
 unsigned char __fastcall MegadriveZ80PortRead(unsigned short a)
 {
+	#if 0
 	a &= 0xff;
 	
 	switch (a) {
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Port Read 02%x\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 Port Read 02%x\n", a);
 		}
 	}	
+	#endif
 
 	return 0;
 }
 
 void __fastcall MegadriveZ80PortWrite(unsigned short a, unsigned char d)
 {
+	#if 0
 	a &= 0xff;
 	
 	switch (a) {
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Port Write %02x, %02%x\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 Port Write %02x, %02%x\n", a, d);
 		}
 	}
+	#endif
 }
 
 unsigned char __fastcall MegadriveZ80ProgRead(unsigned short a)
@@ -1299,7 +1323,7 @@ unsigned char __fastcall MegadriveZ80ProgRead(unsigned short a)
 		addr68k += a & 0x7fff;
 		if (addr68k <= 0x3fffff) return RomMain[addr68k ^ 1];
 		
-		bprintf(PRINT_NORMAL, _T("%Z80 trying to read 68k address %06X\n"), addr68k);
+		//bprintf(PRINT_NORMAL, "%Z80 trying to read 68k address %06X\n", addr68k);
 		return 0;
 	}
 	
@@ -1309,10 +1333,11 @@ unsigned char __fastcall MegadriveZ80ProgRead(unsigned short a)
 		case 0x4002: {
 			return BurnYM2612Read(0, 0);
 		}
-		
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Read %04x\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 Read %04x\n", a);
 		}
+		#endif
 	}
 	
 	return 0;
@@ -1359,7 +1384,7 @@ void __fastcall MegadriveZ80ProgWrite(unsigned short a, unsigned char d)
 			return;
 		}
 		
-		bprintf(PRINT_NORMAL, _T("Z80-Bank68K Attempt to write byte value %02x to location %06x\n"), d, addr68k);
+		//bprintf(PRINT_NORMAL, "Z80-Bank68K Attempt to write byte value %02x to location %06x\n", d, addr68k);
 		return;
 	}
 	
@@ -1391,10 +1416,11 @@ void __fastcall MegadriveZ80ProgWrite(unsigned short a, unsigned char d)
 			SN76496Write(0, d);
 			return;
 		}
-		
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Write %04x, %02x\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 Write %04x, %02x\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -1545,10 +1571,11 @@ void __fastcall Ssf2BankingWriteByte(unsigned int sekAddress, unsigned char byte
 			memcpy(RomMain + 0x380000, Ssf2Rom + ((byteValue & 0x0f) * 0x80000), 0x80000);
 			return;
 		}
-		
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 		}		
+		#endif
 	}
 }
 
@@ -1696,10 +1723,11 @@ void __fastcall Sks3BackupWriteByte(unsigned int sekAddress, unsigned char byteV
 			}
 			return;
 		}
-			
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 		}		
+		#endif
 	}
 }
 
@@ -1717,10 +1745,11 @@ void __fastcall Sks3Backup_0x4000_WriteByte(unsigned int sekAddress, unsigned ch
 			}
 			return;
 		}
-			
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
+			bprintf(PRINT_NORMAL, "Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 		}		
+		#endif
 	}
 }
 
@@ -1756,7 +1785,7 @@ int MegadriveBackup_Sks3_0x4000_Init()
 
 unsigned char __fastcall RadicaBankSelectByte(unsigned int sekAddress)
 {
-	bprintf(PRINT_IMPORTANT, _T("Radica Bank Read Byte %06x\n"), sekAddress);
+	//bprintf(PRINT_IMPORTANT, "Radica Bank Read Byte %06x\n", sekAddress);
 	
 	return 0;
 }

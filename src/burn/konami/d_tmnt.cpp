@@ -2250,10 +2250,11 @@ unsigned char __fastcall Tmnt68KReadByte(unsigned int a)
 		case 0x0a0019: {
 			return DrvDip[2];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
+			bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2300,10 +2301,11 @@ void __fastcall Tmnt68KWriteByte(unsigned int a, unsigned char d)
 			// nop???
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -2311,7 +2313,7 @@ unsigned short __fastcall Tmnt68KReadWord(unsigned int a)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
+//			bprintf(PRINT_NORMAL, "68K Read word => %06X\n", a);
 //		}
 //	}
 
@@ -2324,7 +2326,7 @@ void __fastcall Tmnt68KWriteWord(unsigned int a, unsigned short d)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "68K Write word => %06X, %04X\n", a, d);
 //		}
 //	}
 }
@@ -2359,10 +2361,11 @@ unsigned char __fastcall Mia68KReadByte(unsigned int a)
 		case 0x0a0019: {
 			return DrvDip[2];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
+			bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2404,10 +2407,11 @@ void __fastcall Mia68KWriteByte(unsigned int a, unsigned char d)
 			// nop???
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -2474,10 +2478,11 @@ unsigned char __fastcall Cuebrick68KReadByte(unsigned int a)
 		case 0x0c0002: {
 			return BurnYM2151ReadStatus();
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
+			bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2521,10 +2526,11 @@ void __fastcall Cuebrick68KWriteByte(unsigned int a, unsigned char d)
 			BurnYM2151WriteRegister(d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -2637,10 +2643,11 @@ unsigned char __fastcall Blswhstl68KReadByte(unsigned int a)
 			int Offset = (a - 0x780601) >> 1;
 			return K053260Read(0, Offset + 2);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
+			bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2733,10 +2740,11 @@ void __fastcall Blswhstl68KWriteByte(unsigned int a, unsigned char d)
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -2756,7 +2764,7 @@ unsigned short __fastcall Blswhstl68KReadWord(unsigned int a)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
+//			bprintf(PRINT_NORMAL, "68K Read word => %06X\n", a);
 //		}
 //	}
 
@@ -2802,7 +2810,7 @@ void __fastcall Blswhstl68KWriteWord(unsigned int a, unsigned short d)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "68K Write word => %06X, %04X\n", a, d);
 //		}
 //	}
 }
@@ -3061,10 +3069,11 @@ unsigned char __fastcall Ssriders68KReadByte(unsigned int a)
 			int Offset = (a - 0x5c0601) >> 1;
 			return K053260Read(0, Offset + 2);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
+			bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3096,7 +3105,7 @@ void __fastcall Ssriders68KWriteByte(unsigned int a, unsigned char d)
 	}
 
 	if ((a & ~3) == 0x1c0800) {
-		bprintf (0, _T("protection write byte %x %x\n"), a, d);
+		//bprintf (0, "protection write byte %x %x\n", a, d);
 		return;
 	}
 
@@ -3134,34 +3143,35 @@ void __fastcall Ssriders68KWriteByte(unsigned int a, unsigned char d)
 
 	switch (a) {
 		case 0x1c0201: {
-			EEPROMWrite(d & 0x04, d & 0x02, d & 0x01);
-			K053244BankSelect(0, ((d & 0x20) >> 5) << 2);
-			dim_c = d & 0x18;
-			return;
-		}
+				       EEPROMWrite(d & 0x04, d & 0x02, d & 0x01);
+				       K053244BankSelect(0, ((d & 0x20) >> 5) << 2);
+				       dim_c = d & 0x18;
+				       return;
+			       }
 
 		case 0x1c0301: {
-			K052109RMRDLine = d & 0x08;
-			dim_v = (d & 0x70) >> 4;
-			return;
-		}
+				       K052109RMRDLine = d & 0x08;
+				       dim_v = (d & 0x70) >> 4;
+				       return;
+			       }
 
 		case 0x5c0601: {
-			K053260Write(0, 0, d);
-			return;
-		}
+				       K053260Write(0, 0, d);
+				       return;
+			       }
 
 		case 0x5c0605: {
-	ZetOpen(0);
-			ZetSetVector(0xff);
-			ZetSetIRQLine(0, ZET_IRQSTATUS_ACK);
-	ZetClose();
-			return;
-		}
-
+				       ZetOpen(0);
+				       ZetSetVector(0xff);
+				       ZetSetIRQLine(0, ZET_IRQSTATUS_ACK);
+				       ZetClose();
+				       return;
+			       }
+#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
-		}
+				 bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d);
+			 }
+#endif
 	}
 }
 
@@ -3187,7 +3197,7 @@ unsigned short __fastcall Ssriders68KReadWord(unsigned int a)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
+//			bprintf(PRINT_NORMAL, "68K Read word => %06X\n", a);
 //		}
 //	}
 
@@ -3235,10 +3245,11 @@ void __fastcall Ssriders68KWriteWord(unsigned int a, unsigned short d)
 			ssriders_protection_w(a - 0x1c0800);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
+			bprintf(PRINT_NORMAL, "68K Write word => %06X, %04X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -3637,10 +3648,11 @@ unsigned char __fastcall TmntZ80Read(unsigned short a)
 		case 0xf000: {
 			return UPD7759BusyRead(0);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3686,10 +3698,11 @@ void __fastcall TmntZ80Write(unsigned short a, unsigned char d)
 			UPD7759StartWrite(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -3708,10 +3721,11 @@ unsigned char __fastcall MiaZ80Read(unsigned short a)
 		case 0xc001: {
 			return BurnYM2151ReadStatus();
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3734,10 +3748,11 @@ void __fastcall MiaZ80Write(unsigned short a, unsigned char d)
 			BurnYM2151WriteRegister(d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -3752,10 +3767,11 @@ unsigned char __fastcall BlswhstlZ80Read(unsigned short a)
 		case 0xf801: {
 			return BurnYM2151ReadStatus();
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3784,10 +3800,11 @@ void __fastcall BlswhstlZ80Write(unsigned short a, unsigned char d)
 			ZetNmi();
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 

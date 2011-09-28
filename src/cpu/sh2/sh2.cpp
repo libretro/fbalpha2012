@@ -526,13 +526,13 @@ INLINE UINT8 RB(UINT32 A)
 	return program_read_byte_32be(A & AM); */
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
-	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
 #if defined LSB_FIRST
 		A ^= 3;
 #endif
 		return pr[A & SH2_PAGEM];
 	}
-	return pSh2Ext->ReadByte[(unsigned int)pr](A);
+	return pSh2Ext->ReadByte[(uintptr_t)pr](A);
 }
 
 INLINE UINT16 RW(UINT32 A)
@@ -543,21 +543,21 @@ INLINE UINT16 RW(UINT32 A)
 	return program_read_word_32be(A & AM); */
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
-	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
 #if defined LSB_FIRST
 		A ^= 2;
 #endif
 		//return (pr[A & SH2_PAGEM] << 8) | pr[(A & SH2_PAGEM) + 1];
 		return (*((unsigned short *)(pr + (A & SH2_PAGEM))));
 	}
-	return pSh2Ext->ReadWord[(unsigned int)pr](A);
+	return pSh2Ext->ReadWord[(uintptr_t)pr](A);
 }
 
 INLINE UINT16 OPRW(UINT32 A)
 {
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
-	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
 #if defined LSB_FIRST
 		A ^= 2;
 #endif
@@ -575,12 +575,12 @@ INLINE UINT32 RL(UINT32 A)
 		return program_read_dword_32be(A & AM);		*/
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
-	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
 		//return (pr[(A & SH2_PAGEM) + 0] << 24) | (pr[(A & SH2_PAGEM) + 1] << 16) | (pr[(A & SH2_PAGEM) + 2] <<  8) | (pr[(A & SH2_PAGEM) + 3] <<  0);
-		unsigned int r =  (*((unsigned int *)(pr + (A & SH2_PAGEM))));
+		unsigned int r =  (*((uintptr_t *)(pr + (A & SH2_PAGEM))));
 		return r;
 	}
-	return pSh2Ext->ReadLong[(unsigned int)pr](A);
+	return pSh2Ext->ReadLong[(uintptr_t)pr](A);
 }
 
 INLINE void WB(UINT32 A, UINT8 V)
@@ -592,14 +592,14 @@ INLINE void WB(UINT32 A, UINT8 V)
 
 	unsigned char* pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
-	if ((unsigned int)pr >= SH2_MAXHANDLER) {
+	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
 #if defined LSB_FIRST
 		A ^= 3;
 #endif
 		pr[A & SH2_PAGEM] = (unsigned char)V;
 		return;
 	}
-	pSh2Ext->WriteByte[(unsigned int)pr](A, V);
+	pSh2Ext->WriteByte[(uintptr_t)pr](A, V);
 }
 
 INLINE void WW(UINT32 A, UINT16 V)
@@ -611,14 +611,14 @@ INLINE void WW(UINT32 A, UINT16 V)
 
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
-	if ((unsigned int)pr >= SH2_MAXHANDLER) {
+	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
 #if defined LSB_FIRST
 		 A ^= 2;
 #endif
 		*((unsigned short *)(pr + (A & SH2_PAGEM))) = (unsigned short) (V);
 		return;
 	}
-	pSh2Ext->WriteWord[(unsigned int)pr](A, V);
+	pSh2Ext->WriteWord[(uintptr_t)pr](A, V);
 }
 
 INLINE void WL(UINT32 A, UINT32 V)
@@ -629,11 +629,11 @@ INLINE void WL(UINT32 A, UINT32 V)
 	program_write_dword_32be(A & AM,V); */
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
-	if ((unsigned int)pr >= SH2_MAXHANDLER) {
+	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
 		*((unsigned int *)(pr + (A & SH2_PAGEM))) =  ((unsigned int)V);
 		return;
 	}
-	pSh2Ext->WriteLong[(unsigned int)pr](A, V);
+	pSh2Ext->WriteLong[(uintptr_t)pr](A, V);
 }
 
 INLINE void sh2_exception(/*const char *message,*/ int irqline)

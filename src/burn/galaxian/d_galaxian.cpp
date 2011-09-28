@@ -6328,10 +6328,11 @@ unsigned char __fastcall AzurianZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -6359,10 +6360,11 @@ unsigned char __fastcall TazzmangZ80Read(unsigned short a)
 		case 0xb000: {
 			return GalInput[2] | GalDip[2];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -6422,10 +6424,11 @@ void __fastcall TazzmangZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -6463,10 +6466,11 @@ unsigned char __fastcall ScramblbZ80Read(unsigned short a)
 			}
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -6555,10 +6559,11 @@ void __fastcall ScramblbZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -6607,10 +6612,11 @@ unsigned char __fastcall Scramb2Z80Read(unsigned short a)
 			int Offset = a - 0x7800;
 			return ((0xff - GalInput[2] - GalDip[2]) >> Offset) & 0x01;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -6688,10 +6694,11 @@ void __fastcall Scramb2Z80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -7309,10 +7316,11 @@ void __fastcall PiscesZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -7959,10 +7967,11 @@ void __fastcall ZigzagZ80Write(unsigned short a, unsigned char d)
 			// watchdog write
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -7980,10 +7989,11 @@ unsigned char __fastcall Ozon1Z80Read(unsigned short a)
 		case 0x8102: {
 			return 0xff - (GalInput[2] | GalDip[2]);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -8016,10 +8026,11 @@ void __fastcall Ozon1Z80Write(unsigned short a, unsigned char d)
 			// coin_counter_0_w
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -8037,10 +8048,11 @@ void __fastcall Ozon1Z80PortWrite(unsigned short a, unsigned char d)
 			AY8910Write(0, 0, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Port Write => %02X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -8197,10 +8209,11 @@ unsigned char __fastcall GmgalaxZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -8315,10 +8328,11 @@ unsigned char __fastcall Fourin1Z80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -8409,10 +8423,11 @@ void __fastcall Fourin1Z80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x0000, 0x3fff, 2, GalZ80Rom1 + 0x2000 + (Fourin1Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -9098,10 +9113,11 @@ void __fastcall MooncrgxZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -9181,7 +9197,7 @@ void __fastcall MoonqsrZ80Write(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Prog Write %x, %x\n", a, d);
 }
 
 static void Mooncrs2RearrangeGfx()
@@ -9635,10 +9651,11 @@ unsigned char __fastcall BagmanmcZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -9712,10 +9729,11 @@ void __fastcall BagmanmcZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -9738,10 +9756,11 @@ unsigned char __fastcall DkongjrmZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -9813,10 +9832,11 @@ void __fastcall DkongjrmZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -9839,10 +9859,11 @@ unsigned char __fastcall CkonggZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -9901,10 +9922,11 @@ void __fastcall CkonggZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -9927,10 +9949,11 @@ unsigned char __fastcall CkongmcZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -9984,10 +10007,11 @@ void __fastcall CkongmcZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -10416,10 +10440,11 @@ unsigned char __fastcall RockclimZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -10519,10 +10544,11 @@ void __fastcall RockclimZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -10706,10 +10732,11 @@ void __fastcall BongoZ80Write(unsigned short a, unsigned char d)
 			// watchdog write?
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -10721,10 +10748,11 @@ unsigned char __fastcall BongoZ80PortRead(unsigned short a)
 		case 0x02: {
 			return AY8910Read(0);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Port Read => %02X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -10744,10 +10772,11 @@ void __fastcall BongoZ80PortWrite(unsigned short a, unsigned char d)
 			AY8910Write(0, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Port Write => %02X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -10973,7 +11002,7 @@ void __fastcall CheckmanZ80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "IO Write %x, %x\n", a, d);
 }
 
 void __fastcall CheckmanZ80Write(unsigned short a, unsigned char d)
@@ -11027,7 +11056,7 @@ void __fastcall CheckmanZ80Write(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Prog Write %x, %x\n", a, d);
 }
 
 unsigned char __fastcall CheckmanSoundZ80PortRead(unsigned short a)
@@ -11044,7 +11073,7 @@ unsigned char __fastcall CheckmanSoundZ80PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound IO Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "Sound IO Read %x\n", a);
 	return 0xff;
 }
 
@@ -11064,7 +11093,7 @@ void __fastcall CheckmanSoundZ80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Sound IO Write %x, %x\n", a, d);
 }
 
 unsigned char __fastcall CheckmanjZ80Read(unsigned short a)
@@ -11100,7 +11129,7 @@ unsigned char __fastcall CheckmanjZ80Read(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "Prog Read %x\n", a);
 	return 0xff;
 }
 
@@ -11169,7 +11198,7 @@ void __fastcall CheckmanjZ80Write(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Prog Write %x, %x\n", a, d);
 }
 
 unsigned char __fastcall CheckmanjSoundZ80Read(unsigned short a)
@@ -11180,7 +11209,7 @@ unsigned char __fastcall CheckmanjSoundZ80Read(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound Prog Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "Sound Prog Read %x\n", a);
 	return 0xff;
 }
 
@@ -11198,7 +11227,7 @@ void __fastcall CheckmanjSoundZ80Write(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Sound Prog Write %x, %x\n", a, d);
 }
 
 unsigned char __fastcall DingoZ80Read(unsigned short a)
@@ -11230,7 +11259,7 @@ unsigned char __fastcall DingoZ80Read(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "Prog Read %x\n", a);
 	return 0xff;
 }
 
@@ -11519,7 +11548,7 @@ unsigned char __fastcall MshuttleZ80PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "IO Read %x\n", a);
 	return 0xff;
 }
 
@@ -11539,7 +11568,7 @@ void __fastcall MshuttleZ80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "IO Write %x, %x\n", a, d);
 }
 
 void __fastcall MshuttleZ80Write(unsigned short a, unsigned char d)
@@ -11596,7 +11625,7 @@ void __fastcall MshuttleZ80Write(unsigned short a, unsigned char d)
 			return;
 		}
 	}
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Prog Write %x, %x\n", a, d);
 }
 
 static void MapMshuttle()
@@ -11809,10 +11838,11 @@ unsigned char __fastcall KingballZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -11908,10 +11938,11 @@ void __fastcall KingballZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -11919,7 +11950,7 @@ unsigned char __fastcall KingballSoundZ80Read(unsigned short a)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
+//			bprintf(PRINT_NORMAL, "Z80 #2 Read => %04X\n", a);
 //		}
 //	}
 
@@ -11930,7 +11961,7 @@ void __fastcall KingballSoundZ80Write(unsigned short a, unsigned char d)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #2 Write => %04X, %02X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "Z80 #2 Write => %04X, %02X\n", a, d);
 //		}
 //	}
 }
@@ -11943,10 +11974,11 @@ unsigned char __fastcall KingballSoundZ80PortRead(unsigned short a)
 		case 0x00: {
 			return GalSoundLatch;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #2 Port Read => %02X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -11961,10 +11993,11 @@ void __fastcall KingballSoundZ80PortWrite(unsigned short a, unsigned char d)
 			DACWrite(d ^ 0xff);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #2 Port Write => %02X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -12228,10 +12261,11 @@ void __fastcall FroggermcZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -12250,10 +12284,11 @@ unsigned char __fastcall FrogfZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -12307,10 +12342,11 @@ void __fastcall FrogfZ80Write(unsigned short a, unsigned char d)
 			// coin_count_0_w
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -12741,10 +12777,11 @@ unsigned char __fastcall TurpinsZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -12808,10 +12845,11 @@ void __fastcall TurpinsZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13412,10 +13450,11 @@ unsigned char __fastcall ExplorerZ80Read(unsigned short a)
 		case 0x8003: {
 			return GalInput[3] | GalDip[3];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -13501,10 +13540,11 @@ void __fastcall ExplorerZ80Write(unsigned short a, unsigned char d)
 			ZetOpen(0);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13529,10 +13569,11 @@ unsigned char __fastcall CkongsZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -13590,10 +13631,11 @@ void __fastcall CkongsZ80Write(unsigned short a, unsigned char d)
 			// watchdog write
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13614,10 +13656,11 @@ unsigned char __fastcall MarsZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -13682,10 +13725,11 @@ void __fastcall MarsZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13706,10 +13750,11 @@ unsigned char __fastcall Newsin7Z80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -13774,10 +13819,11 @@ void __fastcall Newsin7Z80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13834,10 +13880,11 @@ void __fastcall MrkougarZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13859,10 +13906,11 @@ unsigned char __fastcall HotshockZ80Read(unsigned short a)
 		case 0x8003: {
 			return GalInput[3] | GalDip[3];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -13934,10 +13982,11 @@ void __fastcall HotshockZ80Write(unsigned short a, unsigned char d)
 			ZetOpen(0);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -13955,7 +14004,7 @@ unsigned char __fastcall HotshockSoundZ80PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound Port Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, "Sound Port Read %x\n", a);
 
 	return 0;
 }
@@ -13986,7 +14035,7 @@ void __fastcall HotshockSoundZ80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Sound Port Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, "Sound Port Write %x, %x\n", a, d);
 }
 
 static void CavelonDoBankSwitch()
@@ -14012,10 +14061,11 @@ unsigned char __fastcall CavelonZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -14083,10 +14133,11 @@ void __fastcall CavelonZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -14111,10 +14162,11 @@ unsigned char __fastcall MimonscrZ80Read(unsigned short a)
 		case 0x8203: {
 			return ppi8255_r(1, a - 0x8200);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -14192,10 +14244,11 @@ void __fastcall MimonscrZ80Write(unsigned short a, unsigned char d)
 			ppi8255_w(1, a - 0x8200, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -15039,10 +15092,11 @@ unsigned char __fastcall TriplepZ80PortRead(unsigned short a)
 			if (ZetPc(-1) == 0x015d) return 0x04;
 			return 0;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Port Read => %02X\n", a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -15062,10 +15116,11 @@ void __fastcall TriplepZ80PortWrite(unsigned short a, unsigned char d)
 			AY8910Write(0, 0, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Port Write => %02X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -15087,10 +15142,11 @@ unsigned char __fastcall MarinerZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -15320,10 +15376,11 @@ unsigned char __fastcall ScorpionmcZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -15403,10 +15460,11 @@ void __fastcall ScorpionmcZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -15416,10 +15474,11 @@ unsigned char __fastcall ScorpionSoundZ80Read(unsigned short a)
 		case 0x3000: {
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #2 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -15628,10 +15687,11 @@ unsigned char __fastcall Ad2083Z80Read(unsigned short a)
 		case 0x8003: {
 			return GalInput[3] | GalDip[3];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -15708,10 +15768,11 @@ void __fastcall Ad2083Z80Write(unsigned short a, unsigned char d)
 			ZetOpen(0);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -15922,10 +15983,11 @@ void __fastcall SfxZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -15933,7 +15995,7 @@ unsigned char __fastcall SfxSampleZ80Read(unsigned short a)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #3 Read => %04X\n"), a);
+//			bprintf(PRINT_NORMAL, "Z80 #3 Read => %04X\n", a);
 //		}
 //	}
 
@@ -15944,7 +16006,7 @@ void __fastcall SfxSampleZ80Write(unsigned short a, unsigned char d)
 {
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #3 Write => %04X, %02X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "Z80 #3 Write => %04X, %02X\n", a, d);
 //		}
 //	}
 }
@@ -15955,7 +16017,7 @@ unsigned char __fastcall SfxSampleZ80PortRead(unsigned short a)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #3 Port Read => %02X\n"), a);
+//			bprintf(PRINT_NORMAL, "Z80 #3 Port Read => %02X\n", a);
 //		}
 //	}
 
@@ -15968,14 +16030,16 @@ void __fastcall SfxSampleZ80PortWrite(unsigned short a, unsigned char d)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #3 Port Write => %02X, %02X\n"), a, d);
+//			bprintf(PRINT_NORMAL, "Z80 #3 Port Write => %02X, %02X\n", a, d);
 //		}
 //	}
 }
 
 static unsigned char SfxSoundLatch2Read()
 {
-	bprintf(PRINT_NORMAL, _T("Sound Latch2 Read\n"));
+	#if 0
+	bprintf(PRINT_NORMAL, "Sound Latch2 Read\n");
+	#endif
 	return GalSoundLatch2;
 }
 
@@ -16805,10 +16869,11 @@ unsigned char __fastcall Tazmani2Z80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -16871,10 +16936,11 @@ void __fastcall Tazmani2Z80Write(unsigned short a, unsigned char d)
 			GalFlipScreenX = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -16901,10 +16967,11 @@ unsigned char __fastcall AnteatgZ80Read(unsigned short a)
 		case 0xf753: {
 			return ppi8255_r(0, 3);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -16992,10 +17059,11 @@ void __fastcall AnteatgZ80Write(unsigned short a, unsigned char d)
 			ppi8255_w(0, 3, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17020,10 +17088,11 @@ unsigned char __fastcall AnteatgbZ80Read(unsigned short a)
 		case 0xfe03: {
 			return ppi8255_r(1, a - 0xfe00);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -17092,10 +17161,11 @@ void __fastcall AnteatgbZ80Write(unsigned short a, unsigned char d)
 			ppi8255_w(1, a - 0xfe00, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17160,10 +17230,11 @@ void __fastcall StratgyxZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenX = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17229,10 +17300,11 @@ void __fastcall DarkplntZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenX = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17251,10 +17323,11 @@ unsigned char __fastcall HustlerZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -17306,10 +17379,11 @@ void __fastcall HustlerZ80Write(unsigned short a, unsigned char d)
 			// coin_count_0_w
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17334,10 +17408,11 @@ unsigned char __fastcall HustlerbZ80Read(unsigned short a)
 		case 0xc203: {
 			return ppi8255_r(1, a - 0xc200);
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -17395,10 +17470,11 @@ void __fastcall HustlerbZ80Write(unsigned short a, unsigned char d)
 			ppi8255_w(1, a - 0xc200, d);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -17504,10 +17580,11 @@ void __fastcall MimonkeyZ80Write(unsigned short a, unsigned char d)
 			GalFlipScreenY = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -18632,10 +18709,11 @@ unsigned char __fastcall DambustrZ80Read(unsigned short a)
 			// watchdog read
 			return 0xff;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
+			bprintf(PRINT_NORMAL, "Z80 #1 Read => %04X\n", a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -18727,10 +18805,11 @@ void __fastcall DambustrZ80Write(unsigned short a, unsigned char d)
 			GalPitch = d;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
+			bprintf(PRINT_NORMAL, "Z80 #1 Write => %04X, %02X\n", a, d);
 		}
+		#endif
 	}
 }
 
@@ -18740,7 +18819,7 @@ unsigned char __fastcall DambustrZ80PortRead(unsigned short a)
 
 //	switch (a) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
+//			bprintf(PRINT_NORMAL, "Z80 #1 Port Read => %02X\n", a);
 //		}
 //	}
 
@@ -19052,10 +19131,11 @@ unsigned char HunchbkgS2650Read(unsigned short Address)
 			// ???
 			return 0;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Read %04x\n"), Address);
+			bprintf(PRINT_NORMAL, "S2650 #1 Read %04x\n", Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19201,10 +19281,11 @@ void HunchbkgS2650Write(unsigned short Address, unsigned char Data)
 			GalPitch = Data;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Write %04x, %02x\n"), Address, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Write %04x, %02x\n", Address, Data);
 		}
+		#endif
 	}
 }
 
@@ -19219,10 +19300,11 @@ unsigned char HunchbkgS2650PortRead(unsigned short Port)
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19267,10 +19349,11 @@ unsigned char DrivfrcgS2650Read(unsigned short Address)
 		case 0x7700: {
 		 	return GalInput[3] | GalDip[3];
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Read %04x\n"), Address);
+			bprintf(PRINT_NORMAL, "S2650 #1 Read %04x\n", Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19403,10 +19486,11 @@ void DrivfrcgS2650Write(unsigned short Address, unsigned char Data)
 			GalVol = (GalVol & ~(1 << Offset)) | ((Data & 1) << Offset);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Write %04x, %02x\n"), Address, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Write %04x, %02x\n", Address, Data);
 		}
+		#endif
 	}
 }
 
@@ -19420,17 +19504,20 @@ unsigned char DrivfrcgS2650PortRead(unsigned short Port)
 					return 0x01;
 				}
 			}
-			bprintf(PRINT_NORMAL, _T("%x\n"), s2650GetPc());
+			#if 0
+			bprintf(PRINT_NORMAL, "%x\n", s2650GetPc());
+			#endif
 			return 0x00;
 		}
 
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Read %04x\n", Port);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19440,7 +19527,7 @@ void DrivfrcgS2650PortWrite(unsigned short Port, unsigned char Data)
 {
 //	switch (Port) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Write %04x, %02x\n"), Port, Data);
+//			bprintf(PRINT_NORMAL, "S2650 #1 Port Write %04x, %02x\n", Port, Data);
 //		}
 //	}
 }
@@ -19476,10 +19563,11 @@ unsigned char RacknrolS2650Read(unsigned short Address)
 			// ???
 			return 0;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Read %04x\n"), Address);
+			bprintf(PRINT_NORMAL, "S2650 #1 Read %04x\n", Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19525,10 +19613,11 @@ void RacknrolS2650Write(unsigned short Address, unsigned char Data)
 			GalFlipScreenY = Data & 1;
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Write %04x, %02x\n"), Address, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Write %04x, %02x\n", Address, Data);
 		}
+		#endif
 	}
 }
 
@@ -19538,10 +19627,11 @@ unsigned char RacknrolS2650PortRead(unsigned short Port)
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Read %04x\n", Port);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19569,10 +19659,11 @@ void RacknrolS2650PortWrite(unsigned short Port, unsigned char Data)
 			SN76496Write(2, Data);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Write %04x, %02x\n"), Port, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Write %04x, %02x\n", Port, Data);
 		}
+		#endif
 	}
 }
 
@@ -19595,10 +19686,11 @@ unsigned char HexpoolaS2650PortRead(unsigned short Port)
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Read %04x\n", Port);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19616,10 +19708,11 @@ void HexpoolaS2650PortWrite(unsigned short Port, unsigned char Data)
 			SN76496Write(0, Data);
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Write %04x, %02x\n"), Port, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Write %04x, %02x\n", Port, Data);
 		}
+		#endif
 	}
 }
 
@@ -19679,10 +19772,11 @@ unsigned char HunchbksS2650Read(unsigned short Address)
 			// watchdog read
 			return 0;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Read %04x\n"), Address);
+			bprintf(PRINT_NORMAL, "S2650 #1 Read %04x\n", Address);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19781,10 +19875,11 @@ void HunchbksS2650Write(unsigned short Address, unsigned char Data)
 		case 0x1701: {
 			return;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Write %04x, %02x\n"), Address, Data);
+			bprintf(PRINT_NORMAL, "S2650 #1 Write %04x, %02x\n", Address, Data);
 		}
+		#endif
 	}
 }
 
@@ -19799,10 +19894,11 @@ unsigned char HunchbksS2650PortRead(unsigned short Port)
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Read %04x\n", Port);
 		}
+		#endif
 	}
 
 	return 0;
@@ -19812,7 +19908,7 @@ void HunchbksS2650PortWrite(unsigned short Port, unsigned char Data)
 {
 //	switch (Port) {
 //		default: {
-//			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Write %04x, %02x\n"), Port, Data);
+//			bprintf(PRINT_NORMAL, "S2650 #1 Port Write %04x, %02x\n", Port, Data);
 //		}
 //	}
 }
@@ -19836,10 +19932,11 @@ unsigned char HncholmsS2650PortRead(unsigned short Port)
 		case S2650_SENSE_PORT: {
 			return GalVBlank ? 0x80 : 0x00;
 		}
-
+		#if 0
 		default: {
-			bprintf(PRINT_NORMAL, _T("S2650 #1 Port Read %04x\n"), Port);
+			bprintf(PRINT_NORMAL, "S2650 #1 Port Read %04x\n", Port);
 		}
+		#endif
 	}
 
 	return 0;

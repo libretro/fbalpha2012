@@ -761,10 +761,11 @@ unsigned char __fastcall TaitoX68KReadByte(unsigned int a)
 		case 0x900803: {
 			if (TaitoIC_SupermanCChipInUse) return SupermanCChipCtrlRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -779,7 +780,9 @@ void __fastcall TaitoX68KWriteByte(unsigned int a, unsigned char d)
 		}
 	}
 
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x300000:
 		case 0x300001: {
 			//???
@@ -803,6 +806,7 @@ void __fastcall TaitoX68KWriteByte(unsigned int a, unsigned char d)
 			//nop
 			return;
 		}
+		#endif
 
 		case 0x800001: {
 			TC0140SYTPortWrite(d);
@@ -813,11 +817,12 @@ void __fastcall TaitoX68KWriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0x900009: {
 			// coin write
 			return;
 		}
+		#endif
 
 		case 0x900803: {
 			if (TaitoIC_SupermanCChipInUse) {
@@ -832,7 +837,7 @@ void __fastcall TaitoX68KWriteByte(unsigned int a, unsigned char d)
 				return;
 			}
 		}
-
+		#if 0
 		case 0xc00000:
 		case 0xc00001: {
 			//???
@@ -842,6 +847,7 @@ void __fastcall TaitoX68KWriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -863,10 +869,11 @@ unsigned short __fastcall TaitoX68KReadWord(unsigned int a)
 		case 0x500006: {
 			return (TaitoDip[1] & 0xf0) >> 4;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -890,10 +897,11 @@ unsigned char __fastcall TaitoXZ80Read(unsigned short a)
 		case 0xe201: {
 			return TC0140SYTSlaveCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -931,7 +939,7 @@ void __fastcall TaitoXZ80Write(unsigned short a, unsigned char d)
 			TC0140SYTSlaveCommWrite(d);
 			return;
 		}
-
+		#if 0
 		case 0xe400:
 		case 0xe401:
 		case 0xe402:
@@ -954,6 +962,7 @@ void __fastcall TaitoXZ80Write(unsigned short a, unsigned char d)
 			//nop
 			return;
 		}
+		#endif
 
 		case 0xf200: {
 			TaitoZ80Bank = (d - 1) & 3;
@@ -961,10 +970,11 @@ void __fastcall TaitoXZ80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x4000, 0x7fff, 2, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -978,10 +988,11 @@ unsigned char __fastcall TwinhawkZ80Read(unsigned short a)
 		case 0xe201: {
 			return TC0140SYTSlaveCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1016,10 +1027,11 @@ void __fastcall TwinhawkZ80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x4000, 0x7fff, 2, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

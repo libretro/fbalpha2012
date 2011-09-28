@@ -355,11 +355,13 @@ unsigned short __fastcall PgmReadWord(unsigned int sekAddress)
 
 void __fastcall PgmWriteByte(unsigned int sekAddress, unsigned char /*byteValue*/)
 {
+	#if 0
 	switch (sekAddress)
 	{
 	//	default:
 	//		bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x (PC: %5.5x)\n"), byteValue, sekAddress, SekGetPC(-1));
 	}
+	#endif
 }
 
 void __fastcall PgmWriteWord(unsigned int sekAddress, unsigned short wordValue)
@@ -410,11 +412,13 @@ void __fastcall PgmWriteWord(unsigned int sekAddress, unsigned short wordValue)
 
 unsigned char __fastcall PgmZ80ReadByte(unsigned int sekAddress)
 {
+	#if 0
 	switch (sekAddress)
 	{
 //		default:
 //			bprintf(PRINT_NORMAL, _T("Attempt to read byte value of location %x\n"), sekAddress);
 	}
+	#endif
 
 	return 0;
 }

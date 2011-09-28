@@ -836,10 +836,11 @@ unsigned char __fastcall VigilanteZ80PortRead1(unsigned short a)
 		case 0x04: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -869,10 +870,11 @@ unsigned char __fastcall BuccanrsZ80PortRead1(unsigned short a)
 		case 0x04: {
 			return DrvDip[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -902,10 +904,11 @@ unsigned char __fastcall BuccanrsaZ80PortRead1(unsigned short a)
 		case 0x04: {
 			return DrvDip[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -925,12 +928,12 @@ void __fastcall VigilanteZ80PortWrite1(unsigned short a, unsigned char d)
 			ZetOpen(0);
 			return;
 		}
-
+		#if 0
 		case 0x01: {
 			// output port?
 			return;
 		}
-
+		#endif
 		case 0x04: {
 			DrvRomBank = d & 0x07;
 			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom1 + 0x10000 + (DrvRomBank * 0x4000));
@@ -963,10 +966,11 @@ void __fastcall VigilanteZ80PortWrite1(unsigned short a, unsigned char d)
 			DrvRearDisable = d & 0x40;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1030,10 +1034,11 @@ unsigned char __fastcall KikcubicZ80PortRead1(unsigned short a)
 		case 0x04: {
 			return 0xff - DrvInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1044,11 +1049,12 @@ void __fastcall KikcubicZ80PortWrite1(unsigned short a, unsigned char d)
 	a &= 0xff;
 
 	switch (a) {
+		#if 0
 		case 0x00: {
 			// coin write
 			return;
 		}
-
+		#endif
 		case 0x04: {
 			DrvRomBank = d & 0x07;
 			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom1 + 0x10000 + (DrvRomBank * 0x4000));
@@ -1065,15 +1071,15 @@ void __fastcall KikcubicZ80PortWrite1(unsigned short a, unsigned char d)
 			ZetOpen(0);
 			return;
 		}
-
+		#if 0
 		case 0x07: {
 			// nop???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1113,10 +1119,11 @@ unsigned char __fastcall VigilanteZ80PortRead2(unsigned short a)
 		case 0x84: {
 			return DrvSamples[DrvSampleAddress];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1157,10 +1164,11 @@ void __fastcall VigilanteZ80PortWrite2(unsigned short a, unsigned char d)
 			DrvSetVector(Z80_CLEAR);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1184,10 +1192,11 @@ unsigned char __fastcall BuccanrsZ80PortRead2(unsigned short a)
 		case 0x84: {
 			return DrvSamples[DrvSampleAddress];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1238,10 +1247,11 @@ void __fastcall BuccanrsZ80PortWrite2(unsigned short a, unsigned char d)
 			DrvSetVector(Z80_CLEAR);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

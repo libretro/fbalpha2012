@@ -12,6 +12,10 @@
 #include "highcol.h"
 #endif
 
+#ifdef __LIBSNES__
+#include "../ssnes-typedefs.h"
+#endif
+
 unsigned char *pPsikyoshTiles;
 unsigned int  *pPsikyoshSpriteBuffer;
 unsigned int  *pPsikyoshBgRAM;

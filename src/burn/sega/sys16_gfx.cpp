@@ -6,6 +6,10 @@
 #endif
 #include "sys16.h"
 
+#ifdef __LIBSNES__
+#include "../ssnes-typedefs.h"
+#endif
+
 int System16SpriteBanks[16];
 int System16TileBanks[8];
 int System16OldTileBanks[8];
@@ -1686,7 +1690,7 @@ static void System16ARenderSpriteLayer(int Priority)
 			break;
 		int sprpri  = 1 << ((swapWord(data[4]) >> 0) & 0x3);
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 
@@ -1803,7 +1807,7 @@ static void System16BRenderSpriteLayer(int Priority)
 		if (swapWord(data[2]) & 0x8000) break;
 		int sprpri  = 1 << ((swapWord(data[4]) >> 6) & 0x3);
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 
@@ -1975,7 +1979,7 @@ static void OutrunRenderSpriteLayer(int Priority)
 		if (swapWord(data[0]) & 0x8000) break;
 		int sprpri  = 1 << ((swapWord(data[3]) >> 12) & 3);
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 		if (sprpri != Priority) continue;
@@ -2112,7 +2116,7 @@ static void HangonRenderSpriteLayer(int Priority)
 		if ((swapWord(data[0]) >> 8) > 0xf0) break;
 		int sprpri  = ((swapWord(data[2]) >> 14) & 1) ? (1<<3) : (1<<1);
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 
@@ -2223,7 +2227,7 @@ static void HangonAltRenderSpriteLayer(int Priority)
 		if ((swapWord(data[0]) >> 8) > 0xf0) break;
 		int sprpri  = 1 << ((swapWord(data[4]) >> 0) & 0x3);
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 
@@ -2359,7 +2363,7 @@ static void XBoardRenderSpriteLayer(int Priority)
 		int sprpri  = 1 << (((data3) >> 12) & 3);
 
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		if (sprpri != 1 && sprpri != 2 && sprpri != 4 && sprpri != 8) bprintf(PRINT_IMPORTANT, _T("Unknown Sprite Priority - %x\n"), sprpri);
 #endif
 		if (sprpri != Priority) continue;

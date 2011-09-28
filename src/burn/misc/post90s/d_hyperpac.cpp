@@ -1163,7 +1163,7 @@ static void Snowbros3PlayMusic(int data)
 {
 	Snowbros3Music = data;
 
-	bprintf(PRINT_NORMAL, _T("%x\n"), data);
+	//bprintf(PRINT_NORMAL, _T("%x\n"), data);
 
 	switch (data) {
 		case 0x23: {
@@ -1261,10 +1261,11 @@ unsigned char __fastcall HyperpacReadByte(unsigned int a)
 		case 0x500004: {
 			return HyperpacInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Read byte -> %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1300,10 +1301,11 @@ unsigned char __fastcall HyperpacReadByteLow(unsigned int a)
 		case 0x500005: {
 			return 0xff - HyperpacInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Read byte -> %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0xff;
@@ -1318,30 +1320,34 @@ void __fastcall HyperpacWriteByte(unsigned int a, unsigned char d)
 			HyperpacSoundLatch = d & 0xff;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Write byte -> %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 void __fastcall TwinadvWriteByte(unsigned int a, unsigned char d)
 {
 	switch (a) {
+		#if 0
 		case 0x200000:
 		case 0x200001: {
 			return;
 		}
+		#endif
 
 		case 0x300001: {
 			HyperpacSoundLatch = d & 0xff;
 			ZetNmi();
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Write byte -> %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1351,10 +1357,11 @@ unsigned short __fastcall HyperpacReadWord(unsigned int a)
 		case 0x200000: {
 			if (Cookbib3) return 0x2a2a;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Read Word -> %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1368,10 +1375,11 @@ unsigned short __fastcall HyperpacReadWordLow(unsigned int a)
 		case 0x500004: {
 			SEK_DEF_READ_WORD(0, a);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Read Word -> %06X\n"), a);
 		}
+		#endif
 
 	}
 
@@ -1394,7 +1402,7 @@ void __fastcall HyperpacWriteWord(unsigned int a, unsigned short d)
 			SEK_DEF_WRITE_WORD(0, a, d);
 			return;
 		}
-
+		#if 0
 		case 0x400000: {
 			return;
 		}
@@ -1405,10 +1413,10 @@ void __fastcall HyperpacWriteWord(unsigned int a, unsigned short d)
 			// IRQ ACK
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Write word -> %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1440,7 +1448,7 @@ unsigned char __fastcall HoneydolReadByte(unsigned int a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Read byte -> %06X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("Read byte -> %06X\n"), a);
 
 	return 0;
 }
@@ -1456,7 +1464,7 @@ unsigned short __fastcall HoneydolReadWord(unsigned int a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Read Word -> %06X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("Read Word -> %06X\n"), a);
 
 	return 0;
 }
@@ -1464,9 +1472,11 @@ unsigned short __fastcall HoneydolReadWord(unsigned int a)
 void __fastcall HoneydolWriteByte(unsigned int a, unsigned char d)
 {
 	switch (a) {
+		#if 0
 		case 0x300000: {
 			return;
 		}
+		#endif
 
 		case 0x300001: {
 			HyperpacSoundLatch = d;
@@ -1476,21 +1486,24 @@ void __fastcall HoneydolWriteByte(unsigned int a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Write byte -> %06X, %02X\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Write byte -> %06X, %02X\n"), a, d);
 }
 
 void __fastcall HoneydolWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0x200000: {
 			return; // Watchdog?
 		}
+		#endif
 
 		case 0x300000: {
 			SEK_DEF_WRITE_WORD(0, a, d);
 			return;
 		}
 
+		#if 0
 		case 0x400000:
 		case 0x500000:
 		case 0x600000: {
@@ -1502,9 +1515,10 @@ void __fastcall HoneydolWriteWord(unsigned int a, unsigned short d)
 			// ?
 			return;
 		}
+		#endif
 	}
 
-	bprintf(PRINT_NORMAL, _T("Write word -> %06X, %04X\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Write word -> %06X, %04X\n"), a, d);
 }
 
 unsigned char __fastcall HyperpacZ80Read(unsigned short a)
@@ -1521,10 +1535,11 @@ unsigned char __fastcall HyperpacZ80Read(unsigned short a)
 				return HyperpacSoundLatch;
 			}
 		}
-
+		#if 0
 		default: {
 //			bprintf(PRINT_NORMAL, _T("Z80 Read -> %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1549,10 +1564,11 @@ void __fastcall HyperpacZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 //			bprintf(PRINT_NORMAL, _T("Z80 Write -> %04X, %02x\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1570,7 +1586,7 @@ unsigned char __fastcall TwinadvZ80PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 Port Read -> %02X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("Z80 Port Read -> %02X\n"), a);
 
 	return 0;
 }
@@ -1597,7 +1613,7 @@ void __fastcall TwinadvZ80PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 Port Write -> %02X, %02x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Z80 Port Write -> %02X, %02x\n"), a, d);
 }
 
 unsigned char __fastcall HoneydolZ80Read(unsigned short a)
@@ -1608,7 +1624,7 @@ unsigned char __fastcall HoneydolZ80Read(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 Read -> %04X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("Z80 Read -> %04X\n"), a);
 
 	return 0;
 }
@@ -1624,7 +1640,7 @@ void __fastcall HoneydolZ80Write(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 Write -> %04X, %02x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Z80 Write -> %04X, %02x\n"), a, d);
 }
 
 unsigned short __fastcall SnowbrosReadWord(unsigned int a)
@@ -1709,7 +1725,7 @@ unsigned short __fastcall Snowbros3ReadWord(unsigned int a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("68000 Read Word %06X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("68000 Read Word %06X\n"), a);
 
 	return 0;
 }
@@ -1747,7 +1763,7 @@ unsigned char __fastcall Snowbros3ReadByte(unsigned int a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("68000 Read Byte %06X\n"), a);
+	//bprintf(PRINT_NORMAL, _T("68000 Read Byte %06X\n"), a);
 
 	return 0;
 }
@@ -1769,16 +1785,17 @@ void __fastcall Snowbros3WriteWord(unsigned int a, unsigned short d)
 			}
 			return;
 		}
-
+		#if 0
 		case 0x200000:
 		case 0x800000:
 		case 0x900000:
 		case 0xa00000: {
 			return;
 		}
+		#endif
 	}
 
-	bprintf(PRINT_NORMAL, _T("68000 Write Word %06X -> %04X\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("68000 Write Word %06X -> %04X\n"), a, d);
 }
 
 void __fastcall Snowbros3WriteByte(unsigned int a, unsigned char d)
@@ -1800,7 +1817,7 @@ void __fastcall Snowbros3WriteByte(unsigned int a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("68000 Write Byte %06X -> %02X\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("68000 Write Byte %06X -> %02X\n"), a, d);
 }
 
 unsigned char __fastcall SnowbrosZ80PortRead(unsigned short a)

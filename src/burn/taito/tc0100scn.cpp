@@ -69,7 +69,7 @@ void TC0100SCNCtrlWordWrite(unsigned int Offset, UINT16 Data)
 		}
 	}
 	
-	bprintf(PRINT_IMPORTANT, _T("TC0100 Ctrl Word Write %02X, %04X\n"), Offset, Data);
+	//bprintf(PRINT_IMPORTANT, _T("TC0100 Ctrl Word Write %02X, %04X\n"), Offset, Data);
 }
 
 int TC0100SCNBottomLayer()

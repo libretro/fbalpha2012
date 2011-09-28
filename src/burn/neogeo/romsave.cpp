@@ -38,22 +38,21 @@ void SaveDecCROMs()
 {
 	extern unsigned int nSpriteSize;
 
-	if (NeoSpriteROM == NULL) {
+	if (NeoSpriteROM == NULL)
 		return;
-	}
 
-	TCHAR szNames[64] = _T("");
+	char szNames[64] = "";
 	char name[64] = "";
 	int divby = 0x1000000;
 
-	BurnUpdateProgress(0.0, _T("Initializing save routine..."), 0);
+	BurnUpdateProgress(0.0, "Initializing save routine...", 0);
 
 	if (!(nSpriteSize & 0xFFFFFF)) {
 		if (!strcmp(BurnDrvGetTextA(DRV_NAME), "svcpcb")) divby = 0x4000000;
 		if (!strcmp(BurnDrvGetTextA(DRV_NAME), "kf2k3pcb")) divby = 0x2000000;
 
 		for (unsigned int i = 0; i < (nSpriteSize / divby); i++) {
-			_stprintf(szNames, _T("Saving decrypted C%d and C%d ROMs..."), ((i*2)+1), ((i*2)+2));
+			sprintf(szNames, "Saving decrypted C%d and C%d ROMs...", ((i*2)+1), ((i*2)+2));
 			BurnUpdateProgress(0.0, szNames, 0);
 
 			sprintf(name, "%X%2.2X-c%d_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108], ((i*2)+1));
@@ -81,7 +80,7 @@ void SaveDecPROM()
 
 	char name[64] = "";
 
-	BurnUpdateProgress(0.0, _T("Saving decrypted P-ROM..."), 0);
+	BurnUpdateProgress(0.0, "Saving decrypted P-ROM...", 0);
 	sprintf (name, "%X%2.2X-p1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 	FILE* file = fopen(name, "wb");
 	if (file) {
@@ -95,7 +94,7 @@ void SaveDecSROM()
 {
 	char name[64] = "";
 
-	BurnUpdateProgress(0.0, _T("Saving decrypted S1-ROM..."), 0);
+	BurnUpdateProgress(0.0, "Saving decrypted S1-ROM...", 0);
 	sprintf (name, "%X%2.2X-s1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 	FILE* file = fopen(name, "wb");
 	if (file) {
@@ -114,7 +113,7 @@ void SaveDecVROMs(int nNumber)
 
 	// Special handler for unique V-ROM
 	if (nNumber == 1) {
-		BurnUpdateProgress(0.0, _T("Saving decrypted V1 ROM..."), 0);
+		BurnUpdateProgress(0.0, "Saving decrypted V1 ROM...", 0);
 		sprintf (name, "%X%2.2X-v1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 		FILE* V1ROM = fopen(name, "wb");
 		if (V1ROM) {
@@ -122,7 +121,7 @@ void SaveDecVROMs(int nNumber)
 			fclose(V1ROM);
 		}
 	} else if (nNumber == 3) {
-		BurnUpdateProgress(0.0, _T("Saving decrypted V1 V2 V3 ROM..."), 0);
+		BurnUpdateProgress(0.0, "Saving decrypted V1 V2 V3 ROM...", 0);
 		sprintf (name, "%X%2.2X-v1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 		FILE* V1ROM = fopen(name, "wb");
 		if (V1ROM) {
@@ -142,7 +141,7 @@ void SaveDecVROMs(int nNumber)
 			fclose(V3ROM);
 		}
 	} else {
-		BurnUpdateProgress(0.0, _T("Saving decrypted V1 and V2 ROMs..."), 0);
+		BurnUpdateProgress(0.0, "Saving decrypted V1 and V2 ROMs...", 0);
 		sprintf (name, "%X%2.2X-v1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 		FILE* V1ROM = fopen(name, "wb");
 		if (V1ROM) {
@@ -162,7 +161,7 @@ void SaveDecM1ROM()
 {
 	char name[64] = "";
 
-	BurnUpdateProgress(0.0, _T("Saving decrypted M1-ROM..."), 0);
+	BurnUpdateProgress(0.0, "Saving decrypted M1-ROM...", 0);
 	sprintf (name, "%X%2.2X-m1_decrypted.bin", Neo68KROM[0x109], Neo68KROM[0x108]);
 	FILE* file = fopen(name, "wb");
 	if (file) {

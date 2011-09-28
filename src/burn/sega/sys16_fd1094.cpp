@@ -75,7 +75,7 @@ static void fd1094_setstate_and_decrypt(int state)
 
 	if (fd1094_current_cacheposition>=S16_NUMCACHE)
 	{
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		bprintf(PRINT_NORMAL, _T("out of cache, performance may suffer, increase S16_NUMCACHE!\n"));
 #endif
 		fd1094_current_cacheposition=0;
@@ -152,9 +152,11 @@ void fd1094_driver_init(int nCPU)
 		fd1094_cpuregionsize = System16Rom2Size;
 	}
 	
+	#if 0
 	if (nFD1094CPU >= 2) {
 		bprintf(PRINT_ERROR, _T("Invalid CPU called for FD1094 Driver Init\n"));
 	}
+	#endif
 	
 	fd1094_key = System16Key;
 

@@ -1729,14 +1729,14 @@ unsigned char __fastcall Tumbleb68KReadByte(unsigned int a)
 			if (Wondl96) return 0xfb - DrvInput[2];
 			return 0xff - DrvInput[2];
 		}
-
+		#if 0
 		case 0x18000a: {
 			return 0;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1765,14 +1765,14 @@ void __fastcall Tumbleb68KWriteByte(unsigned int a, unsigned char d)
 			if (Bcstry) DrvTileBank = d << 8;
 			return;
 		}
-
+		#if 0
 		case 0x100003: {
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1791,14 +1791,9 @@ unsigned short __fastcall Tumbleb68KReadWord(unsigned int a)
 			return (DrvDip[1] << 8) | DrvDip[0];
 		}
 
-		case 0x180004: {
+		case 0x180004:
+		case 0x180006:
 			return -0;
-		}
-
-		case 0x180006: {
-			return -0;
-		}
-
 		case 0x180008: {
 			if (Bcstry && (SekGetPC(0) == 0x560)) {
 				return 0x1a0;
@@ -1815,7 +1810,7 @@ unsigned short __fastcall Tumbleb68KReadWord(unsigned int a)
 			if (Wondl96) return 0xfff3 - DrvInput[2];
 			return 0xffff - DrvInput[2];
 		}
-
+		#if 0
 		case 0x18000a: {
 			return 0;
 		}
@@ -1831,6 +1826,7 @@ unsigned short __fastcall Tumbleb68KReadWord(unsigned int a)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1882,14 +1878,14 @@ void __fastcall Tumbleb68KWriteWord(unsigned int a, unsigned short d)
 			if (Wlstar) DrvTileBank = d & 0x4000;
 			return;
 		}
-
+		#if 0
 		case 0x18000c: {
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1907,10 +1903,11 @@ unsigned short __fastcall Suprtrio68KReadWord(unsigned int a)
 		case 0xe80002: {
 			return 0xff00 | DrvDip[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1935,19 +1932,22 @@ void __fastcall Suprtrio68KWriteWord(unsigned int a, unsigned short d)
 			}
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall Fncywld68KReadByte(unsigned int a)
 {
 	switch (a) {
+		#if 0
 		case 0x100003: {
 			return 0;
 		}
+		#endif
 
 		case 0x100005: {
 			return MSM6295ReadStatus(0);
@@ -1956,19 +1956,21 @@ unsigned char __fastcall Fncywld68KReadByte(unsigned int a)
 		case 0x180002: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		case 0x180005: {
 			return -0;
 		}
+		#endif
 
 		case 0x180009: {
 			if (DrvVBlank) return 0xf7 - DrvInput[2];
 			return 0xff - DrvInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1991,10 +1993,11 @@ void __fastcall Fncywld68KWriteByte(unsigned int a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2009,19 +2012,15 @@ unsigned short __fastcall Fncywld68KReadWord(unsigned int a)
 			return (DrvDip[1] << 8) | DrvDip[0];
 		}
 
-		case 0x180004: {
+		case 0x180004: 
+		case 0x18000e:
+		case 0x180006:
 			return -0;
-		}
-
-		case 0x180006: {
-			return -0;
-		}
-
 		case 0x180008: {
 			if (DrvVBlank) return 0xfff7 - DrvInput[2];
 			return 0xffff - DrvInput[2];
 		}
-
+		#if 0
 		case 0x18000a: {
 			return 0;
 		}
@@ -2030,13 +2029,11 @@ unsigned short __fastcall Fncywld68KReadWord(unsigned int a)
 			return 0;
 		}
 
-		case 0x18000e: {
-			return -0;
-		}
 
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2056,10 +2053,11 @@ void __fastcall Fncywld68KWriteWord(unsigned int a, unsigned short d)
 			BurnYM2151SelectRegister(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2077,10 +2075,11 @@ unsigned short __fastcall Jumppop68KReadWord(unsigned int a)
 		case 0x180006: {
 			return (DrvDip[1] << 8) | DrvDip[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2094,21 +2093,23 @@ void __fastcall Jumppop68KWriteWord(unsigned int a, unsigned short d)
 	}
 
 	switch (a) {
+		#if 0
 		case 0x180000: {
 			// NOP
 			return;
 		}
+		#endif
 
 		case 0x18000c: {
 			DrvSoundLatch = d & 0xff;
-			bprintf(PRINT_NORMAL, _T("Latch Sent -> %02X\n"), DrvSoundLatch);
+			//bprintf(PRINT_NORMAL, _T("Latch Sent -> %02X\n"), DrvSoundLatch);
 			ZetOpen(0);
 			ZetRaiseIrq(0);
 			nCyclesDone[1] += ZetRun(100);
 			ZetClose();
 			return;
 		}
-
+		#if 0
 		case 0x180008:
 		case 0x18000a: {
 			return;
@@ -2117,6 +2118,7 @@ void __fastcall Jumppop68KWriteWord(unsigned int a, unsigned short d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2130,10 +2132,11 @@ unsigned char __fastcall JumpkidsZ80Read(unsigned short a)
 		case 0xa000: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2152,10 +2155,11 @@ void __fastcall JumpkidsZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2173,10 +2177,11 @@ unsigned char __fastcall SemicomZ80Read(unsigned short a)
 		case 0xf008: {
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2199,20 +2204,22 @@ void __fastcall SemicomZ80Write(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		case 0xf006: {
 			return;
 		}
+		#endif
 
 		case 0xf00e: {
 			DrvOkiBank = d;
 			memcpy(MSM6295ROM + 0x30000, DrvMSM6295ROMSrc + 0x30000 + (DrvOkiBank * 0x10000), 0x10000);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2226,11 +2233,11 @@ unsigned char __fastcall JumppopZ80PortRead(unsigned short a)
 		}
 
 		case 0x03: {
-			bprintf(PRINT_IMPORTANT, _T("Latch Read %02X\n"), DrvSoundLatch);
+			//bprintf(PRINT_IMPORTANT, _T("Latch Read %02X\n"), DrvSoundLatch);
 			ZetLowerIrq(0);
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		case 0x06: {
 			// NOP
 			return 0;
@@ -2239,6 +2246,7 @@ unsigned char __fastcall JumppopZ80PortRead(unsigned short a)
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Port Read -> %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2263,12 +2271,12 @@ void __fastcall JumppopZ80PortWrite(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		case 0x04: {
 			// NOP
 			return;
 		}
-
+		#endif
 		case 0x05: {
 			//memory_set_bankptr(1, memory_region(REGION_CPU2) + 0x10000 + (0x4000 * data));
 			DrvZ80Bank = d;
@@ -2276,10 +2284,11 @@ void __fastcall JumppopZ80PortWrite(unsigned short a, unsigned char d)
 			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + (DrvZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Port Write -> %02X, %02x\n"), a, d);
 		}
+		#endif
 	}
 }
 

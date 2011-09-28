@@ -2508,8 +2508,9 @@ unsigned short __fastcall macross2_main_read_word(unsigned int address)
 
 void __fastcall macross2_main_write_byte(unsigned int address, unsigned char data)
 {
-	bprintf (0, _T("%x, %x wb\n"), address, data);
+	//bprintf (0, _T("%x, %x wb\n"), address, data);
 
+	#if 0
 	switch (address)
 	{
 		case 0x100014:
@@ -2517,6 +2518,7 @@ void __fastcall macross2_main_write_byte(unsigned int address, unsigned char dat
 	//		*flipscreen = data & 1;
 		return;
 	}
+	#endif
 }
 
 void __fastcall macross2_main_write_word(unsigned int address, unsigned short data)
@@ -2528,7 +2530,7 @@ void __fastcall macross2_main_write_word(unsigned int address, unsigned short da
 		return;
 
 		case 0x100016:
-			bprintf (0, _T("%x, %x ww\n"), address, data);
+			//bprintf (0, _T("%x, %x ww\n"), address, data);
 			if (data == 0) {
 				if (macross2_sound_enable != 0) {
 					macross2_sound_sync();
@@ -2788,10 +2790,12 @@ void __fastcall mustangb_main_write_word(unsigned int address, unsigned short da
 
 	switch (address)
 	{
+		#if 0
 		case 0x080014:
 		case 0x0c0014:
 	//		*flipscreen = data & 1;
 		return;
+		#endif
 
 		case 0x08001e:
 		case 0x0c001e:
@@ -2807,13 +2811,14 @@ void __fastcall mustangb_main_write_byte(unsigned int address, unsigned char dat
 
 	switch (address)
 	{
+		#if 0
 		case 0x080014:
 		case 0x080015:
 		case 0x0c0014:
 		case 0x0c0015:
 	//		*flipscreen = data & 1;
 		return;
-
+		#endif
 		case 0x08001e:
 		case 0x08001f:
 		case 0x0c001e:

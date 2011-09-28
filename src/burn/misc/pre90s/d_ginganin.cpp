@@ -231,11 +231,10 @@ void ginganin_sound_write(unsigned short address, unsigned char data)
 
 unsigned char ginganin_sound_read(unsigned short address)
 {
-	if (address == 0x1800) {
+	if (address == 0x1800)
 		return *soundlatch;
-	}
 
-	bprintf(PRINT_NORMAL, _T("read %x\n"), address);
+	//bprintf(PRINT_NORMAL, _T("read %x\n"), address);
 
 	return 0;
 }

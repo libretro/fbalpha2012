@@ -549,10 +549,11 @@ unsigned char __fastcall GalagaZ80ProgRead(unsigned short a)
 		case 0x7100: {
 			return IOChipCustomCommand;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #%i Read %04x\n"), ZetGetActive(), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -603,12 +604,12 @@ void __fastcall GalagaZ80ProgWrite(unsigned short a, unsigned char d)
 				DrvCPU3Halt = 0;
 			}
 		}
-
+		#if 0
 		case 0x6830: {
 			// watchdog write
 			return;
 		}
-
+		#endif
 		case 0x7000:
 		case 0x7001:
 		case 0x7002:
@@ -681,10 +682,11 @@ void __fastcall GalagaZ80ProgWrite(unsigned short a, unsigned char d)
 			DrvFlipScreen = d & 0x01;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #%i Write %04x, %02x\n"), ZetGetActive(), a, d);
 		}
+		#endif
 	}
 }
 

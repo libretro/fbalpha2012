@@ -293,9 +293,10 @@ unsigned char __fastcall shadfrceReadByte(unsigned int sekAddress)
 			return ~(DrvInput[7] | (bVBlink << 2)) /*& 0x0F*/;
 		case 0x1D0027:
 			return ~DrvInput[6];
-
+			#if 0
 		case 0x1C000B:
 			return 0;
+			#endif
 		case 0x1D000D:
 			return nBrightness;
 //		default:
@@ -337,7 +338,7 @@ void __fastcall shadfrceWriteByte(unsigned int sekAddress, unsigned char byteVal
 			nBrightness = byteValue;
 			for(int i=0;i<0x4000;i++) CalcCol(i);
 			break;
-
+			#if 0
 		case 0x1C0009:
 		case 0x1C000D:
 		case 0x1D0007:
@@ -349,7 +350,7 @@ void __fastcall shadfrceWriteByte(unsigned int sekAddress, unsigned char byteVal
 			break;
 		default:
 			bprintf(PRINT_NORMAL, _T("Attempt to write byte value %x to location %x\n"), byteValue, sekAddress);
-
+			#endif
 	}
 }
 
@@ -360,7 +361,7 @@ void __fastcall shadfrceWriteWord(unsigned int sekAddress, unsigned short wordVa
 		case 0x1C0002: bg0scrolly = wordValue & 0x1FF; break;
 		case 0x1C0004: bg1scrollx = wordValue & 0x1FF; break;
 		case 0x1C0006: bg1scrolly = wordValue & 0x1FF; break;
-
+		#if 0
 		case 0x1D000D:
 			bprintf(PRINT_NORMAL, _T("Brightness set to %04x\n"), wordValue);
 			//nBrightness = byteValue;
@@ -377,7 +378,7 @@ void __fastcall shadfrceWriteWord(unsigned int sekAddress, unsigned short wordVa
 			break;
 		default:
 			bprintf(PRINT_NORMAL, _T("Attempt to write word value %x to location %x\n"), wordValue, sekAddress);
-
+		#endif
 	}
 }
 
@@ -430,11 +431,13 @@ void __fastcall shadfrceZWrite(unsigned short a, unsigned char d)
 		//bprintf(PRINT_NORMAL, _T("MSM6295Command(%02x)\n"), d);
 		MSM6295Command(0, d);
 		break;
+		#if 0
 	case 0xE800:	// oki_bankswitch_w
-		bprintf(PRINT_NORMAL, _T("oki_bankswitch_w(%02X)\n"), d);
+		//bprintf(PRINT_NORMAL, _T("oki_bankswitch_w(%02X)\n"), d);
 		break;
 //	default:
 //		bprintf(PRINT_NORMAL, _T("Z80 address %04X -> %02X.\n"), a, d);
+	#endif
 	}
 }
 

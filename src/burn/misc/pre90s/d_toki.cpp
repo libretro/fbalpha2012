@@ -621,7 +621,7 @@ void __fastcall toki_seibu_sound_write(unsigned short address, unsigned char dat
 		return;
 	}
 
-	bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x\n"), address, data);
+	//bprintf (PRINT_NORMAL, _T("%4.4x, %2.2x\n"), address, data);
 }
 
 unsigned char __fastcall toki_seibu_sound_read(unsigned short address)
@@ -645,7 +645,7 @@ unsigned char __fastcall toki_seibu_sound_read(unsigned short address)
 			return MSM6295ReadStatus(0);
 	}
 
-	bprintf (PRINT_NORMAL, _T("%4.4x,\n"), address);
+	//bprintf (PRINT_NORMAL, _T("%4.4x,\n"), address);
 
 	return 0;
 }

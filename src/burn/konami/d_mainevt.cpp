@@ -5,11 +5,7 @@
 #include "hd6309_intf.h"
 #include "konamiic.h"
 #include "burn_ym2151.h"
-#ifdef __CELLOS_LV2__
-#include "../upd7759.h"
-#else
-#include "UPD7759.h"
-#endif
+#include "upd7759.h"
 #include "k007232.h"
 
 static unsigned char *AllMem;

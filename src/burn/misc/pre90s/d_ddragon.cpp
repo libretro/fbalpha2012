@@ -989,16 +989,15 @@ unsigned char DrvDdragonHD6309ReadByte(unsigned short Address)
 		case 0x3804: {
 			return DrvDip[1];
 		}
-		
+		#if 0
 		case 0x380b: {
 			// ???
 			return 0;
 		}
+		#endif
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("HD6309 Read Byte -> %04X\n"), Address);
-#endif
+	//bprintf(PRINT_NORMAL, _T("HD6309 Read Byte -> %04X\n"), Address);
 	
 	return 0;
 }
@@ -1104,16 +1103,15 @@ void DrvDdragonHD6309WriteByte(unsigned short Address, unsigned char Data)
 			}
 			return;
 		}
-		
+		#if 0
 		case 0x380f: {
 			// ???
 			return;
 		}
+		#endif
 	}	
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("HD6309 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("HD6309 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 unsigned char DrvDdragonHD63701ReadByte(unsigned short Address)
@@ -1127,9 +1125,7 @@ unsigned char DrvDdragonHD63701ReadByte(unsigned short Address)
 		return DrvSpriteRam[Address - 0x8000];
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6800 Read Byte -> %04X\n"), Address);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6800 Read Byte -> %04X\n"), Address);
 	
 	return 0;
 }
@@ -1160,9 +1156,7 @@ void DrvDdragonHD63701WriteByte(unsigned short Address, unsigned char Data)
 		return;
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6800 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6800 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 unsigned char DrvDdragonbSubHD6309ReadByte(unsigned short Address)
@@ -1175,9 +1169,7 @@ unsigned char DrvDdragonbSubHD6309ReadByte(unsigned short Address)
 		return DrvSpriteRam[Address - 0x8000];
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("Sub HD6309 Read Byte -> %04X\n"), Address);
-#endif
+	//bprintf(PRINT_NORMAL, _T("Sub HD6309 Read Byte -> %04X\n"), Address);
 	
 	return 0;
 }
@@ -1211,9 +1203,7 @@ void DrvDdragonbSubHD6309WriteByte(unsigned short Address, unsigned char Data)
 		return;
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("Sub HD6309 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("Sub HD6309 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 unsigned char DrvDdragonbaM6803ReadByte(unsigned short Address)
@@ -1226,9 +1216,7 @@ unsigned char DrvDdragonbaM6803ReadByte(unsigned short Address)
 		return DrvSpriteRam[Address - 0x8000];
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6803 Read Byte -> %04X\n"), Address);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6803 Read Byte -> %04X\n"), Address);
 	
 	return 0;
 }
@@ -1251,9 +1239,7 @@ void DrvDdragonbaM6803WriteByte(unsigned short Address, unsigned char Data)
 		return;
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6803 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6803 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 void DrvDdragonbaM6803WritePort(unsigned short, unsigned char)
@@ -1274,23 +1260,23 @@ void __fastcall Ddragon2SubZ80Write(unsigned short Address, unsigned char Data)
 	}
 	
 	switch (Address) {
+		#if 0
 		case 0xd000: {
 			// Lower NMI
 			return;
 		}
-		
+		#endif
 		case 0xe000: {
 			HD6309Open(0);
 			HD6309SetIRQ(HD6309_IRQ_LINE, HD6309_IRQSTATUS_ACK);
 			HD6309Close();
 			return;
 		}
-		
-#ifndef SN_TARGET_PS3
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Sub Z80 Write => %04X, %02X\n"), Address, Data);
 		}
-#endif
+		#endif
 	}
 }
 
@@ -1311,9 +1297,7 @@ unsigned char DrvDdragonM6809ReadByte(unsigned short Address)
 		}
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6809 Read Byte -> %04X\n"), Address);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6809 Read Byte -> %04X\n"), Address);
 	
 	return 0;
 }
@@ -1377,9 +1361,7 @@ void DrvDdragonM6809WriteByte(unsigned short Address, unsigned char Data)
 		}
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M6809 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M6809 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 unsigned char __fastcall Ddragon2SoundZ80Read(unsigned short Address)
@@ -1397,11 +1379,11 @@ unsigned char __fastcall Ddragon2SoundZ80Read(unsigned short Address)
 			return DrvSoundLatch;
 		}
 		
-#ifndef SN_TARGET_PS3
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Sound Z80 Read => %04X\n"), Address);
 		}
-#endif
+		#endif
 	}
 
 	return 0;
@@ -1425,37 +1407,35 @@ void __fastcall Ddragon2SoundZ80Write(unsigned short Address, unsigned char Data
 			return;
 		}
 		
-#ifndef SN_TARGET_PS3
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Sound Z80 Write => %04X, %02X\n"), Address, Data);
 		}
-#endif
+		#endif
 	}
 }
 
 unsigned char DrvMCUReadByte(unsigned short Address)
 {
-	if (Address <= 0x0007) {
+	if (Address <= 0x0007)
 		return DrvMCUPorts[Address];
-	}
 	
-#ifndef SN_TARGET_PS3
+	#if 0
 	bprintf(PRINT_NORMAL, _T("M68705 Read Byte -> %04X\n"), Address);
-#endif
+	#endif
 	
 	return 0;
 }
 
 void DrvMCUWriteByte(unsigned short Address, unsigned char Data)
 {
-	if (Address <= 0x0007) {
+	if (Address <= 0x0007)
+	{
 		DrvMCUPorts[Address] = Data;
 		return;
 	}
 	
-#ifndef SN_TARGET_PS3
-	bprintf(PRINT_NORMAL, _T("M68705 Write Byte -> %04X, %02X\n"), Address, Data);
-#endif
+	//bprintf(PRINT_NORMAL, _T("M68705 Write Byte -> %04X, %02X\n"), Address, Data);
 }
 
 static int CharPlaneOffsets[4]          = { 0, 2, 4, 6 };

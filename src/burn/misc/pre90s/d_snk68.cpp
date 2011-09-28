@@ -573,7 +573,7 @@ void __fastcall pow_write_byte(unsigned int address, unsigned char data)
 
 unsigned short __fastcall pow_read_word(unsigned int address)
 {
-	bprintf (PRINT_NORMAL, _T("read %x, w\n"), address);
+	//bprintf (PRINT_NORMAL, _T("read %x, w\n"), address);
 
 	return 0;
 }

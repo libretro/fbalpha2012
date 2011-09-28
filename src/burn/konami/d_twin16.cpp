@@ -3,11 +3,7 @@
 
 #include "tiles_generic.h"
 #include "burn_ym2151.h"
-#ifdef __CELLOS_LV2__
 #include "../upd7759.h"
-#else
-#include "UPD7759.h"
-#endif
 #include "k007232.h"
 #ifdef SN_TARGET_PS3
 #include "highcol.h"

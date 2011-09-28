@@ -43,7 +43,7 @@ static int nClipX8, nClipX16;
 static int nClipY8, nClipY16;
 
 // Include the tile rendering functions
-#include "cave_tile_func.h"
+#include "../../generated/cave_tile_func.h"
 
 static void CaveQueue8x8Layer_Normal(int nLayer)
 {

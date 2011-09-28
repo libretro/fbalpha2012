@@ -419,7 +419,7 @@ static int LoadRoms(NeoGameInfo* pInfo)
 			BurnLoadRom(NeoTextROM + 0x020000, pInfo->nTextOffset, 1);
 		} else {
 			// Extract data from the end of C ROMS
-			BurnUpdateProgress(0.0, _T("Generating text layer graphics..."), 0);
+			BurnUpdateProgress(0.0, "Generating text layer graphics...", 0);
 			NeoExtractSData(NeoSpriteROM, NeoTextROM + 0x020000, nSpriteSize, nNeoTextROMSize);
 
 			if ((BurnDrvGetHardwareCode() & HARDWARE_SNK_CONTROLMASK) == HARDWARE_SNK_PCB) {
@@ -516,7 +516,7 @@ static int LoadRoms(NeoGameInfo* pInfo)
 	}
 
 	// Decode text data
-	BurnUpdateProgress(0.0, _T("Decoding text layer graphics..."), 0);
+	BurnUpdateProgress(0.0, "Decoding text layer graphics...", 0);
 	NeoDecodeText(NeoTextROM, nNeoTextROMSize);
 
 	// This is for saving decrypted C-ROMs
@@ -804,9 +804,9 @@ int NeoScan(int nAction, int* pnMin)
 		SCAN_VAR(nZ80Bank0); SCAN_VAR(nZ80Bank1); SCAN_VAR(nZ80Bank2); SCAN_VAR(nZ80Bank3);
 		SCAN_VAR(nNeo68KROMBank);
 
-		NeoGraphicsRAMBank -= (unsigned int)NeoGraphicsRAM;
+		NeoGraphicsRAMBank -= (uintptr_t)NeoGraphicsRAM;
 		SCAN_VAR(NeoGraphicsRAMBank); SCAN_VAR(NeoGraphicsRAMPointer); SCAN_VAR(nNeoGraphicsModulo);
-		NeoGraphicsRAMBank += (unsigned int)NeoGraphicsRAM;
+		NeoGraphicsRAMBank += (uintptr_t)NeoGraphicsRAM;
 
 		SCAN_VAR(nNeoSpriteFrame); SCAN_VAR(nSpriteFrameSpeed); SCAN_VAR(nSpriteFrameTimer);
 
@@ -822,9 +822,9 @@ int NeoScan(int nAction, int* pnMin)
 
 		SCAN_VAR(nInputSelect);
 
-		NeoInputBank -= (unsigned int)NeoInput;
+		NeoInputBank -= (uintptr_t)NeoInput;
 		SCAN_VAR(NeoInputBank);
-		NeoInputBank += (unsigned int)NeoInput;
+		NeoInputBank += (uintptr_t)NeoInput;
 
 		SCAN_VAR(nAnalogAxis);
 
@@ -1202,6 +1202,7 @@ void __fastcall neogeoWriteByte(unsigned int sekAddress, unsigned char byteValue
 
 	static int blaat;
 
+		#if 0
 		case 0x380031: {									// Setting the bits to 0 sends the value written to 0x380041 to the appropriate output
 															// Select LED output (bits 5/4 - numeric displays, bit 3 - marquee lights, one per slot)
 //			bprintf(PRINT_NORMAL, _T("  - 0x%06X -> 0x%02X.\n"), sekAddress, byteValue);
@@ -1210,6 +1211,7 @@ void __fastcall neogeoWriteByte(unsigned int sekAddress, unsigned char byteValue
 			}
 			break;
 		}
+		#endif
 		case 0x380041:										// LED output values
 			// for numeric displays - digits displayed    = ~bytevalue
 			// for start buttons    - highlighted marquee = ~bytevalue
@@ -1390,8 +1392,8 @@ void __fastcall neogeoWriteWord(unsigned int sekAddress, unsigned short wordValu
 
 			if ((nIRQ2Control & 0x10) == 0 && wordValue & 0x10) {
 
-#if 0 || defined LOG_IRQ2
-				bprintf(PRINT_NORMAL, _T("  - IRQ2 enabled  (at line %3i, IRQControl: 0x%02X).\n"), SekCurrentScanline(), wordValue & 0xFF);
+#if 0
+				bprintf(PRINT_NORMAL, "  - IRQ2 enabled  (at line %3i, IRQControl: 0x%02X).\n", SekCurrentScanline(), wordValue & 0xFF);
 #endif
 
 				if (nIRQCycles < nCyclesSegment) {
@@ -1399,9 +1401,9 @@ void __fastcall neogeoWriteWord(unsigned int sekAddress, unsigned short wordValu
 				}
 			}
 
-#if 0 || defined LOG_IRQ2
+#if 0
 			if (nIRQ2Control & 0x10 && (wordValue & 0x10) == 0) {
-				bprintf(PRINT_NORMAL, _T("  - IRQ2 disabled (at line %3i, IRQControl: 0x%02X).\n"), SekCurrentScanline(), wordValue & 0xFF);
+				bprintf(PRINT_NORMAL, "  - IRQ2 disabled (at line %3i, IRQControl: 0x%02X).\n", SekCurrentScanline(), wordValue & 0xFF);
 			}
 #endif
 
@@ -1421,8 +1423,8 @@ void __fastcall neogeoWriteWord(unsigned int sekAddress, unsigned short wordValu
 //			bprintf(PRINT_NORMAL, "0x%06X -> 0x%04X\n", sekAddress, wordValue);
 			nIRQ2Offset = (nIRQ2Offset & 0xFFFF0000) | wordValue;
 
-#if 0 || defined LOG_IRQ2
-			bprintf(PRINT_NORMAL, _T("  - IRQ offs -> 0x%08X (at line %3i, IRQControl: 0x%02X).\n"), nIRQ2Offset, SekCurrentScanline(), nIRQ2Control);
+#if 0
+			bprintf(PRINT_NORMAL, "  - IRQ offs -> 0x%08X (at line %3i, IRQControl: 0x%02X).\n", nIRQ2Offset, SekCurrentScanline(), nIRQ2Control);
 #endif
 
 			if (nIRQ2Control & 0x20) {
@@ -1436,8 +1438,8 @@ void __fastcall neogeoWriteWord(unsigned int sekAddress, unsigned short wordValu
 //				bprintf(PRINT_NORMAL, _T("   %i - %i\n"), SekCurrentScanline(), SekTotalCycles() % nSekCyclesScanline);
 #endif
 
-#if 0 || defined LOG_IRQ2
-				bprintf(PRINT_NORMAL, _T("    IRQ Line -> %3i (at line %3i, relative).\n"), nIRQCycles / nSekCyclesScanline, SekCurrentScanline());
+#if 0
+				bprintf(PRINT_NORMAL, "    IRQ Line -> %3i (at line %3i, relative).\n", nIRQCycles / nSekCyclesScanline, SekCurrentScanline());
 #endif
 
 				if (nIRQCycles < 0) {
@@ -1617,7 +1619,7 @@ int neogeoReset()
 		*((unsigned short*)(Neo68KBIOS + 0x000400)) = ((NeoSystem & 4) << 13) | (NeoSystem & 0x03);
 	}
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 	if ((BurnDrvGetHardwareCode() & HARDWARE_SNK_CONTROLMASK) != HARDWARE_SNK_PCB && (BurnDrvGetHardwareCode() & HARDWARE_SNK_CONTROLMASK) != HARDWARE_SNK_TRACKBALL) {
 		switch (NeoSystem & 0x1f) {
 			case 0x00: { bprintf(PRINT_IMPORTANT, _T("Emulating using MVS Asia/Europe ver. 6 (1 slot) BIOS\n")); break; }
@@ -1792,7 +1794,7 @@ int NeoInit()
 			pInfo->nADPCMBNum = 0;
 		}
 
-#if 1 && defined FBA_DEBUG
+#if 0 && defined FBA_DEBUG
 		bprintf(PRINT_IMPORTANT, _T("  - P: %i (%i);"), pInfo->nCodeOffset, pInfo->nCodeNum);
 		if (pInfo->nTextOffset >= 0) {
 			bprintf(PRINT_IMPORTANT, _T(" S: %i;"), pInfo->nTextOffset);

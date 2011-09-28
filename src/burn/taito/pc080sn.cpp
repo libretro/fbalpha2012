@@ -356,12 +356,14 @@ void PC080SNCtrlWrite(unsigned int Offset, UINT16 Data)
 {
 	PC080SNCtrl[Offset + 4] = Data;
 	
+	#if 0
 	switch (Offset) {
 		case 0: {
 			if (Data & 1) bprintf(PRINT_NORMAL, _T("PC080SN Flipped\n"));
 			return;
 		}
 	}
+	#endif
 }
 
 void PC080SNOverrideFgScroll(int xScroll, int yScroll)

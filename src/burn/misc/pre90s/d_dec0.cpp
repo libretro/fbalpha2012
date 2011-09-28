@@ -687,10 +687,11 @@ unsigned char __fastcall Dec068KReadByte(unsigned int a)
 		case 0x30c005: {
 			return DrvDip[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -706,7 +707,7 @@ void __fastcall Dec068KWriteByte(unsigned int a, unsigned char d)
 
 		case 0x30c015: {
 			DrvSoundLatch = d;
-//			bprintf(PRINT_NORMAL, _T("Latch sent %x\n"), DrvSoundLatch);
+//			//bprintf(PRINT_NORMAL, _T("Latch sent %x\n"), DrvSoundLatch);
 			m6502Open(0);
 			m6502SetIRQ(M6502_NMI);
 			m6502Run(100);
@@ -719,10 +720,11 @@ void __fastcall Dec068KWriteByte(unsigned int a, unsigned char d)
 			i8751RetVal = 0;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -749,10 +751,11 @@ unsigned short __fastcall Dec068KReadWord(unsigned int a)
 		case 0x30c008: {
 			return i8751RetVal;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -840,10 +843,11 @@ void __fastcall Dec068KWriteWord(unsigned int a, unsigned short d)
 			m6502Close();
 			return;
 		}
-
+		#if 0
 		case 0x30c018: {
 			return;
 		}
+		#endif
 
 		case 0x30c016: {
 			if (Dec0Game == DEC0_GAME_BADDUDES) BaddudesI8751Write(d);
@@ -858,10 +862,11 @@ void __fastcall Dec068KWriteWord(unsigned int a, unsigned short d)
 			i8751RetVal = 0;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -877,10 +882,11 @@ unsigned char Dec0SoundReadByte(unsigned short a)
 		case 0x3800: {
 			return MSM6295ReadStatus(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6502 Read Byte %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -913,10 +919,11 @@ void Dec0SoundWriteByte(unsigned short a, unsigned char d)
 			MSM6295Command(0, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("M6502 Write Byte %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

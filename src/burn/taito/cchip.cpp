@@ -1431,7 +1431,7 @@ void OpwolfCChipUpdate(unsigned char Input1, unsigned char Input2)
 	{
 		// Simulate time for command to execute (exact timing unknown, this is close)
 		CurrentCmd=0xf5;
-		bprintf(PRINT_NORMAL, _T("Accessing Level Data Command\n"));
+		//bprintf(PRINT_NORMAL, _T("Accessing Level Data Command\n"));
 		AccessLevelDataCommand();
 //		timer_set(ATTOTIME_IN_CYCLES(80000,0), NULL, 0, opwolf_timer_callback);
 	}

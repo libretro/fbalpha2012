@@ -204,7 +204,7 @@ static unsigned short pgm_kov_asic27_r(unsigned short offset)
 {
 	unsigned int val=(ASIC27REGS[1]<<16)|(ASIC27REGS[0]);
 
-	bprintf (0, _T("%2.2x\n"), ASIC27REGS[1]&0xff);
+	//bprintf (0, "%2.2x\n", ASIC27REGS[1]&0xff);
 
 	switch(ASIC27REGS[1]&0xff) {
 		case 0x67:

@@ -528,10 +528,11 @@ unsigned char __fastcall Burglarx68KReadByte(unsigned int a)
 		case 0x80018c: {
 			return BurnYM3812Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -560,10 +561,11 @@ void __fastcall Burglarx68KWriteByte(unsigned int a, unsigned char d)
 			memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -581,10 +583,12 @@ unsigned short __fastcall Burglarx68KReadWord(unsigned int a)
 void __fastcall Burglarx68KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0x800030: {
 			// NOP???
 			return;
 		}
+		#endif
 
 		case 0x80010c: {
 			DrvScrollX0 = d & 0x3ff;
@@ -615,15 +619,15 @@ void __fastcall Burglarx68KWriteWord(unsigned int a, unsigned short d)
 			DrvScrollY1 = d & 0x3ff;
 			return;
 		}
-
+		#if 0
 		case 0x8001e0: {
 			// IRQ Ack???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -696,10 +700,11 @@ unsigned char __fastcall Zeropnt68KReadByte(unsigned int a)
 		case 0x80018c: {
 			return BurnYM3812Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -728,10 +733,11 @@ void __fastcall Zeropnt68KWriteByte(unsigned int a, unsigned char d)
 			memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -749,10 +755,12 @@ unsigned short __fastcall Zeropnt68KReadWord(unsigned int a)
 void __fastcall Zeropnt68KWriteWord(unsigned int a, unsigned short d)
 {
 	switch (a) {
+		#if 0
 		case 0x800030: {
 			// NOP???
 			return;
 		}
+		#endif
 
 		case 0x80010c: {
 			DrvScrollX0 = d & 0x3ff;
@@ -783,15 +791,15 @@ void __fastcall Zeropnt68KWriteWord(unsigned int a, unsigned short d)
 			DrvScrollY1 = d & 0x3ff;
 			return;
 		}
-
+		#if 0
 		case 0x8001e0: {
 			// IRQ Ack???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -867,10 +875,11 @@ unsigned char __fastcall Zeropnt268KReadByte(unsigned int a)
 		case 0x80015c: {
 			return DrvInput[1] | ((EEPROMRead() & 0x01) << 8);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -904,20 +913,21 @@ void __fastcall Zeropnt268KWriteByte(unsigned int a, unsigned char d)
 			memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 			return;
 		}
-
+		#if 0
 		case 0x800039: {
 			// LEDs
 			return;
 		}
-
+		#endif
 		case 0x8001f0: {
 			EEPROMWrite(d & 0x02, d & 0x01, d & 0x04);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -970,15 +980,15 @@ void __fastcall Zeropnt268KWriteWord(unsigned int a, unsigned short d)
 			ScrollRam[10] = swapWord(d);
 			return;
 		}
-
+		#if 0
 		case 0x8001e0: {
 			// IRQ Ack???
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 

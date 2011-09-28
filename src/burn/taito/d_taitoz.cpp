@@ -8,6 +8,10 @@
 #include "highcol.h"
 #endif
 
+#ifdef __LIBSNES__
+#include "../ssnes-typedefs.h"
+#endif
+
 static int Sci;
 static int Dblaxle;
 static int OldSteer; // Hack to centre the steering in SCI
@@ -2447,10 +2451,11 @@ void __fastcall Aquajack68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1WordWrite(0, (a - 0x300000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2462,10 +2467,11 @@ unsigned char __fastcall Aquajack68K2ReadByte(unsigned int a)
 		case 0x300003: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2475,6 +2481,7 @@ unsigned short __fastcall Aquajack68K2ReadWord(unsigned int a)
 {
 	TC0220IOCHalfWordRead_Map(0x200000)
 
+	#if 0
 	switch (a) {
 		case 0x900000:
 		case 0x900002:
@@ -2483,11 +2490,11 @@ unsigned short __fastcall Aquajack68K2ReadWord(unsigned int a)
 			// nop
 			return 0;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
 	}
+	#endif
 
 	return 0;
 }
@@ -2506,7 +2513,7 @@ void __fastcall Aquajack68K2WriteWord(unsigned int a, unsigned short d)
 			TC0140SYTCommWrite(d & 0xff);
 			return;
 		}
-
+		#if 0
 		case 0x900000:
 		case 0x900002:
 		case 0x900004:
@@ -2514,10 +2521,10 @@ void __fastcall Aquajack68K2WriteWord(unsigned int a, unsigned short d)
 			// nop
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2531,18 +2538,11 @@ static UINT8 BsharkStickRead(int Offset)
 			if (Temp == 0x1000) Temp = 0;
 			return Temp;
 		}
-
-		case 0x01: {
+		case 0x01:
+		case 0x03:
 			return 0xff;
-		}
-
-		case 0x02: {
+		case 0x02: 
 			return TaitoAnalogPort1 >> 4;
-		}
-
-		case 0x03: {
-			return 0xff;
-		}
 	}
 
 	return 0;
@@ -2559,11 +2559,11 @@ unsigned char __fastcall Bshark68K1ReadByte(unsigned int a)
 		case 0x800007: {
 			return BsharkStickRead((a - 0x800000) >> 1);
 		}
-
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2599,21 +2599,24 @@ void __fastcall Bshark68K1WriteWord(unsigned int a, unsigned short d)
 			SekSetIRQLine(6, SEK_IRQSTATUS_AUTO);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned short __fastcall Bshark68K2ReadWord(unsigned int a)
 {
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x40000a: {
 			// ???
 			return 0;
 		}
-
+		#endif
 		case 0x600000: {
 			return BurnYM2610Read(0);
 		}
@@ -2621,10 +2624,11 @@ unsigned short __fastcall Bshark68K2ReadWord(unsigned int a)
 		case 0x600004: {
 			return BurnYM2610Read(2);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2632,7 +2636,9 @@ unsigned short __fastcall Bshark68K2ReadWord(unsigned int a)
 
 void __fastcall Bshark68K2WriteWord(unsigned int a, unsigned short d)
 {
-	switch (a) {
+	switch (a)
+	{
+		#if 0
 		case 0x400000:
 		case 0x400002:
 		case 0x400004:
@@ -2641,7 +2647,7 @@ void __fastcall Bshark68K2WriteWord(unsigned int a, unsigned short d)
 			// nop
 			return;
 		}
-
+		#endif
 		case 0x600000: {
 			BurnYM2610Write(0, d & 0xff);
 			return;
@@ -2661,16 +2667,16 @@ void __fastcall Bshark68K2WriteWord(unsigned int a, unsigned short d)
 			BurnYM2610Write(3, d & 0xff);
 			return;
 		}
-
+		#if 0
 		case 0x60000c:
 		case 0x60000e: {
 			// nop
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2712,10 +2718,11 @@ unsigned char __fastcall Chasehq68K1ReadByte(unsigned int a)
 		case 0x820003: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2748,10 +2755,11 @@ void __fastcall Chasehq68K1WriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2765,10 +2773,11 @@ unsigned short __fastcall Chasehq68K1ReadWord(unsigned int a)
 		case 0xa00002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2794,10 +2803,11 @@ void __fastcall Chasehq68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1WordWrite(0, (a - 0xa00000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2843,10 +2853,11 @@ void __fastcall Contcirc68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1RBSwapWordWrite(0, (a - 0x100000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2856,10 +2867,11 @@ unsigned char __fastcall Contcirc68K2ReadByte(unsigned int a)
 		case 0x100001: {
 			return ContcircInputBypassRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2872,10 +2884,11 @@ void __fastcall Contcirc68K2WriteByte(unsigned int a, unsigned char d)
 			TC0220IOCHalfWordPortRegWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2893,10 +2906,11 @@ unsigned short __fastcall Contcirc68K2ReadWord(unsigned int a)
 		case 0x200002: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2924,10 +2938,11 @@ void __fastcall Contcirc68K2WriteWord(unsigned int a, unsigned short d)
 			TC0140SYTCommWrite(d & 0xff);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -2957,10 +2972,11 @@ unsigned char __fastcall Dblaxle68K1ReadByte(unsigned int a)
 		case 0x620003: {
 			return TC0140SYTCommRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -2985,10 +3001,11 @@ void __fastcall Dblaxle68K1WriteByte(unsigned int a, unsigned char d)
 			TC0140SYTCommWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3001,10 +3018,11 @@ unsigned short __fastcall Dblaxle68K1ReadWord(unsigned int a)
 		case 0x40001a: {
 			return DblaxleSteerRead((a - 0x400010) >> 1);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3015,6 +3033,7 @@ void __fastcall Dblaxle68K1WriteWord(unsigned int a, unsigned short d)
 	TC0510NIOHalfWordSwapWrite_Map(0x400000)
 	TC0480SCPCtrlWordWrite_Map(0xa30000)
 
+	#if 0
 	switch (a) {
 		case 0xc08000: {
 			return;
@@ -3024,6 +3043,7 @@ void __fastcall Dblaxle68K1WriteWord(unsigned int a, unsigned short d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned short __fastcall Enforce68K1ReadWord(unsigned int a)
@@ -3032,10 +3052,11 @@ unsigned short __fastcall Enforce68K1ReadWord(unsigned int a)
 		case 0x500002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3056,10 +3077,11 @@ void __fastcall Enforce68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1RBSwapWordWrite(0, (a - 0x500000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3069,10 +3091,11 @@ unsigned char __fastcall Enforce68K2ReadByte(unsigned int a)
 		case 0x300001: {
 			return TC0220IOCPortRegRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3085,10 +3108,11 @@ void __fastcall Enforce68K2WriteByte(unsigned int a, unsigned char d)
 			TC0220IOCHalfWordPortRegWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3106,10 +3130,11 @@ unsigned short __fastcall Enforce68K2ReadWord(unsigned int a)
 		case 0x300002: {
 			return TC0220IOCHalfWordPortRead();
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3137,10 +3162,11 @@ void __fastcall Enforce68K2WriteWord(unsigned int a, unsigned short d)
 			TC0220IOCHalfWordPortWrite(d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3195,10 +3221,11 @@ unsigned char __fastcall Nightstr68K1ReadByte(unsigned int a)
 		case 0xe40007: {
 			return NightstrStickRead((a - 0xe40000) >> 1);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3208,6 +3235,7 @@ void __fastcall Nightstr68K1WriteByte(unsigned int a, unsigned char d)
 {
 	TC0220IOCHalfWordWrite_Map(0x400000)
 
+	#if 0
 	switch (a) {
 		case 0xe00000:
 		case 0xe00008:
@@ -3220,6 +3248,7 @@ void __fastcall Nightstr68K1WriteByte(unsigned int a, unsigned char d)
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
 	}
+	#endif
 }
 
 unsigned short __fastcall Nightstr68K1ReadWord(unsigned int a)
@@ -3232,10 +3261,11 @@ unsigned short __fastcall Nightstr68K1ReadWord(unsigned int a)
 		case 0xa00002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3267,13 +3297,14 @@ void __fastcall Nightstr68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1WordWrite(0, (a - 0xa00000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0xe00000:
 		case 0xe00008:
 		case 0xe00010: {
 			// nop
 			return;
 		}
+		#endif
 
 		case 0xe40000:
 		case 0xe40002:
@@ -3287,10 +3318,11 @@ void __fastcall Nightstr68K1WriteWord(unsigned int a, unsigned short d)
 			SekSetIRQLine(6, SEK_IRQSTATUS_AUTO);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3324,10 +3356,11 @@ unsigned char __fastcall Sci68K1ReadByte(unsigned int a)
 		case 0x20001b: {
 			return SciSteerRead((a - 0x200010) >> 1);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3357,10 +3390,11 @@ void __fastcall Sci68K1WriteByte(unsigned int a, unsigned char d)
 			SciSpriteFrame = d;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3435,10 +3469,11 @@ unsigned short __fastcall Spacegun68K1ReadWord(unsigned int a)
 		case 0xb00002: {
 			return TC0110PCRWordRead(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3454,10 +3489,11 @@ void __fastcall Spacegun68K1WriteWord(unsigned int a, unsigned short d)
 			TC0110PCRStep1RBSwapWordWrite(0, (a - 0xb00000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #1 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3484,10 +3520,11 @@ unsigned char __fastcall Spacegun68K2ReadByte(unsigned int a)
 		case 0xf00007: {
 			return BurnGunReturnY(1);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read byte => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3500,7 +3537,7 @@ void __fastcall Spacegun68K2WriteByte(unsigned int a, unsigned char d)
 			SpacegunInputBypassWrite((a - 0x800000) >> 1, d);
 			return;
 		}
-
+		#if 0
 		case 0xc0000d: {
 			// nop
 			return;
@@ -3514,6 +3551,7 @@ void __fastcall Spacegun68K2WriteByte(unsigned int a, unsigned char d)
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write byte => %06X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3534,10 +3572,11 @@ unsigned short __fastcall Spacegun68K2ReadWord(unsigned int a)
 		case 0xc00000: {
 			return BurnYM2610Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Read word => %06X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3594,10 +3633,11 @@ void __fastcall Spacegun68K2WriteWord(unsigned int a, unsigned short d)
 			SekSetIRQLine(5, SEK_IRQSTATUS_AUTO);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("68K #2 Write word => %06X, %04X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -3615,16 +3655,17 @@ unsigned char __fastcall TaitoZZ80Read(unsigned short a)
 		case 0xe002: {
 			return BurnYM2610Read(2);
 		}
-
+		#if 0
 		case 0xe200: {
 			// NOP
 			return 0;
 		}
+		#endif
 
 		case 0xe201: {
 			return TC0140SYTSlaveCommRead();
 		}
-
+		#if 0
 		case 0xea00: {
 			// NOP
 			return 0;
@@ -3633,6 +3674,7 @@ unsigned char __fastcall TaitoZZ80Read(unsigned short a)
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -3671,6 +3713,7 @@ void __fastcall TaitoZZ80Write(unsigned short a, unsigned char d)
 			return;
 		}
 
+		#if 0
 		case 0xe400:
 		case 0xe401:
 		case 0xe402:
@@ -3689,6 +3732,7 @@ void __fastcall TaitoZZ80Write(unsigned short a, unsigned char d)
 		case 0xf000: {
 			return;
 		}
+		#endif
 
 		case 0xf200: {
 			TaitoZ80Bank = (d - 1) & 7;
@@ -3696,10 +3740,11 @@ void __fastcall TaitoZZ80Write(unsigned short a, unsigned char d)
 			ZetMapArea(0x4000, 0x7fff, 2, TaitoZ80Rom1 + 0x4000 + (TaitoZ80Bank * 0x4000));
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -4752,7 +4797,7 @@ static void AquajackRenderSprites(int PriorityDraw)
 		Data = swapWord(SpriteRam[Offset + 1]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		xFlip = (Data & 0x4000) >> 14;
@@ -4819,7 +4864,7 @@ static void BsharkRenderSprites(int PriorityDraw, int yOffset, int SpriteRamSize
 		Data = swapWord(SpriteRam[Offset + 1]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		Colour = (Data & 0x7f80) >> 7;
@@ -4886,7 +4931,7 @@ static void ChasehqRenderSprites(int PriorityDraw)
 		Data = swapWord(SpriteRam[Offset + 1]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		Colour = (Data & 0x7f80) >> 7;
@@ -5000,7 +5045,7 @@ static void ContcircRenderSprites(int PriorityDraw, int VisibleYOffset)
 		Data = swapWord(SpriteRam[Offset + 2]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		xFlip = (Data & 0x4000) >> 14;
@@ -5068,7 +5113,7 @@ static void SciRenderSprites(int PriorityDraw, int yOffs)
 		Data = swapWord(SpriteRam[Offset + 1]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		Colour = (Data & 0x7f80) >> 7;
@@ -5134,7 +5179,7 @@ static void SpacegunRenderSprites(int PriorityDraw)
 		Data = swapWord(SpriteRam[Offset + 1]);
 		Priority = (Data & 0x8000) >> 15;
 
-		if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
+		//if (Priority != 0 && Priority != 1) bprintf(PRINT_NORMAL, _T("Unused Priority %x\n"), Priority);
 		if (Priority != PriorityDraw) continue;
 
 		xFlip = (Data & 0x4000) >> 14;

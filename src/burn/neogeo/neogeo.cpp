@@ -86,7 +86,7 @@ int NeoLoadSprites(int nOffset, int nNum, unsigned char* pDest, unsigned int nSp
 				}
 			}
 
-			BurnUpdateProgress(1.0 / ((double)(nSpriteSize/0x800000) * 8.0 / (nRomSize / 0x400000) / 3.0), _T("Decrypting graphics..."), 0);
+			BurnUpdateProgress(1.0 / ((double)(nSpriteSize/0x800000) * 8.0 / (nRomSize / 0x400000) / 3.0), "Decrypting graphics...", 0);
 			NeoGfxDecryptDoBlock(nNeoProtectionXor, pBuf, nRomSize * i, nRomSize, nSpriteSize);
 		}
 
@@ -141,7 +141,7 @@ void NeoDecodeSprites(unsigned char* pDest, int nSize)
 			if (BurnDrvGetHardwareCode() & (HARDWARE_SNK_ENCRYPTED_A | HARDWARE_SNK_ENCRYPTED_B)) {
 				nStep *= 4;
 			}
-			BurnUpdateProgress(1.0 / nStep, i ? NULL : _T("Preprocessing graphics..."), 0);
+			BurnUpdateProgress(1.0 / nStep, i ? NULL : "Preprocessing graphics...", 0);
 		}
 
 		// Pre-process the sprite graphics

@@ -424,10 +424,11 @@ unsigned char __fastcall RallyxZ80ProgRead(unsigned short a)
 		case 0xa100: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Read %04x\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -452,11 +453,12 @@ void __fastcall RallyxZ80ProgWrite(unsigned short a, unsigned char d)
 			yScroll = d;
 			return;
 		}
-
+		#if 0
 		case 0xa170: {
 			// NOP
 			return;
 		}
+		#endif
 
 		case 0xa180: {
 			unsigned char Bit = d & 0x01;
@@ -472,7 +474,7 @@ void __fastcall RallyxZ80ProgWrite(unsigned short a, unsigned char d)
 			if (!DrvCPUFireIRQ) ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
 			return;
 		}
-
+		#if 0
 		case 0xa182: {
 			// sound on
 			return;
@@ -502,16 +504,16 @@ void __fastcall RallyxZ80ProgWrite(unsigned short a, unsigned char d)
 			// coin counter
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Write %04x, %02x\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall RallyxZ80PortRead(unsigned short a)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -532,10 +534,11 @@ void __fastcall RallyxZ80PortWrite(unsigned short a, unsigned char d)
 			ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -557,10 +560,11 @@ unsigned char __fastcall JunglerZ80ProgRead1(unsigned short a)
 		case 0xa180: {
 			return DrvDip[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read %04x\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -569,10 +573,12 @@ unsigned char __fastcall JunglerZ80ProgRead1(unsigned short a)
 void __fastcall JunglerZ80ProgWrite1(unsigned short a, unsigned char d)
 {
 	switch (a) {
+		#if 0
 		case 0xa080: {
 			// watchdog write
 			return;
 		}
+		#endif
 
 		case 0xa130: {
 			xScroll = d;
@@ -588,16 +594,17 @@ void __fastcall JunglerZ80ProgWrite1(unsigned short a, unsigned char d)
 			DrvCPUFireIRQ = d & 0x01;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write %04x, %02x\n"), a, d);
 		}
+		#endif
 	}
 }
 
 unsigned char __fastcall JunglerZ80PortRead1(unsigned short a)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -610,7 +617,7 @@ unsigned char __fastcall JunglerZ80PortRead1(unsigned short a)
 
 void __fastcall JunglerZ80PortWrite1(unsigned short a, unsigned char d)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -641,7 +648,7 @@ void __fastcall JunglerZ80ProgWrite2(unsigned short a, unsigned char d)
 
 unsigned char __fastcall JunglerZ80PortRead2(unsigned short a)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {
@@ -654,7 +661,7 @@ unsigned char __fastcall JunglerZ80PortRead2(unsigned short a)
 
 void __fastcall JunglerZ80PortWrite2(unsigned short a, unsigned char d)
 {
-	a &= 0xff;
+	//a &= 0xff;
 
 //	switch (a) {
 //		default: {

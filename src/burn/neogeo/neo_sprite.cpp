@@ -29,7 +29,7 @@ typedef void (*RenderBankFunction)();
 static RenderBankFunction* RenderBank;
 
 // Include the tile rendering functions
-#include "neo_sprite_func.h"
+#include "../../generated/neo_sprite_func.h"
 
 int NeoRenderSprites()
 {

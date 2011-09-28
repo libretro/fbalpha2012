@@ -1963,10 +1963,12 @@ void drawline(int line)
 void dumphdma()
 {
 	int c;
+	#if 0
 	for (c=0;c<8;c++)
 	{
 		printf("HDMA %i %s - src %06X dest %04X mode %02X stat %i len %i\n",c,(hdmaena&(1<<c))?"on":"off",(dmabank[c]<<16)|dmasrc[c],dmadest[c],dmactrl[c],hdmastat[c],hdmacount[c]);
 	}
+	#endif
 }
 
 
@@ -2471,7 +2473,7 @@ void writeppu(unsigned short offset, unsigned char data)
 			break;
 
 		default:
-			printf("%x, %x",offset,data);
+			//printf("%x, %x",offset,data);
 			break;
 			}
 }

@@ -188,13 +188,14 @@ void __fastcall vimanaWriteWord(unsigned int a, unsigned short d)
 		case 0x080002:
 			nBCU2TileYOffset = d;
 		return;
-
+		#if 0
 		case 0x080006:
 			// toaplan1_fcu_flipscreen_w
 		return;
 
 		case 0x0c0000:
 		return; // nop
+		#endif
 
 		case 0x0c0002:
 			ToaFCU2SetRAMPointer(d);
@@ -207,21 +208,21 @@ void __fastcall vimanaWriteWord(unsigned int a, unsigned short d)
 		case 0x0c0006:
 			ToaFCU2WriteRAMSize(d);
 		return;
-
+		#if 0
 		case 0x400000:
 		return; // nop
-
+		#endif
 		case 0x400002:
 			bEnableInterrupts = (d & 0xFF);
 		return;
-
+		#if 0
 		case 0x400008:
 		case 0x40000a:
 		case 0x40000c:
 		case 0x40000e:
 			// toaplan1_bcu_control_w
 		return;
-
+		#endif
 		case 0x440000:
 		case 0x440002:
 		return;
@@ -255,7 +256,7 @@ void __fastcall vimanaWriteWord(unsigned int a, unsigned short d)
 		return;
 	}
 
-	bprintf (0, _T("%5.5x %4.4x ww\n"), a, d);
+	//bprintf (0, _T("%5.5x %4.4x ww\n"), a, d);
 }
 
 void __fastcall vimanaWriteByte(unsigned int , unsigned char )

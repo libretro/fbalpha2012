@@ -3578,7 +3578,7 @@ unsigned char __fastcall System1Z801PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
 	return 0;
 }
 
@@ -3624,7 +3624,7 @@ unsigned char __fastcall BlockgalZ801PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
 	return 0;
 }
 
@@ -3674,7 +3674,7 @@ unsigned char __fastcall NoboranbZ801PortRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, _T("IO Read %x\n"), a);
 	return 0;
 }
 
@@ -3703,7 +3703,7 @@ void __fastcall System1Z801PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
 }
 
 void __fastcall BrainZ801PortWrite(unsigned short a, unsigned char d)
@@ -3734,7 +3734,7 @@ void __fastcall BrainZ801PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
 }
 
 void __fastcall NoboranbZ801PortWrite(unsigned short a, unsigned char d)
@@ -3779,7 +3779,7 @@ void __fastcall NoboranbZ801PortWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("IO Write %x, %x\n"), a, d);
 }
 
 void __fastcall System1Z801ProgWrite(unsigned short a, unsigned char d)
@@ -3809,7 +3809,7 @@ void __fastcall System1Z801ProgWrite(unsigned short a, unsigned char d)
 		return;
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
 }
 
 void __fastcall NoboranbZ801ProgWrite(unsigned short a, unsigned char d)
@@ -3839,7 +3839,7 @@ void __fastcall NoboranbZ801ProgWrite(unsigned short a, unsigned char d)
 		return;
 	}
 
-	bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Prog Write %x, %x\n"), a, d);
 }
 
 unsigned char __fastcall System1Z802ProgRead(unsigned short a)
@@ -3854,7 +3854,7 @@ unsigned char __fastcall System1Z802ProgRead(unsigned short a)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 2 Prog Read %x\n"), a);
+	//bprintf(PRINT_NORMAL, _T("Z80 2 Prog Read %x\n"), a);
 	return 0;
 }
 
@@ -3878,7 +3878,7 @@ void __fastcall System1Z802ProgWrite(unsigned short a, unsigned char d)
 		}
 	}
 
-	bprintf(PRINT_NORMAL, _T("Z80 2 Prog Write %x, %x\n"), a, d);
+	//bprintf(PRINT_NORMAL, _T("Z80 2 Prog Write %x, %x\n"), a, d);
 }
 
 /*==============================================================================================

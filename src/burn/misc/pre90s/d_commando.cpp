@@ -424,10 +424,11 @@ unsigned char __fastcall CommandoRead1(unsigned short a)
 		case 0xc004: {
 			return DrvDip[1];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -454,12 +455,12 @@ void __fastcall CommandoWrite1(unsigned short a, unsigned char d)
 
 			return;
 		}
-
+		#if 0
 		case 0xc806: {
 			// ???
 			return;
 		}
-
+		#endif
 		case 0xc808: {
 			DrvBgScrollX[0] = d;
 			return;
@@ -479,11 +480,11 @@ void __fastcall CommandoWrite1(unsigned short a, unsigned char d)
 			DrvBgScrollY[1] = d;
 			return;
 		}
-
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -494,10 +495,11 @@ unsigned char __fastcall CommandoRead2(unsigned short a)
 			ZetSetIRQLine(0, ZET_IRQSTATUS_NONE);
 			return DrvSoundLatch;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -525,10 +527,11 @@ void __fastcall CommandoWrite2(unsigned short a, unsigned char d)
 			BurnYM2203Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

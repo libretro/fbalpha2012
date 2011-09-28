@@ -1175,15 +1175,15 @@ void __fastcall KyugoWrite1(unsigned short a, unsigned char d)
 			return;
 		}
 
-
+		#if 0
 		case 0xe000: {
 			// watchdog write
 			return;
 		}
-
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Write => %04X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1206,10 +1206,11 @@ void __fastcall FlashgalPortWrite1(unsigned short a, unsigned char d)
 			KyugoSubCPUEnable = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1232,10 +1233,11 @@ void __fastcall FlashgalaPortWrite1(unsigned short a, unsigned char d)
 			KyugoSubCPUEnable = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1258,10 +1260,11 @@ void __fastcall GyrodinePortWrite1(unsigned short a, unsigned char d)
 			KyugoSubCPUEnable = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1284,10 +1287,11 @@ void __fastcall SrdmissnPortWrite1(unsigned short a, unsigned char d)
 			KyugoSubCPUEnable = d & 1;
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #1 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1305,10 +1309,11 @@ unsigned char __fastcall FlashgalRead2(unsigned short a)
 		case 0xc080: {
 			return KyugoInput[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1328,10 +1333,11 @@ unsigned char __fastcall FlashgalaRead2(unsigned short a)
 		case 0xc0c0: {
 			return KyugoInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1351,10 +1357,11 @@ unsigned char __fastcall GyrodineRead2(unsigned short a)
 		case 0x8080: {
 			return KyugoInput[0];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1374,10 +1381,11 @@ unsigned char __fastcall SrdmissnRead2(unsigned short a)
 		case 0xf402: {
 			return KyugoInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1397,10 +1405,11 @@ unsigned char __fastcall LegendRead2(unsigned short a)
 		case 0xf802: {
 			return KyugoInput[2];
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Read => %04X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1423,10 +1432,11 @@ unsigned char __fastcall KyugoPortRead2(unsigned short a)
 		case 0x02: {
 			return AY8910Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1440,10 +1450,11 @@ unsigned char __fastcall FlashgalaPortRead2(unsigned short a)
 		case 0x42: {
 			return AY8910Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1457,10 +1468,11 @@ unsigned char __fastcall SrdmissnPortRead2(unsigned short a)
 		case 0x82: {
 			return AY8910Read(0);
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Read => %02X\n"), a);
 		}
+		#endif
 	}
 
 	return 0;
@@ -1490,10 +1502,11 @@ void __fastcall FlashgalPortWrite2(unsigned short a, unsigned char d)
 			AY8910Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1521,10 +1534,11 @@ void __fastcall FlashgalaPortWrite2(unsigned short a, unsigned char d)
 			AY8910Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1552,10 +1566,11 @@ void __fastcall GyrodinePortWrite2(unsigned short a, unsigned char d)
 			AY8910Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 
@@ -1583,10 +1598,11 @@ void __fastcall SrdmissnPortWrite2(unsigned short a, unsigned char d)
 			AY8910Write(1, 1, d);
 			return;
 		}
-
+		#if 0
 		default: {
 			bprintf(PRINT_NORMAL, _T("Z80 #2 Port Write => %02X, %02X\n"), a, d);
 		}
+		#endif
 	}
 }
 

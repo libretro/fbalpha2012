@@ -1080,13 +1080,14 @@ static double DrvYM2203M6809GetTime()
 
 static void DrvYM3812FMIRQHandler(int, int nStatus)
 {
-	bprintf(PRINT_NORMAL, _T("%x\n"), nStatus);
+	//bprintf(PRINT_NORMAL, _T("%x\n"), nStatus);
 
-	if (nStatus) {
+	if (nStatus)
 		m6502SetIRQ(M6502_IRQ);
-	} else {
+	#if 0
+	else
 //		m6502SetIRQ(M6502_CLEAR);
-	}
+	#endif
 }
 
 static int DrvDoReset()

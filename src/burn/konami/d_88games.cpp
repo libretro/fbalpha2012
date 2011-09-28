@@ -5,11 +5,7 @@
 #include "konami_intf.h"
 #include "konamiic.h"
 #include "burn_ym2151.h"
-#ifdef __CELLOS_LV2__
 #include "../upd7759.h"
-#else
-#include "UPD7759.h"
-#endif
 
 static unsigned char *AllMem;
 static unsigned char *MemEnd;

@@ -330,7 +330,7 @@
   
  //      switch (a) { 
  //              default: { 
- //                      bprintf(PRINT_NORMAL, _T("Slapstic Read byte => %06X\n"), a); 
+ //                      bprintf(PRINT_NORMAL, "Slapstic Read byte => %06X\n", a); 
  //              } 
  //      } 
   
@@ -343,7 +343,7 @@
   
  //      switch (a) { 
  //              default: { 
- //                      bprintf(PRINT_NORMAL, _T("Slapstic Write byte => %06X, %02X\n"), a, d); 
+ //                      bprintf(PRINT_NORMAL, "Slapstic Write byte => %06X, %02X\n", a, d); 
  //              } 
  //      } 
  } 
@@ -360,7 +360,7 @@
   
  //      switch (a) { 
  //              default: { 
- //                      bprintf(PRINT_NORMAL, _T("Slapstic Read word => %06X\n"), a); 
+ //                      bprintf(PRINT_NORMAL, "Slapstic Read word => %06X\n", a); 
  //              } 
  //      } 
   
@@ -375,7 +375,7 @@
   
  //      switch (a) { 
  //              default: { 
- //                      bprintf(PRINT_NORMAL, _T("Slapstic Write word => %06X, %04X\n"), a, d); 
+ //                      bprintf(PRINT_NORMAL, "Slapstic Write word => %06X, %04X\n", a, d); 
  //              } 
  //      } 
  } 
@@ -1648,7 +1648,7 @@
                  } 
   
                  default: { 
-                         bprintf(PRINT_NORMAL, _T("68K Read byte => %06X\n"), a); 
+                         bprintf(PRINT_NORMAL, "68K Read byte => %06X\n", a); 
                  } 
          } 
   
@@ -1669,7 +1669,7 @@
   
  //      switch (a) { 
  //              default: { 
- //                      bprintf(PRINT_NORMAL, _T("68K Write byte => %06X, %02X\n"), a, d); 
+ //                      bprintf(PRINT_NORMAL, "68K Write byte => %06X, %02X\n", a, d); 
  //              } 
  //      } 
  } 
@@ -1711,7 +1711,7 @@
                  } 
   
                  default: { 
-                         bprintf(PRINT_NORMAL, _T("68K Read word => %06X\n"), a); 
+                         bprintf(PRINT_NORMAL, "68K Read word => %06X\n", a); 
                  } 
          } 
   
@@ -1733,13 +1733,13 @@
                          if ((OldVal ^ DrvSoundResetVal) & 1) { 
                                  if (DrvSoundResetVal & 1) { 
                                          DrvSoundCPUHalt = 0; 
-                                         bprintf(PRINT_NORMAL, _T("Enabling sound CPU\n")); 
+                                         bprintf(PRINT_NORMAL, "Enabling sound CPU\n"); 
                                  } else { 
                                          m6502Open(0); 
                                          m6502Reset(); 
                                          m6502Close(); 
                                          DrvSoundCPUHalt = 1; 
-                                         bprintf(PRINT_NORMAL, _T("Disabling sound CPU\n")); 
+                                         bprintf(PRINT_NORMAL, "Disabling sound CPU\n"); 
                                  } 
                          } 
   
@@ -1772,7 +1772,7 @@
                  } 
   
                  default: { 
-                         bprintf(PRINT_NORMAL, _T("68K Write word => %06X, %04X\n"), a, d); 
+                         bprintf(PRINT_NORMAL, "68K Write word => %06X, %04X\n", a, d); 
                  } 
          } 
  } 
@@ -1815,7 +1815,7 @@
                  } 
   
                  default: { 
-                         bprintf(PRINT_NORMAL, _T("M6502 Read Byte %04X\n"), Address); 
+                         bprintf(PRINT_NORMAL, "M6502 Read Byte %04X\n", Address); 
                  } 
          } 
   
@@ -1900,7 +1900,7 @@
                  } 
   
                  default: { 
-                         bprintf(PRINT_NORMAL, _T("M6502 Write Byte %04X, %02X\n"), Address, Data); 
+                         bprintf(PRINT_NORMAL, "M6502 Write Byte %04X, %02X\n", Address, Data); 
                  } 
          } 
  } 

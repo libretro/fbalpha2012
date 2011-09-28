@@ -15,7 +15,7 @@ static RenderTileFunction* RenderTile;
 static int nTileXPos, nTileYPos;
 
 // Include the tile rendering functions
-#include "toa_gp9001_func.h"
+#include "../../generated/toa_gp9001_func.h"
 
 static int nLastBPP = 0;
 

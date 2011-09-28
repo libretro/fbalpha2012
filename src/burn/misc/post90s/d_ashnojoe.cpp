@@ -111,7 +111,7 @@ STDDIPINFO(Ashnojoe)
 
 void __fastcall ashnojoe_write_byte(unsigned int a, unsigned char d)
 {
-	bprintf (0, _T("%5.5x, %2.2x wb\n"), a, d);
+	//bprintf (0, _T("%5.5x, %2.2x wb\n"), a, d);
 }
 
 void __fastcall ashnojoe_write_word(unsigned int a, unsigned short d)
@@ -147,7 +147,7 @@ void __fastcall ashnojoe_write_word(unsigned int a, unsigned short d)
 
 unsigned char __fastcall ashnojoe_read_byte(unsigned int a)
 {
-	bprintf (0, _T("%5.5x, rb\n"), a);
+	//bprintf (0, _T("%5.5x, rb\n"), a);
 
 	return 0;
 }
@@ -164,9 +164,10 @@ unsigned short __fastcall ashnojoe_read_word(unsigned int a)
 
 		case 0x4a004:
 			return ((DrvDips[1] << 8) | (DrvDips[0]));
-
+#if 0
 		case 0x4a00a:
 			return 0; // debug? 1 kills sound
+#endif
 	}
 
 	return 0;

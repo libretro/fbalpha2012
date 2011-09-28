@@ -16,7 +16,7 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR)/arm7 $(FBA_CPU_DIR)/hd6309 $(FBA_CPU_DIR)/i8039 $
 
 FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib $(FBA_LIB_DIR)/File_Extractor/fex $(FBA_LIB_DIR)/File_Extractor/7z_C
 
-FBA_SRC_DIRS := $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS) $(FBA_LIB_DIRS)
+FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS) $(FBA_LIB_DIRS)
 
 FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXSRCS += libsnes.cpp
@@ -37,7 +37,7 @@ LIBS := -lz
 
 $(TARGET): $(OBJS)
 	@echo "LD $@"
-	@$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
 	@echo "CXX $<"

@@ -240,7 +240,7 @@ int archiveLoadFile(unsigned char* dest, int nLen, int nEntry, int* wrote)
 	return 0;
 }
 
-int __cdecl archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote)
+int archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote)
 {
 	File_Extractor* fex_one = NULL;
 	fex_err_t err_one = fex_open(&fex_one, arc);

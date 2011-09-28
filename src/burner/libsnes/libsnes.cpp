@@ -233,7 +233,7 @@ static int VidExit()
 	return 1;
 }
 
-static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
+static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 {
 	unsigned int t;
 	t  = (r << 7) & 0x7C00;
@@ -749,7 +749,7 @@ static int DoLibInit() // Do Init of Burn library driver
 
 // Catch calls to BurnLoadRom() once the emulation has started;
 // Intialise the zip module before forwarding the call, and exit cleanly.
-static int __cdecl DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
+static int DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
 {
 	int nRet;
 

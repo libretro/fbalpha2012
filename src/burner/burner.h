@@ -160,7 +160,7 @@ int archiveOpenA(const char* archive);
 int archiveClose();
 int archiveGetList(ArcEntry** list, int* count = NULL);
 int archiveLoadFile(unsigned char* dest, int len, int entry, int* wrote = NULL);
-int __cdecl archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote = NULL);
+int archiveLoadOneFile(const char* arc, const char* file, void** dest, int* wrote = NULL);
 
 // barchive.cpp
 enum BARC_STATUS { BARC_STATUS_OK = 0, BARC_STATUS_BADDATA, BARC_STATUS_ERROR };

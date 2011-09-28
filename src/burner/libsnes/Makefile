@@ -37,7 +37,7 @@ LIBS := -lz
 
 $(TARGET): $(OBJS)
 	@echo "LD $@"
-	$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
+	@$(CXX) -o $@ -shared $(OBJS) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
 	@echo "CXX $<"

@@ -1318,18 +1318,18 @@ void snes_power(void)
 void snes_reset(void)
 {}
 
-static void fba_audio(int16_t * audio_buf, int length)
+static void fba_audio(int length)
 {
-	pBurnSoundOut = audio_buf;
+	pBurnSoundOut = pAudNextSound;
 
-	int16_t * currentSound = audio_buf;
+	int16_t * currentSound = pAudNextSound;
 	for (int i = 0; i < length; i += 2)
 		audio_cb(currentSound[i + 0], currentSound[i + 1]);
 }
 
 void snes_run(void)
 {
-	fba_audio(pAudNextSound, AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
+	fba_audio(AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
 	nCurrentFrame++;
 	VidFrame();
 	InputMake();

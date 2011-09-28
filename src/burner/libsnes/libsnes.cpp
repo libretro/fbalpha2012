@@ -75,6 +75,9 @@ int ArcadeJoystick = 0;
 unsigned int JukeboxSoundCommand = 0;
 unsigned int JukeboxSoundLatch = 0;
 
+static char g_rom_path[1024];
+static char g_rom_dir[1024];
+
 #define ARGB(r, g, b) ((r << 16) | (g << 8) | b)
 
 static int RomDescribe(struct BurnRomInfo* pri)
@@ -370,13 +373,15 @@ int BArchiveOpen(bool bootApp)
 
 		bFound = false;
 
-		for (int d = 0; d < DIRS_MAX; d++)
+		//for (int d = 0; d < DIRS_MAX; d++)
+		for (int d = 0; d < 1; d++) // Only one directory :s
 		{
 			//if (!strcasecmp(szAppRomPaths[d], ""))
 			//	continue; // skip empty path
 
 			// check the archived rom file, modified by regret
 			//sprintf(szFullName, "%s%hs", szAppRomPaths[d], szName);
+         snprintf(szFullName, sizeof(szFullName), "%s/%s", g_rom_dir, szName);
 
 			checkvalue = archiveCheck(szFullName,  0  );
 			if (checkvalue == ARC_NONE)
@@ -536,8 +541,14 @@ void snes_set_input_state(snes_input_state_t cb)
 void snes_set_controller_port_device(bool, unsigned)
 {}
 
-void snes_set_cartridge_basename(const char*)
-{}
+void snes_set_cartridge_basename(const char *path)
+{
+   snprintf(g_rom_path, sizeof(g_rom_path), "%s.zip", path);
+   strcpy(g_rom_dir, g_rom_path);
+   char *ptr = strrchr(g_rom_dir, '/');
+   if (!ptr) ptr = strrchr(g_rom_dir, '\\');
+   if (ptr) *ptr = '\0';
+}
 
 static uint8_t *state_buf = NULL;
 
@@ -1278,12 +1289,8 @@ static int directLoadGame(const char * name)
 	}
 	else
 	{
-		//char * p = getBaseName(name);			// get game name
-		//unsigned int i = BurnDrvGetIndexByNameA(p);	// load game
-      unsigned i = 0xffffffffu;
-      const char *drv = getenv("FBA_ROM");
-      if (drv)
-         i = BurnDrvGetIndexByNameA(drv);
+		const char * p = getBaseName(name);			// get game name
+      unsigned i = BurnDrvGetIndexByNameA(p);
 
 		if (i < nBurnDrvCount)
 		{
@@ -1295,8 +1302,11 @@ static int directLoadGame(const char * name)
 	return RomOK;
 }
 
-static int fba_init(const char *tmppath)
+static bool fba_init(const char *path)
 {
+   if (!path)
+      return false;
+
 	configAppLoadXml(); // no, this isn't actually XML at all
 	BurnLibInit();
 	//getAllRomsetInfo();
@@ -1308,11 +1318,11 @@ static int fba_init(const char *tmppath)
 
 	//BuildRomList();
 
-	directLoadGame(tmppath);
+	directLoadGame(path);
 	mediaInit();
 	bVidOkay = bAudOkay = true;
 	//serialize_size = CPUWriteState_libgba(state_buf, 2000000);
-	return 1;
+	return true;
 }
 
 void snes_term(void)
@@ -1365,23 +1375,9 @@ void snes_cheat_reset(void)
 void snes_cheat_set(unsigned, bool, const char*)
 {}
 
-bool snes_load_cartridge_normal(const char*, const uint8_t *rom_data, unsigned rom_size)
+bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
-	const char *tmppath = tmpnam(NULL);
-	if (!tmppath)
-		return false;
-
-	FILE *file = fopen(tmppath, "wb");
-	if (!file)
-		return false;
-
-	fwrite(rom_data, 1, rom_size, file);
-	fclose(file);
-	unsigned ret = fba_init(tmppath);
-	unlink(tmppath);
-
-	//TODO: POSIX or 1 for success?
-	return 1;
+	return fba_init(g_rom_path);
 }
 
 bool snes_load_cartridge_bsx_slotted(

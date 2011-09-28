@@ -154,7 +154,7 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 		pszRomName = "unknown";
 
 	TCHAR szText[MAX_PATH];
-	_stprintf(szText, _T("Loading"));
+	_stprintf(szText, "Loading");
 
 	if (ri.nType & (BRF_PRG | BRF_GRA | BRF_SND | BRF_BIOS))
 	{

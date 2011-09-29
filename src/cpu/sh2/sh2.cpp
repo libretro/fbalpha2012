@@ -443,7 +443,7 @@ int Sh2GetActive()
 
 void Sh2Reset(unsigned int pc, unsigned r15)
 {
-	memset(sh2, 0, sizeof(SH2) - 4);
+	memset(sh2, 0, sizeof(SH2) - sizeof(size_t) /* -4, wtf? */);
 
 	sh2->pc = pc;
 	sh2->r[15] = r15;
@@ -506,12 +506,12 @@ INLINE unsigned short cpu_readop16(unsigned int A)
 		return 0;
 	}
 
-	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
 		//A ^= 2;
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));;
 	}
 	//DebugMsg("cpu_readop16 a: %x, value %x", A, retValue);
-	return pSh2Ext->ReadWord[(unsigned int)pr](A);
+	return pSh2Ext->ReadWord[(uintptr_t)pr](A);
 }
 
 #endif

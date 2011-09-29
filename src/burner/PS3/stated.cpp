@@ -3,7 +3,7 @@
 
 int bDrvSaveAll = 0;
 
-static void StateMakeOfn(TCHAR* pszFilter)
+static void StateMakeOfn(char* pszFilter)
 {
 
 	return;
@@ -17,7 +17,7 @@ int StatedAuto(int bSave)
 
 int StatedLoad(int nSlot)
 {
-	TCHAR szFilter[1024];
+	char szFilter[1024];
 	int nRet;
 	int bOldPause;
 
@@ -36,7 +36,7 @@ int StatedLoad(int nSlot)
 
 int StatedSave(int nSlot)
 {
-	TCHAR szFilter[1024];
+	char szFilter[1024];
 	int nRet;
 	int bOldPause;
 

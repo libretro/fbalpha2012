@@ -40,24 +40,24 @@ void GameInpCheckLeftAlt()
 
 	bLeftAltkeyMapped = false;
 
-	for (i = 0, pgi = GameInp; i < (nGameInpCount + nMacroCount); i++, pgi++) {
+	for (i = 0, pgi = GameInp; i < (nGameInpCount + nMacroCount); i++, pgi++)
+	{
 
-		if (bLeftAltkeyMapped) {
+		if (bLeftAltkeyMapped)
 			break;
-		}
 
-		switch (pgi->nInput) {
+		switch (pgi->nInput)
+		{
 			case GIT_SWITCH:
-				if (pgi->Input.Switch.nCode == FBK_LALT) {
+				if (pgi->Input.Switch.nCode == FBK_LALT)
 					bLeftAltkeyMapped = true;
-				}
 				break;
 			case GIT_MACRO_AUTO:
 			case GIT_MACRO_CUSTOM:
-				if (pgi->Macro.nMode) {
-					if (pgi->Macro.Switch.nCode == FBK_LALT) {
+				if (pgi->Macro.nMode)
+				{
+					if (pgi->Macro.Switch.nCode == FBK_LALT)
 						bLeftAltkeyMapped = true;
-					}
 				}
 				break;
 
@@ -76,29 +76,28 @@ void GameInpCheckMouse()
 	struct GameInp* pgi;
 	unsigned int i;
 
-	for (i = 0, pgi = GameInp; i < (nGameInpCount + nMacroCount); i++, pgi++) {
+	for (i = 0, pgi = GameInp; i < (nGameInpCount + nMacroCount); i++, pgi++)
+	{
 
-		if (bMouseMapped) {
+		if (bMouseMapped)
 			break;
-		}
 
-		switch (pgi->nInput) {
+		switch (pgi->nInput)
+		{
 			case GIT_SWITCH:
-				if ((pgi->Input.Switch.nCode & 0xFF00) == 0x8000) {
+				if ((pgi->Input.Switch.nCode & 0xFF00) == 0x8000)
 					bMouseMapped = true;
-				}
 				break;
 			case GIT_MOUSEAXIS:
-				if (pgi->Input.MouseAxis.nMouse == 0) {
+				if (pgi->Input.MouseAxis.nMouse == 0)
 					bMouseMapped = true;
-				}
 				break;
 			case GIT_MACRO_AUTO:
 			case GIT_MACRO_CUSTOM:
-				if (pgi->Macro.nMode) {
-					if ((pgi->Macro.Switch.nCode & 0xFF00) == 0x8000) {
+				if (pgi->Macro.nMode)
+				{
+					if ((pgi->Macro.Switch.nCode & 0xFF00) == 0x8000)
 						bMouseMapped = true;
-					}
 				}
 				break;
 
@@ -107,15 +106,15 @@ void GameInpCheckMouse()
 		}
 	}
 
-	if (bDrvOkay) {
-		if (!bRunPause) {
+	if (bDrvOkay)
+	{
+		if (!bRunPause)
 			InputSetCooperativeLevel(bMouseMapped, !bAlwaysProcessKey);
-		} else {
+		else
 			InputSetCooperativeLevel(false, !bAlwaysProcessKey);
-		}
-	} else {
-		InputSetCooperativeLevel(false, false);
 	}
+	else
+		InputSetCooperativeLevel(false, false);
 #endif
 }
 
@@ -127,36 +126,35 @@ int GameInpBlank(int bDipSwitch)
 	struct GameInp* pgi = NULL;
 
 	// Reset all inputs to undefined (even dip switches, if bDipSwitch==1)
-	if (GameInp == NULL) {
+	if (GameInp == NULL)
 		return 1;
-	}
 
 	// Get the targets in the library for the Input Values
 	struct BurnInputInfo bii;
 
-	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++) {
+	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	{
 		memset(&bii, 0, sizeof(bii));
 		BurnDrvGetInputInfo(&bii, i);
-		if (bDipSwitch == 0 && (bii.nType & BIT_GROUP_CONSTANT)) {		// Don't blank the dip switches
+		if (bDipSwitch == 0 && (bii.nType & BIT_GROUP_CONSTANT)) // Don't blank the dip switches
 			continue;
-		}
 
-		memset(pgi, 0, sizeof(*pgi));									// Clear input
+		memset(pgi, 0, sizeof(*pgi)); // Clear input
 
-		pgi->nType = bii.nType;											// store input type
-		pgi->Input.pVal = bii.pVal;										// store input pointer to value
-
-		if (bii.nType & BIT_GROUP_CONSTANT) {							// Further initialisation for constants/DIPs
+		pgi->nType = bii.nType;		// store input type
+		pgi->Input.pVal = bii.pVal;	// store input pointer to value
+		if (bii.nType & BIT_GROUP_CONSTANT)
+		{	// Further initialisation for constants/DIPs
 			pgi->nInput = GIT_CONSTANT;
 			pgi->Input.Constant.nConst = *bii.pVal;
 		}
 	}
 
-	for (i = 0; i < nMacroCount; i++, pgi++) {
+	for (i = 0; i < nMacroCount; i++, pgi++)
+	{
 		pgi->Macro.nMode = 0;
-		if (pgi->nInput == GIT_MACRO_CUSTOM) {
+		if (pgi->nInput == GIT_MACRO_CUSTOM)
 			pgi->nInput = 0;
-		}
 	}
 
 	bLeftAltkeyMapped = false;
@@ -182,45 +180,60 @@ static void GameInpInitMacros()
 
 	nFireButtons = 0;
 
-	for (unsigned int i = 0; i < nGameInpCount; i++) {
+	for (unsigned int i = 0; i < nGameInpCount; i++)
+	{
 		bii.szName = NULL;
 		BurnDrvGetInputInfo(&bii, i);
-		if (bii.szName == NULL) {
+
+		if (bii.szName == NULL)
 			bii.szName = "";
-		}
-		if (bii.szName[0] == 'P' && bii.szName[1] >= '1' && bii.szName[1] <= '4') {
+
+		if (bii.szName[0] == 'P' && bii.szName[1] >= '1' && bii.szName[1] <= '4')
+		{
 			int nPlayer = bii.szName[1] - '1';
 
-			if (nPlayer == 0) {
-				if (strncmp(" fire", bii.szInfo + 2, 5) == 0) {
+			if (nPlayer == 0)
+			{
+				if (strncmp(" fire", bii.szInfo + 2, 5) == 0)
 					nFireButtons++;
-				}
 			}
 
-			if (strcasecmp(" Weak Punch", bii.szName + 2) == 0) {
+			if (strcasecmp(" Weak Punch", bii.szName + 2) == 0)
+			{
 				nPunchx3[nPlayer] |= 1;
 				nPunchInputs[nPlayer][0] = i;
 			}
-			if (strcasecmp(" Medium Punch", bii.szName + 2) == 0) {
+
+			if (strcasecmp(" Medium Punch", bii.szName + 2) == 0)
+			{
 				nPunchx3[nPlayer] |= 2;
 				nPunchInputs[nPlayer][1] = i;
 			}
-			if (strcasecmp(" Strong Punch", bii.szName + 2) == 0) {
+
+			if (strcasecmp(" Strong Punch", bii.szName + 2) == 0)
+			{
 				nPunchx3[nPlayer] |= 4;
 				nPunchInputs[nPlayer][2] = i;
 			}
-			if (strcasecmp(" Weak Kick", bii.szName + 2) == 0) {
+
+			if (strcasecmp(" Weak Kick", bii.szName + 2) == 0)
+			{
 				nKickx3[nPlayer] |= 1;
 				nKickInputs[nPlayer][0] = i;
 			}
-			if (strcasecmp(" Medium Kick", bii.szName + 2) == 0) {
+
+			if (strcasecmp(" Medium Kick", bii.szName + 2) == 0)
+			{
 				nKickx3[nPlayer] |= 2;
 				nKickInputs[nPlayer][1] = i;
 			}
-			if (strcasecmp(" Strong Kick", bii.szName + 2) == 0) {
+
+			if (strcasecmp(" Strong Kick", bii.szName + 2) == 0)
+			{
 				nKickx3[nPlayer] |= 4;
 				nKickInputs[nPlayer][2] = i;
 			}
+
 			if (strcasecmp(" Attack", bii.szName + 2) == 0) {
 				nPunchx3[nPlayer] |= 1;
 				nPunchInputs[nPlayer][0] = i;
@@ -230,38 +243,32 @@ static void GameInpInitMacros()
 				nPunchInputs[nPlayer][1] = i;
 			}
 
-			if (strcasecmp(" Button A", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button A", bii.szName + 2) == 0)
 				nNeogeoButtons[nPlayer][0] = i;
-			}
-			if (strcasecmp(" Button B", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button B", bii.szName + 2) == 0)
 				nNeogeoButtons[nPlayer][1] = i;
-			}
-			if (strcasecmp(" Button C", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button C", bii.szName + 2) == 0)
 				nNeogeoButtons[nPlayer][2] = i;
-			}
-			if (strcasecmp(" Button D", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button D", bii.szName + 2) == 0)
 				nNeogeoButtons[nPlayer][3] = i;
-			}
 
-			if (strcasecmp(" Button 1", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 1", bii.szName + 2) == 0)
 				nPgmButtons[nPlayer][0] = i;
-			}
-			if (strcasecmp(" Button 2", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 2", bii.szName + 2) == 0)
 				nPgmButtons[nPlayer][1] = i;
-			}
-			if (strcasecmp(" Button 3", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 3", bii.szName + 2) == 0)
 				nPgmButtons[nPlayer][2] = i;
-			}
-			if (strcasecmp(" Button 4", bii.szName + 2) == 0) {
+			if (strcasecmp(" Button 4", bii.szName + 2) == 0)
 				nPgmButtons[nPlayer][3] = i;
-			}
 		}
 	}
 
 	pgi = GameInp + nGameInpCount;
 
-	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++) {
-		if (nPunchx3[nPlayer] == 7) {		// Create a 3x punch macro
+	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++)
+	{
+		if (nPunchx3[nPlayer] == 7)
+		{		// Create a 3x punch maco
 			pgi->nInput = GIT_MACRO_AUTO;
 			pgi->nType = BIT_DIGITAL;
 			pgi->Macro.nMode = 0;
@@ -588,26 +595,28 @@ static char* SliderInfo(struct GameInp* pgi, char* s)
 	pgi->Input.Slider.nSliderCenter = 0;
 	pgi->Input.Slider.nSliderValue = 0x8000;
 
-	char* szRet = labelCheck(s, _T("speed"));
+	char* szRet = labelCheck(s, "speed");
 	s = szRet;
-	if (s == NULL) {
+
+	if (s == NULL)
 		return s;
-	}
+
 	pgi->Input.Slider.nSliderSpeed = (short)strtol(s, &szRet, 0);
 	s = szRet;
-	if (s==NULL) {
+
+	if (s==NULL)
 		return s;
-	}
-	szRet = labelCheck(s, _T("center"));
+
+	szRet = labelCheck(s, "center");
 	s = szRet;
-	if (s == NULL) {
+	if (s == NULL)
 		return s;
-	}
+
 	pgi->Input.Slider.nSliderCenter = (short)strtol(s, &szRet, 0);
 	s = szRet;
-	if (s == NULL) {
+
+	if (s == NULL)
 		return s;
-	}
 
 	return szRet;
 }
@@ -617,14 +626,15 @@ static int StringToJoyAxis(struct GameInp* pgi, char* s)
 	char* szRet = s;
 
 	pgi->Input.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
-	if (szRet == NULL) {
+
+	if (szRet == NULL)
 		return 1;
-	}
+
 	s = szRet;
 	pgi->Input.JoyAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
-	if (szRet == NULL) {
+
+	if (szRet == NULL)
 		return 1;
-	}
 
 	return 0;
 }
@@ -634,17 +644,19 @@ static int StringToMouseAxis(struct GameInp* pgi, char* s)
 	char* szRet = s;
 
 	pgi->Input.MouseAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
-	if (szRet == NULL) {
+
+	if (szRet == NULL)
 		return 1;
-	}
 
 	return 0;
 }
 
 static int StringToMacro(struct GameInp* pgi, char* s)
 {
-	char* szRet = labelCheck(s, _T("switch"));
-	if (szRet) {
+	char* szRet = labelCheck(s, "switch");
+
+	if (szRet)
+	{
 		s = szRet;
 		pgi->Macro.nMode = 0x01;
 		pgi->Macro.Switch.nCode = (unsigned short)strtol(s, &szRet, 0);
@@ -657,13 +669,13 @@ static int StringToMacro(struct GameInp* pgi, char* s)
 static int StringToInp(struct GameInp* pgi, char* s)
 {
 	SKIP_WS(s);											// skip whitespace
-	char* szRet = labelCheck(s, _T("undefined"));
+	char* szRet = labelCheck(s, "undefined");
 	if (szRet) {
 		pgi->nInput = 0;
 		return 0;
 	}
 
-	szRet = labelCheck(s, _T("constant"));
+	szRet = labelCheck(s, "constant");
 	if (szRet) {
 		pgi->nInput = GIT_CONSTANT;
 		s = szRet;
@@ -672,7 +684,7 @@ static int StringToInp(struct GameInp* pgi, char* s)
 		return 0;
 	}
 
-	szRet = labelCheck(s, _T("switch"));
+	szRet = labelCheck(s, "switch");
 	if (szRet) {
 		pgi->nInput = GIT_SWITCH;
 		s = szRet;
@@ -681,31 +693,32 @@ static int StringToInp(struct GameInp* pgi, char* s)
 	}
 
 	// Analog using mouse axis:
-	szRet = labelCheck(s, _T("mouseaxis"));
+	szRet = labelCheck(s, "mouseaxis");
 	if (szRet) {
 		pgi->nInput = GIT_MOUSEAXIS;
 		return StringToMouseAxis(pgi, szRet);
 	}
 	// Analog using joystick axis:
-	szRet = labelCheck(s, _T("joyaxis-neg"));
+	szRet = labelCheck(s, "joyaxis-neg");
 	if (szRet) {
 		pgi->nInput = GIT_JOYAXIS_NEG;
 		return StringToJoyAxis(pgi, szRet);
 	}
-	szRet = labelCheck(s, _T("joyaxis-pos"));
+	szRet = labelCheck(s, "joyaxis-pos");
 	if (szRet) {
 		pgi->nInput = GIT_JOYAXIS_POS;
 		return StringToJoyAxis(pgi, szRet);
 	}
-	szRet = labelCheck(s, _T("joyaxis"));
+	szRet = labelCheck(s, "joyaxis");
 	if (szRet) {
 		pgi->nInput = GIT_JOYAXIS_FULL;
 		return StringToJoyAxis(pgi, szRet);
 	}
 
 	// Analog using keyboard slider
-	szRet = labelCheck(s, _T("slider"));
-	if (szRet) {
+	szRet = labelCheck(s, "slider");
+	if (szRet)
+	{
 		s = szRet;
 		pgi->nInput = GIT_KEYSLIDER;
 		pgi->Input.Slider.SliderAxis.nSlider[0] = 0;	// defaults
@@ -713,25 +726,28 @@ static int StringToInp(struct GameInp* pgi, char* s)
 
 		pgi->Input.Slider.SliderAxis.nSlider[0] = (unsigned short)strtol(s, &szRet, 0);
 		s = szRet;
-		if (s == NULL) {
+		if (s == NULL)
 			return 1;
-		}
+
 		pgi->Input.Slider.SliderAxis.nSlider[1] = (unsigned short)strtol(s, &szRet, 0);
 		s = szRet;
-		if (s == NULL) {
+
+		if (s == NULL)
 			return 1;
-		}
+
 		szRet = SliderInfo(pgi, s);
 		s = szRet;
-		if (s == NULL) {								// Get remaining slider info
+
+		if (s == NULL) // Get remaining slider info
 			return 1;
-		}
+
 		return 0;
 	}
 
 	// Analog using joystick slider
-	szRet = labelCheck(s, _T("joyslider"));
-	if (szRet) {
+	szRet = labelCheck(s, "joyslider");
+	if (szRet)
+	{
 		s = szRet;
 		pgi->nInput = GIT_JOYSLIDER;
 		pgi->Input.Slider.JoyAxis.nJoy = 0;				// defaults
@@ -739,19 +755,22 @@ static int StringToInp(struct GameInp* pgi, char* s)
 
 		pgi->Input.Slider.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
 		s = szRet;
-		if (s == NULL) {
+
+		if (s == NULL)
 			return 1;
-		}
+
 		pgi->Input.Slider.JoyAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
 		s = szRet;
-		if (s == NULL) {
+
+		if (s == NULL)
 			return 1;
-		}
+
 		szRet = SliderInfo(pgi, s);						// Get remaining slider info
 		s = szRet;
-		if (s == NULL) {
+
+		if (s == NULL)
 			return 1;
-		}
+
 		return 0;
 	}
 
@@ -765,10 +784,11 @@ static char* InpToString(struct GameInp* pgi)
 {
 	static char szString[80];
 
-	if (pgi->nInput == 0) {
-		return _T("undefined");
-	}
-	if (pgi->nInput == GIT_CONSTANT) {
+	if (pgi->nInput == 0)
+		return "undefined";
+
+	if (pgi->nInput == GIT_CONSTANT)
+	{
 		sprintf(szString, _T("constant 0x%.2X"), pgi->Input.Constant.nConst);
 		return szString;
 	}
@@ -801,40 +821,44 @@ static char* InpToString(struct GameInp* pgi)
 		return szString;
 	}
 
-	return _T("unknown");
+	return "unknown";
 }
 
 static char* InpMacroToString(struct GameInp* pgi)
 {
 	static char szString[MAX_PATH];
 
-	if (pgi->nInput == GIT_MACRO_AUTO) {
-		if (pgi->Macro.nMode) {
-			sprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
+	if (pgi->nInput == GIT_MACRO_AUTO)
+	{
+		if (pgi->Macro.nMode)
+		{
+			sprintf(szString, "switch 0x%.2X", pgi->Macro.Switch.nCode);
 			return szString;
 		}
 	}
 
-	if (pgi->nInput == GIT_MACRO_CUSTOM) {
+	if (pgi->nInput == GIT_MACRO_CUSTOM)
+	{
 		struct BurnInputInfo bii;
 
-		if (pgi->Macro.nMode) {
-			sprintf(szString, _T("switch 0x%.2X"), pgi->Macro.Switch.nCode);
-		} else {
-			sprintf(szString, _T("undefined"));
-		}
+		if (pgi->Macro.nMode)
+			sprintf(szString, "switch 0x%.2X", pgi->Macro.Switch.nCode);
+		else
+			sprintf(szString, "undefined");
 
-		for (int i = 0; i < 4; i++) {
-			if (pgi->Macro.pVal[i]) {
+		for (int i = 0; i < 4; i++)
+		{
+			if (pgi->Macro.pVal[i])
+			{
 				BurnDrvGetInputInfo(&bii, pgi->Macro.nInput[i]);
-				sprintf(szString + strlen(szString), _T(" \"%hs\" 0x%02X"), bii.szName, pgi->Macro.nVal[i]);
+				sprintf(szString + strlen(szString), " \"%hs\" 0x%02X", bii.szName, pgi->Macro.nVal[i]);
 			}
 		}
 
 		return szString;
 	}
 
-	return _T("undefined");
+	return "undefined";
 }
 
 // ---------------------------------------------------------------------------
@@ -1033,212 +1057,220 @@ static struct { int nCode; char* szName; } KeyNames[] = {
 char* InputCodeDesc(int c)
 {
 	static char szString[64];
-	char* szName = _T("");
+	char* szName = "";
 
 	// Mouse
-	if (c >= 0x8000) {
+	if (c >= 0x8000)
+	{
 		int nMouse = (c >> 8) & 0x3F;
 		int nCode = c & 0xFF;
-		if (nCode >= 0x80) {
-			sprintf(szString, _T("Mouse %d Button %d"), nMouse, nCode & 0x7F);
+		if (nCode >= 0x80)
+		{
+			sprintf(szString, "Mouse %d Button %d", nMouse, nCode & 0x7F);
 			return szString;
 		}
-		if (nCode < 0x06) {
+		if (nCode < 0x06)
+		{
 			char szAxis[3][3] = { _T("X"), _T("Y"), _T("Z") };
 			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
-			if (nCode < 4) {
+			if (nCode < 4)
 				sprintf(szString, _T("Mouse %d %s (%s %s)"), nMouse, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
-			} else {
+			else
 				sprintf(szString, _T("Mouse %d %s %s"), nMouse, szAxis[nCode >> 1], szDir[nCode & 1]);
-			}
 			return szString;
 		}
 	}
 
 	// Joystick
-	if (c >= 0x4000 && c < 0x8000) {
+	if (c >= 0x4000 && c < 0x8000)
+	{
 		int nJoy = (c >> 8) & 0x3F;
 		int nCode = c & 0xFF;
-		if (nCode >= 0x80) {
-
+		if (nCode >= 0x80)
+		{
 #if defined (_XBOX)
 
 			switch(c)
 			{
-			case 0x4080:
-			case 0x4180:
-			case 0x4280:
-				sprintf(szString, _T("A Button"));
-				break;
-			case 0x4081:
-			case 0x4181:
-			case 0x4281:
-				sprintf(szString, _T("B Button"));
-				break;
-			case 0x4082:
-			case 0x4182:
-			case 0x4282:
-				sprintf(szString, _T("X Button"));
-				break;
-			case 0x4083:
-			case 0x4183:
-			case 0x4283:
-				sprintf(szString, _T("Y Button"));
-				break;
-			case 0x4084:
-			case 0x4184:
-			case 0x4284:
-				sprintf(szString, _T("Left Shoulder"));
-				break;
-			case 0x4085:
-			case 0x4185:
-			case 0x4285:
-				sprintf(szString, _T("Right Shoulder"));
-				break;
-			 
+				case 0x4080:
+				case 0x4180:
+				case 0x4280:
+					sprintf(szString, _T("A Button"));
+					break;
+				case 0x4081:
+				case 0x4181:
+				case 0x4281:
+					sprintf(szString, _T("B Button"));
+					break;
+				case 0x4082:
+				case 0x4182:
+				case 0x4282:
+					sprintf(szString, _T("X Button"));
+					break;
+				case 0x4083:
+				case 0x4183:
+				case 0x4283:
+					sprintf(szString, _T("Y Button"));
+					break;
+				case 0x4084:
+				case 0x4184:
+				case 0x4284:
+					sprintf(szString, _T("Left Shoulder"));
+					break;
+				case 0x4085:
+				case 0x4185:
+				case 0x4285:
+					sprintf(szString, _T("Right Shoulder"));
+					break;
+
 			}
 
 #elif defined (SN_TARGET_PS3)
 			switch(c)
 			{
-			case 0x4080:
-			case 0x4180:
-			case 0x4280:
-				sprintf(szString, _T("Cross Button"));
-				break;
-			case 0x4081:
-			case 0x4181:
-			case 0x4281:
-				sprintf(szString, _T("Circle Button"));
-				break;
-			case 0x4082:
-			case 0x4182:
-			case 0x4282:
-				sprintf(szString, _T("Square Button"));
-				break;
-			case 0x4083:
-			case 0x4183:
-			case 0x4283:
-				sprintf(szString, _T("Triangle Button"));
-				break;
-			case 0x4084:
-			case 0x4184:
-			case 0x4284:
-				sprintf(szString, _T("L1 Button"));
-				break;
-			case 0x4085:
-			case 0x4185:
-			case 0x4285:
-				sprintf(szString, _T("R1 Button"));
-				break;
-			// forgot these
-			case 0x4088:
-			case 0x4188:
-			case 0x4288:
-				sprintf(szString, _T("L2 Button"));
-				break;
-			case 0x408A:
-			case 0x418A:
-			case 0x428A:
-				sprintf(szString, _T("R2 Button"));
-				break;
-			case 0x408B:
-			case 0x418B:
-			case 0x428B:
-				sprintf(szString, _T("L3 Button"));
-				break;
-			case 0x408C:
-			case 0x418C:
-			case 0x428C:
-				sprintf(szString, _T("R3 Button"));
-				break;
-			 
+				case 0x4080:
+				case 0x4180:
+				case 0x4280:
+					sprintf(szString, _T("Cross Button"));
+					break;
+				case 0x4081:
+				case 0x4181:
+				case 0x4281:
+					sprintf(szString, _T("Circle Button"));
+					break;
+				case 0x4082:
+				case 0x4182:
+				case 0x4282:
+					sprintf(szString, _T("Square Button"));
+					break;
+				case 0x4083:
+				case 0x4183:
+				case 0x4283:
+					sprintf(szString, _T("Triangle Button"));
+					break;
+				case 0x4084:
+				case 0x4184:
+				case 0x4284:
+					sprintf(szString, _T("L1 Button"));
+					break;
+				case 0x4085:
+				case 0x4185:
+				case 0x4285:
+					sprintf(szString, _T("R1 Button"));
+					break;
+					// forgot these
+				case 0x4088:
+				case 0x4188:
+				case 0x4288:
+					sprintf(szString, _T("L2 Button"));
+					break;
+				case 0x408A:
+				case 0x418A:
+				case 0x428A:
+					sprintf(szString, _T("R2 Button"));
+					break;
+				case 0x408B:
+				case 0x418B:
+				case 0x428B:
+					sprintf(szString, _T("L3 Button"));
+					break;
+				case 0x408C:
+				case 0x418C:
+				case 0x428C:
+					sprintf(szString, _T("R3 Button"));
+					break;
+
 			}			
 #else
 			sprintf(szString, _T("Joy %d Button %d"), nJoy, nCode & 0x7F);
 #endif
 			return szString;
 		}
-		if (nCode < 0x10) {
+		if (nCode < 0x10)
+		{
 			char szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
 			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
-			if (nCode < 4) {
+			if (nCode < 4)
 				sprintf(szString, _T("Joy %d %s (%s %s)"), nJoy, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
-			} else {
+			else
 				sprintf(szString, _T("Joy %d %s %s"), nJoy, szAxis[nCode >> 1], szDir[nCode & 1]);
-			}
 			return szString;
 		}
-		if (nCode < 0x20) {
+		if (nCode < 0x20)
+		{
 			char szDir[4][16] = { _T("Left"), _T("Right"), _T("Up"), _T("Down") };
 			sprintf(szString, _T("Joy %d POV-hat %d %s"), nJoy, (nCode & 0x0F) >> 2, szDir[nCode & 3]);
 			return szString;
 		}
 	}
 
-	for (int i = 0; KeyNames[i].nCode; i++) {
-		if (c == KeyNames[i].nCode) {
-			if (KeyNames[i].szName) {
+	for (int i = 0; KeyNames[i].nCode; i++)
+	{
+		if (c == KeyNames[i].nCode)
+		{
+			if (KeyNames[i].szName)
 				szName = KeyNames[i].szName;
-			}
 			break;
 		}
 	}
 
-	if (szName[0]) {
-		sprintf(szString, _T("%s"), szName);
-	} else {
-		sprintf(szString, _T("code 0x%.2X"), c);
-	}
+	if (szName[0])
+		sprintf(szString, "%s", szName);
+	else
+		sprintf(szString, "code 0x%.2X", c);
 
 	return szString;
 }
 
 char* InpToDesc(struct GameInp* pgi)
 {
-	static char szInputName[64] = _T("");
+	static char szInputName[64] = "";
 
-	if (pgi->nInput == 0) {
-		return _T("");
-	}
-	if (pgi->nInput == GIT_CONSTANT) {
-		if (pgi->nType & BIT_GROUP_CONSTANT) {
-			for (int i = 0; i < 8; i++) {
-				szInputName[7 - i] = pgi->Input.Constant.nConst & (1 << i) ? _T('1') : _T('0');
-			}
+	if (pgi->nInput == 0)
+		return "";
+
+	if (pgi->nInput == GIT_CONSTANT)
+	{
+		if (pgi->nType & BIT_GROUP_CONSTANT)
+		{
+			for (int i = 0; i < 8; i++)
+				szInputName[7 - i] = pgi->Input.Constant.nConst & (1 << i) ? '1' : '0';
 			szInputName[8] = 0;
 
 			return szInputName;
 		}
 
-		if (pgi->Input.Constant.nConst == 0) {
-			return _T("-");
-		}
+		if (pgi->Input.Constant.nConst == 0)
+			return "-";
 	}
-	if (pgi->nInput == GIT_SWITCH) {
+	if (pgi->nInput == GIT_SWITCH)
 		return InputCodeDesc(pgi->Input.Switch.nCode);
-	}
-	if (pgi->nInput == GIT_MOUSEAXIS) {
-		char nAxis = _T('?');
-		switch (pgi->Input.MouseAxis.nAxis) {
+
+	if (pgi->nInput == GIT_MOUSEAXIS)
+	{
+		char nAxis = '?';
+		switch (pgi->Input.MouseAxis.nAxis)
+		{
 			case 0:
-				nAxis = _T('X');
+				nAxis = 'X';
 				break;
 			case 1:
-				nAxis = _T('Y');
+				nAxis = 'Y';
 				break;
 			case 2:
-				nAxis = _T('Z');
+				nAxis = 'Z';
 				break;
 		}
-		sprintf(szInputName, _T("Mouse %i %c axis"), pgi->Input.MouseAxis.nMouse, nAxis);
+		sprintf(szInputName, "Mouse %i %c axis", pgi->Input.MouseAxis.nMouse, nAxis);
 		return szInputName;
 	}
-	if (pgi->nInput & GIT_GROUP_JOYSTICK) {
-		char szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
-		char szRange[4][16] = { _T("unknown"), _T("full"), _T("negative"), _T("positive") };
+	if (pgi->nInput & GIT_GROUP_JOYSTICK)
+	{
+		char szAxis[8][3] = { "X", "Y", "Z", "rX", "rY", "rZ", "s0", "s1" };
+		char szRange[4][16] = { "unknown", "full", "negative", "positive" };
 		int nRange = 0;
-		switch (pgi->nInput) {
+		switch (pgi->nInput)
+		{
 			case GIT_JOYAXIS_FULL:
 				nRange = 1;
 				break;
@@ -1250,7 +1282,7 @@ char* InpToDesc(struct GameInp* pgi)
 				break;
 		}
 
-		sprintf(szInputName, _T("Joy %d %s axis (%s range)"), pgi->Input.JoyAxis.nJoy, szAxis[pgi->Input.JoyAxis.nAxis], szRange[nRange]);
+		sprintf(szInputName, "Joy %d %s axis (%s range)", pgi->Input.JoyAxis.nJoy, szAxis[pgi->Input.JoyAxis.nAxis], szRange[nRange]);
 		return szInputName;
 	}
 
@@ -1259,13 +1291,13 @@ char* InpToDesc(struct GameInp* pgi)
 
 char* InpMacroToDesc(struct GameInp* pgi)
 {
-	if (pgi->nInput & GIT_GROUP_MACRO) {
-		if (pgi->Macro.nMode) {
+	if (pgi->nInput & GIT_GROUP_MACRO)
+	{
+		if (pgi->Macro.nMode)
 			return InputCodeDesc(pgi->Macro.Switch.nCode);
-		}
 	}
 
-	return _T("");
+	return "";
 }
 
 // ---------------------------------------------------------------------------
@@ -1274,15 +1306,14 @@ char* InpMacroToDesc(struct GameInp* pgi)
 static unsigned int InputInfoToNum(char* szName)
 {
 	struct BurnInputInfo bii;
-	for (unsigned int i = 0; i < nGameInpCount; i++) {
+	for (unsigned int i = 0; i < nGameInpCount; i++)
+	{
 		BurnDrvGetInputInfo(&bii, i);
-		if (bii.pVal == NULL) {
+		if (bii.pVal == NULL)
 			continue;
-		}
 
-		if (strcasecmp(szName, bii.szInfo) == 0) {
+		if (strcasecmp(szName, bii.szInfo) == 0)
 			return i;
-		}
 	}
 	return ~0U;
 }
@@ -1291,15 +1322,14 @@ static unsigned int InputInfoToNum(char* szName)
 static unsigned int InputNameToNum(char* szName)
 {
 	struct BurnInputInfo bii;
-	for (unsigned int i = 0; i < nGameInpCount; i++) {
+	for (unsigned int i = 0; i < nGameInpCount; i++)
+	{
 		BurnDrvGetInputInfo(&bii, i);
-		if (bii.pVal == NULL) {
+		if (bii.pVal == NULL)
 			continue;
-		}
 
-		if (strcasecmp(szName, bii.szName) == 0) {
+		if (strcasecmp(szName, bii.szName) == 0)
 			return i;
-		}
 	}
 	return ~0U;
 }
@@ -1310,9 +1340,8 @@ static char* InputNumToName(unsigned int i)
 	struct BurnInputInfo bii;
 	bii.szName = NULL;
 	BurnDrvGetInputInfo(&bii, i);
-	if (bii.szName == NULL) {
-		return _T("unknown");
-	}
+	if (bii.szName == NULL)
+		return "unknown";
 	return (char *)bii.szName;
 }
 
@@ -1322,20 +1351,20 @@ static char* InputNumToInfo(unsigned int i)
 	struct BurnInputInfo bii;
 	bii.szName = NULL;
 	BurnDrvGetInputInfo(&bii, i);
-	if (bii.szInfo == NULL) {
-		return _T("unknown");
-	}
+	if (bii.szInfo == NULL)
+		return "unknown";
 	return (char *)bii.szInfo;
 }
 
 static unsigned int MacroNameToNum(char* szName)
 {
 	struct GameInp* pgi = GameInp + nGameInpCount;
-	for (unsigned int i = 0; i < nMacroCount; i++, pgi++) {
-		if (pgi->nInput & GIT_GROUP_MACRO) {
-			if (strcasecmp(szName, pgi->Macro.szName) == 0) {
+	for (unsigned int i = 0; i < nMacroCount; i++, pgi++)
+	{
+		if (pgi->nInput & GIT_GROUP_MACRO)
+		{
+			if (strcasecmp(szName, pgi->Macro.szName) == 0)
 				return i;
-			}
 		}
 	}
 	return ~0U;
@@ -1345,7 +1374,7 @@ static unsigned int MacroNameToNum(char* szName)
 
 static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 {
- 
+
 	for (int i = 0; i < nMaxPlayers; i++) {
 		int nSlide = nPlayerDefaultControls[i] >> 4;
 		switch (nPlayerDefaultControls[i] & 0x0F) {
@@ -1401,7 +1430,7 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 				GamcMisc(pgi, szi, i);
 		}
 	}
- 
+
 	return 0;
 }
 
@@ -1409,72 +1438,75 @@ static int AddCustomMacro(char* szValue, bool bOverWrite)
 {
 	char* szQuote = NULL;
 	char* szEnd = NULL;
-	if (quoteRead(&szQuote, &szEnd, szValue)) {
+	if (quoteRead(&szQuote, &szEnd, szValue))
 		return 1;
-	}
 
 	int nMode = -1;
 	int nInput = -1;
 	bool bCreateNew = false;
 	struct BurnInputInfo bii;
 
-	for (unsigned int j = nGameInpCount; j < nGameInpCount + nMacroCount; j++) {
-		if (GameInp[j].nInput == GIT_MACRO_CUSTOM) {
-			if (labelCheck(szQuote, (char *)GameInp[j].Macro.szName)) {
+	for (unsigned int j = nGameInpCount; j < nGameInpCount + nMacroCount; j++)
+	{
+		if (GameInp[j].nInput == GIT_MACRO_CUSTOM)
+		{
+			if (labelCheck(szQuote, (char *)GameInp[j].Macro.szName))
+			{
 				nInput = j;
 				break;
 			}
 		}
 	}
 
-	if (nInput == -1) {
-		if (nMacroCount + 1 == nMaxMacro) {
+	if (nInput == -1)
+	{
+		if (nMacroCount + 1 == nMaxMacro)
 			return 1;
-		}
 		nInput = nGameInpCount + nMacroCount;
 		bCreateNew = true;
 	}
 
 	strcpy(szQuote, GameInp[nInput].Macro.szName);
 
-	if ((szValue = labelCheck(szEnd, _T("undefined"))) != NULL) {
+	if ((szValue = labelCheck(szEnd, "undefined")) != NULL)
 		nMode = 0;
-	} else {
-		if ((szValue = labelCheck(szEnd, _T("switch"))) != NULL) {
-
-			if (bOverWrite || GameInp[nInput].Macro.nMode == 0) {
+	else
+	{
+		if ((szValue = labelCheck(szEnd, "switch")) != NULL)
+		{
+			if (bOverWrite || GameInp[nInput].Macro.nMode == 0)
 				GameInp[nInput].Macro.Switch.nCode = (unsigned short)strtol(szValue, &szValue, 0);
-			}
 
 			nMode = 1;
 		}
 	}
 
-	if (nMode >= 0) {
+	if (nMode >= 0)
+	{
 		int nFound = 0;
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++)
+		{
 			GameInp[nInput].Macro.pVal[i] = NULL;
 			GameInp[nInput].Macro.nVal[i] = 0;
 			GameInp[nInput].Macro.nInput[i] = 0;
 
-			if (szValue == NULL) {
+			if (szValue == NULL)
 				break;
-			}
 
-			if (quoteRead(&szQuote, &szEnd, szValue)) {
+			if (quoteRead(&szQuote, &szEnd, szValue))
 				break;
-			}
 
-			for (unsigned int j = 0; j < nGameInpCount; j++) {
+			for (unsigned int j = 0; j < nGameInpCount; j++)
+			{
 				bii.szName = NULL;
 				BurnDrvGetInputInfo(&bii, j);
-				if (bii.pVal == NULL) {
+				if (bii.pVal == NULL)
 					continue;
-				}
 
 				char* szString = labelCheck(szQuote, (char *)bii.szName);
-				if (szString && szEnd) {
+				if (szString && szEnd)
+				{
 					GameInp[nInput].Macro.pVal[i] = bii.pVal;
 					GameInp[nInput].Macro.nInput[i] = j;
 
@@ -1526,70 +1558,69 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 			nLen--;
 		}
 
-		szValue = labelCheck(szLine, _T("version"));
+		szValue = labelCheck(szLine, "version");
 		if (szValue) {
 			nFileVersion = strtol(szValue, NULL, 0);
 		}
-		szValue = labelCheck(szLine, _T("analog"));
+		szValue = labelCheck(szLine, "analog");
 		if (szValue) {
 			nAnalogSpeed = strtol(szValue, NULL, 0);
 		}
 
-		if (nConfigMinVersion <= nFileVersion && nFileVersion <= nBurnVer) {
-			szValue = labelCheck(szLine, _T("input"));
-			if (szValue) {
+		if (nConfigMinVersion <= nFileVersion && nFileVersion <= nBurnVer)
+		{
+			szValue = labelCheck(szLine, "input");
+			if (szValue)
+			{
 				char* szQuote = NULL;
 				char* szEnd = NULL;
-				if (quoteRead(&szQuote, &szEnd, szValue)) {
+				if (quoteRead(&szQuote, &szEnd, szValue))
 					continue;
-				}
 
-				if ((szQuote[0] == _T('p') || szQuote[0] == _T('P')) && szQuote[1] >= _T('1')
-					&& szQuote[1] <= _T('0') + nMaxPlayers && szQuote[2] == _T(' ')) {
-					if (szQuote[1] != _T('1') + nPlayer) {
+				if ((szQuote[0] == 'p' || szQuote[0] == 'P') && szQuote[1] >= '1' && szQuote[1] <= '0' + nMaxPlayers && szQuote[2] == ' ')
+				{
+					if (szQuote[1] != '1' + nPlayer)
 						continue;
-					}
-				} else {
-					if (nPlayer != 0) {
+				}
+				else
+				{
+					if (nPlayer != 0)
 						continue;
-					}
 				}
 
 				// Find which input number this refers to
 				i = InputInfoToNum(szQuote);
-				if (i == ~0U) {
+				if (i == ~0U)
+				{
 					i = InputNameToNum(szQuote);
-					if (i == ~0U) {
+					if (i == ~0U)
 						continue;
-					}
 				}
 
-				if (GameInp[i].nInput == 0 || bOverWrite) {				// Undefined - assign mapping
+				if (GameInp[i].nInput == 0 || bOverWrite) // Undefined - assign mapping
 					StringToInp(GameInp + i, szEnd);
-				}
 			}
 
-			szValue = labelCheck(szLine, _T("macro"));
-			if (szValue) {
+			szValue = labelCheck(szLine, "macro");
+			if (szValue)
+			{
 				char* szQuote = NULL;
 				char* szEnd = NULL;
-				if (quoteRead(&szQuote, &szEnd, szValue)) {
+				if (quoteRead(&szQuote, &szEnd, szValue))
 					continue;
-				}
 
 				i = MacroNameToNum(szQuote);
-				if (i != ~0U) {
+				if (i != ~0U)
+				{
 					i += nGameInpCount;
-					if (GameInp[i].Macro.nMode == 0 || bOverWrite) {	// Undefined - assign mapping
+					if (GameInp[i].Macro.nMode == 0 || bOverWrite) // Undefined - assign mapping
 						StringToMacro(GameInp + i, szEnd);
-					}
 				}
 			}
 
-			szValue = labelCheck(szLine, _T("custom"));
-			if (szValue) {
+			szValue = labelCheck(szLine, "custom");
+			if (szValue)
 				AddCustomMacro(szValue, bOverWrite);
-			}
 		}
 	}
 
@@ -1601,38 +1632,38 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 // Auto-configure any undefined inputs to defaults
 int GameInpDefault()
 {
- 
+
 	struct GameInp* pgi;
 	struct BurnInputInfo bii;
 	unsigned int i;
 
-	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++) {
+	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++)
+	{
 
-		if ((nPlayerDefaultControls[nPlayer] & 0x0F) != 0x0F) {
+		if ((nPlayerDefaultControls[nPlayer] & 0x0F) != 0x0F)
 			continue;
-		}
 
 		GameInputAutoIni(nPlayer, szPlayerDefaultIni[nPlayer], false);
 	}
 
 	// Fill all inputs still undefined
-	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++) {
-		if (pgi->nInput) {											// Already defined - leave it alone
+	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	{
+		if (pgi->nInput) // Already defined - leave it alone
 			continue;
-		}
 
 		// Get the extra info about the input
 		bii.szInfo = NULL;
 		BurnDrvGetInputInfo(&bii, i);
-		if (bii.pVal == NULL) {
+		if (bii.pVal == NULL)
 			continue;
-		}
-		if (bii.szInfo == NULL) {
+
+		if (bii.szInfo == NULL)
 			bii.szInfo = "";
-		}
 
 		// Dip switches - set to constant
-		if (bii.nType & BIT_GROUP_CONSTANT) {
+		if (bii.nType & BIT_GROUP_CONSTANT)
+		{
 			pgi->nInput = GIT_CONSTANT;
 			continue;
 		}
@@ -1641,14 +1672,14 @@ int GameInpDefault()
 	}
 
 	// Fill in macros still undefined
-	for (i = 0; i < nMacroCount; i++, pgi++) {
-		if (pgi->nInput != GIT_MACRO_AUTO || pgi->Macro.nMode) {	// Already defined - leave it alone
+	for (i = 0; i < nMacroCount; i++, pgi++)
+	{
+		if (pgi->nInput != GIT_MACRO_AUTO || pgi->Macro.nMode)	// Already defined - leave it alone
 			continue;
-		}
 
 		GameInpAutoOne(pgi, pgi->Macro.szName);
 	}
- 
+
 	return 0;
 }
 
@@ -1672,20 +1703,19 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 			szName = InputNumToInfo(i);//InputNumToName(i);
 		}
 #if defined (_XBOX)
-		fprintf(h, _T("input  \"%S\" "), szName);
+		fprintf(h, "input  \"%S\" ", szName);
 #else
-		fprintf(h, _T("input  \"%s\" "), szName);
+		fprintf(h, "input  \"%s\" ", szName);
 #endif
 
 		int nPad = 16 - strlen(szName);
-		for (int j = 0; j < nPad; j++) {
-			fprintf(h, _T(" "));
-		}
+		for (int j = 0; j < nPad; j++)
+			fprintf(h, " ");
 
-		fprintf(h, _T("%s\n"), InpToString(GameInp + i));
+		fprintf(h, "%s\n", InpToString(GameInp + i));
 	}
 
-	fprintf(h, _T("\n"));
+	fprintf(h, "\n");
 
 	struct GameInp* pgi = GameInp + nGameInpCount;
 	for (unsigned int i = 0; i < nMacroCount; i++, pgi++) {
@@ -1694,20 +1724,20 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 		if (pgi->nInput & GIT_GROUP_MACRO) {
 			switch (pgi->nInput) {
 				case GIT_MACRO_AUTO:									// Auto-assigned macros
-					fprintf(h, _T("macro  \"%hs\" "), pgi->Macro.szName);
+					fprintf(h, "macro  \"%hs\" ", pgi->Macro.szName);
 					break;
 				case GIT_MACRO_CUSTOM:									// Custom macros
-					fprintf(h, _T("custom \"%hs\" "), pgi->Macro.szName);
+					fprintf(h, "custom \"%hs\" ", pgi->Macro.szName);
 					break;
 				default:												// Unknown -- ignore
 					continue;
 			}
 
 			nPad = 16 - strlen(pgi->Macro.szName);
-			for (int j = 0; j < nPad; j++) {
-				fprintf(h, _T(" "));
-			}
-			fprintf(h, _T("%s\n"), InpMacroToString(pgi));
+			for (int j = 0; j < nPad; j++)
+				fprintf(h, " ");
+
+			fprintf(h, "%s\n", InpMacroToString(pgi));
 		}
 	}
 

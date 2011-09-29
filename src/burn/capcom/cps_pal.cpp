@@ -144,7 +144,7 @@ int CpsPalUpdate(unsigned char* pNewPal, int bRecalcAll)
 		pn = (unsigned short*)pNewPal;
 
 		if (nLagObjectPalettes) {
-			int nBuffer = 0x0C00 + ((GetCurrentFrame() & 1) << 9);
+			int nBuffer = 0x0C00 + ((nCurrentFrame & 1) << 9);
 
 			memcpy(ps + 0x0200, pn + 0x0200, 0x0600 << 1);
 			memcpy(ps + nBuffer, pn, 0x0200 << 1);
@@ -193,7 +193,7 @@ int Cps2PalUpdate(unsigned char* pNewPal, int bRecalcAll)
 		pn = (unsigned short*)pNewPal;
 
 		if (nLagObjectPalettes) {
-			int nBuffer = 0x0C00 + ((GetCurrentFrame() & 1) << 9);
+			int nBuffer = 0x0C00 + ((nCurrentFrame & 1) << 9);
 
 			memcpy(ps + 0x0200, pn + 0x0200, 0x0600 << 1);
 			memcpy(ps + nBuffer, pn, 0x0200 << 1);
@@ -227,7 +227,7 @@ int Cps2PalUpdate(unsigned char* pNewPal, int bRecalcAll)
 	}
 
 		if (nLagObjectPalettes) {
-			int nBuffer = 0x0C00 + ((GetCurrentFrame() & 1) << 9);
+			int nBuffer = 0x0C00 + ((nCurrentFrame & 1) << 9);
 
 			ps = (unsigned short*)CpsPalSrc + (nBuffer ^ 0x0200);
 			pn = (unsigned short*)pNewPal;

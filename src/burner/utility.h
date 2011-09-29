@@ -52,12 +52,13 @@ inline T* allocate(size_t size, const T& value)
 // get string until "\r\n"
 inline void getLine(char* p)
 {
-	if (!p) {
+	if (!p)
 		return;
-	}
 
-	for (size_t i = 0; i < strlen(p); i++) {
-		if (p[i] == '\r' || p[i] == '\n') {
+	for (size_t i = 0; i < strlen(p); i++)
+	{
+		if (p[i] == '\r' || p[i] == '\n')
+		{
 			p[i] = '\0';
 			break;
 		}
@@ -96,10 +97,10 @@ inline char * getBaseName(const char * name)
 	else
 		strcpy(filename, name);
 
-	for (size_t i = strlen(filename); i > 0; i--) {
-		if (filename[i] == '.') {
+	for (size_t i = strlen(filename); i > 0; i--)
+	{
+		if (filename[i] == '.')
 			filename[i] = '\0';
-		}
 	}
 
 	return filename;
@@ -114,16 +115,15 @@ inline char* getBaseNameA(const char* name)
 #else
 	const char * p = strrchr(name, '/');
 #endif
-	if (p) {
+	if (p)
 		strcpy(filename, p + 1);
-	} else {
+	else
 		strcpy(filename, name);
-	}
 
-	for (size_t i = strlen(filename); i > 0; i--) {
-		if (filename[i] == '.') {
+	for (size_t i = strlen(filename); i > 0; i--)
+	{
+		if (filename[i] == '.')
 			filename[i] = '\0';
-		}
 	}
 
 	return filename;
@@ -132,14 +132,13 @@ inline char* getBaseNameA(const char* name)
 inline char* getFilenameA(char* fullname)
 {
 	size_t len = strlen(fullname);
-	if (len == 0) {
+	if (len == 0)
 		return fullname;
-	}
 
-	for (size_t i = len - 1; i >= 1; i--) {
-		if (fullname[i] == '\\' || fullname[i] == '/') {
+	for (size_t i = len - 1; i >= 1; i--)
+	{
+		if (fullname[i] == '\\' || fullname[i] == '/')
 			return fullname + i + 1;
-		}
 	}
 
 	return fullname;
@@ -148,14 +147,13 @@ inline char* getFilenameA(char* fullname)
 inline char * getFilenameW(char * fullname)
 {
 	size_t len = strlen(fullname);
-	if (len == 0) {
+	if (len == 0)
 		return fullname;
-	}
 
-	for (size_t i = len - 1; i >= 1; i--) {
-		if (fullname[i] == '\\' || fullname[i] == '/') {
+	for (size_t i = len - 1; i >= 1; i--)
+	{
+		if (fullname[i] == '\\' || fullname[i] == '/')
 			return fullname + i + 1;
-		}
 	}
 
 	return fullname;
@@ -166,7 +164,8 @@ inline char * getFileExt(const char * filename)
 	static char ext[32] = "";
 
 	const char * p = strrchr(filename, '.');
-	if (p) {
+	if (p)
+	{
 		strcpy(ext, p + 1);
 		return ext;
 	}
@@ -187,27 +186,30 @@ inline long getFileSize(FILE* file)
 // read file content to buffer, return file size
 inline size_t getFileBuffer(const char * filename, void** buffer)
 {
-	assert(!(*buffer));
+	//assert(!(*buffer));
 
 	FILE* file = fopen(filename, "rt");
-	if (!file) {
+	if (!file)
 		return 0;
-	}
 
 	long size = getFileSize(file);
 	size_t read_size = 0;
 	void* temp = NULL;
 
-	if (size > 0) {
+	if (size > 0)
+	{
 		temp = (void*)malloc(size);
 		read_size = fread(temp, 1, size, file);
 	}
+
 	fclose(file);
 
-	if (read_size > 0 && temp) {
+	if (read_size > 0 && temp)
+	{
 		*buffer = (void*)malloc(read_size);
 		memcpy(*buffer, temp, read_size);
 	}
+
 	free(temp);
 
 	return read_size;
@@ -218,15 +220,11 @@ inline bool fileExists(const char * filename)
 {
 
 #if defined (_XBOX)
-// changed to allow running from usb drives
+	// changed to allow running from usb drives
 	if (GetFileAttributes(filename)!=-1)
-	{
 		return true;
-	}
 	else
-	{
 		return false;
-	}
 #elif defined (SN_TARGET_PS3)
 	CellFsStat sb;
 	if (cellFsStat(filename,&sb) == CELL_FS_SUCCEEDED)	 
@@ -256,20 +254,19 @@ inline bool fileReadable(const char* filename)
 #define FIND_QT(s) while (*s && *s != '\"') { s++; }	// Find quote
 
 // config file parsing
-#define QUOTE_MAX (128)										// Maximum length of "quoted strings"
+#define QUOTE_MAX (128)				// Maximum length of "quoted strings"
 
 inline char* labelCheck(char* s, char* label)
 {
-	if (!s || !label) {
+	if (!s || !label)
 		return NULL;
-	}
+
 	size_t len = strlen(label);
 
-	SKIP_WS(s);							// Skip whitespace
+	SKIP_WS(s);				// Skip whitespace
 
-	if (strncmp(s, label, len)) {		// Doesn't match
+	if (strncmp(s, label, len))		// Doesn't match
 		return NULL;
-	}
 	return s + len;
 }
 
@@ -285,7 +282,8 @@ inline int quoteRead(char** ppQuote, char** ppEnd, char* src)
 
 	e = s;
 
-	if (*s == '\"') {					// Quoted string
+	if (*s == '\"')
+	{			// Quoted string
 		s++;
 		e++;
 		// Find end quote
@@ -294,7 +292,9 @@ inline int quoteRead(char** ppQuote, char** ppEnd, char* src)
 		// Zero-terminate
 		quote[e - s] = '\0';
 		e++;
-	} else {								// Non-quoted string
+	}
+	else
+	{			// Non-quoted string
 		// Find whitespace
 		FIND_WS(e);
 		strncpy(quote, s, e - s);
@@ -302,29 +302,25 @@ inline int quoteRead(char** ppQuote, char** ppEnd, char* src)
 		quote[e - s] = '\0';
 	}
 
-	if (ppQuote) {
+	if (ppQuote)
 		*ppQuote = quote;
-	}
-	if (ppEnd) {
+
+	if (ppEnd)
 		*ppEnd = e;
-	}
 
 	return 0;
 }
 
 inline bool skipComma(char** s)
 {
-	while (**s && **s != ',') {
+	while (**s && **s != ',')
 		(*s)++;
-	}
 
-	if (**s == ',') {
+	if (**s == ',')
 		(*s)++;
-	}
 
-	if (**s) {
+	if (**s)
 		return true;
-	}
 
 	return false;
 }

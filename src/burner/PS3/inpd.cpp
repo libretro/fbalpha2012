@@ -5,12 +5,8 @@
 #include "autofire.h"
 #endif
 
-HWND hInpdDlg = NULL; // Handle to the Input Dialog
-static HWND hInpdList = NULL;
 static unsigned char* LastVal = NULL; // Last input values/defined
 static int bLastValDefined = 0;	
-
-static HWND hInpdGi = NULL, hInpdPci = NULL, hInpdAnalog = NULL; // Combo boxes
 
 static void GameInpConfigOne(int nPlayer, int nPcDev, int nAnalog, struct GameInp* pgi, char* szi)
 {
@@ -110,13 +106,13 @@ int UsePreset(bool bMakeDefault)
 }
 
 // ==> default input mapping, added by regret
-TCHAR* defaultInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini");
-TCHAR* defaultNeoInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini");
-TCHAR* defaultCpsInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini");
+char* defaultInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini");
+char* defaultNeoInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini");
+char* defaultCpsInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini");
 
 static const char * GetDefaultInputFilename()
 {
-	TCHAR* fileName = defaultInpFilename;
+	char* fileName = defaultInpFilename;
 
 	int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
 

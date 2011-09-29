@@ -79,11 +79,6 @@ static inline int GetCurrentFrame()
 	return nCurrentFrame;
 }
 
-static inline void SetCurrentFrame(const unsigned int n)
-{
-	nCurrentFrame = n;
-}
-
 // ---------------------------------------------------------------------------
 // Driver info structures
 

@@ -24,7 +24,7 @@ short* pAudNextSound = NULL;	// The next sound seg we will add to the sample loo
 static InterfaceInfo AudInfo = { NULL, };
 
 // Write silence into the buffer
-int AudWriteSlience(int)
+int AudWriteSilence(int)
 {
 	if (pAudNextSound)
 		memset(pAudNextSound, 0, nAudAllocSegLen);

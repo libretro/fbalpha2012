@@ -26,11 +26,10 @@ int GenericTilesInit()
 {
 	int nRet;
 
-	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
+	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
 		BurnDrvGetVisibleSize(&nScreenHeight, &nScreenWidth);
-	} else {
+	else
 		BurnDrvGetVisibleSize(&nScreenWidth, &nScreenHeight);
-	}
 
 	nRet = BurnTransferInit();
 
@@ -49,7 +48,7 @@ int GenericTilesExit()
 Graphics Decoding
 ================================================================================================*/
 
-static inline int readbit(const UINT8 *src, int bitnum)
+static inline int readbit(const uint8_t *src, int bitnum)
 {
 	return src[bitnum / 8] & (0x80 >> (bitnum % 8));
 }
@@ -65,7 +64,7 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 	for (c = 0; c < num; c++) {
 		int plane, x, y;
 
-		UINT8 *dp = pDest + (c * xSize * ySize);
+		uint8_t *dp = pDest + (c * xSize * ySize);
 		XMemSet(dp, 0, xSize * ySize);
 
 		for (plane = 0; plane < numPlanes; plane++) {
@@ -98,7 +97,7 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 
 void Render8x8Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth ) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth ) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -117,15 +116,14 @@ void Render8x8Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int S
 
 void Render8x8Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(0, StartX, nScreenWidth, PLOTPIXEL(0));
 		CLIPPIXEL(1, StartX, nScreenWidth, PLOTPIXEL(1));
@@ -140,7 +138,7 @@ void Render8x8Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, 
 
 void Render8x8Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -159,7 +157,7 @@ void Render8x8Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX,
 
 void Render8x8Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -182,7 +180,7 @@ void Render8x8Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int St
 
 void Render8x8Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -201,7 +199,7 @@ void Render8x8Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX,
 
 void Render8x8Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -224,7 +222,7 @@ void Render8x8Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int St
 
 void Render8x8Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -243,7 +241,7 @@ void Render8x8Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 void Render8x8Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -270,7 +268,7 @@ void Render8x8Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int S
 
 void Render8x8Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -289,7 +287,7 @@ void Render8x8Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX, 
 
 void Render8x8Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -312,7 +310,7 @@ void Render8x8Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int Sta
 
 void Render8x8Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -331,7 +329,7 @@ void Render8x8Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int St
 
 void Render8x8Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -354,7 +352,7 @@ void Render8x8Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, i
 
 void Render8x8Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -373,7 +371,7 @@ void Render8x8Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int St
 
 void Render8x8Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -396,7 +394,7 @@ void Render8x8Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, i
 
 void Render8x8Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -415,7 +413,7 @@ void Render8x8Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int S
 
 void Render8x8Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 6);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
@@ -442,7 +440,7 @@ void Render8x8Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, 
 
 void Render16x16Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -469,7 +467,7 @@ void Render16x16Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int
 
 void Render16x16Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -500,7 +498,7 @@ void Render16x16Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 void Render16x16Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -527,7 +525,7 @@ void Render16x16Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int Start
 
 void Render16x16Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -558,7 +556,7 @@ void Render16x16Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render16x16Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -585,7 +583,7 @@ void Render16x16Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int Start
 
 void Render16x16Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -616,7 +614,7 @@ void Render16x16Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render16x16Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -643,7 +641,7 @@ void Render16x16Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int Star
 
 void Render16x16Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -678,7 +676,7 @@ void Render16x16Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int
 
 void Render16x16Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -705,7 +703,7 @@ void Render16x16Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 void Render16x16Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -736,7 +734,7 @@ void Render16x16Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int S
 
 void Render16x16Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -763,7 +761,7 @@ void Render16x16Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render16x16Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -794,7 +792,7 @@ void Render16x16Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 void Render16x16Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -821,7 +819,7 @@ void Render16x16Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render16x16Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -852,7 +850,7 @@ void Render16x16Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 void Render16x16Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -879,7 +877,7 @@ void Render16x16Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int
 
 void Render16x16Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 8);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
@@ -914,7 +912,7 @@ void Render16x16Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber
 
 void Render32x32Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -957,7 +955,7 @@ void Render32x32Tile(unsigned short* pDestDraw, int nTileNumber, int StartX, int
 
 void Render32x32Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1004,7 +1002,7 @@ void Render32x32Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 void Render32x32Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1047,7 +1045,7 @@ void Render32x32Tile_FlipX(unsigned short* pDestDraw, int nTileNumber, int Start
 
 void Render32x32Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1094,7 +1092,7 @@ void Render32x32Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render32x32Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1137,7 +1135,7 @@ void Render32x32Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int Start
 
 void Render32x32Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1184,7 +1182,7 @@ void Render32x32Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render32x32Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1227,7 +1225,7 @@ void Render32x32Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int Star
 
 void Render32x32Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1278,7 +1276,7 @@ void Render32x32Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int
 
 void Render32x32Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1321,7 +1319,7 @@ void Render32x32Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 void Render32x32Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1368,7 +1366,7 @@ void Render32x32Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int S
 
 void Render32x32Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1411,7 +1409,7 @@ void Render32x32Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render32x32Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1458,7 +1456,7 @@ void Render32x32Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 void Render32x32Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1501,7 +1499,7 @@ void Render32x32Tile_Mask_FlipY(unsigned short* pDestDraw, int nTileNumber, int 
 
 void Render32x32Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1548,7 +1546,7 @@ void Render32x32Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 void Render32x32Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1591,7 +1589,7 @@ void Render32x32Tile_Mask_FlipXY(unsigned short* pDestDraw, int nTileNumber, int
 
 void Render32x32Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber << 10);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
@@ -1642,7 +1640,7 @@ Custom Height and Width Functions
 
 void RenderCustomTile(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth ) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth ) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1656,7 +1654,7 @@ void RenderCustomTile(unsigned short* pDestDraw, int nWidth, int nHeight, int nT
 
 void RenderCustomTile_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1674,7 +1672,7 @@ void RenderCustomTile_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, i
 
 void RenderCustomTile_FlipX(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1688,7 +1686,7 @@ void RenderCustomTile_FlipX(unsigned short* pDestDraw, int nWidth, int nHeight, 
 
 void RenderCustomTile_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1706,7 +1704,7 @@ void RenderCustomTile_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int nHei
 
 void RenderCustomTile_FlipY(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1720,7 +1718,7 @@ void RenderCustomTile_FlipY(unsigned short* pDestDraw, int nWidth, int nHeight, 
 
 void RenderCustomTile_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1738,7 +1736,7 @@ void RenderCustomTile_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int nHei
 
 void RenderCustomTile_FlipXY(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1752,7 +1750,7 @@ void RenderCustomTile_FlipXY(unsigned short* pDestDraw, int nWidth, int nHeight,
 
 void RenderCustomTile_FlipXY_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1774,7 +1772,7 @@ Custom Height and Width Functions with Masking
 
 void RenderCustomTile_Mask(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1788,7 +1786,7 @@ void RenderCustomTile_Mask(unsigned short* pDestDraw, int nWidth, int nHeight, i
 
 void RenderCustomTile_Mask_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1806,7 +1804,7 @@ void RenderCustomTile_Mask_Clip(unsigned short* pDestDraw, int nWidth, int nHeig
 
 void RenderCustomTile_Mask_FlipX(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1820,7 +1818,7 @@ void RenderCustomTile_Mask_FlipX(unsigned short* pDestDraw, int nWidth, int nHei
 
 void RenderCustomTile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
@@ -1838,7 +1836,7 @@ void RenderCustomTile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int
 
 void RenderCustomTile_Mask_FlipY(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1852,7 +1850,7 @@ void RenderCustomTile_Mask_FlipY(unsigned short* pDestDraw, int nWidth, int nHei
 
 void RenderCustomTile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1870,7 +1868,7 @@ void RenderCustomTile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int
 
 void RenderCustomTile_Mask_FlipXY(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
@@ -1884,7 +1882,7 @@ void RenderCustomTile_Mask_FlipXY(unsigned short* pDestDraw, int nWidth, int nHe
 
 void RenderCustomTile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, int nTileNumber, int StartX, int StartY, int nTilePalette, int nColourDepth, int nMaskColour, int nPaletteOffset, unsigned char *pTile)
 {
-	UINT32 nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
+	uint32_t nPalette = (nTilePalette << nColourDepth) | nPaletteOffset;
 	pTileData = pTile + (nTileNumber * nWidth * nHeight);
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;

@@ -22,26 +22,14 @@ int nAppVirtualFps = 6000;				// App fps * 100
 int bOnce = 0;
 int is_running = 0;
 bool bShowFPS = false;
-TCHAR fpsString[16];
 int custom_aspect_ratio_mode = 0;
 
 extern bool exitGame;
-extern void ShowFPS(); 
-extern void psglRenderUI();
-extern void psglClearUI();
-extern void psglRenderStretch();
-extern void psglRenderAlpha();
 extern void doStretch();
 extern void StretchMenu();
-extern void CalculateViewports();
 cell_audio_handle_t audio_handle;
 const struct cell_audio_driver *driver;
 
-static inline void DisplayFPS()
-{
-
-}
- 
 static uint64_t inline GetTickCount()
 {
 	CellRtcTick ticks;

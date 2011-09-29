@@ -6,63 +6,26 @@
 #include <PSGL/psglu.h>
 #include <cell/dbgfont.h>
 
-#define min(a,b) (((a)<(b))?(a):(b)) 
-#define max(a,b) (((a)>(b))?(a):(b))
-
-extern void psglInitGL();
-extern void psglInitGL(uint32_t resolutionId);
-extern void psglExitGL();
-extern uint32_t psglGetCurrentResolutionId();
-extern void psglResolutionNext();
-extern void psglResolutionPrevious();
-extern void psglResolutionSwitch();
-extern void setVSync(int interval);
-extern void psglRenderUI();
-extern void psglClearUI();
-extern void psglRenderPaused();
-extern int32_t psglInitShader(const char* filename);
-extern void _psglExitCG();
+extern void psglSetVSync(uint32_t enable);
+extern void psglInitGL(void);
+extern void psglInitGL_with_resolution(uint32_t resolutionId);
 extern void dbgFontInit(void);
-extern void apply_rotation_settings(void);
+extern void psglResolutionPrevious(void);
+extern void psglResolutionNext(void);
+extern int32_t psglInitShader(const char* filename);
+extern uint32_t psglGetCurrentResolutionId(void);
+extern void psglResolutionSwitch(void);
+extern void psglRenderStretch(void);
+extern void psglRenderPaused(void);			 
+extern void psglRenderAlpha(void);
+extern void CalculateViewports(void);
+extern void _psglRender(void);
 
-void dbgFontDraw(void);
-extern PSGLdevice* psgl_device;
+#define psglClearUI() glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-// normal vertex
-static const GLfloat   verts  [] = {
-      -1.0f, -1.0f, 0.0f,			// bottom left
-      1.0f, -1.0f, 0.0f,			// bottom right
-      1.0f,  1.0f, 0.0f,			// top right
-      -1.0f, 1.0f, 0.0f          // top left
-};			
-
-static const GLfloat   tverts[] = {
-      0.0f, 1.0f,						
-      1.0f, 1.0f, 
-      1.0f, 0.0f, 
-      0.0f, 0.0f
-};
-
-static const GLfloat   tvertsFlippedRotated[] = {	
-      1.0f, 1.0f,						
-      1.0f, 0.0f, 
-      0.0f, 0.0f, 
-      0.0f, 1.0f
-};
-
-static const GLfloat   tvertsFlipped[] = {	
-      1.0f, 0.0f,						
-      0.0f, 0.0f, 
-      0.0f, 1.0f, 
-      1.0f, 1.0f
-};
-
-static const GLfloat   tvertsVertical[] = {
-      0.0f, 0.0f,						
-      0.0f, 1.0f, 
-      1.0f, 1.0f, 
-      1.0f, 0.0f
-};
+#define psglRenderUI() \
+	cellSysutilCheckCallback(); \
+	psglSwap();
 
 #define resize(width, height) \
    if (!(iwidth >= width && iheight >= height)) \
@@ -193,11 +156,5 @@ static const GLfloat   tvertsVertical[] = {
       iheight = 0; \		
    } \
    glDeleteBuffers(1, &bufferID); 
-
-static void setlinear(unsigned int smooth)
-{
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
-}
 
 #endif

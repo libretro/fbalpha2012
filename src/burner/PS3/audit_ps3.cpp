@@ -2,8 +2,8 @@
 #include <stdio.h>  
 #include "burner.h"
   
-static TCHAR* pszBufferEnglish = NULL;
-static TCHAR* pszBufferLocal = NULL;
+static char* pszBufferEnglish = NULL;
+static char* pszBufferLocal = NULL;
 
 static int nBufferEnglishSize = 0;
 static int nBufferLocalSize = 0;
@@ -14,7 +14,7 @@ char msg[1024];
 
 static int FBAPopupLog()
 {
-	TCHAR* pszTypeEnglish;
+	char* pszTypeEnglish;
 
 	switch (nPopupFlags & 7)
 	{
@@ -29,16 +29,16 @@ static int FBAPopupLog()
 			break;
 	}
 
-	for (TCHAR* szText = pszBufferEnglish; ; )
+	for (char* szText = pszBufferEnglish; ; )
 	{
 		int nLen;
 
-		for (nLen = 0; szText[nLen] && szText[nLen] != _T('\n'); nLen++) { }
+		for (nLen = 0; szText[nLen] && szText[nLen] != '\n'; nLen++) { }
 
 		if (nLen)
 		{
-			TCHAR szFormat[16];
-			_stprintf(szFormat, _T("    %%.%is\n"), nLen);
+			char szFormat[16];
+			_stprintf(szFormat, "    %%.%is\n", nLen);
 		}
 
 		if (!szText[nLen])
@@ -52,10 +52,10 @@ static int FBAPopupLog()
 
 // ----------------------------------------------------------------------------
 
-int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
+int FBAPopupAddText(int nFlags, char* pszFormat, ...)
 {
-	TCHAR szString[1024] = _T("");
-	TCHAR* pszStringEnglish = NULL;
+	char szString[1024] = "";
+	char* pszStringEnglish = NULL;
 
 	va_list vaEnglish;
 	va_start(vaEnglish, pszFormat);
@@ -65,7 +65,7 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 
 	// See if we need to load strings from reources
 	if (nFlags & PUF_TEXT_TRANSLATE) {
-		TCHAR* pszStringLocal;
+		char* pszStringLocal;
 
 		va_list vaLocal;
 		va_start(vaLocal, pszFormat);
@@ -79,7 +79,7 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 			int nLen = snprintf(szString, sizearray(szString), pszStringLocal, vaLocal);
 			if (nLen > 0)
 			{
-				TCHAR* pszNewBuffer = (TCHAR*)realloc(pszBufferLocal, (nLen + nBufferLocalSize + 1) * sizeof(TCHAR));
+				char* pszNewBuffer = (char*)realloc(pszBufferLocal, (nLen + nBufferLocalSize + 1) * sizeof(char));
 				if (pszNewBuffer)
 				{
 					pszBufferLocal = pszNewBuffer;
@@ -99,7 +99,7 @@ int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...)
 		int nLen = snprintf(szString, sizearray(szString), pszStringEnglish, s1, s2);
 		if (nLen > 0)
 		{
-			TCHAR* pszNewBuffer = (TCHAR*)realloc(pszBufferEnglish, (nLen + nBufferEnglishSize + 1) * sizeof(TCHAR));
+			char* pszNewBuffer = (char*)realloc(pszBufferEnglish, (nLen + nBufferEnglishSize + 1) * sizeof(char));
 			if (pszNewBuffer)
 			{
 				pszBufferEnglish = pszNewBuffer;

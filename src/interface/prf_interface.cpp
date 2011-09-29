@@ -29,9 +29,9 @@ int ProfileExit()
 {
 	IntInfoFree(&ProfileInfo);
 
-	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN) {
+	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN)
 		return 1;
-	}
+
 	bProfileOkay = false;
 
 	return pProfileDo[nProfileSelect]->ProfileExit();
@@ -41,70 +41,65 @@ int ProfileInit()
 {
 	int nRet;
 
-	if (nProfileSelect >= PROFILE_LEN) {
+	if (nProfileSelect >= PROFILE_LEN)
 		return 1;
-	}
 
-	if ((nRet = pProfileDo[nProfileSelect]->ProfileInit()) == 0) {
+	if ((nRet = pProfileDo[nProfileSelect]->ProfileInit()) == 0)
 		bProfileOkay = true;
-	}
 
 	return nRet;
 }
 
 int ProfileProfileStart(int nSubSystem)
 {
-	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN) {
+	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN)
 		return 1;
-	}
 
 	return pProfileDo[nProfileSelect]->ProfileStart(nSubSystem);
 }
 
 int ProfileProfileEnd(int nSubSystem)
 {
-	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN) {
+	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN)
 		return 1;
-	}
 
 	return pProfileDo[nProfileSelect]->ProfileEnd(nSubSystem);
 }
 
 double ProfileProfileReadLast(int nSubSystem)
 {
-	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN) {
+	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN)
 		return 0.0;
-	}
 
 	return pProfileDo[nProfileSelect]->ProfileReadLast(nSubSystem);
 }
 
 double ProfileProfileReadAverage(int nSubSystem)
 {
-	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN) {
+	if (!bProfileOkay || nProfileSelect >= PROFILE_LEN)
 		return 0.0;
-	}
 
 	return pProfileDo[nProfileSelect]->ProfileReadAverage(nSubSystem);
 }
 
 InterfaceInfo* ProfileGetInfo()
 {
-	if (IntInfoInit(&ProfileInfo)) {
+	if (IntInfoInit(&ProfileInfo))
+	{
 		IntInfoFree(&ProfileInfo);
 		return NULL;
 	}
 
-	if (bProfileOkay) {
+	if (bProfileOkay)
+	{
 
 		ProfileInfo.pszModuleName = pProfileDo[nProfileSelect]->szModuleName;
 
-	 	if (pProfileDo[nProfileSelect]->GetSetting) {
+		if (pProfileDo[nProfileSelect]->GetSetting)
 			pProfileDo[nProfileSelect]->GetSetting(&ProfileInfo);
-		}
-	} else {
-		IntInfoAddStringInterface(&ProfileInfo, _T("Profiling module not initialised"));
 	}
+	else
+		IntInfoAddStringInterface(&ProfileInfo, _T("Profiling module not initialised"));
 
 	return &ProfileInfo;
 }

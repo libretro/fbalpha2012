@@ -114,13 +114,13 @@ static int VidSDrawChat(RECT* dest)
 }
  
 
-int VidSNewTinyMsg(const TCHAR* pText, int nRGB, int nDuration, int nPriority)	// int nRGB = 0, int nDuration = 0, int nPriority = 5
+int VidSNewTinyMsg(const char* pText, int nRGB, int nDuration, int nPriority)	// int nRGB = 0, int nDuration = 0, int nPriority = 5
 {
 	 
 	return 0;
  }
 
-int VidSNewShortMsg(const TCHAR* pText, int nRGB, int nDuration, int nPriority)	// int nRGB = 0, int nDuration = 0, int nPriority = 5
+int VidSNewShortMsg(const char* pText, int nRGB, int nDuration, int nPriority)	// int nRGB = 0, int nDuration = 0, int nPriority = 5
 {
  
 	return 0;
@@ -146,7 +146,7 @@ void VidSKillTinyOSDMsg()
 	 
 }
 
-int VidSAddChatMsg(const TCHAR* pID, int nIDRGB, const TCHAR* pMain, int nMainRGB)
+int VidSAddChatMsg(const char* pID, int nIDRGB, const char* pMain, int nMainRGB)
 {
  
 

@@ -28,23 +28,23 @@
 typedef struct _es8712_state es8712_state;
 struct _es8712_state
 {
-	UINT8 playing;			/* 1 if we're actively playing */
+	uint8_t playing;			/* 1 if we're actively playing */
 
-	UINT32 base_offset;		/* pointer to the base memory location */
-	UINT32 sample;			/* current sample number */
-	UINT32 count;			/* total samples to play */
+	uint32_t base_offset;		/* pointer to the base memory location */
+	uint32_t sample;			/* current sample number */
+	uint32_t count;			/* total samples to play */
 
-	UINT32 signal;			/* current ADPCM signal */
-	UINT32 step;			/* current ADPCM step */
+	uint32_t signal;			/* current ADPCM signal */
+	uint32_t step;			/* current ADPCM step */
 
-	UINT32 start;			/* starting address for the next loop */
-	UINT32 end;				/* ending address for the next loop */
-	UINT8  repeat;			/* Repeat current sample when 1 */
+	uint32_t start;			/* starting address for the next loop */
+	uint32_t end;				/* ending address for the next loop */
+	uint8_t  repeat;			/* Repeat current sample when 1 */
 
-	INT32 bank_offset;
+	int32_t bank_offset;
 
 // non volatile
-	UINT8 *region_base;		/* pointer to the base of the region */
+	uint8_t *region_base;		/* pointer to the base of the region */
 
 	int sample_rate;		/* samples per frame */
 	int volume;			/* set gain */
@@ -108,7 +108,7 @@ static void generate_adpcm(short *buffer, int samples)
 	/* if this chip is active */
 	if (chip->playing)
 	{
-		UINT8 *base = chip->region_base + chip->bank_offset + chip->base_offset;
+		uint8_t *base = chip->region_base + chip->bank_offset + chip->base_offset;
 		int sample = chip->sample;
 		int signal = chip->signal;
 		int count = chip->count;
@@ -222,10 +222,10 @@ void es8712Init(int device, unsigned char *rom, int sample_rate, float volume, i
 	chip->repeat = 0;
 
 	chip->bank_offset = 0;
-	chip->region_base = (UINT8*)rom;
+	chip->region_base = (uint8_t*)rom;
 
 	/* initialize the rest of the structure */
-	chip->signal = (UINT32)-2;
+	chip->signal = (uint32_t)-2;
 
 	chip->sample_rate = sample_rate;
 
@@ -317,7 +317,7 @@ void es8712Play(int device)
 			chip->repeat = 0;//1;
 
 			/* also reset the ADPCM parameters */
-			chip->signal = (UINT32)-2;
+			chip->signal = (uint32_t)-2;
 			chip->step = 0;
 		}
 	}

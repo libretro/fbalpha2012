@@ -1,19 +1,17 @@
 #ifndef _LOCALISE_H_
 #define _LOCALISE_H_
 
-#define UINT int
-#define LPTSTR char*
 extern bool bLanguageActive;
 extern TCHAR szLanguage[MAX_PATH];
  
 void FBALocaliseExit();
-int FBALocaliseInit(TCHAR* lanaugae);
+int FBALocaliseInit(TCHAR* language);
 int FBALocaliseLoad();
 
 HBITMAP FBALoadBitmap(int id);
  
-int FBALoadString(UINT id, LPTSTR buffer, int maxsize);
-TCHAR* FBALoadStringEx(UINT id, bool translate = true);
+int FBALoadString(int id, char * buffer, int maxsize);
+TCHAR* FBALoadStringEx(int id, bool translate = true);
 
 #define MAKEINTRESOURCE(x) x
 

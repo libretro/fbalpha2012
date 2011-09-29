@@ -32,7 +32,7 @@ extern const struct cell_audio_driver *driver;
 static InterfaceInfo AudInfo = { NULL, };
 
 // Write silence into the buffer
-int AudWriteSlience(int)
+int AudWriteSilence(int)
 {
 	if (pAudNextSound)
 		memset(pAudNextSound, 0, nAudAllocSegLen);
@@ -111,7 +111,7 @@ static int audio_init()
 		return 1;
 	}
 
-	AudWriteSlience();
+	AudWriteSilence();
 
 	return 0;
 }
@@ -138,7 +138,7 @@ void AudioInterface::term()
 
 int AudioInterface::blank()
 {
-	AudWriteSlience(1);
+	AudWriteSilence(1);
 }
 
 // This function checks the Sound loop, and if necessary gets some more sound

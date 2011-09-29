@@ -21,9 +21,8 @@ static int neeprom_available = 0;
 
 static bool eeprom_command_match(const char* buf, const char* cmd, int len)
 {
-	if (!buf || !cmd || len <= 0) {
+	if (!buf || !cmd || len <= 0)
 		return 0;
-	}
 
 	for (; len > 0;) {
 		char b = *buf;
@@ -49,9 +48,10 @@ static bool eeprom_command_match(const char* buf, const char* cmd, int len)
 				switch(c) {
 					case '0':
 					case '1':
-					  	if (b == c)	{
+						if (b == c)
 							cmd++;
-						} else {
+						else
+						{
 							buf++;
 							len--;
 						}
@@ -69,13 +69,13 @@ static bool eeprom_command_match(const char* buf, const char* cmd, int len)
 void EEPROMHack(int size)
 {
 	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3u")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3ur1")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3j")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr1")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr2")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3ar1")
-	) {
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3u")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfa3ur1")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3j")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr1")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3jr2")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "sfz3ar1")
+	   ) {
 		UINT8 eeprom[] = {
 			0x00,0x01,0x00,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 			0x01,0x01,0x01,0x04,0x01,0x01,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -156,8 +156,8 @@ void EEPROMHack(int size)
 	}
 
 	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "batcir4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "btcirj4p")
-	) {
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "btcirj4p")
+	   ) {
 		UINT8 eeprom[] = {
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x05,0x03,0x07,0x00,0x00,0x00,
@@ -178,10 +178,10 @@ void EEPROMHack(int size)
 	}
 
 	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "avsp3p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspu3p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspj3p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspa3p")
-	) {
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspu3p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspj3p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "avspa3p")
+	   ) {
 		UINT8 eeprom[] = {
 			0x00,0x01,0x00,0x01,0x01,0x00,0x01,0xc3,0x00,0X02,0x00,0x00,0x00,0x00,0x00,0x00,
 			0x03,0x01,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -223,13 +223,13 @@ void EEPROMHack(int size)
 	}
 
 	if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsom4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomu4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmur4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmjr4p")
-		|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsoma4p")
-	) {
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomu4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmur4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmjr4p")
+			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsoma4p")
+	   ) {
 		UINT8 eeprom[] = {
 			0x00,0x0b,0x01,0x00,0x01,0x01,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 			0x03,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -245,7 +245,7 @@ void EEPROMHack(int size)
 			eeprom[0x63] = 0x01;
 		}
 		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsom4p")
-			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")) {
+				|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomr4p")) {
 			eeprom[0x07] = eeprom[0x37] = 0x02;
 			eeprom[0x23] = eeprom[0x53] = 0x08;
 			eeprom[0x2d] = eeprom[0x5d] = 0x45; // E
@@ -257,7 +257,7 @@ void EEPROMHack(int size)
 			}
 		}
 		else if (!strcasecmp(BurnDrvGetText(DRV_NAME), "ddsmjr4p")
-			|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")) {
+				|| !strcasecmp(BurnDrvGetText(DRV_NAME), "ddsomj4p")) {
 			eeprom[0x07] = eeprom[0x23] = eeprom[0x37] = eeprom[0x53] = 0x00;
 			eeprom[0x2d] = eeprom[0x5d] = 0x4a; // J
 			eeprom[0x2e] = eeprom[0x5e] = 0x50; // P
@@ -511,13 +511,13 @@ void EEPROMScan(int nAction, int* pnMin)
 {
 	BurnArea ba;
 
-	if (nAction & ACB_DRIVER_DATA) {
-		if (pnMin && *pnMin < 0x020902) {
+	if (nAction & ACB_DRIVER_DATA)
+	{
+		if (pnMin && *pnMin < 0x020902)
 			*pnMin = 0x029705;
-		}
 
 		memset(&ba, 0, sizeof(ba));
-    	ba.Data = serial_buffer;
+		ba.Data = serial_buffer;
 		ba.nLen = SERIAL_BUFFER_LENGTH;
 		ba.szName = "Serial Buffer";
 		BurnAcb(&ba);

@@ -785,13 +785,13 @@ static int DrvDoReset()
 	ZetClose();
 
 	MSM6295Reset(0);
-	if (game == 1) {
-		BurnYM2151Reset();
-	} else {
-		BurnYM2203Reset();
-	}
 
-	SetCurrentFrame(0);
+	if (game == 1)
+		BurnYM2151Reset();
+	else
+		BurnYM2203Reset();
+
+	nCurrentFrame = 0;
 
 	return 0;
 }

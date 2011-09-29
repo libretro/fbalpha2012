@@ -39,9 +39,8 @@ static unsigned char gamma_adjust(unsigned char input)
 
 void colorAdjust(int& r, int& g, int& b)
 {
-	if (!bcolorAdjust) {
+	if (!bcolorAdjust)
 		return;
-	}
 
 	double kr = 0.2126, kb = 0.0722, kg = (1.0 - kr - kb);  //luminance weights
 
@@ -123,19 +122,15 @@ int SetBurnHighCol(int nDepth)
 {
 	VidRecalcPal();
 
-	if (nDepth == 15) {
+	if (nDepth == 15)
 		VidHighCol = HighCol15;
-	}
-	else if (nDepth == 16) {
+	else if (nDepth == 16)
 		VidHighCol = HighCol16;
-	}
-	else if (nDepth > 16) {
+	else if (nDepth > 16)
 		VidHighCol = HighCol24;
-	}
 
-	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY) || nDepth <= 16) {
+	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY) || nDepth <= 16)
 		BurnHighCol = VidHighCol;
-	}
 
 	return 0;
 }

@@ -7,9 +7,14 @@
 //#define USE_OLD_AUDIT
 
 static int nBArchiveError = 0;						// non-zero if there is a problem with the opened romset
-static TCHAR* szBArchiveName[BZIP_MAX] = { NULL, };	// Archive files to search through
+static char* szBArchiveName[BZIP_MAX] = { NULL, };	// Archive files to search through
 
-struct ROMFIND { FIND_STATE nState; int nArchive; int nPos; };
+struct ROMFIND
+{
+	FIND_STATE nState;
+	int nArchive;
+	int nPos;
+};
 
 static ROMFIND* RomFind = NULL;
 static int nRomCount = 0;
@@ -153,23 +158,23 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	if (pszRomName == NULL)
 		pszRomName = "unknown";
 
-	TCHAR szText[MAX_PATH];
-	_stprintf(szText, "Loading");
+	char szText[MAX_PATH];
+	sprintf(szText, "Loading");
 
 	if (ri.nType & (BRF_PRG | BRF_GRA | BRF_SND | BRF_BIOS))
 	{
 		if (ri.nType & BRF_BIOS)
-			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("BIOS "));
+			sprintf (szText + strlen(szText), " %s", "BIOS ");
 		if (ri.nType & BRF_PRG)
-			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("program "));
+			sprintf (szText + strlen(szText), " %s", "program ");
 		if (ri.nType & BRF_GRA)
-			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("graphics "));
+			sprintf (szText + strlen(szText), " %s", "graphics ");
 		if (ri.nType & BRF_SND)
-			_stprintf (szText + _tcslen(szText), _T(" %s"), _T("sound "));
-		_stprintf(szText + _tcslen(szText), _T("(%hs)..."), pszRomName);
+			sprintf (szText + strlen(szText), " %s", "sound ");
+		sprintf(szText + strlen(szText), "(%hs)...", pszRomName);
 	}
 	else
-		_stprintf(szText + _tcslen(szText), _T(" %hs..."), pszRomName);
+		sprintf(szText + strlen(szText), " %hs...", pszRomName);
 
 	ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
 
@@ -227,7 +232,7 @@ int BArchiveCheckRoms(const bool& bootApp)
 		if (!(nBArchiveError & 0x0F0F)) {
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_OK));
 		} else {
-			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n"));
+			FBAPopupAddText(PUF_TEXT_DEFAULT, "\n");
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_PROBLEM));
 		}
 
@@ -312,7 +317,7 @@ int BArchiveOpen(bool bootApp)
 	// Locate each archive file
 	bool bFound = false;
 	int checkvalue = ARC_NONE;
-	TCHAR szFullName[MAX_PATH] = _T("");
+	char szFullName[MAX_PATH] = "";
 	char* szName = NULL;
 
 	for (int y = 0, z = 0; y < BZIP_MAX && z < BZIP_MAX; y++) {
@@ -324,11 +329,11 @@ int BArchiveOpen(bool bootApp)
 
 		for (int d = 0; d < DIRS_MAX; d++)
 		{
-			if (!_tcsicmp(szAppRomPaths[d], _T("")))
+			if (!_tcsicmp(szAppRomPaths[d], ""))
 				continue; // skip empty path
 
 			// check the archived rom file, modified by regret
-			_stprintf(szFullName, _T("%s%hs"), szAppRomPaths[d], szName);
+			sprintf(szFullName, "%s%hs", szAppRomPaths[d], szName);
 
 			checkvalue = archiveCheck(szFullName,  0  );
 			if (checkvalue == ARC_NONE)
@@ -336,11 +341,11 @@ int BArchiveOpen(bool bootApp)
 
 			bFound = true;
 
-			szBArchiveName[z] = (TCHAR*)malloc(MAX_PATH * sizeof(TCHAR));
+			szBArchiveName[z] = (char*)malloc(MAX_PATH * sizeof(char));
 			if (!szBArchiveName[z])
 				continue;
 
-			_tcscpy(szBArchiveName[z], szFullName);
+			strcpy(szBArchiveName[z], szFullName);
 			if (!bootApp)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_FOUND), szName, szBArchiveName[z]);
 			z++;
@@ -351,7 +356,7 @@ int BArchiveOpen(bool bootApp)
 	}
 
 	if (!bootApp)
-		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n"));
+		FBAPopupAddText(PUF_TEXT_DEFAULT, "\n");
 
 	// Locate the ROM data in the archive files
 	int nFind = -1;

@@ -8,8 +8,7 @@
 #include "vid_support.h"
 
 #include "vid_psgl.h"
- 
-HWND hVidWnd = NULL;
+
 PSGLdevice* psgl_device = NULL;
 PSGLcontext* psgl_context = NULL;
 
@@ -32,16 +31,130 @@ static uint32_t frame_count;
 static unsigned iwidth = 0, iheight = 0;
 static unsigned int* buffer = 0;
 
-struct dstResType { int w, h; uint32_t resId; }; 
-dstResType dstRes[8]; 
+typedef struct dstResType
+{
+	uint32_t w;
+	uint32_t h;
+	uint32_t resId;
+}; 
+
+struct dstResType dstRes[8]; 
 
 int numDstResCount = 0; 
- int curResNo;
+int curResNo;
+
+// normal vertex
+static const GLfloat   verts  [] = {
+      -1.0f, -1.0f, 0.0f,			// bottom left
+      1.0f, -1.0f, 0.0f,			// bottom right
+      1.0f,  1.0f, 0.0f,			// top right
+      -1.0f, 1.0f, 0.0f          // top left
+};			
+
+static const GLfloat   tverts[] = {
+      0.0f, 1.0f,						
+      1.0f, 1.0f, 
+      1.0f, 0.0f, 
+      0.0f, 0.0f
+};
+
+static const GLfloat   tvertsFlippedRotated[] = {	
+      1.0f, 1.0f,						
+      1.0f, 0.0f, 
+      0.0f, 0.0f, 
+      0.0f, 1.0f
+};
+
+static const GLfloat   tvertsFlipped[] = {	
+      1.0f, 0.0f,						
+      0.0f, 0.0f, 
+      0.0f, 1.0f, 
+      1.0f, 1.0f
+};
+
+static const GLfloat   tvertsVertical[] = {
+      0.0f, 0.0f,						
+      0.0f, 1.0f, 
+      1.0f, 1.0f, 
+      1.0f, 0.0f
+};
+
 
 CellDbgFontConsoleId DbgFontID;
 
-void _psglInitCG();
-void _psglExitCG();
+#define min(a,b) (((a)<(b))?(a):(b)) 
+#define max(a,b) (((a)>(b))?(a):(b))
+
+#define get_cg_params()  \
+      cgGLBindProgram(FragmentProgram); \
+      cgGLBindProgram(VertexProgram); \
+      /* fragment params */ \
+      cg_video_size = cgGetNamedParameter(FragmentProgram, "IN.video_size"); \
+      cg_texture_size = cgGetNamedParameter(FragmentProgram, "IN.texture_size"); \
+      cg_output_size = cgGetNamedParameter(FragmentProgram, "IN.output_size"); \
+      cgp_timer = cgGetNamedParameter(FragmentProgram, "IN.frame_count"); \
+      /* vertex params */ \
+      cg_v_video_size = cgGetNamedParameter(VertexProgram, "IN.video_size"); \
+      cg_v_texture_size = cgGetNamedParameter(VertexProgram, "IN.texture_size"); \
+      cg_v_output_size = cgGetNamedParameter(VertexProgram, "IN.output_size"); \
+      cgp_vertex_timer = cgGetNamedParameter(VertexProgram, "IN.frame_count"); \
+      ModelViewProj_cgParam = cgGetNamedParameter(VertexProgram, "modelViewProj"); \
+      cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
+
+static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filename, const char *entry)
+{
+	const char* args[] = { "-fastmath", "-unroll=all", "-ifcvt=all", 0};
+	CGprogram id = cgCreateProgramFromFile(CgContext, CG_SOURCE, filename, target, entry, args);
+
+	return id;
+}
+
+void _psglExitCG()
+{
+
+	if (VertexProgram)
+	{
+		cgGLUnbindProgram(CG_PROFILE_SCE_VP_RSX);
+		cgDestroyProgram(VertexProgram);
+		VertexProgram = NULL;
+	}
+
+	if (FragmentProgram)
+	{
+		cgGLUnbindProgram(CG_PROFILE_SCE_FP_RSX);
+		cgDestroyProgram(FragmentProgram);
+		FragmentProgram = NULL;
+	}
+
+	if (CgContext)
+	{
+		cgDestroyContext(CgContext);
+		CgContext = NULL;
+	}
+
+}
+
+void _psglInitCG()
+{
+	char shaderFile[255];
+
+	_psglExitCG();
+
+	CgContext = cgCreateContext();
+	cgRTCgcInit();
+
+	strcpy(shaderFile, SHADER_DIRECTORY);
+	strcat(shaderFile, m_ListShaderData[shaderindex].c_str());
+
+	const char *shader = shaderFile;
+	VertexProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
+	FragmentProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
+
+	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
+	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
+
+	get_cg_params();
+}
 
 #define _apply_rotation_settings() \
    if (nRotateGame & 1) \
@@ -73,36 +186,36 @@ void _psglExitCG();
 
 void reset_frame_counter()
 {
-   frame_count = 0;
+	frame_count = 0;
 }
 
 void apply_rotation_settings(void)
 {
-   _apply_rotation_settings();
+	_apply_rotation_settings();
 }
 
-void psglInitGL(uint32_t resolutionId)
+void psglInitGL_with_resolution(uint32_t resolutionId)
 {
-   PSGLdeviceParameters params;
-   params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
-   params.colorFormat = GL_ARGB_SCE;
-   params.depthFormat = GL_NONE;
-   params.multisamplingMode = GL_MULTISAMPLING_NONE_SCE;
+	PSGLdeviceParameters params;
+	params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
+	params.colorFormat = GL_ARGB_SCE;
+	params.depthFormat = GL_NONE;
+	params.multisamplingMode = GL_MULTISAMPLING_NONE_SCE;
 
 	PSGLinitOptions initOpts; 
-   initOpts.enable = PSGL_INIT_MAX_SPUS | PSGL_INIT_INITIALIZE_SPUS;
-#if CELL_SDK_VERSION == 0x192001
-   initOpts.enable |= PSGL_INIT_HOST_MEMORY_SIZE;
+	initOpts.enable = PSGL_INIT_MAX_SPUS | PSGL_INIT_INITIALIZE_SPUS;
+#if CELL_SDK_VERSION > 0x192001
+	initOpts.enable |= PSGL_INIT_TRANSIENT_MEMORY_SIZE;
 #else
-   initOpts.enable |= PSGL_INIT_TRANSIENT_MEMORY_SIZE;
+	initOpts.enable |= PSGL_INIT_HOST_MEMORY_SIZE;
 #endif
-   initOpts.maxSPUs = 1;
-   initOpts.initializeSPUs = GL_FALSE;
-   initOpts.persistentMemorySize = 0;
-   initOpts.transientMemorySize = 0;
-   initOpts.errorConsole = 0;
-   initOpts.fifoSize = 0;
-   initOpts.hostMemorySize = 0;
+	initOpts.maxSPUs = 1;
+	initOpts.initializeSPUs = GL_FALSE;
+	initOpts.persistentMemorySize = 0;
+	initOpts.transientMemorySize = 0;
+	initOpts.errorConsole = 0;
+	initOpts.fifoSize = 0;
+	initOpts.hostMemorySize = 0;
 
 	psglInit(&initOpts);
 
@@ -110,18 +223,17 @@ void psglInitGL(uint32_t resolutionId)
 	for (int iDst=numDstResCount-1; iDst>=0; iDst--) 
 	{ 
 
-		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY,
-			dstRes[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0) && (dstRes[iDst].resId == resolutionId)) 
+		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, dstRes[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0) && (dstRes[iDst].resId == resolutionId)) 
 		{
 			// Get the highest res possible
 			resolutionpicked = iDst;
 			if (dstRes[iDst].resId == CELL_VIDEO_OUT_RESOLUTION_576)
 			{
-            params.enable |= PSGL_DEVICE_PARAMETERS_RESC_PAL_TEMPORAL_MODE;
-            params.rescPalTemporalMode = RESC_PAL_TEMPORAL_MODE_60_INTERPOLATE;
-            params.enable |= PSGL_DEVICE_PARAMETERS_RESC_RATIO_MODE;
-            params.rescRatioMode = RESC_RATIO_MODE_FULLSCREEN;
-         }
+				params.enable |= PSGL_DEVICE_PARAMETERS_RESC_PAL_TEMPORAL_MODE;
+				params.rescPalTemporalMode = RESC_PAL_TEMPORAL_MODE_60_INTERPOLATE;
+				params.enable |= PSGL_DEVICE_PARAMETERS_RESC_RATIO_MODE;
+				params.rescRatioMode = RESC_RATIO_MODE_FULLSCREEN;
+			}
 		}
 	}
 	curResNo = resolutionpicked;
@@ -164,22 +276,23 @@ void psglInitGL(uint32_t resolutionId)
 
 void psglInitGL()
 {
-
-	const dstResType checkAvailableResolutions[] = { 
-	{720,480, CELL_VIDEO_OUT_RESOLUTION_480},
-	{720,576, CELL_VIDEO_OUT_RESOLUTION_576}, 
- 	{1280,720, CELL_VIDEO_OUT_RESOLUTION_720}, 
-	{960,1080,CELL_VIDEO_OUT_RESOLUTION_960x1080},
-	{1280,1080,CELL_VIDEO_OUT_RESOLUTION_1280x1080},
-	{1440,1080,CELL_VIDEO_OUT_RESOLUTION_1440x1080},
-	{1600,1080,CELL_VIDEO_OUT_RESOLUTION_1600x1080},
-	{1920,1080, CELL_VIDEO_OUT_RESOLUTION_1080} }; 
-
-    PSGLdeviceParameters params;
-    params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
-    params.colorFormat = GL_ARGB_SCE;
-    params.depthFormat = GL_NONE;
-    params.multisamplingMode = GL_MULTISAMPLING_NONE_SCE;
+	const dstResType checkAvailableResolutions[] = 
+	{ 
+		{720,480, CELL_VIDEO_OUT_RESOLUTION_480},
+		{720,576, CELL_VIDEO_OUT_RESOLUTION_576}, 
+		{1280,720, CELL_VIDEO_OUT_RESOLUTION_720},
+		{960,1080,CELL_VIDEO_OUT_RESOLUTION_960x1080},
+		{1280,1080,CELL_VIDEO_OUT_RESOLUTION_1280x1080},
+		{1440,1080,CELL_VIDEO_OUT_RESOLUTION_1440x1080},
+		{1600,1080,CELL_VIDEO_OUT_RESOLUTION_1600x1080},
+		{1920,1080, CELL_VIDEO_OUT_RESOLUTION_1080}
+	}; 
+	
+	PSGLdeviceParameters params;
+	params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
+	params.colorFormat = GL_ARGB_SCE;
+	params.depthFormat = GL_NONE;
+	params.multisamplingMode = GL_MULTISAMPLING_NONE_SCE;
 
 	if (bVidTripleBuffer)
 	{
@@ -188,27 +301,25 @@ void psglInitGL()
 	}
 
 	PSGLinitOptions initOpts; 
-   initOpts.enable = PSGL_INIT_MAX_SPUS | PSGL_INIT_INITIALIZE_SPUS;
-#if CELL_SDK_VERSION == 0x192001
-   initOpts.enable |= PSGL_INIT_HOST_MEMORY_SIZE;
+	initOpts.enable = PSGL_INIT_MAX_SPUS | PSGL_INIT_INITIALIZE_SPUS;
+#if(CELL_SDK_VERSION > 0x192001)
+	initOpts.enable |= PSGL_INIT_TRANSIENT_MEMORY_SIZE;
 #else
-   initOpts.enable |= PSGL_INIT_TRANSIENT_MEMORY_SIZE;
+	initOpts.enable |= PSGL_INIT_HOST_MEMORY_SIZE;
 #endif
-   initOpts.maxSPUs = 1;
-   initOpts.initializeSPUs = GL_FALSE;
-   initOpts.persistentMemorySize = 0;
-   initOpts.transientMemorySize = 0;
-   initOpts.errorConsole = 0;
-   initOpts.fifoSize = 0;
-   initOpts.hostMemorySize = 0;
+	initOpts.maxSPUs = 1;
+	initOpts.initializeSPUs = GL_FALSE;
+	initOpts.persistentMemorySize = 0;
+	initOpts.transientMemorySize = 0;
+	initOpts.errorConsole = 0;
+	initOpts.fifoSize = 0;
+	initOpts.hostMemorySize = 0;
 
 	psglInit(&initOpts);
-
-   int iDst = 0;
-   do
+	
+	for(int iDst = 0; iDst < 8; iDst++)
 	{ 
-		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY,
-			checkAvailableResolutions[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0)) 
+		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, checkAvailableResolutions[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0)) 
 		{
 			//set dstRes same as checkAvailableResolutions entry since resolution
 			//is available
@@ -222,10 +333,9 @@ void psglInitGL()
 
 			//increment resolution count by one
 			numDstResCount += 1;
-			
+
 		}
-      iDst++;
-	}while(iDst < 8);
+	}
 
 	if(dstRes[curResNo].resId == CELL_VIDEO_OUT_RESOLUTION_576)
 	{
@@ -238,9 +348,9 @@ void psglInitGL()
 	{
 		params.width = dstRes[curResNo].w; 
 		params.height = dstRes[curResNo].h; 
-      params.enable |= PSGL_DEVICE_PARAMETERS_WIDTH_HEIGHT; 
+		params.enable |= PSGL_DEVICE_PARAMETERS_WIDTH_HEIGHT; 
 	}
- 
+	
 	psgl_device = psglCreateDeviceExtended(&params); 
 	psgl_context = psglCreateContext();
 	psglMakeCurrent(psgl_context, psgl_device);
@@ -293,7 +403,7 @@ void dbgFontInit(void)
 	cellDbgFontInit(&cfg);
 }
 
-void psglResolutionSwitch()
+void psglResolutionSwitch(void)
 {
 	cellDbgFontExit();
 	if (psgl_context)
@@ -308,7 +418,7 @@ void psglResolutionSwitch()
 		psgl_device = NULL;
 	}
 
-	psglInitGL(dstRes[curResNo].resId);
+	psglInitGL_with_resolution(dstRes[curResNo].resId);
 	dbgFontInit();
 }
 
@@ -362,15 +472,13 @@ static void dbgFontPrintf(float x,float y, float scale,char* fmt,...)
 	dbgFontPrintf(40,40,0.75f,"%s %.5f FPS", "", fps );  \
    cellDbgFontDraw();
 
-void setVSync(int interval)
+void psglSetVSync(uint32_t enable)
 {
-   if(interval)
-	   glEnable(GL_VSYNC_SCE);
-   else
-      glDisable(GL_VSYNC_SCE);
+	if(enable)
+		glEnable(GL_VSYNC_SCE);
+	else
+		glDisable(GL_VSYNC_SCE);
 }
-
-// ----------------------------------------------------------------------------
 
 static inline int _psglExit()
 {
@@ -420,10 +528,14 @@ static inline int _psglTextureInit()
 	return 0;
 }
 
+void setlinear(unsigned int smooth)
+{
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
+}
+
 static inline int _psglInit()
 {
-	hVidWnd = hScrnWnd;
-
 	nVidScrnDepth = 32;
 
 	psglResetCurrentContext();
@@ -462,7 +574,7 @@ static inline int _psglInit()
 
 	setlinear(vidFilterLinear);
 
-	setVSync(bVidVSync);
+	psglSetVSync(bVidVSync);
 
 	nImageWidth = nImageHeight = 0;
 
@@ -490,18 +602,6 @@ static inline int _psglInit()
       ps += s; \
       dst += pitch; \
    }while(height);
-
-
-void psglClearUI()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
-
-void psglRenderUI()			 
-{
-	cellSysutilCheckCallback(); 
-	psglSwap();	 
-}
 
 #define common_video_rotate_function() \
    int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
@@ -541,12 +641,12 @@ void psglRenderUI()
    \
    common_video_copy_function();
 
-void CalculateViewport()
+void CalculateViewports(void)
 {
 	common_render_function_body();
 }
 
-void _psglRender()
+void _psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	common_video_copy_function();
@@ -596,41 +696,10 @@ void psglRenderStretch()
 	common_video_copy_function();
 }
 
-void psglRenderAlpha()
+void psglRenderAlpha(void)
 {
 	refreshwithalpha(nGameImageWidth, nGameImageHeight, 0xA0);
 }
-
-// ----------------------------------------------------------------------------
-
-static inline int _psglGetSettings(InterfaceInfo* pInfo)
-{
-	return 0;
-}
-
-static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filename, const char *entry)
-{
-	const char* args[] = { "-fastmath", "-unroll=all", "-ifcvt=all", 0};
-	CGprogram id = cgCreateProgramFromFile(CgContext, CG_SOURCE, filename, target, entry, args);
-
-	return id;
-}
-
-#define get_cg_params()  \
-      cgGLBindProgram(FragmentProgram); \
-      cgGLBindProgram(VertexProgram); \
-      /* fragment params */ \
-      cg_video_size = cgGetNamedParameter(FragmentProgram, "IN.video_size"); \
-      cg_texture_size = cgGetNamedParameter(FragmentProgram, "IN.texture_size"); \
-      cg_output_size = cgGetNamedParameter(FragmentProgram, "IN.output_size"); \
-      cgp_timer = cgGetNamedParameter(FragmentProgram, "IN.frame_count"); \
-      /* vertex params */ \
-      cg_v_video_size = cgGetNamedParameter(VertexProgram, "IN.video_size"); \
-      cg_v_texture_size = cgGetNamedParameter(VertexProgram, "IN.texture_size"); \
-      cg_v_output_size = cgGetNamedParameter(VertexProgram, "IN.output_size"); \
-      cgp_vertex_timer = cgGetNamedParameter(VertexProgram, "IN.frame_count"); \
-      ModelViewProj_cgParam = cgGetNamedParameter(VertexProgram, "modelViewProj"); \
-      cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
 
 int32_t psglInitShader(const char* filename)
 {
@@ -648,53 +717,9 @@ int32_t psglInitShader(const char* filename)
 	return !CELL_OK;
 }
 
-void _psglExitCG()
-{
 
-	if (VertexProgram)
-	{
-		cgGLUnbindProgram(CG_PROFILE_SCE_VP_RSX);
-		cgDestroyProgram(VertexProgram);
-		VertexProgram = NULL;
-	}
-
-	if (FragmentProgram)
-	{
-		cgGLUnbindProgram(CG_PROFILE_SCE_FP_RSX);
-		cgDestroyProgram(FragmentProgram);
-		FragmentProgram = NULL;
-	}
-
-	if (CgContext)
-	{
-		cgDestroyContext(CgContext);
-		CgContext = NULL;
-	}
-
-}
-void _psglInitCG()
-{
-	char shaderFile[255];
-
-	_psglExitCG();
-
-	CgContext = cgCreateContext();
-	cgRTCgcInit();
-
-	strcpy(shaderFile, SHADER_DIRECTORY);
-	strcat(shaderFile, m_ListShaderData[shaderindex].c_str());
-
-	const char *shader = shaderFile;
-	VertexProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
-	FragmentProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
-
-	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
-	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
-
-	get_cg_params();
-}
 
 // The Video Output plugin:
-struct VidOut VidOutPSGL = { _psglInit, _psglExit, /* _psglFrame, */ _psglGetSettings };
+struct VidOut VidOutPSGL = { _psglInit, _psglExit};
 
 #endif

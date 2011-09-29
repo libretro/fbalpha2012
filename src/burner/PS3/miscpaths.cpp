@@ -1,25 +1,25 @@
 // custom misc paths, by regret
 #include "burner.h"
  
-TCHAR szMiscPaths[PATH_SUM][MAX_PATH] = {
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/previews/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/cheats/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/screenshots/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/savestates/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/recordings/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/skins/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/ips/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/titles/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/flyers/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/scores/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/selects/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/gameovers/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/bosses/"),
-	_T("/dev_hdd0/game/FBAN00000/USRDIR/icons/"),
+char szMiscPaths[PATH_SUM][MAX_PATH] = {
+	"/dev_hdd0/game/FBAN00000/USRDIR/previews/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/cheats/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/screenshots/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/savestates/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/recordings/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/skins/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/ips/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/titles/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/flyers/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/scores/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/selects/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/gameovers/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/bosses/",
+	"/dev_hdd0/game/FBAN00000/USRDIR/icons/",
 };
 
-TCHAR szAppRomPaths[DIRS_MAX][MAX_PATH] = {
-{ _T("/dev_hdd0/game/FBAN00000/USRDIR/roms/") }
+char szAppRomPaths[DIRS_MAX][MAX_PATH] = {
+{ "/dev_hdd0/game/FBAN00000/USRDIR/roms/" }
 };
  
  
@@ -36,40 +36,40 @@ const char * getMiscArchiveName(unsigned int dirType)
 	if (dirType < PATH_PREVIEW || dirType >= PATH_SUM)
 		return NULL;
 
-	static TCHAR szArchiveName[64] = _T("");
+	static char szArchiveName[64] = "";
 
 	switch (dirType)
 	{
 		case PATH_PREVIEW:
-			_tcscpy(szArchiveName, _T("snap"));
+			_tcscpy(szArchiveName, "snap");
 			break;
 		case PATH_TITLE:
-			_tcscpy(szArchiveName, _T("titles"));
+			_tcscpy(szArchiveName, "titles");
 			break;
 		case PATH_FLYER:
-			_tcscpy(szArchiveName, _T("flyers"));
+			_tcscpy(szArchiveName, "flyers");
 			break;
 		case PATH_SCORE:
-			_tcscpy(szArchiveName, _T("score"));
+			_tcscpy(szArchiveName, "score");
 			break;
 		case PATH_SELECT:
-			_tcscpy(szArchiveName, _T("select"));
+			_tcscpy(szArchiveName, "select");
 			break;
 		case PATH_GAMEOVER:
-			_tcscpy(szArchiveName, _T("gameover"));
+			_tcscpy(szArchiveName, "gameover");
 			break;
 		case PATH_BOSS:
-			_tcscpy(szArchiveName, _T("boss"));
+			_tcscpy(szArchiveName, "boss");
 			break;
 
 		case PATH_CHEAT:
-			_tcscpy(szArchiveName, _T("cheat"));
+			_tcscpy(szArchiveName, "cheat");
 			break;
 		case PATH_SKIN:
-			_tcscpy(szArchiveName, _T("skin"));
+			_tcscpy(szArchiveName, "skin");
 			break;
 		case PATH_ICON:
-			_tcscpy(szArchiveName, _T("icons"));
+			_tcscpy(szArchiveName, "icons");
 			break;
 	}
 

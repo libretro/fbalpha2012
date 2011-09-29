@@ -19,8 +19,7 @@
 #include "autofire.h"
 #endif
  
-
-RECT SystemWorkArea = { 0, 0, 640, 480 };		// Work area on the desktop
+//RECT SystemWorkArea = { 0, 0, 640, 480 };		// Work area on the desktop
 int nWindowPosX = -1, nWindowPosY = -1;			// Window position
 
 int bAutoPause = 0;
@@ -28,9 +27,6 @@ int nSavestateSlot = 1;
 
 bool bShowOnTop = false;
 bool bFullscreenOnStart = false;
-
-HWND hScrnWnd = NULL;							// Handle to the screen window
-HWND hVideoWnd = NULL;							// Handle to the video window
 
 static bool bMaximised;
 static int nPrevWidth, nPrevHeight;

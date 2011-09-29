@@ -3,19 +3,6 @@
 
 // ---------------------------------------------------------------------------
 
-// Get the position of the client area of a window on the screen
-int getClientScreenRect(HWND hWnd, RECT *pRect)
-{
-	POINT Corner = {0, 0};
-
-	pRect->left = 0;
-	pRect->right = nVidScrnWidth;
-	pRect->top = 0;
-	pRect->bottom = nVidScrnHeight;
-
-	return 0;
-}
-
 // ==> other functions, added by regret
 void setWindowAspect(bool first_boot)
 {

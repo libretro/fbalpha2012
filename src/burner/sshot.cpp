@@ -11,23 +11,22 @@
 static unsigned char* pConvertedImage = NULL;
 
 // ==> save preview image, modified by regret
-static void PreviewName(TCHAR* szName)
+static void PreviewName(char * szName)
 {
-	TCHAR szPath[MAX_PATH] = _T("");
+	char szPath[MAX_PATH] = "";
 
 	_tcscpy(szPath, getMiscPath(PATH_PREVIEW));
 	// get md image path
-	if ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_MEGADRIVE) {
-		_tcscat(szPath, _T("MD\\"));
-	}
+	if ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_MEGADRIVE)
+		_tcscat(szPath, "MD\\");
 
-	_stprintf(szName, _T("%s%s.png"), szPath, BurnDrvGetText(DRV_NAME));
-	if (!fileExists(szName)) {
+	sprintf(szName, "%s%s.png", szPath, BurnDrvGetText(DRV_NAME));
+	if (!fileExists(szName))
 		return;
-	}
 
-	for (int i = 2; i < MAX_PREV_NUM; i++) {
-		_stprintf(szName, _T("%s%s [%02i].png"), szPath, BurnDrvGetText(DRV_NAME), i);
+	for (int i = 2; i < MAX_PREV_NUM; i++)
+	{
+		sprintf(szName, "%s%s [%02i].png", szPath, BurnDrvGetText(DRV_NAME), i);
 		if (!fileExists(szName))
 			return;
 	}
@@ -39,7 +38,7 @@ unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical)
 {
 	unsigned char* pImage = src;
 	unsigned char* pTemp = NULL;
-    int w, h;
+	int w, h;
 
 	BurnDrvGetVisibleSize(&w, &h);
 
@@ -52,8 +51,8 @@ unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical)
 				unsigned short nColour = ((unsigned short*)pImage)[i];
 
 				// Red
-		        *(pTemp + i * 4 + 0) = (unsigned char)((nColour & 0x1F) << 3);
-			    *(pTemp + i * 4 + 0) |= *(pTemp + 4 * i + 0) >> 5;
+				*(pTemp + i * 4 + 0) = (unsigned char)((nColour & 0x1F) << 3);
+				*(pTemp + i * 4 + 0) |= *(pTemp + 4 * i + 0) >> 5;
 
 				if (nVidImageDepth == 15) {
 					// Green
@@ -87,17 +86,19 @@ unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical)
 	}
 
 	// Rotate and flip the image
-	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
+	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+	{
 		unsigned char* pOldTemp = pTemp;
 		pTemp = (unsigned char*)malloc(w * h * sizeof(int));
 
-		for (int x = 0; x < h; x++) {
-			for (int y = 0; y < w; y++) {
-				if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED) {
+		for (int x = 0; x < h; x++)
+		{
+			for (int y = 0; y < w; y++)
+			{
+				if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
 					((unsigned int*)pTemp)[(w - y - 1) + x * w] = ((unsigned int*)pImage)[x + y * h];
-				} else {
+				else
 					((unsigned int*)pTemp)[y + (h - x - 1) * w] = ((unsigned int*)pImage)[x + y * h];
-				}
 			}
 		}
 
@@ -105,14 +106,15 @@ unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical)
 		pConvertedImage = pTemp;
 		pImage = pConvertedImage;
 	}
-	else if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED) {
+	else if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
+	{
 		unsigned char* pOldTemp = pTemp;
 		pTemp = (unsigned char*)malloc(w * h * sizeof(int));
 
-		for (int y = h - 1; y >= 0; y--) {
-			for (int x = w - 1; x >= 0; x--) {
+		for (int y = h - 1; y >= 0; y--)
+		{
+			for (int x = w - 1; x >= 0; x--)
 				((unsigned int*)pTemp)[(w - x - 1) + (h - y - 1) * w] = ((unsigned int*)pImage)[x + y * w];
-			}
 		}
 
 		free(pOldTemp);
@@ -120,14 +122,15 @@ unsigned char* ConvertVidImage(unsigned char* src, int bFlipVertical)
 		pImage = pConvertedImage;
 	}
 
-	if (bFlipVertical) {
+	if (bFlipVertical)
+	{
 		unsigned char* pOldTemp = pTemp;
 		pTemp = (unsigned char*)malloc(w * h * sizeof(int));
 
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
 				((unsigned int*)pTemp)[x + (h - y - 1) * w] = ((unsigned int*)pImage)[x + y * w];
-			}
 		}
 
 		free(pOldTemp);
@@ -199,17 +202,15 @@ int MakeScreenShot(bool bScrShot, int Type)  // 0 = Title, 1 = Preview
 
 		switch (Type)
 		{
-		case 0:
-			_stprintf(szSShotName, _T("%s%s.png"),
-				getMiscPath(PATH_TITLE), BurnDrvGetTextA(DRV_NAME));
-			break;
-		case 1:		 		 
-		_stprintf(szSShotName, "%s%s.png",
-			getMiscPath(PATH_PREVIEW), BurnDrvGetTextA(DRV_NAME));		
-			break;
-		case 2: // cache:
-			_stprintf(szSShotName, _T("cache:\\preview.png"));		
-			break;
+			case 0:
+				sprintf(szSShotName, "%s%s.png", getMiscPath(PATH_TITLE), BurnDrvGetTextA(DRV_NAME));
+				break;
+			case 1:		 		 
+				sprintf(szSShotName, "%s%s.png", getMiscPath(PATH_PREVIEW), BurnDrvGetTextA(DRV_NAME));		
+				break;
+			case 2: // cache:
+				sprintf(szSShotName, "cache:\\preview.png");		
+				break;
 		}
 
 	} else {
@@ -218,7 +219,8 @@ int MakeScreenShot(bool bScrShot, int Type)  // 0 = Title, 1 = Preview
 	}
 
 	FILE* ff = _tfopen(szSShotName, _T("wb"));
-	if (ff == NULL) {
+	if (ff == NULL)
+	{
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 
 		free(pConvertedImage);
@@ -243,9 +245,8 @@ int MakeScreenShot(bool bScrShot, int Type)  // 0 = Title, 1 = Preview
 	text_ptr[6].key = "Source";			text_ptr[6].text = szSource;
 	text_ptr[7].key = "Comment";		text_ptr[7].text = "This screenshot was created by running the game in an emulator; it might not accurately reflect the actual hardware the game was designed to run on.";
 
-	for (int i = 0; i < num_text; i++) {
+	for (int i = 0; i < num_text; i++)
 		text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
-	}
 
 	png_set_text(png_ptr, info_ptr, text_ptr, num_text);
 
@@ -259,9 +260,8 @@ int MakeScreenShot(bool bScrShot, int Type)  // 0 = Title, 1 = Preview
 	png_set_bgr(png_ptr);
 
 	png_bytep* pSShotImageRows = (png_bytep*)malloc(h * sizeof(png_bytep));
-	for (int y = 0; y < h; y++) {
+	for (int y = 0; y < h; y++)
 		pSShotImageRows[y] = pSShot + (y * w * sizeof(int));
-	}
 
 	png_write_image(png_ptr, pSShotImageRows);
 	png_write_end(png_ptr, info_ptr);

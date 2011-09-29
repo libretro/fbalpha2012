@@ -47,8 +47,8 @@ struct _k051649_state
 	int mclock,rate,gain;
 
 	/* mixer tables and internal buffers */
-	INT16 *mixer_table;
-	INT16 *mixer_lookup;
+	int16_t *mixer_table;
+	int16_t *mixer_lookup;
 	short *mixer_buffer;
 
 	int f[10];
@@ -65,7 +65,7 @@ static void make_mixer_table(int voices)
 	int gain = 8;
 
 	/* allocate memory */
-	info->mixer_table = (INT16 *)malloc(512 * voices * sizeof(INT16));
+	info->mixer_table = (int16_t *)malloc(512 * voices * sizeof(int16_t));
 
 	/* find the middle of the table */
 	info->mixer_lookup = info->mixer_table + (256 * voices);

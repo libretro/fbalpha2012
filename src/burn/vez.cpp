@@ -21,7 +21,7 @@ void __fastcall VezDummyWritePort(unsigned int, unsigned char) { }
 
 int VezDummyIrqCallBack(int i)
 {
-	bprintf(PRINT_NORMAL, "CPU #%d IrqCallBack(%x)\n", nOpenedCPU, i);
+	//bprintf(PRINT_NORMAL, "CPU #%d IrqCallBack(%x)\n", nOpenedCPU, i);
 	return 0;
 }
 
@@ -42,7 +42,7 @@ unsigned char cpu_readmem20(unsigned int a)
 	a &= 0xFFFFF;
 
 	unsigned char * p = VezCurrentCPU->ppMemRead[ a >> VEZ_MEM_SHIFT ];
-	if ( p )
+	if(p)
 		return *(p + a);
 	else
 		return VezCurrentCPU->ReadHandler(a);
@@ -53,7 +53,7 @@ unsigned char cpu_readmem20_op(unsigned int a)
 	a &= 0xFFFFF;
 
 	unsigned char * p = VezCurrentCPU->ppMemFetch[ a >> VEZ_MEM_SHIFT ];
-	if ( p )
+	if(p)
 		return *(p + a);
 	else
 		return VezCurrentCPU->ReadHandler(a);
@@ -64,7 +64,7 @@ unsigned char cpu_readmem20_arg(unsigned int a)
 	a &= 0xFFFFF;
 
 	unsigned char * p = VezCurrentCPU->ppMemFetchData[ a >> VEZ_MEM_SHIFT ];
-	if ( p )
+	if(p)
 		return *(p + a);
 	else
 		return VezCurrentCPU->ReadHandler(a);
@@ -75,7 +75,7 @@ void cpu_writemem20(unsigned int a, unsigned char d)
 	a &= 0xFFFFF;
 
 	unsigned char * p = VezCurrentCPU->ppMemWrite[ a >> VEZ_MEM_SHIFT ];
-	if ( p )
+	if(p)
 		*(p + a) = d;
 	else
 		VezCurrentCPU->WriteHandler(a, d);
@@ -106,11 +106,13 @@ void VezSetWritePort(void (__fastcall *pHandler)(unsigned int, unsigned char))
 int VezInit(int nCount, unsigned int * typelist)
 {
 	VezCPUContext = (struct VezContext *)malloc(nCount * sizeof(struct VezContext));
-	if (VezCPUContext == NULL) return 1;
+	if (VezCPUContext == NULL)
+		return 1;
 
 	memset(VezCPUContext, 0, nCount * sizeof(struct VezContext));
 
-	for(int i=0;i<nCount;i++) {
+	for(int i=0;i<nCount;i++)
+	{
 		VezCPUContext[i].reg.cpu_type = typelist[i];
 		VezCPUContext[i].reg.irq_callback = VezDummyIrqCallBack;
 
@@ -168,8 +170,10 @@ int VezMemCallback(int nStart,int nEnd,int nMode)
 	nEnd += VEZ_MEM_MASK;
 	nEnd >>= VEZ_MEM_SHIFT;
 
-	for (int i = nStart; i < nEnd; i++) {
-		switch (nMode) {
+	for (int i = nStart; i < nEnd; i++)
+	{
+		switch (nMode)
+		{
 			case 0:
 				VezCurrentCPU->ppMemRead[i] = NULL;
 				break;
@@ -252,7 +256,8 @@ int VezScan(int nAction)
 
 	char szText[] = "NEC #0";
 
-	for (int i = 0; i < nCPUCount; i++) {
+	for (int i = 0; i < nCPUCount; i++)
+	{
 		szText[5] = '1' + i;
 
 		ScanVar(& (VezCPUContext[i].reg), sizeof(nec_Regs), szText);

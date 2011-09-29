@@ -32,9 +32,23 @@ unsigned int (*SekDbgFetchByteDisassembler)(unsigned int);
 unsigned int (*SekDbgFetchWordDisassembler)(unsigned int);
 unsigned int (*SekDbgFetchLongDisassembler)(unsigned int);
 
-static struct { unsigned int address; int id; } BreakpointDataRead[9]  = { { 0, 0 }, };
-static struct { unsigned int address; int id; } BreakpointDataWrite[9] = { { 0, 0 }, };
-static struct { unsigned int address; int id; } BreakpointFetch[9] = { { 0, 0 }, };
+static struct
+{
+	unsigned int address;
+	int id;
+} BreakpointDataRead[9]  = { { 0, 0 }, };
+
+static struct
+{
+	unsigned int address;
+	int id;
+} BreakpointDataWrite[9] = { { 0, 0 }, };
+
+static struct
+{
+	unsigned int address;
+	int id;
+} BreakpointFetch[9] = { { 0, 0 }, };
 
 #endif
 
@@ -451,9 +465,9 @@ unsigned short __fastcall ReadWordBP(unsigned int a)
 
 	CheckBreakpoint_R(a, ~1);
 
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((unsigned int)pr >= SEK_MAXHANDLER)
 		return *((unsigned short*)(pr + (a & SEK_PAGEM)));
-	}
+
 	return pSekExt->ReadWord[(unsigned int)pr](a);
 }
 
@@ -851,7 +865,8 @@ static int SekInitCPUM68K(int nCount, int nCPUType)
 {
 	nSekCPUType[nCount] = nCPUType;
 
-	switch (nCPUType) {
+	switch (nCPUType)
+	{
 		case 0x68000:
 			m68k_set_cpu_type(M68K_CPU_TYPE_68000);
 			break;
@@ -867,9 +882,9 @@ static int SekInitCPUM68K(int nCount, int nCPUType)
 
 	nSekM68KContextSize[nCount] = m68k_context_size();
 	SekM68KContext[nCount] = (char*)malloc(nSekM68KContextSize[nCount]);
-	if (SekM68KContext[nCount] == NULL) {
+	if (SekM68KContext[nCount] == NULL)
 		return 1;
-	}
+
 	memset(SekM68KContext[nCount], 0, nSekM68KContextSize[nCount]);
 	m68k_get_context(SekM68KContext[nCount]);
 
@@ -880,11 +895,15 @@ static int SekInitCPUM68K(int nCount, int nCPUType)
 #ifdef EMU_C68K
 static int SekInitCPUC68K(int nCount, int nCPUType)
 {
-	if (nCPUType != 0x68000) return 1;
+	if (nCPUType != 0x68000)
+		return 1;
+
 	nSekCPUType[nCount] = 0;
 
 	SekC68KContext[nCount] = (c68k_struc *)malloc( sizeof( c68k_struc ) );
-	if (SekC68KContext[nCount] == NULL)	return 1;
+
+	if (SekC68KContext[nCount] == NULL)
+		return 1;
 
 	memset(SekC68KContext[nCount], 0, sizeof( c68k_struc ));
 	SekC68KCurrentContext = SekC68KContext[nCount];
@@ -908,9 +927,8 @@ static int SekInitCPUC68K(int nCount, int nCPUType)
 
 void SekNewFrame()
 {
-	for (int i = 0; i <= nSekCount; i++) {
+	for (int i = 0; i <= nSekCount; i++)
 		nSekCycles[i] = 0;
-	}
 
 	nSekCyclesTotal = 0;
 }
@@ -929,9 +947,8 @@ int SekInit(int nCount, int nCPUType)
 		nSekActive = -1;
 	}
 
-	if (nCount > nSekCount) {
+	if (nCount > nSekCount)
 		nSekCount = nCount;
-	}
 
 	// Allocate cpu extenal data (memory map etc)
 	SekExt[nCount] = (struct SekExt*)malloc(sizeof(struct SekExt));
@@ -1491,9 +1508,8 @@ int SekDbgSetBreakpointDataWrite(unsigned int nAddress, int nIdentifier)
 			if (nAddress) {								// Change breakpoint
 				BreakpointDataWrite[i].address = nAddress;
 			} else {									// Delete breakpoint
-				for ( ; i < 8; i++) {
+				for ( ; i < 8; i++)
 					BreakpointDataWrite[i] = BreakpointDataWrite[i + 1];
-				}
 			}
 
 			SekDbgEnableBreakpoints();
@@ -1517,9 +1533,8 @@ int SekDbgSetBreakpointFetch(unsigned int nAddress, int nIdentifier)
 			if (nAddress) {								// Change breakpoint
 				BreakpointFetch[i].address = nAddress;
 			} else {									// Delete breakpoint
-				for ( ; i < 8; i++) {
+				for ( ; i < 8; i++)
 					BreakpointFetch[i] = BreakpointFetch[i + 1];
-				}
 			}
 
 			SekDbgEnableBreakpoints();

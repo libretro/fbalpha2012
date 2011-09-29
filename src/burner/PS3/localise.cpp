@@ -10,7 +10,7 @@
 #define LANG_CACHE 0
 
 bool bLanguageActive = false;
-TCHAR szLanguage[MAX_PATH] = _T("");
+char szLanguage[MAX_PATH] = "";
  
 
 int FBALoadString(int id, char *buffer, int maxsize)
@@ -19,9 +19,9 @@ int FBALoadString(int id, char *buffer, int maxsize)
 	return ret;
 }
 
-TCHAR* FBALoadStringEx(int id, bool translate)
+char* FBALoadStringEx(int id, bool translate)
 {
-	static TCHAR loadstr[2048] = _T("");
+	static char loadstr[2048] = "";
 	return loadstr;
 }
 
@@ -37,7 +37,7 @@ void FBALocaliseExit()
 	bLanguageActive = false;
 }
 
-int FBALocaliseInit(TCHAR* lanaugae)
+int FBALocaliseInit(char* language)
 {
 	return 0;
 }

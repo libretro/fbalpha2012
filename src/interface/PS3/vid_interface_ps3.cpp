@@ -1,16 +1,14 @@
 // Video Output - (calls all the Vid Out plugins)
 #include "burner.h"
 #include "highcol.h"
+#include "vid_psgl.h"
 
 #undef ENABLE_PREVIEW
-
-static InterfaceInfo VidInfo = { NULL, };
 
 unsigned int nVidSelect = 2;					// Which video output is selected
 static unsigned int nVidActive = 0;				// Which video output is actived
 
 bool bVidOkay = false;
-
 
 int nVidDepth = 16;
 int nVidRefresh = 0;
@@ -148,88 +146,69 @@ int VidExit()
 	return nRet;
 }
 
-void CalculateViewports()
-{
-   extern void CalculateViewport();
-   CalculateViewport();
-}
-
-#define VidDoFrame(bRedraw) \
-if (pVidTransImage) \
-{ \
-	unsigned short* pSrc = (unsigned short*)pVidTransImage; \
-	unsigned char* pDest = pVidImage; \
-	\
-	if (bVidRecalcPalette) \
-	{ \
-		uint64_t r = 0; \
-		do{ \
-			uint64_t g = 0; \
-			do{ \
-				uint64_t b = 0; \
-				do{ \
-					uint64_t r_ = r | (r >> 5); \
-					uint64_t g_ = g | (g >> 5); \
-					uint64_t b_ = b | (b >> 5); \
-					pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_); \
-					b += 8; \
-				}while(b < 256); \
-				g += 8; \
-			}while(g < 256); \
-			r += 8; \
-		}while(r < 256); \
-		\
-		bVidRecalcPalette = false; \
-	} \
-	\
-	pBurnDraw = pVidTransImage; \
-	nBurnPitch = nVidImageWidth << 1; \
-	\
-	extern void _psglRender();  \
-	BurnDrvFrame(); \
-	_psglRender(); \
-	\
-	/* set avi buffer, modified by regret */ \
-	\
-	pBurnDraw = NULL; \
-	nBurnPitch = 0; \
-	\
-	int y = 0; \
-	do{ \
-		int x = 0; \
-		do{ \
-			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]]; \
-			x++; \
-		}while(x < nVidImageWidth); \
-		y++; \
-		pSrc += nVidImageWidth; \
-		pDest += nVidImagePitch; \
-	}while(y < nVidImageHeight); \
-} \
-   else \
-   { \
-		pBurnDraw = pVidImage; \
-		nBurnPitch = nVidImagePitch; \
-      \
-		extern void _psglRender();  \
-		BurnDrvFrame(); \
-		_psglRender(); \
-      \
-		/* set avi buffer, modified by regret */ \
-      \
-		pBurnDraw = NULL; \
-		nBurnPitch = 0; \
-	} \
-	return 0;
-
 int VidFrame()
 {
-	VidDoFrame(0);
-}
+	if (pVidTransImage)
+	{
+		unsigned short* pSrc = (unsigned short*)pVidTransImage;
+		unsigned char* pDest = pVidImage;
 
-int VidRedraw()
-{
-	VidDoFrame(1);
+		if (bVidRecalcPalette)
+		{
+			uint64_t r = 0;
+			do{
+				uint64_t g = 0;
+				do{
+					uint64_t b = 0;
+					do{
+						uint64_t r_ = r | (r >> 5);
+						uint64_t g_ = g | (g >> 5);
+						uint64_t b_ = b | (b >> 5);
+						pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
+						b += 8;
+					}while(b < 256);
+					g += 8;
+				}while(g < 256);
+				r += 8;
+			}while(r < 256);
+			bVidRecalcPalette = false;
+		}
+
+		pBurnDraw = pVidTransImage;
+		nBurnPitch = nVidImageWidth << 1;
+		BurnDrvFrame();
+		_psglRender();
+
+		/* set avi buffer, modified by regret */
+
+		pBurnDraw = NULL;
+		nBurnPitch = 0;
+		int y = 0;
+		do{
+			int x = 0;
+
+			do{
+				((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
+				x++;
+			}while(x < nVidImageWidth);
+
+			y++;
+			pSrc += nVidImageWidth;
+			pDest += nVidImagePitch;
+		}while(y < nVidImageHeight);
+	}
+	else
+	{
+		pBurnDraw = pVidImage;
+		nBurnPitch = nVidImagePitch;
+		BurnDrvFrame();
+		_psglRender();
+		/* set avi buffer, modified by regret */
+		pBurnDraw = NULL;
+		nBurnPitch = 0;
+	}
+
+	return 0;
 }
 
 int VidRecalcPal()
@@ -246,7 +225,7 @@ int VidReinit()
 	VidInit();
 
 	if (bRunPause || !bDrvOkay)
-		VidRedraw();
+		VidFrame();
 
 	CalculateViewports();
 	return 0;

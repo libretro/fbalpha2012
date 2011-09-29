@@ -23,7 +23,7 @@ struct ZetExt {
 static int nZetCyclesDone[MAX_Z80];
 static int nZetCyclesTotal;
 static int nZ80ICount[MAX_Z80];
-static UINT32 Z80EA[MAX_Z80];
+static uint32_t Z80EA[MAX_Z80];
 
 static int nOpenedCPU = -1;
 static int nCPUCount = 0;
@@ -124,9 +124,9 @@ void ZetSetOutHandler(void (__fastcall *pHandler)(unsigned short, unsigned char)
 
 void ZetNewFrame()
 {
-	for (int i = 0; i < nCPUCount; i++) {
+	for (int i = 0; i < nCPUCount; i++)
 		nZetCyclesDone[i] = 0;
-	}
+
 	nZetCyclesTotal = 0;
 }
 
@@ -140,7 +140,8 @@ int ZetInit(int nCount)
 	
 	Z80Init();
 	
-	for (int i = 0; i < nCount; i++) {
+	for (int i = 0; i < nCount; i++)
+	{
 		ZetCPUContext[i].ZetIn = ZetDummyInHandler;
 		ZetCPUContext[i].ZetOut = ZetDummyOutHandler;
 		ZetCPUContext[i].ZetRead = ZetDummyReadHandler;
@@ -151,9 +152,8 @@ int ZetInit(int nCount)
 		nZetCyclesDone[i] = 0;
 		nZ80ICount[i] = 0;
 		
-		for (int j = 0; j < (0x0100 * 4); j++) {
+		for (int j = 0; j < (0x0100 * 4); j++)
 			ZetCPUContext[i].pZetMemMap[j] = NULL;
-		}
 	}
 	
 	nZetCyclesTotal = 0;
@@ -195,13 +195,11 @@ void ZetWriteRom(unsigned short address, unsigned char data)
 {
 	if (nOpenedCPU < 0) return;
 
-	if (ZetCPUContext[nOpenedCPU].pZetMemMap[0x200 | (address >> 8)] != NULL) {
+	if (ZetCPUContext[nOpenedCPU].pZetMemMap[0x200 | (address >> 8)] != NULL)
 		ZetCPUContext[nOpenedCPU].pZetMemMap[0x200 | (address >> 8)][address] = data;
-	}
 	
-	if (ZetCPUContext[nOpenedCPU].pZetMemMap[0x300 | (address >> 8)] != NULL) {
+	if (ZetCPUContext[nOpenedCPU].pZetMemMap[0x300 | (address >> 8)] != NULL)
 		ZetCPUContext[nOpenedCPU].pZetMemMap[0x300 | (address >> 8)][address] = data;
-	}
 	
 	ZetWriteProg(address, data);
 }
@@ -256,8 +254,10 @@ int ZetMemCallback(int nStart, int nEnd, int nMode)
 	unsigned char cStart = (nStart >> 8);
 	unsigned char **pMemMap = ZetCPUContext[nOpenedCPU].pZetMemMap;
 
-	for (unsigned short i = cStart; i <= (nEnd >> 8); i++) {
-		switch (nMode) {
+	for (unsigned short i = cStart; i <= (nEnd >> 8); i++)
+	{
+		switch (nMode)
+		{
 			case 0:
 				pMemMap[0     + i] = NULL;
 				break;
@@ -295,23 +295,20 @@ int ZetMapArea(int nStart, int nEnd, int nMode, unsigned char *Mem)
 	unsigned char cStart = (nStart >> 8);
 	unsigned char **pMemMap = ZetCPUContext[nOpenedCPU].pZetMemMap;
 
-	for (unsigned short i = cStart; i <= (nEnd >> 8); i++) {
-		switch (nMode) {
-			case 0: {
+	for (unsigned short i = cStart; i <= (nEnd >> 8); i++)
+	{
+		switch (nMode)
+		{
+			case 0:
 				pMemMap[0     + i] = Mem + ((i - cStart) << 8);
 				break;
-			}
-		
-			case 1: {
+			case 1:
 				pMemMap[0x100 + i] = Mem + ((i - cStart) << 8);
 				break;
-			}
-			
-			case 2: {
+			case 2:
 				pMemMap[0x200 + i] = Mem + ((i - cStart) << 8);
 				pMemMap[0x300 + i] = Mem + ((i - cStart) << 8);
 				break;
-			}
 		}
 	}
 
@@ -323,11 +320,11 @@ int ZetMapArea(int nStart, int nEnd, int nMode, unsigned char *Mem01, unsigned c
 	unsigned char cStart = (nStart >> 8);
 	unsigned char **pMemMap = ZetCPUContext[nOpenedCPU].pZetMemMap;
 	
-	if (nMode != 2) {
+	if (nMode != 2)
 		return 1;
-	}
 	
-	for (unsigned short i = cStart; i <= (nEnd >> 8); i++) {
+	for (unsigned short i = cStart; i <= (nEnd >> 8); i++)
+	{
 		pMemMap[0x200 + i] = Mem01 + ((i - cStart) << 8);
 		pMemMap[0x300 + i] = Mem02 + ((i - cStart) << 8);
 	}
@@ -344,49 +341,45 @@ int ZetReset()
 
 int ZetPc(int n)
 {
-	if (n < 0) {
+	if (n < 0)
 		return ActiveZ80GetPC();
-	} else {
+	else
 		return ZetCPUContext[n].reg.pc.w.l;
-	}
 }
 
 int ZetBc(int n)
 {
-	if (n < 0) {
+	if (n < 0)
 		return ActiveZ80GetBC();
-	} else {
+	else
 		return ZetCPUContext[n].reg.bc.w.l;
-	}
 }
 
 int ZetDe(int n)
 {
-	if (n < 0) {
+	if (n < 0)
 		return ActiveZ80GetDE();
-	} else {
+	else
 		return ZetCPUContext[n].reg.de.w.l;
-	}
 }
 
 int ZetHL(int n)
 {
-	if (n < 0) {
+	if (n < 0)
 		return ActiveZ80GetHL();
-	} else {
+	else
 		return ZetCPUContext[n].reg.hl.w.l;
-	}
 }
 
 int ZetScan(int nAction)
 {
-	if ((nAction & ACB_DRIVER_DATA) == 0) {
+	if ((nAction & ACB_DRIVER_DATA) == 0)
 		return 0;
-	}
 
 	char szText[] = "Z80 #0";
 	
-	for (int i = 0; i < nCPUCount; i++) {
+	for (int i = 0; i < nCPUCount; i++)
+	{
 		szText[5] = '1' + i;
 
 		ScanVar(&ZetCPUContext[i].reg, sizeof(Z80_Regs), szText);
@@ -402,7 +395,8 @@ int ZetScan(int nAction)
 
 void ZetSetIRQLine(const int line, const int status)
 {
-	switch ( status ) {
+	switch(status)
+	{
 		case ZET_IRQSTATUS_NONE:
 			Z80SetIrqLine(0, 0);
 			break;

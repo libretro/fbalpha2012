@@ -43,7 +43,7 @@ extern bool bInputOkay;
 extern unsigned int nInputSelect;
 
 // Audio Output plugin
-int AudWriteSlience(int draw = 0);			// Write silence into the buffer
+int AudWriteSilence(int draw = 0);			// Write silence into the buffer
 
 class AudioInterface
 {
@@ -103,8 +103,6 @@ extern int cellAudioDevice;		// ps3 cell audio device
 struct VidOut {
 	int (*Init)();
 	int (*Exit)();
-	// Get plugin info
-	int (*GetSetting)(InterfaceInfo* pInfo);
 };
 
 enum VID_OUT {

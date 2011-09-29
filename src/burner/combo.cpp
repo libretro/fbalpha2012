@@ -249,8 +249,8 @@ static void InitComboButtons()
 		memset(&bii, 0, sizeof(bii));
 		BurnDrvGetInputInfo(&bii, i);
 
-		if ((bii.szName[0] == 'P' || bii.szName[0] == 'p')
-			&& bii.szName[1] >= '1' && bii.szName[1] <= '4') {
+		if ((bii.szName[0] == 'P' || bii.szName[0] == 'p') && bii.szName[1] >= '1' && bii.szName[1] <= '4')
+		{
 			int nPlayer = bii.szName[1] - '1';
 
 			if (nPlayer != nPlayerTemp) {
@@ -258,22 +258,19 @@ static void InitComboButtons()
 				buttonSize = nButtons;
 				nButtons = 0;
 			}
-			if (strncmp(" fire", bii.szInfo + 2, 5) == 0 && nButtons < MAX_BUTTONS) {
+			if (strncmp(" fire", bii.szInfo + 2, 5) == 0 && nButtons < MAX_BUTTONS)
+			{
 				nButtons++;
 				buttons[nPlayer][nButtons] = bii.pVal;
 			}
-			if (strncmp(" up", bii.szInfo + 2, 3) == 0) {
+			if (strncmp(" up", bii.szInfo + 2, 3) == 0)
 				arrows[nPlayer][1] = bii.pVal;
-			}
-			if (strncmp(" down", bii.szInfo + 2, 5) == 0) {
+			if (strncmp(" down", bii.szInfo + 2, 5) == 0)
 				arrows[nPlayer][2] = bii.pVal;
-			}
-			if (strncmp(" left", bii.szInfo + 2, 5) == 0) {
+			if (strncmp(" left", bii.szInfo + 2, 5) == 0)
 				arrows[nPlayer][3] = bii.pVal;
-			}
-			if (strncmp(" right", bii.szInfo + 2, 5) == 0) {
+			if (strncmp(" right", bii.szInfo + 2, 5) == 0)
 				arrows[nPlayer][4] = bii.pVal;
-			}
 
 			nPlayerTemp = nPlayer;
 		}
@@ -300,13 +297,13 @@ void __cdecl ConstructComboList()
 	unsigned char bShouldQuit = 0;
 
 	char szName[MAX_PATH],                           // will contain zipname of the parent
-		szLine[COMBO_MAX_CHAR_PER_LINE],
-		cComboType[MAX_NUM_COMBO],
-		szComboTemp[MAX_NUM_COMBO][MAX_COMBO_LEN],
-		szComboNameTemp[MAX_NUM_COMBO][MAX_COMBO_NAME];
+	     szLine[COMBO_MAX_CHAR_PER_LINE],
+	     cComboType[MAX_NUM_COMBO],
+	     szComboTemp[MAX_NUM_COMBO][MAX_COMBO_LEN],
+	     szComboNameTemp[MAX_NUM_COMBO][MAX_COMBO_NAME];
 
 	char *szToken = NULL,                            // string before next ':'
-		*szComboTokens[COMBO_MAX_TOKENS] = {NULL,};  // array of strings seperated by ':'
+	     *szComboTokens[COMBO_MAX_TOKENS] = {NULL,};  // array of strings seperated by ':'
 
 	// total number of combos
 	nComCount = 0;
@@ -318,10 +315,11 @@ void __cdecl ConstructComboList()
 	// case 1: Clones
 	if (BurnDrvGetTextA(DRV_PARENT) && (BurnDrvGetFlags() & BDF_CLONE)) {
 		sprintf(szName, "%s", BurnDrvGetTextA(DRV_PARENT));
-	// case 2: Parents that uses ROMs from other games
-	} else if (BurnDrvGetTextA(DRV_PARENT)) {
+		// case 2: Parents that uses ROMs from other games
+	}
+	else if (BurnDrvGetTextA(DRV_PARENT)) {
 		sprintf(szName, "%s", BurnDrvGetTextA(DRV_PARENT));
-	// case 3: Parents
+		// case 3: Parents
 	} else {
 		sprintf(szName, "%s", BurnDrvGetTextA(DRV_NAME));
 	}
@@ -343,7 +341,8 @@ void __cdecl ConstructComboList()
 
 		// cleanups for the later sanity checks
 		for (j = 0; j < COMBO_MAX_TOKENS; j++) {
-			if (szComboTokens[j] != NULL) szComboTokens[j] = NULL;
+			if (szComboTokens[j] != NULL)
+				szComboTokens[j] = NULL;
 			else break;
 		}
 
@@ -408,8 +407,8 @@ void __cdecl ConstructComboList()
 
 		for (int p = 0; p < nMaxPlayers; p++, player++) {
 			for (unsigned int c = 0; c < nComCount; c++, count++) {
- 				comboState[count] = 0;
- 				comboType[count] = cComboType[c];
+				comboState[count] = 0;
+				comboType[count] = cComboType[c];
 
 				// first character of the combo name is always 'P'
 				strcpy(szComboName[count], "Px ");
@@ -437,11 +436,20 @@ void __cdecl ConstructComboList()
 		DrvCombo[c].szInfo = szComboName[c];   // set combo infos in the DrvCombo structure
 
 		// set player value for the combo
-		switch (szComboName[c][1]) {
- 			case '1': Player[c] = 0; break; // player 1
- 			case '2': Player[c] = 1; break; // player 2
- 			case '3': Player[c] = 2; break; // player 3
-			case '4': Player[c] = 3; break; // player 4
+		switch (szComboName[c][1])
+		{
+			case '1':
+				Player[c] = 0;
+				break; // player 1
+			case '2':
+				Player[c] = 1;
+				break; // player 2
+			case '3':
+				Player[c] = 2;
+				break; // player 3
+			case '4':
+				Player[c] = 3;
+				break; // player 4
 		}
 	}
 
@@ -482,9 +490,8 @@ static inline char* BuildHoldKeys(int n)
 	static int idx = 0;
 
 	// build the hold keys/directions
-	while (idx_ptr != masterCombo[n] && *idx_ptr != ',') {
+	while (idx_ptr != masterCombo[n] && *idx_ptr != ',')
 		holdKeys[n][idx++] = *(idx_ptr--);
-	}
 
 	// get the last hold key
 	if (idx_ptr == masterCombo[n])

@@ -11,18 +11,18 @@
 struct SN76496
 {
 	unsigned int UpdateStep;
-	INT32 VolTable[16];	/* volume table         */
-	INT32 Register[8];	/* registers */
-	INT32 LastRegister;	/* last register written */
-	INT32 Volume[4];	/* volume of voice 0-2 and noise */
-	INT32 RNG;		/* noise generator      */
-	INT32 NoiseMode;	/* active noise mode */
-	INT32 FeedbackMask;     /* mask for feedback */
-	INT32 WhitenoiseTaps;   /* mask for white noise taps */
-	INT32 WhitenoiseInvert; /* white noise invert flag */
-	INT32 Period[4];
-	INT32 Count[4];
-	INT32 Output[4];
+	int32_t VolTable[16];	/* volume table         */
+	int32_t Register[8];	/* registers */
+	int32_t LastRegister;	/* last register written */
+	int32_t Volume[4];	/* volume of voice 0-2 and noise */
+	int32_t RNG;		/* noise generator      */
+	int32_t NoiseMode;	/* active noise mode */
+	int32_t FeedbackMask;     /* mask for feedback */
+	int32_t WhitenoiseTaps;   /* mask for white noise taps */
+	int32_t WhitenoiseInvert; /* white noise invert flag */
+	int32_t Period[4];
+	int32_t Count[4];
+	int32_t Output[4];
 	int bSignalAdd;
 };
 
@@ -248,7 +248,7 @@ static void SN76496SetGain(struct SN76496 *R,int Gain)
 	{
 		/* limit volume to avoid clipping */
 		if (Out > MAX_OUTPUT / 3) R->VolTable[i] = MAX_OUTPUT / 3;
-		else R->VolTable[i] = (INT32)Out;
+		else R->VolTable[i] = (int32_t)Out;
 
 		Out /= 1.258925412;	/* = 10 ^ (2/20) = 2dB */
 	}

@@ -5,7 +5,7 @@ extern int nTrackCnt, nSectCnt;
 extern int nCurrentTrack, nCurrentSect;
 extern bool bNoSect;
 
-void sendSoundCode(UINT16 nCode);
+void sendSoundCode(uint16_t nCode);
 
 int getTrackCode(int nSect, int nTrack);
 char * getTrackDesc(int nSect, int nTrack, bool bIsSect);

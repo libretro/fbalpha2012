@@ -4,9 +4,9 @@
 
 struct dac_info
 {
-	INT16			Output;
-	INT16			UnsignedVolTable[256];
-	INT16			SignedVolTable[256];
+	int16_t			Output;
+	int16_t			UnsignedVolTable[256];
+	int16_t			SignedVolTable[256];
 	unsigned int 		Delta;
 };
 
@@ -16,13 +16,17 @@ static int bAddSignal;
 
 void DACUpdate(short* Buffer, int Length)
 {
-	INT16 Out = chip->Output;
+	int16_t Out = chip->Output;
 	
-	while (Length--) {
-		if (bAddSignal) {
+	while (Length--)
+	{
+		if (bAddSignal)
+		{
 			Buffer[0] += Out;
 			Buffer[1] += Out;
-		} else {
+		}
+		else
+		{
 			Buffer[0] = Out;
 			Buffer[1] = Out;
 		}
@@ -30,16 +34,16 @@ void DACUpdate(short* Buffer, int Length)
 	}
 }
 
-void DACWrite(UINT8 Data)
+void DACWrite(uint8_t Data)
 {
-	INT16 Out = chip->UnsignedVolTable[Data];
+	int16_t Out = chip->UnsignedVolTable[Data];
 	
 	chip->Output = Out >> nVolShift;
 }
 
-void DACSignedWrite(UINT8 Data)
+void DACSignedWrite(uint8_t Data)
 {
-	INT16 Out = chip->SignedVolTable[Data];
+	int16_t Out = chip->SignedVolTable[Data];
 	
 	chip->Output = Out >> nVolShift;
 }
@@ -48,7 +52,8 @@ static void DACBuildVolTable()
 {
 	int i;
 	
-	for (i = 0;i < 256;i++) {
+	for (i = 0; i < 256; i++)
+	{
 		chip->UnsignedVolTable[i] = i * 0x101 / 2;
 		chip->SignedVolTable[i] = i * 0x101 - 0x8000;
 	}
@@ -89,22 +94,20 @@ int DACScan(int nAction,int *pnMin)
 {
 	struct BurnArea ba;
 	char szName[16];
-	
-	if ((nAction & ACB_DRIVER_DATA) == 0) {
+
+	if ((nAction & ACB_DRIVER_DATA) == 0)
 		return 1;
-	}
-	
-	if (pnMin != NULL) {
+
+	if (pnMin != NULL)
 		*pnMin = 0x029678;
-	}
-	
+
 	sprintf(szName, "DAC #0");
 	ba.Data		= &chip;
 	ba.nLen		= sizeof(struct dac_info);
 	ba.nAddress = 0;
 	ba.szName	= szName;
 	BurnAcb(&ba);
-	
+
 	return 0;
 }
 

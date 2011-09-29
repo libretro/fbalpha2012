@@ -65,7 +65,7 @@ extern int custom_aspect_ratio_mode;
 
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
 
-typedef std::basic_string<TCHAR> tstring;
+typedef std::basic_string<char> tstring;
 
 #ifndef MAX_PATH
  #define MAX_PATH (260)
@@ -113,17 +113,17 @@ extern int nVidScrnAspectMode;
 extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
 
-extern TCHAR szAppBurnVer[16];
-extern TCHAR szSVNVer[16];
-extern TCHAR szSVNDate[30];
+extern char szAppBurnVer[16];
+extern char szSVNVer[16];
+extern char szSVNDate[30];
 
 extern bool bCmdOptUsed;
 extern bool bAlwaysProcessKey;
 
 // Used for the load/save dialog in commdlg.h
-extern TCHAR szChoice[MAX_PATH];	// File chosen by the user
+extern char szChoice[MAX_PATH];	// File chosen by the user
 
-int dprintf(TCHAR* pszFormat, ...);	// Use instead of printf() in the UI
+int dprintf(char* pszFormat, ...);	// Use instead of printf() in the UI
 
 bool AppProcessKeyboardInput();
 
@@ -139,7 +139,7 @@ enum FBAPopupType { MT_NONE = 0, MT_ERROR, MT_WARNING, MT_INFO };
 #define PUF_TEXT_DEFAULT		(PUF_TEXT_TRANSLATE)
 
 int FBAPopupDisplay(int nFlags);
-int FBAPopupAddText(int nFlags, TCHAR* pszFormat, ...);
+int FBAPopupAddText(int nFlags, char* pszFormat, ...);
 int FBAPopupDestroyText();
 
 // media.cpp
@@ -150,11 +150,9 @@ int mediaReInitAudio();
 
 // misc_win32.cpp
 void createNeedDir();
-bool directoryExists(const TCHAR* dirname);
+bool directoryExists(const char* dirname);
 void pathCheck(char * path);
 int directLoadGame(const char * name);
-int getClientScreenRect(HWND hWnd, RECT* pRect);
-int wndInMid(HWND hMid, HWND hBase);
 void setWindowAspect(bool first_boot = false);
 int findRom(int i, struct ArcEntry* list, int count);
 
@@ -181,10 +179,8 @@ int RunExit();
 int RunReset();
 
 // scrn.cpp
-extern HWND hScrnWnd;				// Handle to the screen window
 extern bool bShowOnTop;
 extern bool bFullscreenOnStart;
-extern HWND hVideoWnd;				// Handle to the video window
 
 extern int bAutoPause;
 extern int nWindowSize;
@@ -205,22 +201,19 @@ void setPauseMode(bool bPause);
 void setPauseModeScreen(bool bPause);
 
 // sel.cpp
-extern HWND hSelDlg;
 extern int nLoadMenuShowX;
 extern int nLoadDriverShowX;
 extern int nTabSel;
-extern TCHAR szUserFilterStr[MAX_PATH];
+extern char szUserFilterStr[MAX_PATH];
 extern int nSystemSel;
-int selDialog(HWND);				// Choose a Burn driver
 void clearNodeInfo();
-int driverConfigDialog(HWND);		// Driver config
 
 // translist.cpp
-extern TCHAR szTransGamelistFile[MAX_PATH];
+extern char szTransGamelistFile[MAX_PATH];
 int loadGamelist();
 int createGamelist();
-TCHAR* mangleGamename(const TCHAR* pszOldName, bool bRemoveArticle = true);
-TCHAR* transGameName(const TCHAR* pszOldName, bool bRemoveArticle = true);
+char* mangleGamename(const char* pszOldName, bool bRemoveArticle = true);
+char* transGameName(const char* pszOldName, bool bRemoveArticle = true);
 
 // favorites.cpp
 int initFavorites();
@@ -235,8 +228,8 @@ int configAppLoadXml();
 int configAppSaveXml();
 
 // conc.cpp
-int configCheatLoad(const TCHAR* filename = NULL);
-int configCheatReload(const TCHAR* filename = NULL);
+int configCheatLoad(const char* filename = NULL);
+int configCheatReload(const char* filename = NULL);
 
 // inpd.cpp
 int loadDefaultInput();
@@ -269,12 +262,6 @@ int StatedAuto(int bSave);
 int StatedLoad(int nSlot);
 int StatedSave(int nSlot);
 
-// numdial.cpp
-void colorAdjustDialog(HWND);
-void CPUClockDialog(HWND);
-void aspectSetDialog(HWND);
-void screenAngleDialog(HWND);
-
 // sfactd.cpp
 int SFactdCreate();
 void ToggleLayer(unsigned char thisLayer);
@@ -303,14 +290,11 @@ enum ePath {
 	PATH_ICON,
 	PATH_SUM
 };
-extern TCHAR szMiscPaths[PATH_SUM][MAX_PATH];
-int miscDirCreate(HWND);
+extern char szMiscPaths[PATH_SUM][MAX_PATH];
 const char * getMiscPath(unsigned int dirType);
 const char * getMiscArchiveName(unsigned int dirType);
 
-extern TCHAR szAppRomPaths[DIRS_MAX][MAX_PATH];
-int RomsDirCreate(HWND);
-void pathSheetCreate(HWND);
+extern char szAppRomPaths[DIRS_MAX][MAX_PATH];
 
 // memcard.cpp
 extern int nMemoryCardStatus;	// & 1 = file selected, & 2 = inserted
@@ -321,7 +305,7 @@ int MemCardEject();
 int MemCardToggle();
 
 // progress.cpp
-int ProgressUpdateBurner(double dProgress, const TCHAR* pszText, bool bAbs);
+int ProgressUpdateBurner(double dProgress, const char* pszText, bool bAbs);
 int ProgressCreate();
 int ProgressDestroy();
 

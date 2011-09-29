@@ -5,10 +5,10 @@
 #define SAMPLE_BITS 16
 
 #if (SAMPLE_BITS==16)
-	typedef INT16 SAMP;
+	typedef int16_t SAMP;
 #endif
 #if (SAMPLE_BITS==8)
-	typedef INT8 SAMP;
+	typedef int8_t SAMP;
 #endif
 
 int  YM2413Init(int num, int clock, int rate);

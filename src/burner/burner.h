@@ -170,8 +170,8 @@ int BArchiveClose();
 int BArchiveStatus();
 
 // for changing sound track
-void NeoZ80Cmd(UINT16 sound_code);
-void CpsSoundCmd(UINT16 sound_code);
-void QSoundCMD(UINT16 sound_code);
+void NeoZ80Cmd(uint16_t sound_code);
+void CpsSoundCmd(uint16_t sound_code);
+void QSoundCMD(uint16_t sound_code);
 
 #endif

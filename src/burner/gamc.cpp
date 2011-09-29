@@ -531,18 +531,18 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 	nJoyBase = 0x4000;
 	nJoyBase |= nDevice << 8;
 
-	if (strcmp(szi, "up") == 0)	{
+	if (strcmp(szi, "up") == 0)
 		KEY(nJoyBase + 0x02)
-	}
-	if (strcmp(szi, "down") == 0) {
+
+	if (strcmp(szi, "down") == 0)
 		KEY(nJoyBase + 0x03)
-	}
-	if (strcmp(szi, "left") == 0)	{
+
+	if (strcmp(szi, "left") == 0)
 		KEY(nJoyBase + 0x00)
-	}
-	if (strcmp(szi, "right") == 0) {
+
+	if (strcmp(szi, "right") == 0)
 		KEY(nJoyBase + 0x01)
-	}
+
 	if (strncmp(szi, "fire ", 5) == 0)
 	{
 		char *szb = szi + 5;
@@ -594,79 +594,62 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 		KEY(FBK_NUMPAD6);
 	}
 
-	if (nFireButtons == 4) {
-		if (strcmp(szi, "fire 1") == 0) {
+	if (nFireButtons == 4)
+	{
+		if (strcmp(szi, "fire 1") == 0)
 			KEY(FBK_C);
-		}
-		if (strcmp(szi, "fire 2") == 0) {
+		if (strcmp(szi, "fire 2") == 0)
 			KEY(FBK_LSHIFT);
-		}
-		if (strcmp(szi, "fire 3") == 0) {
+		if (strcmp(szi, "fire 3") == 0)
 			KEY(FBK_Z);
-		}
-		if (strcmp(szi, "fire 4") == 0) {
+		if (strcmp(szi, "fire 4") == 0)
 			KEY(FBK_X);
-		}
-	} else {
-		if (bStreetFighterLayout) {
+	}
+	else
+	{
+		if (bStreetFighterLayout)
+		{
 			// Street Fighter and other Capcom 6-button games
-			if (strcmp(szi, "fire 1") == 0) {
+			if (strcmp(szi, "fire 1") == 0)
 				KEY(FBK_LCONTROL);
-			}
-			if (strcmp(szi, "fire 2") == 0) {
+			if (strcmp(szi, "fire 2") == 0)
 				KEY(FBK_LALT);
-			}
-			if (strcmp(szi, "fire 3") == 0) {
+			if (strcmp(szi, "fire 3") == 0)
 				KEY(FBK_SPACE);
-			}
-			if (strcmp(szi, "fire 4") == 0) {
+			if (strcmp(szi, "fire 4") == 0)
 				KEY(FBK_LSHIFT);
-			}
-			if (strcmp(szi, "fire 5") == 0) {
+			if (strcmp(szi, "fire 5") == 0)
 				KEY(FBK_Z);
-			}
-			if (strcmp(szi, "fire 6") == 0) {
+			if (strcmp(szi, "fire 6") == 0)
 				KEY(FBK_X);
-			}
-
-
-		} else {
-			if (strcmp(szi, "fire 1") == 0) {
+		}
+		else
+		{
+			if (strcmp(szi, "fire 1") == 0)
 				KEY(FBK_LSHIFT);
-			}
-			if (strcmp(szi, "fire 2") == 0) {
+			if (strcmp(szi, "fire 2") == 0)
 				KEY(FBK_Z);
-			}
-			if (strcmp(szi, "fire 3") == 0) {
+			if (strcmp(szi, "fire 3") == 0)
 				KEY(FBK_X);
-			}
-			if (strcmp(szi, "fire 4") == 0) {
+			if (strcmp(szi, "fire 4") == 0)
 				KEY(FBK_LCONTROL);
-			}
-			if (strcmp(szi, "fire 5") == 0) {
+			if (strcmp(szi, "fire 5") == 0)
 				KEY(FBK_LALT);
-			}
-			if (strcmp(szi, "fire 6") == 0) {
+			if (strcmp(szi, "fire 6") == 0)
 				KEY(FBK_SPACE);
-			}
 		}
 	}
 
 	// Map remaining buttons as usual
-	if (strcmp(szi, "start") == 0) {
+	if (strcmp(szi, "start") == 0)
 		KEY(FBK_1);
-	}
-	if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0) {
+	if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0)
 		KEY(FBK_3);
-	}
 
-	if (k0 && k1) {
+	if (k0 && k1)
 		SetSliderKey(pgi, k0, k1, nSlide);
-	}
 
-
-
-	return 1;												// Couldn't map input
+	return 1; // Couldn't map input
 }
 
 
@@ -694,163 +677,141 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 			k1 = FBK_NUMPAD2;
 		}
 
-		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0) {
+		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
 			KEY(FBK_NUMPAD8);
-		}
-		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0) {
+		if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0)
 			KEY(FBK_NUMPAD2);
-		}
-		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0) {
+		if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0)
 			KEY(FBK_NUMPAD4);
-		}
-		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0) {
+		if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0)
 			KEY(FBK_NUMPAD6);
-		}
 
-		if (nFireButtons == 4) {
-			if (strcmp(szi, "fire 1") == 0) {
+		if (nFireButtons == 4)
+		{
+			if (strcmp(szi, "fire 1") == 0)
 				KEY(FBK_C);
-			}
-			if (strcmp(szi, "fire 2") == 0) {
+			if (strcmp(szi, "fire 2") == 0)
 				KEY(FBK_LSHIFT);
-			}
-			if (strcmp(szi, "fire 3") == 0) {
+			if (strcmp(szi, "fire 3") == 0)
 				KEY(FBK_Z);
-			}
-			if (strcmp(szi, "fire 4") == 0) {
+			if (strcmp(szi, "fire 4") == 0)
 				KEY(FBK_X);
-			}
-		} else {
-			if (bStreetFighterLayout) {
+		}
+		else
+		{
+			if (bStreetFighterLayout)
+			{
 				// Street Fighter and other Capcom 6-button games
-				if (strcmp(szi, "fire 1") == 0) {
+				if (strcmp(szi, "fire 1") == 0)
 					KEY(FBK_LCONTROL);
-				}
-				if (strcmp(szi, "fire 2") == 0) {
+				if (strcmp(szi, "fire 2") == 0)
 					KEY(FBK_LALT);
-				}
-				if (strcmp(szi, "fire 3") == 0) {
+				if (strcmp(szi, "fire 3") == 0)
 					KEY(FBK_SPACE);
-				}
-				if (strcmp(szi, "fire 4") == 0) {
+				if (strcmp(szi, "fire 4") == 0)
 					KEY(FBK_LSHIFT);
-				}
-				if (strcmp(szi, "fire 5") == 0) {
+				if (strcmp(szi, "fire 5") == 0)
 					KEY(FBK_Z);
-				}
-				if (strcmp(szi, "fire 6") == 0) {
+				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_X);
-				}
 
 				// Map the 3x macros on X-Arcade
-				if ((nFlags & 0x10)) {
-					if (strcasecmp(szi, "3× Punch") == 0) {
+				if ((nFlags & 0x10))
+				{
+					if (strcasecmp(szi, "3× Punch") == 0)
 						MACRO(FBK_C);
-					}
-					if (strcasecmp(szi, "3× Kick") == 0) {
+					if (strcasecmp(szi, "3× Kick") == 0)
 						MACRO(FBK_5);
-					}
 				}
-			} else {
-				if (strcmp(szi, "fire 1") == 0) {
+			}
+			else
+			{
+				if (strcmp(szi, "fire 1") == 0)
 					KEY(FBK_LSHIFT);
-				}
-				if (strcmp(szi, "fire 2") == 0) {
+				if (strcmp(szi, "fire 2") == 0)
 					KEY(FBK_Z);
-				}
-				if (strcmp(szi, "fire 3") == 0) {
+				if (strcmp(szi, "fire 3") == 0)
 					KEY(FBK_X);
-				}
-				if (strcmp(szi, "fire 4") == 0) {
+				if (strcmp(szi, "fire 4") == 0)
 					KEY(FBK_LCONTROL);
-				}
-				if (strcmp(szi, "fire 5") == 0) {
+				if (strcmp(szi, "fire 5") == 0)
 					KEY(FBK_LALT);
-				}
-				if (strcmp(szi, "fire 6") == 0) {
+				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_SPACE);
-				}
 			}
 		}
 
 		// Map remaining buttons as usual
-		if (strcmp(szi, "start") == 0) {
+		if (strcmp(szi, "start") == 0)
 			KEY(FBK_1);
-		}
-		if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0) {
+		if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0)
 			KEY(FBK_3);
-		}
 
-		if (k0 && k1) {
+		if (k0 && k1)
 			SetSliderKey(pgi, k0, k1, nSlide);
-		}
 
 		return 0;
-
-	} else {
-		if ((nFlags & 1) == 1) {
+	}
+	else
+	{
+		if ((nFlags & 1) == 1)
+		{
 			// X-Arcade / Hanaho HotRod joystick right side
 
-			if (strcmp(szi, "x-axis") == 0) {
+			if (strcmp(szi, "x-axis") == 0)
+			{
 				k0 = FBK_D;
 				k1 = FBK_G;
 			}
-			if (strcmp(szi, "y-axis") == 0) {
+			if (strcmp(szi, "y-axis") == 0)
+			{
 				k0 = FBK_R;
 				k1 = FBK_F;
 			}
 
-			if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)	{
+			if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
 				KEY(FBK_R);
-			}
-			if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0) {
+			if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0)
 				KEY(FBK_F);
-			}
-			if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0) {
+			if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0)
 				KEY(FBK_D);
-			}
-			if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0) {
+			if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0)
 				KEY(FBK_G);
-			}
 
-			if (nFireButtons == 4) {
-				if (strcmp(szi, "fire 1") == 0) {
+			if (nFireButtons == 4)
+			{
+				if (strcmp(szi, "fire 1") == 0)
 					KEY(FBK_RBRACKET);
-				}
-				if (strcmp(szi, "fire 2") == 0) {
+				if (strcmp(szi, "fire 2") == 0)
 					KEY(FBK_W);
-				}
-				if (strcmp(szi, "fire 3") == 0) {
+				if (strcmp(szi, "fire 3") == 0)
 					KEY(FBK_E);
-				}
-				if (strcmp(szi, "fire 4") == 0) {
+				if (strcmp(szi, "fire 4") == 0)
 					KEY(FBK_LBRACKET);
-				}
-			} else {
-				if (bStreetFighterLayout) {
+			}
+			else
+			{
+				if (bStreetFighterLayout)
+				{
 					// Street Fighter and other Capcom 6-button games
-					if (strcmp(szi, "fire 1") == 0) {
+					if (strcmp(szi, "fire 1") == 0)
 						KEY(FBK_A);
-					}
-					if (strcmp(szi, "fire 2") == 0) {
+					if (strcmp(szi, "fire 2") == 0)
 						KEY(FBK_S);
-					}
-					if (strcmp(szi, "fire 3") == 0) {
+					if (strcmp(szi, "fire 3") == 0)
 						KEY(FBK_Q);
-					}
-					if (strcmp(szi, "fire 4") == 0) {
+					if (strcmp(szi, "fire 4") == 0)
 						KEY(FBK_W);
-					}
-					if (strcmp(szi, "fire 5") == 0) {
+					if (strcmp(szi, "fire 5") == 0)
 						KEY(FBK_E);
-					}
-					if (strcmp(szi, "fire 6") == 0) {
+					if (strcmp(szi, "fire 6") == 0)
 						KEY(FBK_LBRACKET);
-					}
 
 					// Map the 3x macros on X-Arcade
-					if ((nFlags & 0x10)) {
-						if (strcasecmp(szi, "3× Punch") == 0) {
+					if ((nFlags & 0x10))
+					{
+						if (strcasecmp(szi, "3× Punch") == 0)
+						{
 							MACRO(FBK_RBRACKET);
 						}
 						if (strcasecmp(szi, "3× Kick") == 0) {
@@ -858,44 +819,35 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 						}
 					}
 				} else {
-					if (strcmp(szi, "fire 1") == 0) {
+					if (strcmp(szi, "fire 1") == 0)
 						KEY(FBK_W);
-					}
-					if (strcmp(szi, "fire 2") == 0) {
+					if (strcmp(szi, "fire 2") == 0)
 						KEY(FBK_E);
-					}
-					if (strcmp(szi, "fire 3") == 0) {
+					if (strcmp(szi, "fire 3") == 0)
 						KEY(FBK_LBRACKET);
-					}
-					if (strcmp(szi, "fire 4") == 0) {
+					if (strcmp(szi, "fire 4") == 0)
 						KEY(FBK_A);
-					}
-					if (strcmp(szi, "fire 5") == 0) {
+					if (strcmp(szi, "fire 5") == 0)
 						KEY(FBK_S);
-					}
-					if (strcmp(szi, "fire 6") == 0) {
+					if (strcmp(szi, "fire 6") == 0)
 						KEY(FBK_Q);
-					}
 				}
 			}
 
 			// Map remaining buttons as usual
-			if (strcmp(szi, "start") == 0) {
+			if (strcmp(szi, "start") == 0)
 				KEY(FBK_2);
-			}
-			if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0) {
+			if (strcmp(szi, "coin") == 0 || strcmp(szi, "select") == 0)
 				KEY(FBK_4);
-			}
 
-			if (k0 && k1) {
+			if (k0 && k1)
 				SetSliderKey(pgi, k0, k1, nSlide);
-			}
 
 			return 0;
 		}
 	}
 
-	return 1;												// Couldn't map input
+	return 1; // Couldn't map input
 }
 
 #undef MACRO

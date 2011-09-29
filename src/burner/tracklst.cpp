@@ -64,11 +64,13 @@ TCHAR* getTrackDesc(int nSect, int nTrack, bool bIsSect)
 	char TrackTitle[180] = "";
 	char Notes[81] = "";
 
-	if (playlist[nSect][nTrack].desc[0]) {
+	if (playlist[nSect][nTrack].desc[0])
 		strcpy(TrackTitle, playlist[nSect][nTrack].desc);
-	}
-	if (!bIsSect) {
-		if (playlist[nSect][nTrack].notes[0]) {
+
+	if (!bIsSect)
+	{
+		if (playlist[nSect][nTrack].notes[0])
+		{
 			sprintf(Notes, " - %s", playlist[nSect][nTrack].notes);
 			strcat(TrackTitle, Notes);
 		}
@@ -82,12 +84,15 @@ static TCHAR* getTrackInfo(bool bIsSect)
 	static TCHAR TrackTitle[180] = _T("");
 	TCHAR* pTrackDesc = NULL;
 
-	if (bIsSect) {
+	if (bIsSect)
+	{
 		pTrackDesc = getTrackDesc(0, nCurrentSect - 1, bIsSect);
-		_stprintf(TrackTitle, _T("Sect%d: %s"), nCurrentSect, pTrackDesc);
-	} else {
+		sprintf(TrackTitle, _T("Sect%d: %s"), nCurrentSect, pTrackDesc);
+	}
+	else
+	{
 		pTrackDesc = getTrackDesc(nCurrentSect, nCurrentTrack, bIsSect);
-		_stprintf(TrackTitle, _T("%.4x: %s"), playlist[nCurrentSect][nCurrentTrack].code, pTrackDesc);
+		sprintf(TrackTitle, _T("%.4x: %s"), playlist[nCurrentSect][nCurrentTrack].code, pTrackDesc);
 	}
 
 	return TrackTitle;
@@ -111,12 +116,12 @@ static void sendPlaylistCode()
 
 void playNextTrack()
 {
-	if (bNoTrack || !bDrvOkay) return;
+	if (bNoTrack || !bDrvOkay)
+		return;
 
 	nCurrentTrack++;
-	if (nCurrentTrack >= nTrackCnt) {
+	if (nCurrentTrack >= nTrackCnt)
 		nCurrentTrack = 0;
-	}
 
 	sendPlaylistCode();
 	displayTrackInfo();
@@ -124,12 +129,12 @@ void playNextTrack()
 
 void playPreviousTrack()
 {
-	if (bNoTrack || !bDrvOkay) return;
+	if (bNoTrack || !bDrvOkay)
+		return;
 
 	nCurrentTrack--;
-	if (nCurrentTrack < 0) {
+	if (nCurrentTrack < 0)
 		nCurrentTrack = nTrackCnt - 1;
-	}
 
 	sendPlaylistCode();
 	displayTrackInfo();
@@ -137,14 +142,13 @@ void playPreviousTrack()
 
 void playCurrentTrack()
 {
-	if (bNoTrack || !bDrvOkay) return;
+	if (bNoTrack || !bDrvOkay)
+		return;
 
-	if (nCurrentTrack < 0) {
+	if (nCurrentTrack < 0)
 		nCurrentTrack = nTrackCnt - 1;
-	}
-	else if (nCurrentTrack >= nTrackCnt) {
+	else if (nCurrentTrack >= nTrackCnt)
 		nCurrentTrack = 0;
-	}
 
 	sendPlaylistCode();
 	displayTrackInfo();
@@ -153,12 +157,14 @@ void playCurrentTrack()
 // switch section if playlist has
 void selectNextSect()
 {
-	if (bNoTrack || bNoSect) return;
+	if (bNoTrack || bNoSect)
+		return;
 
 	nCurrentSect++;
-	if (nCurrentSect > nSectCnt) {
+
+	if (nCurrentSect > nSectCnt)
 		nCurrentSect = 1;
-	}
+
 	nCurrentTrack = 0;
 	nTrackCnt = playlist[0][nCurrentSect].code;
 

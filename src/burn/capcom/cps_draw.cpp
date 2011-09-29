@@ -216,7 +216,7 @@ static void DrawStar(int nLayer)
 			nStarXPos = (((nStar >> 8) << 5) - *((short*)(CpsSaveReg[0] + 0x18 + (nLayer << 2))) + (nStarColour & 0x1F) - 64) & 0x01FF;
 			nStarYPos = ((nStar & 0xFF) - *((short*)(CpsSaveReg[0] + 0x1A + (nLayer << 2))) - 16) & 0xFF;
 			if (nStarXPos < 384 && nStarYPos < 224) {
-				nStarColour = ((nStarColour & 0xE0) >> 1) + ((GetCurrentFrame() >> 4) & 0x0F);
+				nStarColour = ((nStarColour & 0xE0) >> 1) + ((nCurrentFrame >> 4) & 0x0F);
 				PutPix(pBurnDraw + (nBurnPitch * nStarYPos) + (nBurnBpp * nStarXPos), CpsPal[0x0800 + (nLayer << 9) + nStarColour]);
 			}
 		}
@@ -232,7 +232,7 @@ static void DrawStar(int nLayer)
 			nStarXPos = (((nStar >> 8) << 5) - *((short*)(CpsSaveReg[0] + 0x18 + (nLayer << 2))) + (nStarColour & 0x1F) - 64) & 0x01FF; \
 			nStarYPos = ((nStar & 0xFF) - *((short*)(CpsSaveReg[0] + 0x1A + (nLayer << 2))) - 16) & 0xFF; \
 			if (nStarXPos < 384 && nStarYPos < 224) { \
-				nStarColour = ((nStarColour & 0xE0) >> 1) + ((GetCurrentFrame() >> 4) & 0x0F); \
+				nStarColour = ((nStarColour & 0xE0) >> 1) + ((nCurrentFrame >> 4) & 0x0F); \
 				PutPix(pBurnDraw + (nBurnPitch * nStarYPos) + (nBurnBpp * nStarXPos), CpsPal[0x0800 + (nLayer << 9) + nStarColour]); \
 			} \
 		} \

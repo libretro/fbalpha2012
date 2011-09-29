@@ -100,9 +100,9 @@ void YM_DELTAT_BRDY_callback(YM_DELTAT *DELTAT)
 }
 #endif
 
-UINT8 YM_DELTAT_ADPCM_Read(YM_DELTAT *DELTAT)
+uint8_t YM_DELTAT_ADPCM_Read(YM_DELTAT *DELTAT)
 {
-	UINT8 v = 0;
+	uint8_t v = 0;
 
 	/* external memory read */
 	if ( (DELTAT->portstate & 0xe0)==0x20 )
@@ -152,7 +152,7 @@ UINT8 YM_DELTAT_ADPCM_Read(YM_DELTAT *DELTAT)
 
 
 /* 0-DRAM x1, 1-ROM, 2-DRAM x8, 3-ROM (3 is bad setting - not allowed by the manual) */
-static UINT8 dram_rightshift[4]={3,0,0,0};
+static uint8_t dram_rightshift[4]={3,0,0,0};
 
 /* DELTA-T ADPCM write register */
 void YM_DELTAT_ADPCM_Write(YM_DELTAT *DELTAT,int r,int v)
@@ -382,7 +382,7 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 	case 0x09:	/* DELTA-N L (ADPCM Playback Prescaler) */
 	case 0x0a:	/* DELTA-N H */
 		DELTAT->delta  = (DELTAT->reg[0xa]*0x0100 | DELTAT->reg[0x9]);
-		DELTAT->step     = (UINT32)( (double)(DELTAT->delta /* *(1<<(YM_DELTAT_SHIFT-16)) */ ) * (DELTAT->freqbase) );
+		DELTAT->step     = (uint32_t)( (double)(DELTAT->delta /* *(1<<(YM_DELTAT_SHIFT-16)) */ ) * (DELTAT->freqbase) );
 		/*logerror("DELTAT deltan:09=%2x 0a=%2x\n",DELTAT->reg[0x9], DELTAT->reg[0xa]);*/
 		break;
 	case 0x0b:	/* Output level control (volume, linear) */
@@ -424,7 +424,7 @@ void YM_DELTAT_ADPCM_Reset(YM_DELTAT *DELTAT,int pan,int emulation_mode)
 	DELTAT->prev_acc  = 0;
 	DELTAT->adpcmd    = 127;
 	DELTAT->adpcml    = 0;
-	DELTAT->emulation_mode = (UINT8)emulation_mode;
+	DELTAT->emulation_mode = (uint8_t)emulation_mode;
 	DELTAT->portstate = (emulation_mode == YM_DELTAT_EMULATION_MODE_YM2610) ? 0x20 : 0;
 	DELTAT->control2  = (emulation_mode == YM_DELTAT_EMULATION_MODE_YM2610) ? 0x01 : 0;	/* default setting depends on the emulation mode. MSX demo called "facdemo_4" doesn't setup control2 register at all and still works */
 	DELTAT->DRAMportshift = dram_rightshift[DELTAT->control2 & 3];
@@ -438,7 +438,7 @@ void YM_DELTAT_ADPCM_Reset(YM_DELTAT *DELTAT,int pan,int emulation_mode)
 			(DELTAT->status_set_handler)(DELTAT->status_change_which_chip, DELTAT->status_change_BRDY_bit);
 }
 
-void YM_DELTAT_postload(YM_DELTAT *DELTAT,UINT8 *regs)
+void YM_DELTAT_postload(YM_DELTAT *DELTAT, uint8_t *regs)
 {
 	int r;
 
@@ -476,7 +476,7 @@ void YM_DELTAT_savestate(const char *statename,int num,YM_DELTAT *DELTAT)
 
 INLINE void YM_DELTAT_synthesis_from_external_memory(YM_DELTAT *DELTAT)
 {
-	UINT32 step;
+	uint32_t step;
 	int data;
 
 	DELTAT->now_step += DELTAT->step;
@@ -558,7 +558,7 @@ INLINE void YM_DELTAT_synthesis_from_external_memory(YM_DELTAT *DELTAT)
 
 INLINE void YM_DELTAT_synthesis_from_CPU_memory(YM_DELTAT *DELTAT)
 {
-	UINT32 step;
+	uint32_t step;
 	int data;
 
 	DELTAT->now_step += DELTAT->step;

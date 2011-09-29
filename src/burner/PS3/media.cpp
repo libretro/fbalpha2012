@@ -6,7 +6,7 @@
 static int nBaseFps;
 
 // Media init / exit
-int mediaInit()
+int mediaInit(void)
 {
 	if (!bInputOkay)
 		InputInit();					// Init Input
@@ -39,7 +39,7 @@ int mediaInit()
 		VidInit(); // Reinit the video plugin
 
 		if (bVidOkay && ((bRunPause && bAltPause) || !bDrvOkay))
-			VidRedraw();
+			VidFrame();
 	}
 
 	return 0;

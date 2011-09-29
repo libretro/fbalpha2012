@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-
  
 #include "burn.h"
 #undef LSB_FIRST
@@ -82,10 +80,8 @@ asm("stwbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
 						(((i) & 0x000000FF) << 24) )
 #endif
 
-#if defined (_XBOX)
-#define swapLongLong(i) _byteswap_uint64(i) // swap intrinsics are faster on Xbox 360
-#else
 #define swapLongLong(x) _byteswap_uint64(x)
+#ifndef _XBOX
 static inline uint64_t _byteswap_uint64(uint64_t x)
 {
     union { 
@@ -104,13 +100,13 @@ static inline uint64_t _byteswap_uint64(uint64_t x)
 
 typedef union {
 #ifdef LSB_FIRST
-  struct { UINT8 l,h,h2,h3; } b;
-  struct { UINT16 l,h; } w;
+  struct { uint8_t l,h,h2,h3; } b;
+  struct { uint16_t l,h; } w;
 #else
-  struct { UINT8 h3,h2,h,l; } b;
-  struct { UINT16 h,l; } w;
+  struct { uint8_t h3,h2,h,l; } b;
+  struct { uint16_t h,l; } w;
 #endif
-  UINT32 d;
+  uint32_t d;
 }  PAIR;
 
 // sek.cpp
@@ -122,10 +118,11 @@ typedef union {
 // ------------------------------------------------------------------
 // Driver information
 
-struct BurnDriver {
-	const char * szShortName;			// The filename of the zip file (without extension)
-	const char* szParent;				// The filename of the parent (without extension, NULL if not applicable)
-	const char* szBoardROM;			// The filename of the board ROMs (without extension, NULL if not applicable)
+struct BurnDriver
+{
+	const char * szShortName;	// The filename of the zip file (without extension)
+	const char* szParent;		// The filename of the parent (without extension, NULL if not applicable)
+	const char* szBoardROM;		// The filename of the board ROMs (without extension, NULL if not applicable)
 	const char* szDate;
 
 	// szFullNameA, szCommentA, szManufacturerA and szSystemA should always contain valid info
@@ -139,17 +136,17 @@ struct BurnDriver {
 	wchar_t* szManufacturerW;
 	wchar_t* szSystemW;
 
-	int flags;			// See burn.h
-	int players;		// Max number of players a game supports (so we can remove single player games from netplay)
-	int hardware;		// Which type of hardware the game runs on
-	int (*GetZipName)(char** pszName, unsigned int i);				// Function to get possible zip names
-	int (*GetRomInfo)(struct BurnRomInfo* pri,unsigned int i);		// Function to get the length and crc of each rom
+	int flags;	// See burn.h
+	int players;	// Max number of players a game supports (so we can remove single player games from netplay)
+	int hardware;	// Which type of hardware the game runs on
+	int (*GetZipName)(char** pszName, unsigned int i);		// Function to get possible zip names
+	int (*GetRomInfo)(struct BurnRomInfo* pri,unsigned int i);	// Function to get the length and crc of each rom
 	int (*GetRomName)(char** pszName, unsigned int i, int nAka);	// Function to get the possible names for each rom
 	int (*GetInputInfo)(struct BurnInputInfo* pii, unsigned int i);	// Function to get the input info for the game
-	int (*GetDIPInfo)(struct BurnDIPInfo* pdi, unsigned int i);		// Function to get the input info for the game
+	int (*GetDIPInfo)(struct BurnDIPInfo* pdi, unsigned int i);	// Function to get the input info for the game
 	int (*Init)(); int (*Exit)(); int (*Frame)(); int (*Redraw)(); int (*AreaScan)(int nAction, int* pnMin);
-	unsigned char* pRecalcPal;										// Set to 1 if the palette needs to be fully re-calculated
-	int nWidth, nHeight; int nXAspect, nYAspect;					// Screen width, height, x/y aspect
+	unsigned char* pRecalcPal;				// Set to 1 if the palette needs to be fully re-calculated
+	int nWidth, nHeight; int nXAspect, nYAspect;		// Screen width, height, x/y aspect
 };
 
 #define BurnDriverD BurnDriver		// Debug status
@@ -164,12 +161,12 @@ struct BurnDriver {
 int BurnSetRefreshRate(double dRefreshRate);
 
 // Byteswaps an area of memory
-static inline uint32_t BurnByteswap(UINT8* pMem, int nLen)
+static inline uint32_t BurnByteswap(uint8_t* pMem, int nLen)
 {
 	nLen >>= 1;
 	for (int32_t i = 0; i < nLen; i++, pMem += 2)
 	{
-		UINT8 t = pMem[0];
+		uint8_t t = pMem[0];
 		pMem[0] = pMem[1];
 		pMem[1] = t;
 	}
@@ -182,9 +179,9 @@ static inline uint32_t BurnByteswap(UINT8* pMem, int nLen)
 int BurnClearScreen();
 
 // load.cpp
-int BurnLoadRom(UINT8* Dest,int i, int nGap);
-int BurnXorRom(UINT8* Dest,int i, int nGap);
-int BurnLoadBitField(UINT8* pDest, UINT8* pSrc, int nField, int nSrcLen);
+int BurnLoadRom(uint8_t* Dest,int i, int nGap);
+int BurnXorRom(uint8_t* Dest,int i, int nGap);
+int BurnLoadBitField(uint8_t* pDest, uint8_t* pSrc, int nField, int nSrcLen);
 
 // ------------------------------------------------------------------
 // Colour-depth independant image transfer
@@ -199,20 +196,20 @@ int BurnTransferInit();
 // ------------------------------------------------------------------
 // Plotting pixels
 
-static inline void PutPix(UINT8* pPix, UINT32 c)
+static inline void PutPix(uint8_t* pPix, uint32_t c)
 {
    #ifndef __CELLOS_LV2__
 	if (nBurnBpp >= 4) {
    #endif
-		*((UINT32*)pPix) = c;
+		*((uint32_t*)pPix) = c;
    #ifndef __CELLOS_LV2__
 	} else {
 		if (nBurnBpp == 2) {
-			*((UINT16*)pPix) = (UINT16)c;
+			*((uint16_t*)pPix) = (uint16_t)c;
 		} else {
-			pPix[0] = (UINT8)(c >>  0);
-			pPix[1] = (UINT8)(c >>  8);
-			pPix[2] = (UINT8)(c >> 16);
+			pPix[0] = (uint8_t)(c >>  0);
+			pPix[1] = (uint8_t)(c >>  8);
+			pPix[2] = (uint8_t)(c >> 16);
 		}
 	}
    #endif

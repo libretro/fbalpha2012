@@ -36,9 +36,8 @@ static inline bool checkButtonState(const int& player, const int& fire)
 {
 #if 1
 	if (player < P_1 || player > P_4
-		|| fire < F_1 || fire > F_6) {
+		|| fire < F_1 || fire > F_6)
 		return false;
-	}
 
 	static struct GameInp* gi = GameInp;
 	static unsigned short val = 0;
@@ -52,9 +51,8 @@ static inline bool checkButtonState(const int& player, const int& fire)
 				val = *gi->Input.pVal;
 			}
 
-			if (val == 1) {
+			if (val == 1)
 				return false;
-			}
 		}
 	}
 #endif
@@ -182,11 +180,10 @@ int setAutofire(const int& player, const int& fire, bool state)
 #if 0
 	// add message
 	TCHAR msg[64] = _T("");
-	if (autofireOn[player][fire]) {
-		_stprintf(msg, FBALoadStringEx(IDS_AUTOFIRE_ON), player + 1, fire + 1);
-	} else {
-		_stprintf(msg, FBALoadStringEx(IDS_AUTOFIRE_OFF), player + 1, fire + 1);
-	}
+	if (autofireOn[player][fire])
+		sprintf(msg, FBALoadStringEx(IDS_AUTOFIRE_ON), player + 1, fire + 1);
+	else
+		sprintf(msg, FBALoadStringEx(IDS_AUTOFIRE_OFF), player + 1, fire + 1);
 	VidSNewShortMsg(msg);
 #endif
 	return 0;

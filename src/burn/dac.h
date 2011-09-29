@@ -2,8 +2,8 @@
 #define _DAC_H_
 
 void DACUpdate(short* Buffer, int Length);
-void DACWrite(UINT8 Data);
-void DACSignedWrite(UINT8 Data);
+void DACWrite(uint8_t Data);
+void DACSignedWrite(uint8_t Data);
 void DACInit(int Clock, int bAdd);
 void DACSetVolShift(int nShift);
 void DACReset();

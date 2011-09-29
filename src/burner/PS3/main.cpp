@@ -153,7 +153,7 @@ int  main(int argc, char **argv)
 	exit(0);
 }
 
-int ProgressUpdateBurner(double dProgress, const TCHAR* pszText, bool bAbs)
+int ProgressUpdateBurner(double dProgress, const char * pszText, bool bAbs)
 { 	 
 #ifdef CELL_DEBUG_MEMORY
 	 sys_memory_info_t mem_info;

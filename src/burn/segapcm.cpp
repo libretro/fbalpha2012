@@ -4,9 +4,9 @@
 
 struct segapcm
 {
-	UINT8  *ram;
-	UINT8 low[16];
-	const UINT8 *rom;
+	uint8_t  *ram;
+	uint8_t low[16];
+	const uint8_t *rom;
 	int bankshift;
 	int bankmask;
 	int UpdateStep;
@@ -19,27 +19,31 @@ static int *Right = NULL;
 void SegaPCMUpdate(short* pSoundBuf, int nLength)
 {
 	int Channel;
-	
+
 	memset(Left, 0, nLength * sizeof(int));
 	memset(Right, 0, nLength * sizeof(int));
 
-	for (Channel = 0; Channel < 16; Channel++) {
-		if (!(Chip->ram[0x86 + (8 * Channel)] & 1)) {
-			UINT8 *Base = Chip->ram + (8 * Channel);
-			UINT8 Flags = Base[0x86];
-			const UINT8 *Rom = Chip->rom + ((Flags & Chip->bankmask) << Chip->bankshift);
-			UINT32 Addr = (Base[5] << 16) | (Base[4] << 8) | Chip->low[Channel];
-			UINT16 Loop = (Base[0x85] << 8) | Base[0x84];
-			UINT8 End = Base[6] + 1;
-			UINT8 Delta = Base[7];
-			UINT8 VolL = Base[2];
-			UINT8 VolR = Base[3];
+	for (Channel = 0; Channel < 16; Channel++)
+	{
+		if (!(Chip->ram[0x86 + (8 * Channel)] & 1))
+		{
+			uint8_t *Base = Chip->ram + (8 * Channel);
+			uint8_t Flags = Base[0x86];
+			const uint8_t *Rom = Chip->rom + ((Flags & Chip->bankmask) << Chip->bankshift);
+			uint32_t Addr = (Base[5] << 16) | (Base[4] << 8) | Chip->low[Channel];
+			uint16_t Loop = (Base[0x85] << 8) | Base[0x84];
+			uint8_t End = Base[6] + 1;
+			uint8_t Delta = Base[7];
+			uint8_t VolL = Base[2];
+			uint8_t VolR = Base[3];
 			int i;
-			
-			for (i = 0; i < nLength; i++) {
-				INT8 v = 0;
 
-				if ((Addr >> 16) == End) {
+			for (i = 0; i < nLength; i++)
+			{
+				int8_t v = 0;
+
+				if ((Addr >> 16) == End)
+				{
 					if (!(Flags & 2))
 						Addr = Loop << 8;
 					else
@@ -50,7 +54,7 @@ void SegaPCMUpdate(short* pSoundBuf, int nLength)
 				}
 
 				v = Rom[Addr >> 8] - 0x80;
-				
+
 				Left[i] += v * VolL;
 				Right[i] += v * VolR;
 				Addr += (Delta * Chip->UpdateStep) >> 16;
@@ -62,21 +66,26 @@ void SegaPCMUpdate(short* pSoundBuf, int nLength)
 			Chip->low[Channel] = Flags & 1 ? 0 : Addr;
 		}
 	}
-	
-	for (int i = 0; i < nLength; i++) {
-		if (Left[i] > 32767) Left[i] = 32767;
-		if (Left[i] < -32768) Left[i] = -32768;
-		
-		if (Right[i] > 32767) Right[i] = 32767;
-		if (Right[i] < -32768) Right[i] = -32768;
-		
+
+	for (int i = 0; i < nLength; i++)
+	{
+		if (Left[i] > 32767)
+			Left[i] = 32767;
+		if (Left[i] < -32768)
+			Left[i] = -32768;
+
+		if (Right[i] > 32767)
+			Right[i] = 32767;
+		if (Right[i] < -32768)
+			Right[i] = -32768;
+
 		pSoundBuf[0] += Left[i];
 		pSoundBuf[1] += Right[i];
 		pSoundBuf += 2;
 	}
 }
 
-void SegaPCMInit(int clock, int bank, UINT8 *pPCMData, int PCMDataSize)
+void SegaPCMInit(int clock, int bank, uint8_t *pPCMData, int PCMDataSize)
 {
 	int Mask, RomMask;
 	
@@ -85,7 +94,7 @@ void SegaPCMInit(int clock, int bank, UINT8 *pPCMData, int PCMDataSize)
 
 	Chip->rom = pPCMData;
 	
-	Chip->ram = (UINT8*)malloc(0x800);
+	Chip->ram = (uint8_t*)malloc(0x800);
 	memset(Chip->ram, 0xff, 0x800);
 	
 	Left = (int*)malloc(nBurnSoundLen * sizeof(int));
@@ -121,22 +130,20 @@ int SegaPCMScan(int nAction,int *pnMin)
 {
 	struct BurnArea ba;
 	char szName[16];
-	
-	if ((nAction & ACB_DRIVER_DATA) == 0) {
+
+	if ((nAction & ACB_DRIVER_DATA) == 0)
 		return 1;
-	}
-	
-	if (pnMin != NULL) {
+
+	if (pnMin != NULL)
 		*pnMin = 0x029680;
-	}
-	
+
 	sprintf(szName, "SegaPCM");
 	ba.Data		= &Chip;
 	ba.nLen		= sizeof(struct segapcm);
 	ba.nAddress = 0;
 	ba.szName	= szName;
 	BurnAcb(&ba);
-	
+
 	return 0;
 }
 

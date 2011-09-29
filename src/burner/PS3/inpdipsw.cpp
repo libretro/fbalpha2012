@@ -2,9 +2,6 @@
 // Burner DipSwitches Dialog module
 #include "burner.h"
 
-HWND hInpDIPSWDlg = NULL; // Handle to the DIPSW Dialog
-static HWND hInpDIPSWList = NULL;
-
 static unsigned char nPrevDIPSettings[4];
 static unsigned int nDIPGroup;
 static int nDIPOffset;

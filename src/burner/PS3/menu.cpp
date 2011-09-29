@@ -66,8 +66,6 @@ extern bool DoReset;
 extern bool CheckSetting(int i);
 extern char msg[1024];
 
-static HWND hInpDIPSWList = NULL;
-
 unsigned int nPrevGame = ~0U;
 static unsigned char nPrevDIPSettings[4];
 static unsigned int nDIPGroup;
@@ -317,8 +315,6 @@ static int InpDIPSWInit()
 
 static int InpDIPSWExit()
 {
-	hInpDIPSWList = NULL;
-	 
 	if (!bAltPause && bRunPause)
 		bRunPause = 0;
 
@@ -483,7 +479,7 @@ void LoadInputs()
 			bii.szName = "";
 
 
-		TCHAR* pszVal = InpToDesc(pgi);
+		char* pszVal = InpToDesc(pgi);
 
 		m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
 
@@ -495,7 +491,7 @@ void LoadInputs()
 	{
 		if (pgi->nInput & GIT_GROUP_MACRO)
 		{
-			TCHAR* pszVal = InpMacroToDesc(pgi);
+			char* pszVal = InpMacroToDesc(pgi);
 			m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
 		}
 
@@ -1124,7 +1120,7 @@ void ConfigFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
 				bVidVSync = !bVidVSync;
-				setVSync(bVidVSync);
+				psglSetVSync(bVidVSync);
 			}
 			break;
 		case SETTING_HIDE_CLONES:
@@ -1288,7 +1284,7 @@ void DipFrameMove()
 
 					int nCurrentSetting = 0;
 					for (int i = 0, j = 0; i < bdiGroup.nSetting; i++) {
-						TCHAR szText[MAX_PATH];
+						char szText[MAX_PATH];
 						BurnDIPInfo bdi;
 
 						do {

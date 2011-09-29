@@ -334,6 +334,78 @@ static void BArchiveListFree()
 	nListCount = 0;
 }
 
+static inline int findRomByName(const char* name, ArcEntry* list, int count)
+{
+	if (!name || !list)
+		return -1;
+
+	// Find the rom named name in the List
+	int i = 0;
+	do
+	{
+		if (list->szName && !strcasecmp(name, getFilenameA(list->szName)))
+			return i;
+		i++;
+		list++;
+	}while(i < count);
+	return -1; // couldn't find the rom
+}
+
+static inline int findRomByCrc(unsigned int crc, ArcEntry* list, int count)
+{
+	if (!list)
+		return -1;
+
+	// Find the rom named name in the List
+	int i = 0;
+	do
+	{
+		if (crc == list->nCrc)
+			return i;
+		i++;
+		list++;
+	}while(i < count);
+
+	return -1; // couldn't find the rom
+}
+
+// Find rom number i from the pBzipDriver game
+int findRom(int i, ArcEntry* list, int count)
+{
+	BurnRomInfo ri;
+	memset(&ri, 0, sizeof(ri));
+
+	int nRet = BurnDrvGetRomInfo(&ri, i);
+	if (nRet != 0) // Failure: no such rom
+		return -2;
+
+	if (ri.nCrc)   // Search by crc first
+	{
+		nRet = findRomByCrc(ri.nCrc, list, count);
+		if (nRet >= 0)
+			return nRet;
+	}
+
+	int nAka = 0;
+	do
+	{	// Failing that, search for possible names
+		char* szPossibleName = NULL;
+		nRet = BurnDrvGetRomName(&szPossibleName, i, nAka);
+
+		if (nRet) // No more rom names
+			break;
+
+		nRet = findRomByName(szPossibleName, list, count);
+
+		if (nRet >= 0)
+			return nRet;
+
+		nAka++;
+	}while(nAka < 0x10000);
+
+	return -1; // Couldn't find the rom
+}
+
 int BArchiveOpen(bool bootApp)
 {
 	if (szBArchiveName == NULL)

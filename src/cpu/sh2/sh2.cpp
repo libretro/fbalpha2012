@@ -245,7 +245,7 @@ int Sh2MapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd,
 	return 0;
 }
 
-int Sh2MapHandler(unsigned int nHandler, unsigned int nStart, unsigned int nEnd, int nType)
+int Sh2MapHandler(uintptr_t nHandler, uintptr_t nStart, uintptr_t nEnd, int nType)
 {
 	unsigned char** pMemMap = pSh2Ext->MemMap + (nStart >> SH2_SHIFT);
 	int need_mirror = (nStart < 0x08000000) ? 1 : 0;

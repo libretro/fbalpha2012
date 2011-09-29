@@ -2610,7 +2610,7 @@ struct BurnDriver BurnDrvKabukiz = {
 	"kabukiz", NULL, NULL, "1988",
 	"Kabuki-Z (World)\0", "Bad Graphics & Sound", "Taito Corporation Japan", "Miscellaneous",
 	NULL, NULL, NULL, NULL,
-	NULL, 2, HARDWARE_MISC_MISC,
+	0, 2, HARDWARE_MISC_MISC,
 	NULL, kabukizRomInfo, kabukizRomName, CommonInputInfo, KabukizDIPInfo,
 	Type2Init, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc,
 	256, 224, 4, 3

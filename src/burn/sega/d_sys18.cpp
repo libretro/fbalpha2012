@@ -2483,7 +2483,7 @@ struct BurnDriver BurnDrvBloxeed = {
 	"bloxeed", NULL, NULL, "1990",
 	"Bloxeed (Japan, FD1094 317-0139)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
-	NULL, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC,
+	0, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC,
 	NULL, BloxeedRomInfo, BloxeedRomName, System18InputInfo, NULL,
 	System16Init, System18Exit, System18Frame, NULL, System18Scan,
 	NULL, 320, 224, 4, 3

@@ -2121,7 +2121,7 @@ struct BurnDriver BurnDrvBaddudes = {
 	"baddudes", NULL, NULL, "1988",
 	"Bad Dudes vs. Dragonninja (US)\0", NULL, "Data East USA", "DEC0",
 	NULL, NULL, NULL, NULL,
-	NULL, 2, HARDWARE_MISC_MISC,
+	0, 2, HARDWARE_MISC_MISC,
 	NULL, BaddudesRomInfo, BaddudesRomName, Dec0InputInfo, BaddudesDIPInfo,
 	BaddudesInit, DrvExit, DrvFrame, NULL, DrvScan,
 	NULL, 256, 240, 4, 3

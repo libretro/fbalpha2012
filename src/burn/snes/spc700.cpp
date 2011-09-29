@@ -9,7 +9,7 @@ double spccycles;
 double spctotal2;
 double spctotal3;
 
-struct
+struct spc_t
 {
 	union
 	{

@@ -679,7 +679,7 @@ struct BurnDriver BurnDrvNaname = {
 	"naname", NULL, NULL, "1994",
 	"Naname de Magic! (Japan)\0", "Preliminary Driver", "Atlus", "Miscellaneous",
 	NULL, NULL, NULL, NULL,
-	NULL, 2, HARDWARE_MISC_MISC,
+	0, 2, HARDWARE_MISC_MISC,
 	NULL, NanameRomInfo, NanameRomName, OhmygodInputInfo, NanameDIPInfo,
 	OhmygodInit, OhmygodExit, OhmygodFrame, NULL, OhmygodScan,
 	NULL, 320, 240, 4, 3

@@ -178,7 +178,7 @@ static inline int SekCurrentScanline()
 
 // Map areas of memory
 int SekMapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd, int nType);
-int SekMapHandler(unsigned int nHandler, unsigned int nStart, unsigned int nEnd, int nType);
+int SekMapHandler(uintptr_t nHandler, uintptr_t nStart, uintptr_t nEnd, int nType);
 
 // Set handlers
 int SekSetReadByteHandler(int i, pSekReadByteHandler pHandler);

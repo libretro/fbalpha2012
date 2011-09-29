@@ -2433,7 +2433,7 @@ struct BurnDriver BurnDrvRascot2 = {
 	"rascot2", NULL, NULL, "19??",
 	"Royal Ascot 2\0", NULL, "????", "X-Board",
 	NULL, NULL, NULL, NULL,
-	NULL, 2, HARDWARE_SEGA_SYSTEMX | HARDWARE_SEGA_SPRITE_LOAD32,
+	0, 2, HARDWARE_SEGA_SYSTEMX | HARDWARE_SEGA_SPRITE_LOAD32,
 	NULL, Rascot2RomInfo, Rascot2RomName, Aburner2InputInfo, Aburner2DIPInfo,
 	Aburner2Init, XBoardExit, XBoardFrame, NULL, XBoardScan,
 	NULL, 320, 224, 4, 3

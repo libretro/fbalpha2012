@@ -120,10 +120,10 @@ static int BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 			sprintf (szText + strlen(szText), " %s", "graphics ");
 		if (ri.nType & BRF_SND)
 			sprintf (szText + strlen(szText), " %s", "sound ");
-		sprintf(szText + strlen(szText), "(%hs)...", pszRomName);
+		sprintf(szText + strlen(szText), "(%s)...", pszRomName);
 	}
 	else
-		sprintf(szText + strlen(szText), " %hs...", pszRomName);
+		sprintf(szText + strlen(szText), " %s...", pszRomName);
 
 	//ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
 
@@ -432,7 +432,7 @@ int BArchiveOpen(bool bootApp)
 			if (RomFind[i].nState == STAT_OK)
 				continue;				// Already found this and it's okay
 
-			//nFind = findRom(i, List, nListCount);
+			nFind = findRom(i, List, nListCount);
 			if (nFind < 0)					// Couldn't find this rom at all
 				continue;
 

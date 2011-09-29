@@ -27,7 +27,7 @@ static snes_input_state_t input_cb = NULL;
 //global (static) variables for FBA
 static int nAudSampleRate = 48000;
 static int nAudSegCount = 6;
-static int nAudSegLen = 0;
+static int nAudSegLen = AUDIO_SEGMENT_LENGTH;
 int bDrvOkay = 0;
 static bool bInputOkay = false;
 static bool bAudOkay = false;

@@ -21,6 +21,7 @@ int StatedLoad(int nSlot)
 	int nRet;
 	int bOldPause;
 
+	//FIXME: Fix hardcoded path here
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
 
 	bOldPause = bRunPause;
@@ -40,6 +41,7 @@ int StatedSave(int nSlot)
 	int nRet;
 	int bOldPause;
 
+	//FIXME: Fix hardcoded path here
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
 
 	bOldPause = bRunPause;

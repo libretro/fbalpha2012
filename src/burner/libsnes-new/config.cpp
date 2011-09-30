@@ -183,8 +183,8 @@ int configAppLoadXml()
 		getAttr(child, "pcm-interp", &nInterpolation);
 		getAttr(child, "fm-interp", &nFMInterpolation);
 	}
-	//FIXME: Audio hardcoded to 48010 here for PS3
-	nAudSampleRate = 48010;
+	//FIXME: Audio hardcoded to 48010 here for PS3 - changed to 32000 for libsnes
+	nAudSampleRate = 32000;
 
 	// gui
 	element = findElement(root, "gui");
@@ -361,8 +361,8 @@ int configAppSaveXml()
 
 	ticpp::Element audio_set("setting");
 	audio.LinkEndChild(&audio_set);
-	//FIXME: Audio sample rate hardcoded to 48010 here for PS3
-	setAttr(audio_set, "rate", 48010);
+	//FIXME: Audio sample rate hardcoded to 48010 here for PS3- changed it to 32000 for libsnes
+	setAttr(audio_set, "rate", 32000);
 	//setAttr(audio_set, "rate", nAudSampleRate);
 	setAttr(audio_set, "frame", nAudSegCount);
 	setAttr(audio_set, "pcm-interp", nInterpolation);

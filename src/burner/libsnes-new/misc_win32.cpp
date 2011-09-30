@@ -3,6 +3,15 @@
 
 void setWindowAspect(bool first_boot)
 {
+	//FIXME: Hack this for now - below stuff was for 
+	//PS3 - included as reference
+	nVidScrnAspectX = 4;
+	nVidScrnAspectY = 3;
+	bVidCorrectAspect = 1;
+	bVidFullStretch = 0;
+	custom_aspect_ratio_mode = 0;
+
+#if 0
 	if(first_boot)
 	{
 		nVidOriginalScrnAspectX = nVidScrnAspectX;
@@ -154,8 +163,10 @@ void setWindowAspect(bool first_boot)
 	}
 
 	vidScrnAspect = (float)nVidScrnAspectX / (float)nVidScrnAspectY;
+#endif
 }
 
+//FIXME: Dehardcode all these paths
 void createNeedDir()
 {
 	cellFsMkdir("/dev_hdd0/game/FBAN00000/USRDIR/roms", CELL_FS_DEFAULT_CREATE_MODE_1);

@@ -6,17 +6,8 @@
 #endif
 
 #include <string.h>
-#include <sys/timer.h>
-#include <sys/return_code.h>
-#include <sys/process.h>
-#include <sys/vm.h>
-#include <cell/audio.h>
-#include <cell/sysmodule.h>
-#include <cell/cell_fs.h>
-#include <cell/pad.h>
 #include <stddef.h>
 #include <math.h>
-#include <sysutil/sysutil_sysparam.h>
  
 // ---------------------------------------------------------------------------
 // use STL
@@ -37,32 +28,9 @@ using std::vector;
 using std::multimap;
 using std::ofstream;
  
-enum
-{
-   ASPECT_RATIO_4_3,
-   ASPECT_RATIO_5_4,
-   ASPECT_RATIO_7_5,
-   ASPECT_RATIO_8_7,
-   ASPECT_RATIO_10_7,
-   ASPECT_RATIO_11_8,
-   ASPECT_RATIO_12_7,
-   ASPECT_RATIO_16_9,
-   ASPECT_RATIO_16_10,
-   ASPECT_RATIO_16_15,
-   ASPECT_RATIO_19_14,
-   ASPECT_RATIO_1_1,
-   ASPECT_RATIO_2_1,
-   ASPECT_RATIO_3_2,
-   ASPECT_RATIO_3_4,
-   ASPECT_RATIO_CUSTOM,
-   ASPECT_RATIO_AUTO,
-   ASPECT_RATIO_AUTO_FBA
-};
-
-#define LAST_ASPECT_RATIO ASPECT_RATIO_AUTO_FBA
-
 extern int custom_aspect_ratio_mode;
 
+//FIXME: Fix Dehardcode path here or don't use it at all
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
 
 typedef std::basic_string<char> tstring;

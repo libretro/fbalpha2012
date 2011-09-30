@@ -1,8 +1,7 @@
 // Audio Output
 
-#include <cell/audio.h>
-#include <cell/sysmodule.h>
-#include "cellframework2/audio/stream.h"
+//FIXME: Remove all Cellframework2 audioport stuff here
+
 #include "audio_driver.h"
 #include "burner.h"
 

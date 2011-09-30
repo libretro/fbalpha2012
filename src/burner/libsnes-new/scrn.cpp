@@ -13,7 +13,7 @@
 #include "burner.h"
 #include "cheat.h"
 #include "cartridge.h"
-#include "../../interface/PS3/audio_driver.h"
+#include "../../interface/libsnes-new/audio_driver.h"
  
 int bAutoPause = 0;
 int nSavestateSlot = 1;

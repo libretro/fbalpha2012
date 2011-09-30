@@ -1,4 +1,5 @@
 // OpenGL video output, added by regret
+//FIXME: All PSGL code needs to be changed
 // TODO: osd
 #ifndef NO_OPENGL
 

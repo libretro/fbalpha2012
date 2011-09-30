@@ -1,6 +1,7 @@
 // custom misc paths, by regret
 #include "burner.h"
  
+//FIXME: Change hardcoded paths here
 char szMiscPaths[PATH_SUM][MAX_PATH] = {
 	"/dev_hdd0/game/FBAN00000/USRDIR/previews/",
 	"/dev_hdd0/game/FBAN00000/USRDIR/cheats/",
@@ -18,6 +19,7 @@ char szMiscPaths[PATH_SUM][MAX_PATH] = {
 	"/dev_hdd0/game/FBAN00000/USRDIR/icons/",
 };
 
+//FIXME: Change hardcoded paths here
 char szAppRomPaths[DIRS_MAX][MAX_PATH] = {
 { "/dev_hdd0/game/FBAN00000/USRDIR/roms/" }
 };

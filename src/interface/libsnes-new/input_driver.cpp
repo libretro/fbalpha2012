@@ -1,9 +1,8 @@
 // Burner Input module
-#include <cell/pad.h>
+// FIXME: Remove all Cellframework2 input stuff here
 #include <sys/cdefs.h>
 
 #include "burner.h"
-#include "cellframework2/input/pad_input.h"
 #include "input_driver.h"
 #include "menu.h"
 #include "audio_driver.h"
@@ -28,6 +27,7 @@ int InputExit()
 	return bInputOkay;
 }
 
+//FIXME: Cellframework2 input stuff needs to be changed
 static int CellinpState(int nCode)
 {
 	uint32_t numPadsConnected = 0;
@@ -44,21 +44,13 @@ static int CellinpState(int nCode)
 
 		if (nCode == FBK_F3)
 		{
+			audio_stop();
+			is_running = 0;
 			DoReset = false;
 			return 1;
 		}
 
 	}
-
-	if (pausemenu_condition)
-	{
-		//setPauseMode(1);
-		audio_stop();
-		GameStatus = PAUSE;
-		is_running = 0;
-		return 0;
-	}
-
 
 	numPadsConnected = cell_pad_input_pads_connected();
 
@@ -339,44 +331,4 @@ void InputMake(void)
 				}
 		}
 	}
-}
-
-void doStretch(void)
-{
-	static uint64_t old_state;
-	uint64_t new_state = cell_pad_input_poll_device(0);
-	uint64_t diff_state = old_state ^ new_state;
-
-	if(CTRL_LSTICK_LEFT(new_state))
-		nXOffset -= 1;
-
-	else if (CTRL_LSTICK_RIGHT(new_state))
-		nXOffset += 1;
-
-	if (CTRL_LSTICK_UP(new_state))
-		nYOffset += 1;
-
-	else if (CTRL_LSTICK_DOWN(new_state)) 
-		nYOffset -= 1;
-
-	if (CTRL_RSTICK_LEFT(new_state))
-		nXScale -= 1;
-	else if (CTRL_RSTICK_RIGHT(new_state))
-		nXScale += 1;
-
-	if (CTRL_RSTICK_UP(new_state))
-		nYScale += 1;
-	else if (CTRL_RSTICK_DOWN(new_state))
-		nYScale -= 1;
-
-	if (CTRL_CIRCLE(new_state))
-	{
-		GameStatus = PAUSE;
-		is_running = 0;
-	}
-
-	if (CTRL_TRIANGLE(new_state))
-		nXScale = nYScale = nXOffset = nYOffset = 0;	// reset to default
-
-	old_state = new_state;
 }

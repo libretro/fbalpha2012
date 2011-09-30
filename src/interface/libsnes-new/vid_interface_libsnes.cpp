@@ -1,4 +1,6 @@
 // Video Output - (calls all the Vid Out plugins)
+//FIXME: Remove all PSGL stuff here
+
 #include "burner.h"
 #include "highcol.h"
 #include "vid_psgl.h"
@@ -64,6 +66,7 @@ int VidInit()
 
 	if (bDrvOkay)
 	{
+		//FIXME: PSGL-specific function call - rewrite
 		if (_psglInit() == 0)
 		{
 			nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
@@ -95,6 +98,7 @@ int VidExit()
 	if (!bVidOkay)
 		return 1;
 
+	//FIXME: PSGL-specific function call - rewrite
 	int nRet = _psglExit();
 
 	bVidOkay = false;
@@ -144,6 +148,7 @@ int VidFrame()
 		pBurnDraw = pVidTransImage;
 		nBurnPitch = nVidImageWidth << 1;
 		BurnDrvFrame();
+		//FIXME: PSGL-specific function call - rewrite - you render your frame in this function
 		_psglRender();
 
 		/* set avi buffer, modified by regret */
@@ -169,6 +174,7 @@ int VidFrame()
 		pBurnDraw = pVidImage;
 		nBurnPitch = nVidImagePitch;
 		BurnDrvFrame();
+		//FIXME: PSGL-specific function call - rewrite - you render your frame in this function
 		_psglRender();
 		/* set avi buffer, modified by regret */
 		pBurnDraw = NULL;
@@ -194,6 +200,7 @@ int VidReinit()
 	if (bRunPause || !bDrvOkay)
 		VidFrame();
 
+	//FIXME: Might not be necessary for libsnes
 	CalculateViewports();
 	return 0;
 }

@@ -61,7 +61,7 @@ void snes_init()
 
 void snes_term()
 {
-   GameInpInit();
+   GameInpExit();
    BurnDrvExit();
    BurnLibExit();
 }
@@ -69,8 +69,82 @@ void snes_term()
 void snes_power() {}
 void snes_reset() {}
 
+// FBA. Gotta love seemingly random defines :)
+#define P1_COIN	0x06
+#define P1_START 0x02
+#define P1_LEFT 0xCB
+#define P1_RIGHT 0xCD
+#define P1_UP 0xC8
+#define P1_DOWN 0xD0
+#define P1_FIRE1 0x2C
+#define P1_FIRE2 0x2D
+#define P1_FIRE3 0x2E
+#define P1_FIRE4 0x2F
+#define P1_FIRE5 0x1F
+#define P1_FIRE6 0x20
+#define P1_SERVICE 0x3C
+
+#define P2_COIN 0x07
+#define P2_START 0x03
+#define P2_LEFT 0x4000
+#define P2_RIGHT 0x4001
+#define P2_UP 0x4002
+#define P2_DOWN 0x4003
+#define P2_FIRE1 0x4080
+#define P2_FIRE2 0x4081
+#define P2_FIRE3 0x4082
+#define P2_FIRE4 0x4083
+#define P2_FIRE5 0x4084
+#define P2_FIRE6 0x4085
+
+struct keymap
+{
+   unsigned snes;
+   unsigned fba_1;
+   unsigned fba_2;
+};
+
+static const keymap bindmap[] = {
+   { SNES_DEVICE_ID_JOYPAD_A, P1_FIRE1, P2_FIRE1 },
+   { SNES_DEVICE_ID_JOYPAD_B, P1_FIRE2, P2_FIRE2 },
+   { SNES_DEVICE_ID_JOYPAD_X, P1_FIRE3, P2_FIRE3 },
+   { SNES_DEVICE_ID_JOYPAD_Y, P1_FIRE4, P2_FIRE4 },
+   { SNES_DEVICE_ID_JOYPAD_L, P1_FIRE5, P2_FIRE5 },
+   { SNES_DEVICE_ID_JOYPAD_R, P1_FIRE6, P2_FIRE6 },
+   { SNES_DEVICE_ID_JOYPAD_START, P1_START, P2_START },
+   { SNES_DEVICE_ID_JOYPAD_SELECT, P1_COIN, P2_COIN },
+   { SNES_DEVICE_ID_JOYPAD_LEFT, P1_LEFT, P2_LEFT },
+   { SNES_DEVICE_ID_JOYPAD_RIGHT, P1_RIGHT, P2_RIGHT },
+   { SNES_DEVICE_ID_JOYPAD_UP, P1_UP, P2_UP },
+   { SNES_DEVICE_ID_JOYPAD_DOWN, P1_DOWN, P2_DOWN },
+};
+
+// Very incomplete ... Just do digital input :D
 static void poll_input()
 {
+   for (unsigned i = 0; i < nGameInpCount; i++)
+   {
+      struct GameInp *in = GameInp + i;
+
+      if (in->nInput != GIT_SWITCH)
+         continue;
+
+      for (unsigned j = 0; j < sizeof(bindmap) / sizeof(keymap); j++)
+      {
+         if (in->Input.Switch.nCode == bindmap[j].fba_1)
+         {
+            in->Input.nVal = input_cb(0, SNES_DEVICE_JOYPAD, 0, bindmap[j].snes);
+            break;
+         }
+         else if (in->Input.Switch.nCode == bindmap[j].fba_2)
+         {
+            in->Input.nVal = input_cb(1, SNES_DEVICE_JOYPAD, 0, bindmap[j].snes);
+            break;
+         }
+      }
+
+      *in->Input.pVal = in->Input.nVal;
+   }
 }
 
 void snes_run()
@@ -276,6 +350,7 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
          return false;
 
       GameInpInit();
+      GameInpDefault();
 
       return true;
    }

@@ -124,12 +124,11 @@ bool VidSGetArcaderes(int* pWidth, int* pHeight)
 // - The largest possible multiple of both X and Y;
 // - The largest possible multiple of Y, modifying X to ensure the correct aspect ratio;
 // - The window size
+#ifndef SN_TARGET_PS3
 int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 {
-#ifndef SN_TARGET_PS3
 	if (bVidFullStretch) // Arbitrary stretch
 		return 0;
-#endif
 
 	int xm, ym; // The multiple of nScrnWidth and nScrnHeight we can fit in
 	int nScrnWidth, nScrnHeight;
@@ -138,25 +137,17 @@ int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 	int nWidth = pRect->right - pRect->left;
 	int nHeight = pRect->bottom - pRect->top;
 
-#ifndef SN_TARGET_PS3
 	if (bDrvOkay)
 	{
-#endif
 		if ((BurnDrvGetFlags() & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED)) && (nVidRotationAdjust & 1))
 			BurnDrvGetAspect(&nGameAspectY, &nGameAspectX);
 		else
 			BurnDrvGetAspect(&nGameAspectX, &nGameAspectY);
-#ifndef SN_TARGET_PS3
 	}
-#endif
 
 	xm = nWidth / nGameWidth;
 	ym = nHeight / nGameHeight;
 
-#ifdef SN_TARGET_PS3
-	nScrnWidth = nVidScrnWidth;
-	nScrnHeight = nVidScrnHeight;
-#else
 	if (nVidFullscreen)
 	{
 		nScrnWidth = nVidScrnWidth;
@@ -167,7 +158,6 @@ int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 		nScrnWidth = SystemWorkArea.right - SystemWorkArea.left;
 		nScrnHeight = SystemWorkArea.bottom - SystemWorkArea.top;
 	}
-#endif
 
 	if (bVidCorrectAspect)
 	{ // Correct aspect ratio
@@ -216,3 +206,4 @@ int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight)
 
 	return 0;
 }
+#endif

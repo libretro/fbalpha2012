@@ -6,52 +6,36 @@
 #undef ENABLE_PREVIEW
 
 unsigned int nVidSelect = 2;					// Which video output is selected
-static unsigned int nVidActive = 0;				// Which video output is actived
 
 bool bVidOkay = false;
 
 int nVidDepth = 16;
 int nVidRefresh = 0;
 int nVidFullscreen = 0;
-int bVidFullStretch = 0;						// 1 = stretch to fill the entire window/screen
-int bVidCorrectAspect = 1;						// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
-int bVidVSync = 0;								// 1 = sync blits/pageflips/presents to the screen
-int bVidTripleBuffer = 0;						// 1 = use triple buffering
-int nVidRotationAdjust = 0;						// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
-int bVidForce16bit = 1;							// Emulate the game in 16-bit even when the screen is 32-bit (D3D blitter)
+int bVidFullStretch = 0;					// 1 = stretch to fill the entire window/screen
+int bVidCorrectAspect = 1;					// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
+int bVidVSync = 0;						// 1 = sync blits/pageflips/presents to the screen
+int bVidTripleBuffer = 0;					// 1 = use triple buffering
+int nVidRotationAdjust = 0;					// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
+int bVidForce16bit = 1;						// Emulate the game in 16-bit even when the screen is 32-bit (D3D blitter)
 unsigned int vidFilterLinear = 0;				// 1 = linear filter, or point filter
-unsigned int vidHardwareVertex = 0;				// 1 = use hardware vertex processing
-unsigned int vidMotionBlur = 0;					// 1 = motion blur
-unsigned int vidUseFilter = 0;
-unsigned int vidForceFilterSize = 0;
 int nVidOriginalScrnAspectX;
 int nVidOriginalScrnAspectY;
 
-int nVidDXTextureManager = 0;					// How to transfer the game image to video memory and/or a texture --
-												//  0 = blit from system memory / use driver/DirectX texture management
-												//  1 = copy to a video memory surface, then use bltfast()
-unsigned int nVid3DProjection = 0;				// Options for the 3D projection effct
-float fVidScreenAngle = 0.174533f;				// The angle at which to tilt the screen backwards (in radians, D3D blitter)
-float fVidScreenCurvature = 0.698132f;			// The angle of the maximum screen curvature (in radians, D3D blitter)
+int nVidScrnWidth = 0, nVidScrnHeight = 0;			// Actual Screen dimensions (0 if in windowed mode)
+int nVidScrnDepth = 0;						// Actual screen depth
 
-int nVidScrnWidth = 0, nVidScrnHeight = 0;		// Actual Screen dimensions (0 if in windowed mode)
-int nVidScrnDepth = 0;							// Actual screen depth
-
-int nVidScrnAspectX = 4, nVidScrnAspectY = 3;	// Aspect ratio of the display screen
+int nVidScrnAspectX = 4, nVidScrnAspectY = 3;			// Aspect ratio of the display screen
 int nVidScrnAspectMode = ASPECT_RATIO_4_3;
-float vidScrnAspect = (float)4 / (float)3;				// Aspect ratio
-extern bool autoVidScrnAspect = true;			// Automatical Aspect ratio
+float vidScrnAspect = (float)4 / (float)3;			// Aspect ratio
+extern bool autoVidScrnAspect = true;				// Automatical Aspect ratio
 
 unsigned char* pVidImage = NULL;				// Memory buffer
-int nVidImageWidth = DEFAULT_IMAGE_WIDTH;		// Memory buffer size
-int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;		//
-int nVidImageLeft = 0, nVidImageTop = 0;		// Memory buffer visible area offsets
-int nVidImagePitch = 0, nVidImageBPP = 0;		// Memory buffer pitch and bytes per pixel
-int nVidImageDepth = 0;							// Memory buffer bits per pixel
-
-int effect_depth = 16;
-
-unsigned int nVidAdapter = 0;
+int nVidImageWidth = DEFAULT_IMAGE_WIDTH;			// Memory buffer size
+int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;			//
+int nVidImageLeft = 0, nVidImageTop = 0;			// Memory buffer visible area offsets
+int nVidImagePitch = 0, nVidImageBPP = 0;			// Memory buffer pitch and bytes per pixel
+int nVidImageDepth = 0;						// Memory buffer bits per pixel
 
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 static bool bVidRecalcPalette;
@@ -96,8 +80,7 @@ int VidInit()
 
 	if (bDrvOkay)
 	{
-		nVidActive = nVidSelect;						 
-		if ((nRet = VidDriver(nVidActive)->Init()) == 0)
+		if ((nRet = VidDriver(nVidSelect)->Init()) == 0)
 		{
 			nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
 			bVidOkay = true;
@@ -128,7 +111,7 @@ int VidExit()
 	if (!bVidOkay)
 		return 1;
 
-	int nRet = VidDriver(nVidActive)->Exit();
+	int nRet = VidDriver(nVidSelect)->Exit();
 
 	bVidOkay = false;
 

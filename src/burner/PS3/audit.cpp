@@ -20,7 +20,7 @@ struct RomInfo
 	string name;
 	unsigned int size;
 	unsigned int type;
-	FIND_STATE state;
+	unsigned int state;
 };
 
 struct GameInfo

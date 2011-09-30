@@ -1,9 +1,6 @@
 // Burner Input Dialog module
 // added default mapping and autofire settings, by regret
 #include "burner.h"
-#ifndef NO_AUTOFIRE
-#include "autofire.h"
-#endif
 
 static unsigned char* LastVal = NULL; // Last input values/defined
 static int bLastValDefined = 0;	

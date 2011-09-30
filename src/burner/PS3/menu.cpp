@@ -1104,8 +1104,6 @@ void ConfigFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				vidUseFilter = 0;				
-
 				char shaderFile[255];
 
 				strcpy(shaderFile,SHADER_DIRECTORY);
@@ -2615,8 +2613,6 @@ void InGameFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				vidUseFilter = 0;				
-
 				char shaderFile[255];
 
 				strcpy(shaderFile,SHADER_DIRECTORY);

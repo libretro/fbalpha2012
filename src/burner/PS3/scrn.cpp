@@ -13,10 +13,6 @@
 #include "burner.h"
 #include "cheat.h"
 #include "cartridge.h"
-#include "InGameOptions.h"
-#ifndef NO_AUTOFIRE
-#include "autofire.h"
-#endif
 #include "../../interface/PS3/audio_driver.h"
  
 int bAutoPause = 0;

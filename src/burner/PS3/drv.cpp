@@ -4,9 +4,6 @@
 #ifndef NO_IPS
 //#include "patch.h"
 #endif
-#ifndef NO_AUTOFIRE
-//#include "autofire.h"
-#endif
 #ifndef NO_COMBO
 #include "combo.h"
 #endif

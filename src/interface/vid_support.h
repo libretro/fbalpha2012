@@ -22,7 +22,9 @@ static inline int VidGetTextureSize(int size)
 }
 
 // Image size
+#ifndef SN_TARGET_PS3
 int VidSScaleImage(RECT* pRect, int nGameWidth, int nGameHeight);
+#endif
 bool VidSGetArcaderes(int* pWidth, int* pHeight);
 
 static inline void VidSCpyImg32(unsigned char* dst, unsigned int dstPitch, unsigned char *src, unsigned int srcPitch, unsigned short width, unsigned short height)

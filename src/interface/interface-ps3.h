@@ -69,7 +69,6 @@ int VidRecalcPal();
 int VidPaint(int bValidate);
 int VidReinit();
 int VidResize(int nWidth, int nHeight);
-int VidScale(RECT* pRect, int nGameWidth, int nGameHeight);
 const char* VidGetName();
 InterfaceInfo* VidGetInfo();
 const char* VidDriverName(unsigned int driver);
@@ -109,9 +108,6 @@ extern int nVidImageWidth, nVidImageHeight;
 extern int nVidImageLeft, nVidImageTop;
 extern int nVidImagePitch, nVidImageBPP;
 extern int nVidImageDepth;
-
-extern int nVidFilter; // filter index
-extern unsigned int nVidAdapter; // Which adapter device is selected
 
 extern int shaderindex;
 

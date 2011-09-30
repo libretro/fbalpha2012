@@ -71,21 +71,6 @@ typedef std::basic_string<char> tstring;
  #define MAX_PATH (260)
 #endif
 
-
-typedef struct tagRECT
-{
-    long    left;
-    long    top;
-    long    right;
-    long    bottom;
-} RECT;
-
-typedef struct tagPOINT
-{
-    long  x;
-    long  y;
-} POINT;
- 
 // ---------------------------------------------------------------------------
 // from burn
 extern int bsavedecryptedcs;
@@ -145,7 +130,6 @@ int FBAPopupDestroyText();
 // media.cpp
 int mediaInit();
 int mediaExit();
-int mediaChangeFps(int scale);
 int mediaReInitAudio();
 
 // misc_win32.cpp
@@ -184,7 +168,6 @@ extern bool bFullscreenOnStart;
 
 extern int bAutoPause;
 extern int nWindowSize;
-extern RECT SystemWorkArea;			// The full screen area
 extern int nWindowPosX, nWindowPosY;
 
 extern int nSavestateSlot;
@@ -313,8 +296,15 @@ int ProgressDestroy();
 // Audit
 
 // State is non-zero if found. 1 = found totally okay
-enum FIND_STATE { STAT_NOFIND = 0, STAT_OK, STAT_CRC, STAT_SMALL, STAT_LARGE, };
-enum AUDIT_STATE { AUDIT_FAIL = 0, AUDIT_PARTPASS = 1, AUDIT_FULLPASS = 3, };
+#define STAT_NOFIND	0
+#define STAT_OK		1
+#define STAT_CRC	2
+#define STAT_SMALL	3
+#define STAT_LARGE	4
+
+#define AUDIT_FAIL	0
+#define AUDIT_PARTPASS	1
+#define AUDIT_FULLPASS	3
 extern char* auditState;
 
 int getAllRomsetInfo();

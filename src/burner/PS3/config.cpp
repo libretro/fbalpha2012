@@ -150,17 +150,10 @@ int configAppLoadXml()
 	parent = findElement(element, "render");
 	child = findElement(parent, "render-driver");
 	getAttr(child, "driver", &nVidSelect);
-	getAttr(child, "adapter", &nVidAdapter);
 	child = findElement(parent, "filter");
 	getAttr(child, "linear", &vidFilterLinear);
 	child = findElement(parent, "option");
 	getAttr(child, "force-16bit", &bVidForce16bit);
-	getAttr(child, "hardware-vertex", &vidHardwareVertex);
-	getAttr(child, "motion-blur", &vidMotionBlur);
-	getAttr(child, "projection", &nVid3DProjection);
-	getAttr(child, "angel", &fVidScreenAngle);
-	getAttr(child, "curvature", &fVidScreenCurvature);
-	getAttr(child, "dxmanager", &nVidDXTextureManager);
 	getAttr(child, "currentshader", &shaderindex);
 
 	getAttr(child, "x-offset", &nXOffset);
@@ -350,7 +343,6 @@ int configAppSaveXml()
 	ticpp::Element render_driver("render-driver");
 	render.LinkEndChild(&render_driver);
 	setAttr(render_driver, "driver", nVidSelect);
-	setAttr(render_driver, "adapter", nVidAdapter);
 
 	ticpp::Element filter("filter");
 	render.LinkEndChild(&filter);
@@ -363,12 +355,6 @@ int configAppSaveXml()
 	ticpp::Element option("option");
 	render.LinkEndChild(&option);
 	setAttr(option, "force-16bit", bVidForce16bit);
-	setAttr(option, "hardware-vertex", vidHardwareVertex);
-	setAttr(option, "motion-blur", vidMotionBlur);
-	setAttr(option, "projection", nVid3DProjection);
-	setAttr(option, "angel", fVidScreenAngle);
-	setAttr(option, "curvature", fVidScreenCurvature);
-	setAttr(option, "dxmanager", nVidDXTextureManager);
 	setAttr(option, "currentshader", shaderindex);
 
 	setAttr(option, "x-offset", nXOffset);

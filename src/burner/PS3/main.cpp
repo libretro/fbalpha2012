@@ -5,8 +5,6 @@
 
 #include "main.h"
 #include "burner.h"
-#include "RomList.h"
-#include "InGameOptions.h"
 #include "version.h"
 #include "menu.h"
 #include "vid_psgl.h"
@@ -57,16 +55,13 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 
 static int AppInit()
 {
-	// print a warning if we're running for the 1st time
 	if (nIniVersion < nBurnVer)
-		configAppSaveXml(); // Create initial config file
+		configAppSaveXml();	// Create initial config file
 
-	// Init the Burn library
-	BurnLibInit();
+	BurnLibInit();			// Init the Burn library
 
-	// Build the ROM information
 
-	getAllRomsetInfo(); 
+	getAllRomsetInfo();		// Build the ROM information
 	nVidFullscreen = 1;
 
 	BurnExtLoadOneRom = archiveLoadOneFile; 

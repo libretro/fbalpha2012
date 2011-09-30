@@ -10,7 +10,7 @@ static char* szBArchiveName[BZIP_MAX] = { NULL, };	// Archive files to search th
 
 struct ROMFIND
 {
-	FIND_STATE nState;
+	unsigned int nState;
 	int nArchive;
 	int nPos;
 };

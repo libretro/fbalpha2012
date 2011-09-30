@@ -124,19 +124,38 @@ int RunMessageLoop(int argc, char **argv)
 				if(!is_running)
 					GameStatus = PAUSE;
 				CalculateViewports();
-				do{
-					// RUN IDLE
-					audio_check();
+				if(pVidTransImage)
+				{
+					do{
+						// RUN IDLE
+						audio_check();
 
-					// RUN FRAME
-					nCurrentFrame++;
-					VidFrame();
-					// GET INPUT
-					InputMake();
+						// RUN FRAME
+						nCurrentFrame++;
+						VidFrame_Recalc();
+						// GET INPUT
+						InputMake();
 #ifdef CELL_DEBUG_CONSOLE
-					cellConsolePoll();
+						cellConsolePoll();
 #endif
-				}while(is_running);
+					}while(is_running);
+				}
+				else
+				{
+					do{
+						// RUN IDLE
+						audio_check();
+
+						// RUN FRAME
+						nCurrentFrame++;
+						VidFrame();
+						// GET INPUT
+						InputMake();
+#ifdef CELL_DEBUG_CONSOLE
+						cellConsolePoll();
+#endif
+					}while(is_running);
+				}
 				break;
 		}
 	}while(!exitGame);

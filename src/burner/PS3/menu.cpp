@@ -2617,7 +2617,7 @@ void InGameFrameMove()
 				strcat(shaderFile,m_ListShaderData[shaderindex].c_str());
 				psglInitShader(shaderFile);
 				BurnReinitScrn();
-				VidFrame();
+				psglRedraw();
 			}
 			break;
 		case INGAME_KEEP_ASPECT:
@@ -2628,7 +2628,7 @@ void InGameFrameMove()
 					nVidScrnAspectMode--;
 					setWindowAspect();
 					BurnReinitScrn();
-					VidFrame();
+					psglRedraw();
 				}
 			}
 			else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -2638,7 +2638,7 @@ void InGameFrameMove()
 					nVidScrnAspectMode++;
 					setWindowAspect();
 					BurnReinitScrn();
-					VidFrame();
+					psglRedraw();
 				}
 			}
 			break;
@@ -2647,7 +2647,7 @@ void InGameFrameMove()
 			{
 				vidFilterLinear = !vidFilterLinear;
 				BurnReinitScrn();
-				VidFrame();
+				psglRedraw();
 			}
 			break;
 		case INGAME_ROTATE:
@@ -2660,7 +2660,7 @@ void InGameFrameMove()
 					nVidRotationAdjust = 0;
 				}
 				BurnReinitScrn();	//apply_rotation_settings();
-				VidFrame();
+				psglRedraw();
 			}
 			break;
 		case INGAME_SAVE_STATE:	

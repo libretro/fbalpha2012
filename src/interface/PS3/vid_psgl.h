@@ -21,6 +21,16 @@ extern void psglRenderAlpha(void);
 extern void CalculateViewports(void);
 extern void _psglRender(void);
 
+#define psglRedraw() \
+	if(pVidTransImage) \
+	{ \
+		VidFrame_Recalc(); \
+	} \
+	else \
+	{ \
+		VidFrame(); \
+	}
+
 #define psglClearUI() glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 #define psglRenderUI() \

@@ -93,11 +93,6 @@ int  main(int argc, char **argv)
 
 	configAppSaveXml();				// Save config for the application
 
-	cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
-	cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     
-	cellSysmoduleUnloadModule(CELL_SYSMODULE_RTC);
-	cellSysutilUnregisterCallback(0);
-
 	exit(0);
 }
 

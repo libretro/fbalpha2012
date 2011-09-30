@@ -11,22 +11,16 @@
 #define TRUE                1
 #endif
 
-#ifdef SN_TARGET_PS3
-#include <stdint.h>
-typedef char  TCHAR;
-typedef int32_t HWND;
-typedef int32_t HFONT;
-typedef int32_t HBITMAP;
-typedef uint32_t BOOL;
-typedef char WCHAR;
-#else
-typedef char				TCHAR;
-typedef int					HWND;
-typedef int					HFONT;
-typedef int					HBITMAP;
-typedef int					BOOL;
-typedef char				WCHAR;
-#endif
+typedef char		TCHAR;
+typedef int		HWND;
+typedef int		HFONT;
+typedef int		HBITMAP;
+typedef int		BOOL;
+typedef char		WCHAR;
+typedef unsigned long	DWORD;
+typedef unsigned char	BYTE;
+typedef unsigned short	WORD;
+typedef float		FLOAT;
 #define _T(x) x
 #define __forceinline	__attribute((always_inline))
 #define _stprintf sprintf
@@ -78,7 +72,7 @@ typedef char				WCHAR;
 #define _ftprintf   fprintf
 #define _strnicmp(s1, s2, n) strncasecmp(s1, s2, (n))
 #else
-//#include "tchar.h"
+#include "tchar.h"
 #endif
 
 #ifdef _MSC_VER

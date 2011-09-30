@@ -38,10 +38,10 @@ static int AppInit()
 	nVidFullscreen = 1;
 
 	BurnExtLoadOneRom = archiveLoadOneFile; 
-	InitRomList();
-	InitInputList();
-	InitDipList();
-	BuildRomList();	
+	//InitRomList();
+	//InitInputList();
+	//InitDipList();
+	//BuildRomList();	// All of this is PS3 frontend cruft and shouldn't be needed
 	audio_new();
 	return 0;
 }

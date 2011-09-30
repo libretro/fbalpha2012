@@ -45,21 +45,18 @@ int RunMessageLoop(int argc, char **argv)
 
 	do{
 
-		switch (GameStatus)
-		{
-				CalculateViewports();
-				do{
-					// RUN IDLE
-					audio_check();
+		CalculateViewports();
+		do{
+			// RUN IDLE
+			audio_check();
 
-					// RUN FRAME
-					nCurrentFrame++;
-					VidFrame();
-					// GET INPUT
-					InputMake();
-				}while(is_running);
-				break;
-		}
+			// RUN FRAME
+			nCurrentFrame++;
+			VidFrame();
+			// GET INPUT
+			InputMake();
+		}while(is_running);
+		break;
 	}while(!exitGame);
 
 	audio_stop();					// Stop sound if it was playing

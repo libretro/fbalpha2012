@@ -6,7 +6,7 @@
 #define strcasecmp(s1, s2) _tcsicmp(s1, s2)
 #endif
 
-#if defined (SN_TARGET_PS3)
+#if defined (SN_TARGET_PS3) || defined(__LIBSNES__)
 
 #ifndef FALSE
 #define FALSE               0

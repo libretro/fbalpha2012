@@ -151,6 +151,7 @@ void snes_run()
 {
    pBurnDraw = (uint8_t*)g_fba_frame;
    nBurnPitch = 2048;
+   nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;

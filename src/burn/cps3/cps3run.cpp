@@ -23,7 +23,8 @@ Port to FBA by OopsWare
 #include "highcol.h"
 #endif
 
-#define BE_GFX		1
+#define BE_GFX		1 // Big-endian?!
+
 #define FAST_BOOT	1
 #define SPEED_HACK	0		// Default should be 1, if not FPS would drop.
 

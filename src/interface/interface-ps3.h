@@ -8,23 +8,6 @@
 // GameInp structure
 #include "gameinp.h"
 
-// Interface info (used for all modules)
-struct InterfaceInfo
-{
-	const char * pszModuleName;
-	char ** ppszInterfaceSettings;
-	char ** ppszModuleSettings;
-
-	// device info, added by regret
-	unsigned int deviceNum;
-	char ** deviceName;
-};
-
-int IntInfoFree(InterfaceInfo* pInfo);
-int IntInfoInit(InterfaceInfo* pInfo);
-int IntInfoAddStringInterface(InterfaceInfo* pInfo, char * szString);
-int IntInfoAddStringModule(InterfaceInfo* pInfo, char * szString);
-
 int InputInit();
 int InputExit();
 void InputMake(void);
@@ -42,16 +25,6 @@ extern int16_t * pAudNextSound;		// The next sound segment we will add to the sa
 extern bool bAudOkay;			// True if sound was inited okay
 
 // Video Output plugin:
-struct VidOut {
-	int (*Init)();
-	int (*Exit)();
-};
-
-enum VID_OUT {
-	VID_PSGL,
-};
-
-int VidSelect(unsigned int driver);
 int VidInit();
 int VidExit();
 int VidFrame();
@@ -60,11 +33,8 @@ int VidRecalcPal();
 int VidPaint(int bValidate);
 int VidReinit();
 int VidResize(int nWidth, int nHeight);
-const char* VidGetName();
-InterfaceInfo* VidGetInfo();
-const char* VidDriverName(unsigned int driver);
-
-void VidSwitchFilter(int nEffect);
+extern int _psglInit(void);
+extern int _psglExit(void);
 
 extern bool bVidOkay;
 extern unsigned int nVidSelect;

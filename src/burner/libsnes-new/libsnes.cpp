@@ -22,7 +22,7 @@ struct ROMFIND
 
 #define STAT_NOFIND	0
 #define STAT_OK		1
-#define STAT_CRC	2
+#define STAT_CRC	   2
 #define STAT_SMALL	3
 #define STAT_LARGE	4
 
@@ -63,9 +63,14 @@ void snes_term()
 void snes_power() {}
 void snes_reset() {}
 
+static uint16_t g_fba_frame[1024 * 1024];
 void snes_run(void)
 {
+   pBurnDraw = (uint8_t*)g_fba_frame;
+   nBurnPitch = 2048;
    BurnDrvFrame();
+
+   video_cb(g_fba_frame, 512, 240);
 }
 
 unsigned snes_serialize_size() { return 0; }
@@ -212,12 +217,41 @@ static bool fba_init(unsigned driver)
    return true;
 }
 
+
+
+
+static unsigned int HighCol15(int r, int g, int b, int  /* i */)
+{
+	unsigned int t;
+	t  = (r << 7) & 0x7C00;
+	t |= (g << 2) & 0x03E0;
+	t |= (b >> 3) & 0x001F;
+	return t;
+}
+
+static void init_video()
+{
+   nBurnBpp = 2;
+   BurnReinitScrn = init_video;
+   BurnHighCol = HighCol15;
+}
+
+static void init_audio()
+{
+}
+
 // Infer paths from basename.
 bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
    unsigned i = BurnDrvGetIndexByNameA(g_basename);
    if (i < nBurnDrvCount)
-      return fba_init(i);
+   {
+      if (!fba_init(i))
+         return false;
+
+      init_video();
+      init_audio();
+   }
    else
       return false;
 }

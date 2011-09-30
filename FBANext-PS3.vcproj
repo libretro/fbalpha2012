@@ -2212,7 +2212,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\PS3\inp_interface_ps3.cpp"
+						RelativePath=".\src\interface\PS3\input_driver.cpp"
 						>
 					</File>
 					<File
@@ -2282,10 +2282,6 @@
 					<Filter
 						Name="PS3"
 						>
-						<File
-							RelativePath=".\src\interface\PS3\input_driver.cpp"
-							>
-						</File>
 						<File
 							RelativePath=".\src\interface\PS3\vid_psgl.cpp"
 							>

@@ -25,30 +25,21 @@ int IntInfoInit(InterfaceInfo* pInfo);
 int IntInfoAddStringInterface(InterfaceInfo* pInfo, char * szString);
 int IntInfoAddStringModule(InterfaceInfo* pInfo, char * szString);
 
-// Input plugin:
-struct InputInOut {
-	// Read digital
-	int (*ReadSwitch)(int nCode);
-	// Read analog
-	int (*ReadJoyAxis)(int i, int nAxis);
-};
-
 int InputInit();
 int InputExit();
 void InputMake(void);
 
 extern bool bInputOkay;
-extern unsigned int nInputSelect;
 
 // Audio Output plugin
 int AudWriteSilence(int draw = 0);	// Write silence into the buffer
 
 extern int nAudSampleRate;		// sample rate
-extern int nAudSegCount;		// Segs in the pdsbLoop buffer
-extern int nAudSegLen;			// Seg length in samples (calculated from Rate/Fps)
-extern int nAudAllocSegLen;		// Allocated seg length in samples
-extern short* pAudNextSound;		// The next sound segment we will add to the sample loop
-extern bool bAudOkay;			// True if DSound was initted okay
+extern int nAudSegCount;		// Segments in the pdsbLoop buffer
+extern int nAudSegLen;			// Segment length in samples (calculated from sound rate/FPS)
+extern int nAudAllocSegLen;		// Allocated segment length in samples
+extern int16_t * pAudNextSound;		// The next sound segment we will add to the sample loop
+extern bool bAudOkay;			// True if sound was inited okay
 
 // Video Output plugin:
 struct VidOut {
@@ -90,14 +81,6 @@ extern int nVidScrnWidth, nVidScrnHeight;
 extern int nVidScrnDepth;
 
 extern unsigned int vidFilterLinear;
-extern unsigned int vidHardwareVertex;
-extern unsigned int vidMotionBlur;
-extern unsigned int vidUseFilter;
-extern unsigned int vidForceFilterSize;
-extern unsigned int nVid3DProjection;
-extern float fVidScreenAngle;
-extern float fVidScreenCurvature;
-extern int nVidDXTextureManager;
 
 extern int nVidScrnAspectX, nVidScrnAspectY;
 extern float vidScrnAspect;

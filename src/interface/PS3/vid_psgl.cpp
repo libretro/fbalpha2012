@@ -480,7 +480,7 @@ void psglSetVSync(uint32_t enable)
 		glDisable(GL_VSYNC_SCE);
 }
 
-static inline int _psglExit()
+static int _psglExit()
 {
 	term();
 	VidSFreeVidImage();
@@ -488,7 +488,7 @@ static inline int _psglExit()
 	return 0;
 }
 
-static inline int _psglTextureInit()
+static int _psglTextureInit()
 {
 	if (nRotateGame & 1)
 	{
@@ -534,7 +534,7 @@ void setlinear(unsigned int smooth)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 }
 
-static inline int _psglInit()
+static int _psglInit()
 {
 	nVidScrnDepth = 32;
 
@@ -581,43 +581,34 @@ static inline int _psglInit()
 	return 0;
 }
 
-#define getClientScreenRectangle() \
-	Dest.left = 0; \
-	Dest.right = nVidScrnWidth; \
-	Dest.top = 0; \
-	Dest.bottom = nVidScrnHeight;
-
-#define Dest_bottom nVidScrnHeight
-#define Dest_right  nVidScrnWidth
-#define Dest_left   0
-#define Dest_top    0
+#define DEST_BOTTOM nVidScrnHeight
+#define DEST_RIGHT  nVidScrnWidth
+#define DEST_LEFT   0
+#define DEST_TOP    0
 
 #define VidSCopyImage32(dst_ori) \
-   register unsigned short lineSize = nVidImageWidth << 2; \
-   unsigned short height = nVidImageHeight; \
-   unsigned char* dst = (unsigned char*)dst_ori; \
-   do{ \
-      height--; \
-      memcpy(dst, ps, lineSize); \
-      ps += s; \
-      dst += pitch; \
-   }while(height);
+	register uint16_t lineSize = nVidImageWidth << 2; \
+	uint16_t height = nVidImageHeight; \
+	uint8_t * dst = (uint8_t *)dst_ori; \
+	do{ \
+		height--; \
+		memcpy(dst, ps, lineSize); \
+		ps += s; \
+		dst += pitch; \
+	}while(height);
 
 #define common_video_rotate_function() \
-   int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
-	int nNewImageWidth  = ((Dest_bottom) & nrotategame_mask) | ((Dest_right) & ~nrotategame_mask); \
-	int nNewImageHeight = ((Dest_right) & nrotategame_mask) | ((Dest_bottom) & ~nrotategame_mask);
+	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
+	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask); \
+	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
 
 #define common_video_copy_function() \
-	unsigned int* pd; \
+	unsigned int * pd; \
 	unsigned int pitch; \
 	lock(pd, pitch); \
-   \
-   unsigned char* ps = pVidImage + (nVidImageLeft << 2); \
-   int s = nVidImageWidth << 2; \
-   \
-   VidSCopyImage32(pd); \
-   \
+	uint8_t * ps = pVidImage + (nVidImageLeft << 2); \
+	int s = nVidImageWidth << 2; \
+	VidSCopyImage32(pd); \
 	unsigned int inwidth = nGameImageWidth; \
 	unsigned int inheight = nGameImageHeight;
 
@@ -632,10 +623,10 @@ static inline int _psglInit()
 		/* Set the size of the image on the PC screen */ \
       \
 		int vpx, vpy, vpw, vph; \
-		vpx = Dest_left; \
-		vpy = Dest_top; \
-		vpw = Dest_right; \
-		vph = Dest_bottom; \
+		vpx = DEST_LEFT; \
+		vpy = DEST_TOP; \
+		vpw = DEST_RIGHT; \
+		vph = DEST_BOTTOM; \
 		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight); \
 	} \
    \
@@ -676,16 +667,16 @@ void psglRenderStretch()
 
 	// Set the size of the image on the PC screen
 	int vpx, vpy, vpw, vph;
-	vpx = Dest_left;
-	vpy = Dest_top;
-	vpw = Dest_right;
-	vph = Dest_bottom;
+	vpx = DEST_LEFT;
+	vpy = DEST_TOP;
+	vpw = DEST_RIGHT;
+	vph = DEST_BOTTOM;
 
 	glViewport(vpx + nXOffset , vpy + nYOffset, vpw + nXScale , vph + nYScale);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(Dest_left + nXOffset, Dest_right, Dest_bottom + nYOffset, Dest_top, -1.0, 1.0);
+	glOrthof(DEST_LEFT + nXOffset, DEST_RIGHT, DEST_BOTTOM + nYOffset, DEST_TOP, -1.0, 1.0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

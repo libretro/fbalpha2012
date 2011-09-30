@@ -1,82 +1,34 @@
-// Module for Cell Input
+// Burner Input module
 #include <cell/pad.h>
 #include <sys/cdefs.h>
 
 #include "burner.h"
 #include "cellframework2/input/pad_input.h"
-#include "inp_keys.h"				// Key codes
+#include "input_driver.h"
 #include "menu.h"
 #include "audio_driver.h"
 
-#define LIST_DEVICES
-#define MAX_KEYBOARD	(0)
-#define MAX_JOYSTICK	(4)
-#define MAX_JOYAXIS		(4)
-#define MAX_MOUSE		(0)
-#define MAX_MOUSEAXIS	(0)
-
 int nPlayerToGamepad[4] = {0, 1, 2, 3};
 static int nJoystickCount = 4;		// We poll all 4 gamepad ps3 ports by default
-extern int ArcadeJoystick;
-extern bool DoReset;
-extern int GameStatus;
 
-#define P1_COIN	0x06
-#define P1_START 0x02
-#define P1_LEFT 0xCB
-#define P1_RIGHT 0xCD
-#define P1_UP 0xC8
-#define P1_DOWN 0xD0
-#define P1_FIRE1 0x2C
-#define P1_FIRE2 0x2D
-#define P1_FIRE3 0x2E
-#define P1_FIRE4 0x2F
-#define P1_FIRE5 0x1F
-#define P1_FIRE6 0x20
-#define P1_SERVICE 0x3C
+bool bInputOkay = false;
 
-#define P2_COIN 0x07
-#define P2_START 0x03
-#define P2_LEFT 0x4000
-#define P2_RIGHT 0x4001
-#define P2_UP 0x4002
-#define P2_DOWN 0x4003
-#define P2_FIRE1 0x4080
-#define P2_FIRE2 0x4081
-#define P2_FIRE3 0x4082
-#define P2_FIRE4 0x4083
-#define P2_FIRE5 0x4084
-#define P2_FIRE6 0x4085
+#define CinpState(nCode) CellinpState(nCode)
 
-#define P3_COIN 0x08
-#define P3_START 0x04
-#define P3_LEFT 0x4100
-#define P3_RIGHT 0x4101
-#define P3_UP 0x4102
-#define P3_DOWN 0x4103
-#define P3_FIRE1 0x4180
-#define P3_FIRE2 0x4181
-#define P3_FIRE3 0x4182
-#define P3_FIRE4 0x4183
-#define P3_FIRE5 0x4184
-#define P3_FIRE6 0x4185
+int InputInit()
+{
+	bInputOkay = true;
+	return bInputOkay;
+}
 
-#define P4_COIN 0x09
-#define P4_START 0x05
-#define P4_LEFT 0x4200
-#define P4_RIGHT 0x4201
-#define P4_UP 0x4202
-#define P4_DOWN 0x4203
-#define P4_FIRE1 0x4280
-#define P4_FIRE2 0x4281
-#define P4_FIRE3 0x4282
-#define P4_FIRE4 0x4283
-#define P4_FIRE5 0x4284
-#define P4_FIRE6 0x4285
-// ----------------------------------------------------------------------------
-// Get the state (pressed = 1, not pressed = 0) of a particular input code
+int InputExit()
+{
+	bInputOkay = false;
 
-int CellinpState(int nCode)
+	return bInputOkay;
+}
+
+static int CellinpState(int nCode)
 {
 	uint32_t numPadsConnected = 0;
 
@@ -277,7 +229,118 @@ int CellinpState(int nCode)
 
 	return 0;
 }
- 
+
+// This will process all PC-side inputs and optionally update the emulated game side.
+void InputMake(void)
+{
+	struct GameInp* pgi;
+	unsigned int i;
+
+	// Do one frames worth of keyboard input sliders
+	// Begin of InputTick()
+
+	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	{
+		int nAdd = 0;
+		if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) // not a slider
+			continue;
+
+		if (pgi->nInput == GIT_KEYSLIDER)
+		{
+			// Get states of the two keys
+			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[0]))
+				nAdd -= 0x100;
+			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[1]))
+				nAdd += 0x100;
+		}
+
+		// nAdd is now -0x100 to +0x100
+
+		// Change to slider speed
+		nAdd *= pgi->Input.Slider.nSliderSpeed;
+		nAdd /= 0x100;
+
+		if (pgi->Input.Slider.nSliderCenter)
+		{ // Attact to center
+			int v = pgi->Input.Slider.nSliderValue - 0x8000;
+			v *= (pgi->Input.Slider.nSliderCenter - 1);
+			v /= pgi->Input.Slider.nSliderCenter;
+			v += 0x8000;
+			pgi->Input.Slider.nSliderValue = v;
+		}
+
+		pgi->Input.Slider.nSliderValue += nAdd;
+		// Limit slider
+		if (pgi->Input.Slider.nSliderValue < 0x0100)
+			pgi->Input.Slider.nSliderValue = 0x0100;
+		if (pgi->Input.Slider.nSliderValue > 0xFF00)
+			pgi->Input.Slider.nSliderValue = 0xFF00;
+	}
+	// End of InputTick()
+
+	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	{
+		if (pgi->Input.pVal == NULL)
+			continue;
+
+		switch (pgi->nInput)
+		{
+			case 0: // Undefined
+				pgi->Input.nVal = 0;
+				break;
+			case GIT_CONSTANT: // Constant value
+				pgi->Input.nVal = pgi->Input.Constant.nConst;
+				*(pgi->Input.pVal) = pgi->Input.nVal;
+				break;
+			case GIT_SWITCH:
+				{ // Digital input
+					int s = CinpState(pgi->Input.Switch.nCode);
+
+					if (pgi->nType & BIT_GROUP_ANALOG)
+					{
+						// Set analog controls to full
+						if (s)
+							pgi->Input.nVal = 0xFFFF;
+						else
+							pgi->Input.nVal = 0x0001;
+#ifdef LSB_FIRST
+						*(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+						*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
+					}
+					else
+					{
+						// Binary controls
+						if (s)
+							pgi->Input.nVal = 1;
+						else
+							pgi->Input.nVal = 0;
+						*(pgi->Input.pVal) = pgi->Input.nVal;
+					}
+
+					break;
+				}
+			case GIT_KEYSLIDER:						// Keyboard slider
+				{
+					int nSlider = pgi->Input.Slider.nSliderValue;
+					if (pgi->nType == BIT_ANALOG_REL) {
+						nSlider -= 0x8000;
+						nSlider >>= 4;
+					}
+
+					pgi->Input.nVal = (unsigned short)nSlider;
+#ifdef LSB_FIRST
+					*(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+					*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
+					break;
+				}
+		}
+	}
+}
+
 void doStretch(void)
 {
 	static uint64_t old_state;

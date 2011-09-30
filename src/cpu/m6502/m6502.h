@@ -19,7 +19,9 @@
                                /* Compilation options:       */
 #define FAST_RDOP        /* Separate Op6502()/Rd6502() */
 /* #define DEBUG */            /* Compile debugging version  */
+#ifndef __LIBSNES__
 #undef LSB_FIRST         /* Compile for low-endian CPU */
+#endif
 #define EXEC6502
                                /* Loop6502() returns:        */
 #define INT_NONE  0            /* No interrupt required      */

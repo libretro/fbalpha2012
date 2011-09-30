@@ -311,15 +311,12 @@ static bool fba_init(unsigned driver)
    return true;
 }
 
-
-
-
 static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 {
-	unsigned int t;
-	t  = (r << 7) & 0x7C00;
-	t |= (g << 2) & 0x03E0;
-	t |= (b >> 3) & 0x001F;
+	unsigned int t = 0;
+	t |= (r << 7) & 0x7c00;
+	t |= (g << 2) & 0x03e0;
+	t |= (b >> 3) & 0x001f;
 	return t;
 }
 

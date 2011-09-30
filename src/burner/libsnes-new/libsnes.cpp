@@ -30,6 +30,11 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[32];
 static unsigned g_rom_count;
 
+#define AUDIO_SEGMENT_LENGTH 801
+#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS 1602
+
+static uint16_t g_fba_frame[1024 * 1024];
+static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 /////
 
 // libsnes globals
@@ -63,14 +68,20 @@ void snes_term()
 void snes_power() {}
 void snes_reset() {}
 
-static uint16_t g_fba_frame[1024 * 1024];
-void snes_run(void)
+void snes_run()
 {
    pBurnDraw = (uint8_t*)g_fba_frame;
    nBurnPitch = 2048;
+   pBurnSoundOut = g_audio_buf;
+   nBurnSoundRate = 32000;
+   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+
    BurnDrvFrame();
 
-   video_cb(g_fba_frame, 512, 240);
+   video_cb(g_fba_frame, 360, 240);
+
+   for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
+      audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
 }
 
 unsigned snes_serialize_size() { return 0; }

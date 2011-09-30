@@ -61,12 +61,17 @@ void snes_init()
 
 void snes_term()
 {
+   GameInpInit();
    BurnDrvExit();
    BurnLibExit();
 }
 
 void snes_power() {}
 void snes_reset() {}
+
+static void poll_input()
+{
+}
 
 void snes_run()
 {
@@ -75,6 +80,9 @@ void snes_run()
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+
+   poll_cb();
+   poll_input();
 
    BurnDrvFrame();
 
@@ -266,6 +274,8 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 
       if (!fba_init(i))
          return false;
+
+      GameInpInit();
 
       return true;
    }

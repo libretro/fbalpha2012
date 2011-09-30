@@ -1,7 +1,7 @@
 #ifndef _FBATYPES_H_
 #define _FBATYPES_H_
 
-#if defined (SN_TARGET_PS3)
+#if defined (SN_TARGET_PS3) || defined(__LIBSNES__)
 
 #ifndef FALSE
 #define FALSE               0

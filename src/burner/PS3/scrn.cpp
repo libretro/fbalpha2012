@@ -37,12 +37,7 @@ void setPauseMode(bool bPause)
 }
  
 // simply reinit screen, added by regret
-void simpleReinitScrn(const bool& reinitVid)
+void simpleReinitScrn(void)
 {
 	VidReinit();
-}
-
-void __cdecl scrnReinit()
-{
-	 simpleReinitScrn(true);
 }

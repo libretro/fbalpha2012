@@ -179,16 +179,13 @@ int configAppLoadXml()
 		child = findElement(element, "sound");
 		child = findElement(element, "device");
 		child = findElement(element, "setting");
-#ifndef SN_TARGET_PS3
-		getAttr(child, "rate", &nAudSampleRate);
-#endif
+		//getAttr(child, "rate", &nAudSampleRate);
 		getAttr(child, "frame", &nAudSegCount);
 		getAttr(child, "pcm-interp", &nInterpolation);
 		getAttr(child, "fm-interp", &nFMInterpolation);
 	}
-#ifdef SN_TARGET_PS3
+	//FIXME: Audio hardcoded to 48010 here for PS3
 	nAudSampleRate = 48010;
-#endif
 
 	// gui
 	element = findElement(root, "gui");
@@ -295,10 +292,6 @@ int configAppSaveXml()
 
 	ticpp::Element fullscreen("fullscreen");
 	video.LinkEndChild(&fullscreen);
-#if 0
-	setAttr(fullscreen, "width", nVidWidth);
-	setAttr(fullscreen, "height", nVidHeight);
-#endif
 	setAttr(fullscreen, "depth", nVidDepth);
 	setAttr(fullscreen, "refresh", nVidRefresh);
 
@@ -316,17 +309,6 @@ int configAppSaveXml()
 	video.LinkEndChild(&stretch);
 	setAttr(stretch, "full-stretch", bVidFullStretch);
 	setAttr(stretch, "correct-aspect", bVidCorrectAspect);
-
-#if 0
-	ticpp::Element color("color");
-	video.LinkEndChild(&color);
-	setAttr(color, "enable", bcolorAdjust);
-	setAttr(color, "contrast", color_contrast);
-	setAttr(color, "brightness", color_brightness);
-	setAttr(color, "gamma", color_gamma);
-	setAttr(color, "grayscale", color_grayscale);
-	setAttr(color, "invert", color_invert);
-#endif
 
 	ticpp::Element vsync("vsync");
 	video.LinkEndChild(&vsync);
@@ -347,11 +329,6 @@ int configAppSaveXml()
 	ticpp::Element filter("filter");
 	render.LinkEndChild(&filter);
 	setAttr(filter, "linear", vidFilterLinear);
-#ifndef SN_TARGET_PS3
-	setAttr(filter, "use-pixelfilter", vidUseFilter);
-	setAttr(filter, "pixel-filter", nVidFilter);
-#endif
-
 	ticpp::Element option("option");
 	render.LinkEndChild(&option);
 	setAttr(option, "force-16bit", bVidForce16bit);
@@ -386,11 +363,9 @@ int configAppSaveXml()
 
 	ticpp::Element audio_set("setting");
 	audio.LinkEndChild(&audio_set);
-#ifdef SN_TARGET_PS3
+	//FIXME: Audio sample rate hardcoded to 48010 here for PS3
 	setAttr(audio_set, "rate", 48010);
-#else
-	setAttr(audio_set, "rate", nAudSampleRate);
-#endif
+	//setAttr(audio_set, "rate", nAudSampleRate);
 	setAttr(audio_set, "frame", nAudSegCount);
 	setAttr(audio_set, "pcm-interp", nInterpolation);
 	setAttr(audio_set, "fm-interp", nFMInterpolation);

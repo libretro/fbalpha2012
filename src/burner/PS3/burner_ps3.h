@@ -178,7 +178,7 @@ extern int nYScale;
 
 extern void UpdateConsoleXY(char *text, float X, float Y);
 
-void __cdecl scrnReinit();
+void simpleReinitScrn(void);
 void setPauseMode(bool bPause);
 void setPauseModeScreen(bool bPause);
 

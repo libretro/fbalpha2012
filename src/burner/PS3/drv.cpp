@@ -90,7 +90,7 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 
 
 	// set functions
-	BurnReinitScrn = scrnReinit;
+	BurnReinitScrn = simpleReinitScrn;
 
 #ifndef NO_IPS
 	//	bDoPatch = true; // play with ips

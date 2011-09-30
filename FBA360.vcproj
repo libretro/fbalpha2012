@@ -1172,6 +1172,10 @@
 								>
 							</File>
 							<File
+								RelativePath=".\src\burn\misc\post90s\d_ashnojoe.cpp"
+								>
+							</File>
+							<File
 								RelativePath=".\src\burn\misc\post90s\d_biomtoy.cpp"
 								>
 							</File>
@@ -1257,6 +1261,10 @@
 							</File>
 							<File
 								RelativePath=".\src\burn\misc\post90s\d_kaneko16.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\src\burn\misc\post90s\d_lordgun.cpp"
 								>
 							</File>
 							<File

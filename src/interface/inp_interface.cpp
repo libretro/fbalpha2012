@@ -432,7 +432,6 @@ int InputFind(const int nFlags)
 
 	return -1;
 }
-#endif
 
 // Get the name of a control and/or the device it's on (not all API's may support this)
 // Either parameter can be passed as NULL

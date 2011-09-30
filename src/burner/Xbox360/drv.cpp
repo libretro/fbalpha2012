@@ -222,7 +222,7 @@ int BurnerDrvExit()
 
 	if (bAudOkay) {
 		// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
-		AudWriteSlience();
+		AudWriteSilence(0);
 	}
 
 	nBurnDrvSelect = ~0U;			// no driver selected

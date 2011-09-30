@@ -59,7 +59,7 @@ public:
 	int set(int (*callback)(int))
 	{
 		if (callback == NULL) {
-			XAudio2GetNextSound = AudWriteSlience;
+			XAudio2GetNextSound = AudWriteSilence;
 		} else {
 			XAudio2GetNextSound = callback;
 		}
@@ -75,7 +75,7 @@ public:
 
 		// Also blank the nAudNextSound buffer
 		if (pAudNextSound) {
-			AudWriteSlience();
+			AudWriteSilence();
 		}
 
 		return 0;
@@ -116,7 +116,7 @@ public:
 		// dsp update
 		if (nAudDSPModule & 1) {
 			if (bRunPause)
-				AudWriteSlience();
+				AudWriteSilence();
 			else
 				DspDo(pAudNextSound, nAudSegLen);
 		}

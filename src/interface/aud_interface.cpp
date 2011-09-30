@@ -225,22 +225,21 @@ const TCHAR* AudioInterface::getName()
 void AudioInterface::setdevice(int device)
 {
 #if defined (_WIN32)
-	if (!_tcscmp(audSelect, _T("DirectSound"))) {
+	if (!strcmp(audSelect, "DirectSound")) {
 		dsDevice = device;
 	}
 
 	#ifndef NO_XAUDIO2
 	#ifdef _MSC_VER
-	else if (!_tcscmp(audSelect, _T("XAudio2"))) {
+	else if (!strcmp(audSelect, "XAudio2")) {
 		xa2Device = device;
 	}
 	#endif
 	#endif
 
 	#ifndef NO_OPENAL
-	else if (!_tcscmp(audSelect, _T("OpenAL"))) {
+	else if (!strcmp(audSelect, "OpenAL"))
 		oalDevice = device;
-	}
 	#endif
 #endif
 }
@@ -248,28 +247,25 @@ void AudioInterface::setdevice(int device)
 int AudioInterface::getdevice(const TCHAR* _driver)
 {
 	TCHAR* driver = audSelect;
-	if (_driver) {
+	if (_driver)
 		driver = (TCHAR*)_driver;
-	}
 
 #if defined (_WIN32)
-	if (!_tcscmp(driver, _T("DirectSound"))) {
+	if (!strcmp(driver, "DirectSound"))
 		return dsDevice;
-	}
 
 	#ifndef NO_XAUDIO2
 	#ifdef _MSC_VER
-	else if (!_tcscmp(driver, _T("XAudio2"))) {
+	else if (!strcmp(driver, "XAudio2"))
 		return xa2Device;
-	}
 	#endif
 	#endif
 
 	#ifndef NO_OPENAL
-	else if (!_tcscmp(driver, _T("OpenAL"))) {
+	#else if (!strcmp(driver, "OpenAL"))
 		return oalDevice;
-	}
 	#endif
+#endif
 
 	return 0;
 }
@@ -282,7 +278,7 @@ InterfaceInfo* AudioInterface::get()
 	}
 
 	if (bAudOkay) {
-		TCHAR szString[MAX_PATH] = _T("");
+		char szString[MAX_PATH] = _T("");
 
 		AudInfo.pszModuleName = getName();
 
@@ -292,29 +288,25 @@ InterfaceInfo* AudioInterface::get()
 		_sntprintf(szString, sizearray(szString), _T("Playback at %iHz, %i%% volume"), nAudSampleRate, nAudVolume / 100);
 		IntInfoAddStringInterface(&AudInfo, szString);
 
-		if (nAudDSPModule & 1) {
-			IntInfoAddStringInterface(&AudInfo, _T("Applying low-pass filter"));
-		}
-		if (nAudDSPModule & 2) {
-			IntInfoAddStringInterface(&AudInfo, _T("Applying reverb filter"));
-		}
+		if (nAudDSPModule & 1)
+			IntInfoAddStringInterface(&AudInfo, "Applying low-pass filter");
+		if (nAudDSPModule & 2)
+			IntInfoAddStringInterface(&AudInfo, "Applying reverb filter");
 
-	 	if (p) {
+	 	if (p)
 			p->get(&AudInfo);
-		}
-	} else {
-		IntInfoAddStringInterface(&AudInfo, _T("Audio plugin not initialised"));
 	}
+	else
+		IntInfoAddStringInterface(&AudInfo, "Audio plugin not initialised");
 
 	return &AudInfo;
 }
 
 int AudioInterface::select(const TCHAR* _driver)
 {
-	if (!_driver || !*_driver) {
+	if (!_driver || !*_driver)
 		return 1;
-	}
 
-	_tcscpy(audSelect, _driver);
+	strcpy(audSelect, _driver);
 	return 0;
 }

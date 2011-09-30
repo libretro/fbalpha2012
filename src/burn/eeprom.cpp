@@ -344,9 +344,11 @@ void EEPROMExit()
 
 	int len = ((1 << intf->address_bits) * (intf->data_bits >> 3)) & (MEMORY_SIZE - 1);
 
+#ifndef __LIBSNES__
 	FILE* file = fopen(output, "wb");
 	fwrite(eeprom_data, len, 1, file);
 	fclose(file);
+#endif
 }
 
 static void eeprom_write(int bit)

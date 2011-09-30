@@ -218,13 +218,14 @@ static bool open_archive()
 
 static bool fba_init(unsigned driver)
 {
+	BurnExtLoadOneRom = archiveLoadOneFile;
+
    nBurnDrvSelect = driver;
 
    if (!open_archive())
       return false;
 
    BurnDrvInit();
-
    return true;
 }
 

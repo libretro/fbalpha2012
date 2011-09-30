@@ -30,8 +30,8 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[32];
 static unsigned g_rom_count;
 
-#define AUDIO_SEGMENT_LENGTH 801
-#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS 1602
+#define AUDIO_SEGMENT_LENGTH 534
+#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
@@ -250,6 +250,9 @@ static void init_video()
 
 static void init_audio()
 {
+   pBurnSoundOut = g_audio_buf;
+   nBurnSoundRate = 32000;
+   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 }
 
 // Infer paths from basename.
@@ -258,11 +261,13 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
    unsigned i = BurnDrvGetIndexByNameA(g_basename);
    if (i < nBurnDrvCount)
    {
+      init_video();
+      init_audio();
+
       if (!fba_init(i))
          return false;
 
-      init_video();
-      init_audio();
+      return true;
    }
    else
       return false;

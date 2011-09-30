@@ -106,7 +106,6 @@ int FBAPopupDisplay(int nFlags)
 	sprintf(msg,"%s",pszBufferEnglish);
 			 
 	UpdateConsoleXY(msg, 0.05f, 0.08f);		 
-	sys_timer_usleep(3000000);
 
 	FBAPopupDestroyText();
 

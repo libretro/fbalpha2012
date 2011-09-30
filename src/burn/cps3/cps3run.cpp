@@ -1060,7 +1060,7 @@ static int Cps3Reset()
 	return 0;
 }
 
-static void be_to_le(uint8_t * p, int size)
+static void cps3_be_to_le(uint8_t * p, int size)
 {
 	uint8_t c;
 	for(uint32_t i = 0; i < size; i+=4, p+=4)
@@ -1090,7 +1090,7 @@ int cps3Init()
 
 	Mem = NULL;
 	MemIndex();
-	int nLen = MemEnd - (uint8_t *)0;
+	int nLen = (intptr_t)MemEnd;
 	if ((Mem = (uint8_t *)malloc(nLen)) == NULL) return 1;
 	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();
@@ -1109,9 +1109,10 @@ int cps3Init()
 		ii++;
 	}
 
-
+#ifdef __LIBSNES__
+	cps3_be_to_le( RomBios, 0x080000 );	 
+#endif
 	cps3_decrypt_bios();
-	//be_to_le( RomBios, 0x080000 );	 
 
 	// load and decode sh-2 program roms
 	ii = 0;	offset = 0;
@@ -1124,8 +1125,10 @@ int cps3Init()
 		ii++;
 	}
 
+#ifdef __LIBSNES__
+	cps3_be_to_le( RomGame, 0x1000000 );
+#endif
 	cps3_decrypt_game();
-	//be_to_le( RomGame, 0x1000000 );
 
 	// load graphic and sound roms
 	ii = 0;	offset = 0;

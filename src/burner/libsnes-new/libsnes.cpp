@@ -52,7 +52,6 @@ static char g_basename[1024];
 void snes_init()
 {
    BurnLibInit();
-   //BurnExtLoadOneRom = archiveLoadOneFile;
 }
 
 void snes_term()
@@ -136,7 +135,7 @@ static bool open_archive()
    for (unsigned index = 0; index < 32; index++)
    {
       if (BurnDrvGetArchiveName(&rom_name, index, false))
-         break;
+         continue;
 
       char path[1024];
       snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);

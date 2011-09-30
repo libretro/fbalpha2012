@@ -23,10 +23,12 @@ extern int nAudSegLen;			// Segment length in samples (calculated from sound rat
 extern int nAudAllocSegLen;		// Allocated segment length in samples
 extern int16_t * pAudNextSound;		// The next sound segment we will add to the sample loop
 extern bool bAudOkay;			// True if sound was inited okay
+extern unsigned char * pVidTransImage;
 
 // Video Output plugin:
 int VidInit();
 int VidExit();
+int VidFrame_Recalc();
 int VidFrame();
 int VidRedraw();
 int VidRecalcPal();

@@ -37,7 +37,7 @@ int nVidImageDepth = 0;						// Memory buffer bits per pixel
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 static bool bVidRecalcPalette;
 
-static unsigned char* pVidTransImage = NULL;
+unsigned char* pVidTransImage = NULL;
 static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;
 
@@ -113,67 +113,67 @@ int VidExit()
 	return nRet;
 }
 
+int VidFrame_Recalc()
+{
+	unsigned short* pSrc = (unsigned short*)pVidTransImage;
+	unsigned char* pDest = pVidImage;
+
+	if (bVidRecalcPalette)
+	{
+		uint64_t r = 0;
+		do{
+			uint64_t g = 0;
+			do{
+				uint64_t b = 0;
+				do{
+					uint64_t r_ = r | (r >> 5);
+					uint64_t g_ = g | (g >> 5);
+					uint64_t b_ = b | (b >> 5);
+					pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
+					b += 8;
+				}while(b < 256);
+				g += 8;
+			}while(g < 256);
+			r += 8;
+		}while(r < 256);
+		bVidRecalcPalette = false;
+	}
+
+	pBurnDraw = pVidTransImage;
+	nBurnPitch = nVidImageWidth << 1;
+	BurnDrvFrame();
+	_psglRender();
+
+	/* set avi buffer, modified by regret */
+
+	pBurnDraw = NULL;
+	nBurnPitch = 0;
+	int y = 0;
+	do{
+		int x = 0;
+
+		do{
+			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
+			x++;
+		}while(x < nVidImageWidth);
+
+		y++;
+		pSrc += nVidImageWidth;
+		pDest += nVidImagePitch;
+	}while(y < nVidImageHeight);
+
+	return 0;
+}
+
 int VidFrame()
 {
-	if (pVidTransImage)
-	{
-		unsigned short* pSrc = (unsigned short*)pVidTransImage;
-		unsigned char* pDest = pVidImage;
-
-		if (bVidRecalcPalette)
-		{
-			uint64_t r = 0;
-			do{
-				uint64_t g = 0;
-				do{
-					uint64_t b = 0;
-					do{
-						uint64_t r_ = r | (r >> 5);
-						uint64_t g_ = g | (g >> 5);
-						uint64_t b_ = b | (b >> 5);
-						pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
-						b += 8;
-					}while(b < 256);
-					g += 8;
-				}while(g < 256);
-				r += 8;
-			}while(r < 256);
-			bVidRecalcPalette = false;
-		}
-
-		pBurnDraw = pVidTransImage;
-		nBurnPitch = nVidImageWidth << 1;
-		BurnDrvFrame();
-		_psglRender();
-
-		/* set avi buffer, modified by regret */
-
-		pBurnDraw = NULL;
-		nBurnPitch = 0;
-		int y = 0;
-		do{
-			int x = 0;
-
-			do{
-				((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
-				x++;
-			}while(x < nVidImageWidth);
-
-			y++;
-			pSrc += nVidImageWidth;
-			pDest += nVidImagePitch;
-		}while(y < nVidImageHeight);
-	}
-	else
-	{
-		pBurnDraw = pVidImage;
-		nBurnPitch = nVidImagePitch;
-		BurnDrvFrame();
-		_psglRender();
-		/* set avi buffer, modified by regret */
-		pBurnDraw = NULL;
-		nBurnPitch = 0;
-	}
+	pBurnDraw = pVidImage;
+	nBurnPitch = nVidImagePitch;
+	BurnDrvFrame();
+	_psglRender();
+	/* set avi buffer, modified by regret */
+	pBurnDraw = NULL;
+	nBurnPitch = 0;
 
 	return 0;
 }

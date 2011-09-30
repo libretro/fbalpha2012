@@ -1060,6 +1060,7 @@ static int Cps3Reset()
 	return 0;
 }
 
+#ifdef LSB_FIRST
 static void cps3_be_to_le(uint8_t * p, int size)
 {
 	uint8_t c;
@@ -1069,6 +1070,7 @@ static void cps3_be_to_le(uint8_t * p, int size)
 		c = *(p+1);	*(p+1) = *(p+2);	*(p+2) = c;
 	}
 }
+#endif
 
 int cps3Init()
 {
@@ -1109,7 +1111,7 @@ int cps3Init()
 		ii++;
 	}
 
-#ifdef __LIBSNES__
+#ifdef LSB_FIRST
 	cps3_be_to_le( RomBios, 0x080000 );	 
 #endif
 	cps3_decrypt_bios();
@@ -1125,7 +1127,7 @@ int cps3Init()
 		ii++;
 	}
 
-#ifdef __LIBSNES__
+#ifdef LSB_FIRST
 	cps3_be_to_le( RomGame, 0x1000000 );
 #endif
 	cps3_decrypt_game();

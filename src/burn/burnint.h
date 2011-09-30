@@ -9,15 +9,19 @@
 #include <string.h>
  
 #include "burn.h"
+
+#ifndef __LIBSNES__
 #undef LSB_FIRST
+#endif
+
 // ------------------------------------------------------------------
 // CPU emulation interfaces
 
 #ifdef LSB_FIRST  // just so this burn lib is still compilable under windows, etc
-#define swapByte(i)(i) 
-#define swapWord(i)(i)
-#define swapLong(i)(i)
-#define swapLongLong (x)
+#define swapByte(i) (i) 
+#define swapWord(i) (i)
+#define swapLong(i) (i)
+#define swapLongLong(x) (x)
 #else
 #define swapByte(i)(i^1)  // might be needed for addresses (e.g. see some of the drivers that ^1 the address on reads)
                                                   // can't see it being useful for data

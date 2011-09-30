@@ -135,7 +135,7 @@ static int RunGetNextSound(int bDraw)
 	if (bRunPause) {
 		if (bAppDoStep) {
 			RunFrame(bDraw, 0);
-			AudWriteSlience();
+			AudWriteSilence(0);
 		} else {
 			RunFrame(bDraw, 1);
 		}
@@ -158,7 +158,7 @@ static int RunGetNextSound(int bDraw)
 	//waveLogWrite();
 
 	if (bAppDoStep) {
-		AudWriteSlience();
+		AudWriteSilence(0);
 	}
 	bAppDoStep = 0;							// done one step
 

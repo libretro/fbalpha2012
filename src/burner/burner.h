@@ -174,4 +174,6 @@ void NeoZ80Cmd(uint16_t sound_code);
 void CpsSoundCmd(uint16_t sound_code);
 void QSoundCMD(uint16_t sound_code);
 
+int AudWriteSilence(int);
+
 #endif

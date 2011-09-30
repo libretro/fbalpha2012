@@ -1,6 +1,11 @@
 #ifndef _FBATYPES_H_
 #define _FBATYPES_H_
 
+#if defined(_XBOX)
+#define strncasecmp(s1, s2, n) _strnicmp(s1, s2, n)
+#define strcasecmp(s1, s2) _tcsicmp(s1, s2)
+#endif
+
 #if defined (SN_TARGET_PS3) || defined(__LIBSNES__)
 
 #ifndef FALSE
@@ -74,6 +79,8 @@ typedef float		FLOAT;
 #else
 #include "tchar.h"
 #endif
+
+
 
 #ifdef _MSC_VER
  typedef signed char int8_t;

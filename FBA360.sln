@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBA360", "FBA360.vcxproj", "{40C83C90-1A54-47D2-B814-868F1BF8588F}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBA360", "FBA360.vcproj", "{40C83C90-1A54-47D2-B814-868F1BF8588F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

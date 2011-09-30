@@ -18,7 +18,7 @@ public:
 	int set(int (*callback)(int))
 	{
 		if (callback == NULL) {
-			SDLGetNextSound = AudWriteSlience;
+			SDLGetNextSound = AudWriteSilence;
 		} else {
 			SDLGetNextSound = callback;
 			dprintf(_T("SDL callback set\n"));
@@ -36,7 +36,7 @@ public:
 
 		if (pAudNextSound) {
 			dprintf (_T("blanking pAudNextSound\n"));
-			AudWriteSlience();
+			AudWriteSilence(0);
 		}
 		return 0;
 	}
@@ -81,7 +81,7 @@ public:
 
 			if (nAudDSPModule & 1) {
 				if (bRunPause)
-					AudWriteSlience();
+					AudWriteSilence(0);
 				else
 					DspDo(pAudNextSound, nAudSegLen);
 			}

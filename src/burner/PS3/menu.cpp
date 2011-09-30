@@ -9,6 +9,7 @@
 #include "menu.h"
 #include "burner.h"
 #include "../../interface/PS3/cellframework2/input/pad_input.h"
+#include "../../interface/PS3/audio_driver.h"
 #include "vid_psgl.h"
 #include "inp_keys.h"
 
@@ -965,7 +966,7 @@ void ConfigFrameMove()
 		{
 			old_state = new_state;
 			setPauseMode(0);
-			audio.play();
+			audio_play();
 			GameStatus = EMULATING;
 			return;
 		}
@@ -1252,7 +1253,7 @@ void DipFrameMove()
 			if (bDrvOkay)	// theres a game loaded, return to game
 			{
 				setPauseMode(0);
-				audio.play();
+				audio_play();
 				is_running = 1;
 				GameStatus = EMULATING;
 				old_state = new_state;
@@ -1587,7 +1588,7 @@ void InputFrameMove()
 			{
 				old_state = new_state;
 				setPauseMode(0);
-				audio.play();
+				audio_play();
 				is_running = 1;
 				GameStatus = EMULATING;
 
@@ -2536,7 +2537,7 @@ void InGameFrameMove()
 		{
 			old_state = new_state;
 			setPauseMode(0);
-			audio.play();
+			audio_play();
 			is_running = 1;
 			GameStatus = EMULATING;
 			return;
@@ -2595,7 +2596,7 @@ void InGameFrameMove()
 			{
 				old_state = new_state;
 				setPauseMode(0);
-				audio.play();
+				audio_play();
 				is_running = 0;
 				GameStatus = EMULATING;
 			}
@@ -2730,7 +2731,7 @@ void InGameFrameMove()
 				{
 					old_state = new_state;
 					setPauseMode(0);
-					audio.play();
+					audio_play();
 					GameStatus = EMULATING;				 
 				}		
 			}
@@ -2744,7 +2745,7 @@ void InGameFrameMove()
 				{
 					old_state = new_state;
 					setPauseMode(0);
-					audio.play();
+					audio_play();
 					is_running = 1;
 					GameStatus = EMULATING;				 
 				}		
@@ -2792,7 +2793,7 @@ void InGameFrameMove()
 				{
 					old_state = new_state;
 					setPauseMode(0);
-					audio.play();
+					audio_play();
 					is_running = 1;
 					GameStatus = EMULATING;				 
 				}		
@@ -2915,7 +2916,7 @@ void FrameMove()
 			// switch back to emulation
 			old_state = new_state;
 			setPauseMode(0);
-			audio.play();
+			audio_play();
 			is_running = 1;
 			GameStatus = EMULATING;
 			return;
@@ -3036,7 +3037,7 @@ void FrameMove()
 				// same game, do nothing
 				old_state = new_state;
 				setPauseMode(0);
-				audio.play();
+				audio_play();
 				GameStatus = EMULATING;	
 				return;
 			}	

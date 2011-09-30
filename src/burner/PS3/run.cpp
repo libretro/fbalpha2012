@@ -5,11 +5,11 @@
 #include "burner.h" 
 #include "menu.h" 
 #include "vid_psgl.h"
-#include "vid_psgl_support.h"
 #ifdef CELL_DEBUG_CONSOLE
 #include <cell/control_console.h>
 #endif
 #include "cellframework2/audio/stream.h"
+#include "../../interface/PS3/audio_driver.h"
 
 int GameStatus = MENU;
 
@@ -40,17 +40,15 @@ static uint64_t inline GetTickCount()
 int RunInit()
 {
 	// Try to run with sound
-	audio.play();
+	audio_play();
 	bOnce = 0;
 	return 0;
 }
 
-extern void audio_check();
-
 int RunExit()
 {
 	// Stop sound if it was playing
-	audio.stop();
+	audio_stop();
 	return 0;
 }
 

@@ -10,6 +10,7 @@
 #ifndef NO_COMBO
 #include "combo.h"
 #endif
+#include "../../interface/PS3/audio_driver.h"
 
 int bDrvOkay = 0; // 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
 static bool bSaveRAM = false;
@@ -165,7 +166,7 @@ int BurnerDrvExit()
 
 	if (bAudOkay)
 	{
-		AudWriteSilence();	// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
+		audio_blank();	// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
 	}
 
 	nBurnDrvSelect = ~0U; // no driver selected

@@ -50,7 +50,8 @@ bool CheckSetting(int i)
 	if (!pgi)
 		return false;
 
-	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting) {
+	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting)
+	{
 		unsigned char nFlags = bdi.nFlags;
 		if ((nFlags & 0x0F) <= 1)
 			return true;

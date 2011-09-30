@@ -65,13 +65,16 @@ PPU_CFLAGS              +=  $(DEFINES) $(INCLUDE)
 PPU_CXXFLAGS            +=  $(DEFINES) $(INCLUDE)
 PPU_SRCS                +=  $(INTERFACE_DIR)/PS3/cellframework2/audio/audioport.c \
                             $(INTERFACE_DIR)/PS3/cellframework2/audio/buffer.c \
-                            $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/inp_cell.cpp $(INTERFACE_DIR)/PS3/vid_psgl.cpp $(INTERFACE_DIR)/PS3/vid_psgl_support.cpp
+                            $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/input_driver.cpp $(INTERFACE_DIR)/PS3/vid_psgl.cpp
+
 PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3snd.cpp $(BURN_DIR)/cps3/d_cps3.cpp \
-                                    $(CPU_DIR)/sh2/sh2.cpp \
-                            $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp $(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound_c.cpp $(BURN_DIR)/burn_y8950.cpp \
-            $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp $(BURN_DIR)/burn_ym2413.cpp $(BURN_DIR)/burn_ym2608.cpp $(BURN_DIR)/burn_ym2610.cpp $(BURN_DIR)/burn_ym2612.cpp $(BURN_DIR)/burn_ym3526.cpp \
-                                        $(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/cheat.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
-                                        $(BURN_DIR)/ics2115.cpp $(BURN_DIR)/k007232.cpp $(BURN_DIR)/k051649.cpp $(BURN_DIR)/k053260.cpp $(BURN_DIR)/k054539.cpp $(BURN_DIR)/load.cpp $(BURN_DIR)/m6502_intf.cpp $(BURN_DIR)/m6800_intf.cpp $(BURN_DIR)/m6809_intf.cpp \
+			$(CPU_DIR)/sh2/sh2.cpp $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp \
+			$(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound_c.cpp \
+			$(BURN_DIR)/burn_y8950.cpp $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp \
+			$(BURN_DIR)/burn_ym2413.cpp $(BURN_DIR)/burn_ym2608.cpp $(BURN_DIR)/burn_ym2610.cpp \
+			$(BURN_DIR)/burn_ym2612.cpp $(BURN_DIR)/burn_ym3526.cpp \
+			$(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/cheat.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
+			$(BURN_DIR)/ics2115.cpp $(BURN_DIR)/k007232.cpp $(BURN_DIR)/k051649.cpp $(BURN_DIR)/k053260.cpp $(BURN_DIR)/k054539.cpp $(BURN_DIR)/load.cpp $(BURN_DIR)/m6502_intf.cpp $(BURN_DIR)/m6800_intf.cpp $(BURN_DIR)/m6809_intf.cpp \
                                         $(BURN_DIR)/msm5205.cpp $(BURN_DIR)/msm6295.cpp $(BURN_DIR)/namco_snd.cpp $(BURN_DIR)/rf5c68.cpp $(BURN_DIR)/segapcm.cpp $(BURN_DIR)/seibusnd.cpp $(BURN_DIR)/sek.cpp $(BURN_DIR)/sn76496.cpp $(BURN_DIR)/tiles_generic.cpp \
                                         $(BURN_DIR)/timer.cpp $(BURN_DIR)/upd7759.cpp $(BURN_DIR)/vez.cpp $(BURN_DIR)/x1010.cpp $(BURN_DIR)/ym2151.c $(BURN_DIR)/ym2413.cpp $(BURN_DIR)/ymdeltat.c $(BURN_DIR)/ymf278b.c $(BURN_DIR)/ymz280b.cpp $(BURN_DIR)/zet.cpp \
                                         $(BURN_DIR)/es8712.cpp \
@@ -136,7 +139,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         $(BURN_DIR)/toaplan/d_zerowing.cpp $(BURN_DIR)/toaplan/toa_bcu2.cpp $(BURN_DIR)/toaplan/toa_extratext.cpp $(BURN_DIR)/toaplan/toa_gp9001.cpp $(BURN_DIR)/toaplan/toa_palette.cpp \
                                         $(BURN_DIR)/toaplan/toaplan.cpp $(BURN_DIR)/toaplan/toaplan1.cpp \
                                         \
-                                        $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/localise.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
+                                        $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
                                         $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/scrn.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
                                         \
                                         $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp $(BURNER_DIR)/misc.cpp \
@@ -166,7 +169,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         \
                                         $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
                                         \
-                                        $(INTERFACE_DIR)/PS3/aud_interface_ps3.cpp $(INTERFACE_DIR)/PS3/inp_interface_ps3.cpp $(INTERFACE_DIR)/interface.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/PS3/vid_interface_ps3.cpp $(INTERFACE_DIR)/vid_support.cpp \
+                                        $(INTERFACE_DIR)/PS3/audio_driver.cpp $(INTERFACE_DIR)/PS3/inp_interface_ps3.cpp $(INTERFACE_DIR)/interface.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/PS3/vid_interface_ps3.cpp $(INTERFACE_DIR)/vid_support.cpp \
                                         \
                                         $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
                                         $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \

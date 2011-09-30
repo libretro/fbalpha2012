@@ -4,9 +4,8 @@
 #include "burner.h"
  
 #define LOAD_OPT_ROM
-//#define USE_OLD_AUDIT
 
-static int nBArchiveError = 0;						// non-zero if there is a problem with the opened romset
+static int nBArchiveError = 0;				// non-zero if there is a problem with the opened romset
 static char* szBArchiveName[BZIP_MAX] = { NULL, };	// Archive files to search through
 
 struct ROMFIND
@@ -21,8 +20,8 @@ static int nRomCount = 0;
 static int nTotalSize = 0;
 
 static ArcEntry* List = NULL;
-static int nListCount = 0;							// List of entries for current archive file
-static int nCurrentArc = -1;						// Archive which is currently open
+static int nListCount = 0;				// List of entries for current archive file
+static int nCurrentArc = -1;				// Archive which is currently open
 
 // ---------------------------------------------------------------------------
 
@@ -69,34 +68,7 @@ static int GetBArchiveError(int nState)
 
 static int CheckRomsBoot()
 {
-#ifdef USE_OLD_AUDIT
-	int ret = AUDIT_FULLPASS;
-	BurnRomInfo ri;
-	int state = STAT_NOFIND;
-
-	for (int i = 0; i < nRomCount; i++)
-	{
-		memset(&ri, 0, sizeof(ri));
-		BurnDrvGetRomInfo(&ri, i);			// Find information about the wanted rom
-
-		state = RomFind[i].nState;		// Get the state of the rom in the archive file
-		if (state != STAT_OK && ri.nType)
-		{
-			if (ri.nCrc == 0)
-				continue; // no_dump
-
-			if (!(ri.nType & BRF_OPT))
-				return AUDIT_FAIL;
-
-			ret = AUDIT_PARTPASS;
-		}
-	}
-
-	return ret;
-
-#else
 	return 0;
-#endif
 }
 
 // Check the roms to see if the code, graphics etc are complete
@@ -220,18 +192,15 @@ int BArchiveStatus()
 
 int BArchiveCheckRoms(const bool& bootApp)
 {
-#ifdef USE_OLD_AUDIT
-	if (bootApp)
-		return CheckRomsBoot();
-#endif
-
 	// Check the roms to see if the code, graphics etc are complete
 	CheckRoms();
 
-	if (nBArchiveError & 0x2000) {
-		if (!(nBArchiveError & 0x0F0F)) {
+	if (nBArchiveError & 0x2000)
+	{
+		if (!(nBArchiveError & 0x0F0F))
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_OK));
-		} else {
+		else
+		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, "\n");
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_PROBLEM));
 		}
@@ -244,7 +213,8 @@ int BArchiveCheckRoms(const bool& bootApp)
 			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_ESS_BAD));
 		}
-		if (nBArchiveError & 0x0202) {
+		if (nBArchiveError & 0x0202)
+		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_PRG));
 			if (nBArchiveError & 0x0002)
@@ -252,7 +222,8 @@ int BArchiveCheckRoms(const bool& bootApp)
 			else
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_BAD));
 		}
-		if (nBArchiveError & 0x0404) {
+		if (nBArchiveError & 0x0404)
+		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_GRA));
 			if (nBArchiveError & 0x0004)
@@ -320,7 +291,8 @@ int BArchiveOpen(bool bootApp)
 	char szFullName[MAX_PATH] = "";
 	char* szName = NULL;
 
-	for (int y = 0, z = 0; y < BZIP_MAX && z < BZIP_MAX; y++) {
+	for (int y = 0, z = 0; y < BZIP_MAX && z < BZIP_MAX; y++)
+	{
 		// Get archive name without extension
 		if (BurnDrvGetArchiveName(&szName, y, false))
 			break;
@@ -435,13 +407,15 @@ int BArchiveClose()
 	nBArchiveError = 0;		// reset romset errors
 	nTotalSize = 0;
 
-	if (RomFind) {
+	if (RomFind)
+	{
 		free(RomFind);
 		RomFind = NULL;
 	}
 	nRomCount = 0;
 
-	for (int z = 0; z < BZIP_MAX; z++) {
+	for (int z = 0; z < BZIP_MAX; z++)
+	{
 		free(szBArchiveName[z]);
 		szBArchiveName[z] = NULL;
 	}

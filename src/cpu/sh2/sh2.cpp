@@ -37,8 +37,6 @@
 #include "burnint.h"
 #include "fbatypes.h"
 
-//void DebugMsg(const char* format, ...);
-
 #include "sh2.h"
 
 int has_sh2;

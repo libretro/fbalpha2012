@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/timer.h>
@@ -12,9 +15,6 @@
 #include <sysutil/sysutil_sysparam.h>
 #include <sys/spu_initialize.h>
 #include <sys/paths.h>
-
-#ifndef MENU_H
-#define MENU_H
  
 #define MENU			0
 #define EMULATING		1

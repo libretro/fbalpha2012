@@ -2208,11 +2208,7 @@
 					Name="interface"
 					>
 					<File
-						RelativePath=".\src\interface\aud_dsp.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\interface\PS3\aud_interface_ps3.cpp"
+						RelativePath=".\src\interface\PS3\audio_driver.cpp"
 						>
 					</File>
 					<File
@@ -2287,45 +2283,13 @@
 						Name="PS3"
 						>
 						<File
-							RelativePath=".\src\interface\PS3\inp_cell.cpp"
+							RelativePath=".\src\interface\PS3\input_driver.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\src\interface\PS3\vid_psgl.cpp"
 							>
 						</File>
-						<File
-							RelativePath=".\src\interface\PS3\vid_psgl_support.cpp"
-							>
-						</File>
-						<Filter
-							Name="cellframework"
-							>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\threads\cond.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\threads\mutex.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\audio\quadratic_resampler.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\audio\resampler.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\threads\scoped_lock.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\src\interface\PS3\cellframework\threads\thread.cpp"
-								>
-							</File>
-						</Filter>
 						<Filter
 							Name="cellframework2"
 							>

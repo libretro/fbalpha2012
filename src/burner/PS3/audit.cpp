@@ -44,7 +44,8 @@ static inline void lowerString(string& str)
 	strcpy(strs, str.c_str());
 
 	int i = 0;
-	while (strs[i]) {
+	while (strs[i])
+	{
 		strs[i] = strlower(strs[i]);
 		i++;
 	}
@@ -54,8 +55,10 @@ static inline void lowerString(string& str)
 
 static inline void freeArchiveList()
 {
-	if (List) {
-		for (int i = 0; i < listCount; i++) {
+	if (List)
+	{
+		for (int i = 0; i < listCount; i++)
+		{
 			free(List[i].szName);
 			List[i].szName = NULL;
 		}

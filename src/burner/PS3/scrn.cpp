@@ -13,38 +13,22 @@
 #include "burner.h"
 #include "cheat.h"
 #include "cartridge.h"
-#include "vid_psgl_support.h"
 #include "InGameOptions.h"
 #ifndef NO_AUTOFIRE
 #include "autofire.h"
 #endif
+#include "../../interface/PS3/audio_driver.h"
  
-//RECT SystemWorkArea = { 0, 0, 640, 480 };		// Work area on the desktop
-int nWindowPosX = -1, nWindowPosY = -1;			// Window position
-
 int bAutoPause = 0;
 int nSavestateSlot = 1;
 
-bool bShowOnTop = false;
-bool bFullscreenOnStart = false;
-
-static bool bMaximised;
-static int nPrevWidth, nPrevHeight;
-
-int nWindowSize = 0;
-
-static bool bDrag = false;
-static int nDragX, nDragY;
-static int nOldWindowX, nOldWindowY;
-static int nLeftButtonX, nLeftButtonY;
- 
 void setPauseModeScreen(bool bPause)
 {
 	bRunPause = bPause;
 	bAltPause = bPause;
 
 	if (bPause)
-		audio.blank();		
+		audio_blank();		
 }
 
 void setPauseMode(bool bPause)
@@ -53,7 +37,7 @@ void setPauseMode(bool bPause)
 	bAltPause = bPause;
 
 	if (bPause)
-		audio.blank();
+		audio_blank();
 }
  
 // simply reinit screen, added by regret

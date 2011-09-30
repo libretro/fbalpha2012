@@ -2,6 +2,7 @@
 // Add media reinit by regret
 
 #include "burner.h"
+#include "../../interface/PS3/audio_driver.h"
 
 static int nBaseFps;
 
@@ -16,7 +17,7 @@ int mediaInit(void)
 
 	if (!bAudOkay)
 	{
-		audio.init();					// Init Sound (not critical if it fails)
+		audio_init();					// Init Sound (not critical if it fails)
 
 		if (!bAudOkay)
 		{
@@ -45,35 +46,29 @@ int mediaInit(void)
 	return 0;
 }
 
-int mediaExit()
+int mediaExit(void)
 {
 	nBurnSoundRate = 0;					// Blank sound
 	pBurnSoundOut = NULL;
 
-	audio.exit();						// Exit audio
+	audio_exit();						// Exit audio
 	VidExit();
 	InputExit();
 	return 0;
 }
 
-// reinit screen, audio, added by regret
-int mediaReInitScrn()
+int mediaReInitAudio(void)
 {
-	return 0;
-}
-
-int mediaReInitAudio()
-{
-	if (audio.bAudPlaying)
-		audio.stop();
+	if (bAudPlaying)
+		audio_stop();
 
 	nBurnSoundRate = 0;					// Blank sound
 	pBurnSoundOut = NULL;
 
-	if (audio.exit())
+	if (audio_exit())
 		return 1;
 
-	if (audio.init())
+	if (audio_init())
 		return 1;
 
 	nBurnSoundRate = nAudSampleRate;
@@ -92,12 +87,12 @@ int mediaChangeFps(int scale)
 	if (!bAudOkay)
 		return 1;
 
-	if (audio.bAudPlaying)
-		audio.stop();
+	if (bAudPlaying)
+		audio_stop();
 
 	nBurnSoundRate = nAudSampleRate;
 	nBurnSoundLen = nAudSegLen;
-	audio.play();
+	audio_play();
 
 	return 0;
 }

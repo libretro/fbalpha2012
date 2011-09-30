@@ -16,7 +16,8 @@ void VidFilterParamInit()
 	nPreScaleZoom = 1;
 	nPreScaleEffect = 0;
 
-	if (vidUseFilter) {
+	if (vidUseFilter)
+	{
 		nPreScaleEffect = nVidFilter;
 		nPreScaleZoom = VidFilterGetZoom(nPreScaleEffect);
 	}

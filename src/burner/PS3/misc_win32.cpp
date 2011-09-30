@@ -1,9 +1,6 @@
 // misc win32 functions
 #include "burner.h"
 
-// ---------------------------------------------------------------------------
-
-// ==> other functions, added by regret
 void setWindowAspect(bool first_boot)
 {
 	if(first_boot)
@@ -197,7 +194,7 @@ int directLoadGame(const char * name)
 
 	nVidFullscreen = 1;
 
-	if (_tcsicmp(&name[_tcslen(name) - 3], _T(".fs")) == 0)
+	if (strcasecmp(&name[strlen(name) - 3], ".fs") == 0)
 	{
 		if (BurnStateLoad(name, 1, &DrvInitCallback))
 			return 1;
@@ -277,7 +274,7 @@ static inline int findRomByName(const char* name, ArcEntry* list, int count)
 	int i = 0;
 	do
 	{
-		if (list->szName && !_stricmp(name, getFilenameA(list->szName)))
+		if (list->szName && !strcasecmp(name, getFilenameA(list->szName)))
 			return i;
 		i++;
 		list++;

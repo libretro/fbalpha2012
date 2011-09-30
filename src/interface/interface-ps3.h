@@ -8,11 +8,9 @@
 // GameInp structure
 #include "gameinp.h"
 
-// Interface
-class Audio;
-
 // Interface info (used for all modules)
-struct InterfaceInfo {
+struct InterfaceInfo
+{
 	const char * pszModuleName;
 	char ** ppszInterfaceSettings;
 	char ** ppszModuleSettings;
@@ -43,61 +41,14 @@ extern bool bInputOkay;
 extern unsigned int nInputSelect;
 
 // Audio Output plugin
-int AudWriteSilence(int draw = 0);			// Write silence into the buffer
-
-class AudioInterface
-{
-	public:
-	int nAudVolume;					// Sound volume (% * 100)
-	bool bAudPlaying;				// True if the Loop buffer is playing
-
-	const char * driver_list();
-	void driver(const char * driver = "");
-
-	int init();
-	int exit();
-	int play();
-	int stop();
-	int blank();
-	void check();
-	int setvolume(int vol);
-	int set(int (*callback)(int));
-	int setfps();
-
-	void term();
-	int select(const char* driver);
-	InterfaceInfo* get();
-	const char* getName();
-	void setdevice(int device);
-	int getdevice(const char* driver = NULL);
-
-	AudioInterface() {
-		bAudPlaying = false;
-		nAudVolume = 10000;
-	}
-	~AudioInterface() {
-		term();
-	}
-
-	private:
-	int p;
-};
-
-extern AudioInterface audio;	// audio interface instance
+int AudWriteSilence(int draw = 0);	// Write silence into the buffer
 
 extern int nAudSampleRate;		// sample rate
 extern int nAudSegCount;		// Segs in the pdsbLoop buffer
 extern int nAudSegLen;			// Seg length in samples (calculated from Rate/Fps)
 extern int nAudAllocSegLen;		// Allocated seg length in samples
-extern short* pAudNextSound;	// The next sound seg we will add to the sample loop
+extern short* pAudNextSound;		// The next sound segment we will add to the sample loop
 extern bool bAudOkay;			// True if DSound was initted okay
-extern int nAudDSPModule;		// DSP module to use: 0 = none, 1 = low-pass filter, 2 = reverb
-extern int audStereoUpmixing;	// Enable stereo upmixing (XAudio2 only)
-extern char audSelect[16];		// Which audio plugin is selected
-extern int dsDevice;			// dsound device
-extern int oalDevice;			// openal device
-extern int xa2Device;			// xaudio2 device
-extern int cellAudioDevice;		// ps3 cell audio device
 
 // Video Output plugin:
 struct VidOut {
@@ -165,13 +116,5 @@ extern unsigned int nVidAdapter; // Which adapter device is selected
 extern int shaderindex;
 
 extern "C" unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
-
-// vid_directx_support.cpp
-#if 0
-int VidSNewShortMsg(const char* pText, int nRGB = 0, int nDuration = 0, int nPiority = 5);
-void VidSKillShortMsg();
-int VidSNewTinyMsg(const char* pText, int nRGB = 0, int nDuration = 0, int nPiority = 5);
-void VidSKillTinyMsg();
-#endif
 
 #endif

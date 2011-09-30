@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+ 
 #include <string.h>
 #include <sys/timer.h>
 #include <sys/return_code.h>
@@ -12,9 +15,5 @@
 #include <sysutil/sysutil_msgdialog.h>
 #include <sys/spu_initialize.h>
 #include <sys/paths.h>
-
-#ifndef MAIN_H
-#define MAIN_H
- 
 
 #endif

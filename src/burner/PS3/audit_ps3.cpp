@@ -14,21 +14,6 @@ char msg[1024];
 
 static int FBAPopupLog()
 {
-	char* pszTypeEnglish;
-
-	switch (nPopupFlags & 7)
-	{
-		case PUF_TYPE_ERROR:
-			pszTypeEnglish = FBALoadStringEx(IDS_ERR_ERROR, false);
-			break;
-		case PUF_TYPE_WARNING:
-			pszTypeEnglish = FBALoadStringEx(IDS_ERR_WARNING, false);
-			break;
-		default:
-			pszTypeEnglish = FBALoadStringEx(IDS_ERR_INFORMATION, false);
-			break;
-	}
-
 	for (char* szText = pszBufferEnglish; ; )
 	{
 		int nLen;
@@ -72,24 +57,6 @@ int FBAPopupAddText(int nFlags, char* pszFormat, ...)
 
 		pszStringLocal = pszFormat;
 
-		// Add the translated string if present
-		if (bLanguageActive && (nFlags & PUF_TEXT_TRANSLATE) &&  pszStringLocal && *pszStringLocal)
-		{
-			// Add the translated string
-			int nLen = snprintf(szString, sizearray(szString), pszStringLocal, vaLocal);
-			if (nLen > 0)
-			{
-				char* pszNewBuffer = (char*)realloc(pszBufferLocal, (nLen + nBufferLocalSize + 1) * sizeof(char));
-				if (pszNewBuffer)
-				{
-					pszBufferLocal = pszNewBuffer;
-					_tcsncpy(pszBufferLocal + nBufferLocalSize, szString, nLen);
-					nBufferLocalSize += nLen;
-					pszBufferLocal[nBufferLocalSize] = 0;
-				}
-			}
-		}
-
 		va_end(vaLocal);
 	}
 
@@ -103,7 +70,7 @@ int FBAPopupAddText(int nFlags, char* pszFormat, ...)
 			if (pszNewBuffer)
 			{
 				pszBufferEnglish = pszNewBuffer;
-				_tcsncpy(pszBufferEnglish + nBufferEnglishSize, szString, nLen);
+				strncpy(pszBufferEnglish + nBufferEnglishSize, szString, nLen);
 				nBufferEnglishSize += nLen;
 				pszBufferEnglish[nBufferEnglishSize] = 0;
 			}

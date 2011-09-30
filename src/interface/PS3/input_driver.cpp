@@ -4,9 +4,9 @@
 
 #include "burner.h"
 #include "cellframework2/input/pad_input.h"
-// Key codes
-#include "inp_keys.h"
+#include "inp_keys.h"				// Key codes
 #include "menu.h"
+#include "audio_driver.h"
 
 #define LIST_DEVICES
 #define MAX_KEYBOARD	(0)
@@ -101,7 +101,7 @@ int CellinpState(int nCode)
 	if (pausemenu_condition)
 	{
 		//setPauseMode(1);
-		audio.stop();
+		audio_stop();
 		GameStatus = PAUSE;
 		is_running = 0;
 		return 0;

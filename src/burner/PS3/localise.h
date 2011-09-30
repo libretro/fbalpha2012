@@ -1,18 +1,6 @@
 #ifndef _LOCALISE_H_
 #define _LOCALISE_H_
 
-extern bool bLanguageActive;
-extern TCHAR szLanguage[MAX_PATH];
- 
-void FBALocaliseExit();
-int FBALocaliseInit(TCHAR* language);
-int FBALocaliseLoad();
-
-HBITMAP FBALoadBitmap(int id);
- 
-int FBALoadString(int id, char * buffer, int maxsize);
-TCHAR* FBALoadStringEx(int id, bool translate = true);
-
 #define MAKEINTRESOURCE(x) x
 
 #define IDS_ERR_ERROR			(0)

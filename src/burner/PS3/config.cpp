@@ -134,11 +134,8 @@ int configAppLoadXml()
 	getAttr(child, "rotate-vertical", &nVidRotationAdjust);
 
 	child = findElement(element, "screen-size");
-	getAttr(child, "window", &nWindowSize);
 
 	child = findElement(element, "window-position");
-	getAttr(child, "x", &nWindowPosX);
-	getAttr(child, "y", &nWindowPosY);
 
 	child = findElement(element, "stretch");
 	getAttr(child, "full-stretch", &bVidFullStretch);
@@ -187,21 +184,14 @@ int configAppLoadXml()
 	element = findElement(root, "audio");
 	if (element) {
 		child = findElement(element, "sound");
-		getTextStr(child, audSelect);
 		child = findElement(element, "device");
-		getAttr(child, "ds", &dsDevice);
-		getAttr(child, "xa2", &xa2Device);
-		getAttr(child, "oal", &oalDevice);
-		getAttr(child, "cellAudio", &cellAudioDevice);
 		child = findElement(element, "setting");
 #ifndef SN_TARGET_PS3
 		getAttr(child, "rate", &nAudSampleRate);
 #endif
 		getAttr(child, "frame", &nAudSegCount);
-		getAttr(child, "dsp", &nAudDSPModule);
 		getAttr(child, "pcm-interp", &nInterpolation);
 		getAttr(child, "fm-interp", &nFMInterpolation);
-		getAttr(child, "stereo-upmix", &audStereoUpmixing);
 	}
 #ifdef SN_TARGET_PS3
 	nAudSampleRate = 48010;
@@ -211,7 +201,6 @@ int configAppLoadXml()
 	element = findElement(root, "gui");
 	if (element) {
 		child = findElement(element, "language");
-		getTextStr(child, szLanguage);
 		child = findElement(element, "gamelist");
 
 		child = findElement(element, "menu");
@@ -219,8 +208,6 @@ int configAppLoadXml()
 		getAttr(child, "style", &menuNewStyle);
 
 		child = findElement(element, "gui-misc");
-		getAttr(child, "on-top", &bShowOnTop);
-		getAttr(child, "auto-fullscreen", &bFullscreenOnStart);
 		getAttr(child, "lastRom", &nLastRom);
 		getAttr(child, "lastFilter", &nLastFilter);
 		getAttr(child, "hideChildren", &HideChildren);
@@ -328,12 +315,9 @@ int configAppSaveXml()
 
 	ticpp::Element screen_size("screen-size");
 	video.LinkEndChild(&screen_size);
-	setAttr(screen_size, "window", nWindowSize);
 
 	ticpp::Element window_position("window-position");
 	video.LinkEndChild(&window_position);
-	setAttr(window_position, "x", nWindowPosX);
-	setAttr(window_position, "y", nWindowPosY);
 
 	ticpp::Element stretch("stretch");
 	video.LinkEndChild(&stretch);
@@ -410,14 +394,9 @@ int configAppSaveXml()
 	// audio
 	ticpp::Element audio("audio");
 	root.LinkEndChild(&audio);
-	addTextNode(audio, "sound", audSelect);
 
 	ticpp::Element device("device");
 	audio.LinkEndChild(&device);
-	setAttr(device, "ds", dsDevice);
-	setAttr(device, "xa2", xa2Device);
-	setAttr(device, "oal", oalDevice);
-	setAttr(device, "cellAudioDevice", cellAudioDevice);
 
 	ticpp::Element audio_set("setting");
 	audio.LinkEndChild(&audio_set);
@@ -427,15 +406,12 @@ int configAppSaveXml()
 	setAttr(audio_set, "rate", nAudSampleRate);
 #endif
 	setAttr(audio_set, "frame", nAudSegCount);
-	setAttr(audio_set, "dsp", nAudDSPModule);
 	setAttr(audio_set, "pcm-interp", nInterpolation);
 	setAttr(audio_set, "fm-interp", nFMInterpolation);
-	setAttr(audio_set, "stereo-upmix", audStereoUpmixing);
 
 	// gui
 	ticpp::Element gui("gui");
 	root.LinkEndChild(&gui);
-	addTextNode(gui, "language", szLanguage);
 	//addTextNode(gui, "gamelist", szTransGamelistFile);
 
 	ticpp::Element menu("menu");
@@ -445,8 +421,6 @@ int configAppSaveXml()
 
 	ticpp::Element gui_misc("gui-misc");
 	gui.LinkEndChild(&gui_misc);
-	setAttr(gui_misc, "on-top", bShowOnTop);
-	setAttr(gui_misc, "auto-fullscreen", bFullscreenOnStart);
 	setAttr(gui_misc, "lastRom", nLastRom);
 	setAttr(gui_misc, "lastFilter", nLastFilter);
 

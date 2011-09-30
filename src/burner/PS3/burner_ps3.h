@@ -158,7 +158,6 @@ extern unsigned int nFastSpeed;
 
 void RunIdle();
 int RunMessageLoop(int argc, char ** argv);
-int RunInit();
 int RunExit();
 int RunReset();
 

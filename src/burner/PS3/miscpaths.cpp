@@ -41,38 +41,36 @@ const char * getMiscArchiveName(unsigned int dirType)
 	switch (dirType)
 	{
 		case PATH_PREVIEW:
-			_tcscpy(szArchiveName, "snap");
+			strcpy(szArchiveName, "snap");
 			break;
 		case PATH_TITLE:
-			_tcscpy(szArchiveName, "titles");
+			strcpy(szArchiveName, "titles");
 			break;
 		case PATH_FLYER:
-			_tcscpy(szArchiveName, "flyers");
+			strcpy(szArchiveName, "flyers");
 			break;
 		case PATH_SCORE:
-			_tcscpy(szArchiveName, "score");
+			strcpy(szArchiveName, "score");
 			break;
 		case PATH_SELECT:
-			_tcscpy(szArchiveName, "select");
+			strcpy(szArchiveName, "select");
 			break;
 		case PATH_GAMEOVER:
-			_tcscpy(szArchiveName, "gameover");
+			strcpy(szArchiveName, "gameover");
 			break;
 		case PATH_BOSS:
-			_tcscpy(szArchiveName, "boss");
+			strcpy(szArchiveName, "boss");
 			break;
-
 		case PATH_CHEAT:
-			_tcscpy(szArchiveName, "cheat");
+			strcpy(szArchiveName, "cheat");
 			break;
 		case PATH_SKIN:
-			_tcscpy(szArchiveName, "skin");
+			strcpy(szArchiveName, "skin");
 			break;
 		case PATH_ICON:
-			_tcscpy(szArchiveName, "icons");
+			strcpy(szArchiveName, "icons");
 			break;
 	}
 
 	return szArchiveName;
 }
- 

@@ -559,33 +559,33 @@ int InitInputList()
 */
 
 //FIXME: Check if this is correct - compare with the original above
-	m_InputSettingsList[CTRL_SQUARE_MASK] = std::string(_T("Square Button"));
-	m_InputSettingsList[CTRL_CROSS_MASK] = std::string(_T("Cross Button"));
-	m_InputSettingsList[CTRL_CIRCLE_MASK] = std::string(_T("Circle Button"));
-	m_InputSettingsList[CTRL_TRIANGLE_MASK] = std::string(_T("Triangle Button"));
-	m_InputSettingsList[CTRL_START_MASK] = std::string(_T("Start Button"));
-	m_InputSettingsList[CTRL_SELECT_MASK] = std::string(_T("Select Button"));
-	m_InputSettingsList[CTRL_L1_MASK] = std::string(_T("L1 Button"));
-	m_InputSettingsList[CTRL_R1_MASK] = std::string(_T("R1 Button"));
-	m_InputSettingsList[CTRL_L3_MASK] = std::string(_T("L3 Button"));
-	m_InputSettingsList[CTRL_R3_MASK] = std::string(_T("R3 Button"));
-	m_InputSettingsList[CTRL_L2_MASK] = std::string(_T("L2 Button"));
-	m_InputSettingsList[CTRL_R2_MASK] = std::string(_T("R2 Button"));
-	m_InputSettingsList[CTRL_R3_MASK | CTRL_L3_MASK] = std::string(_T("L3 + R3"));
+	m_InputSettingsList[CTRL_SQUARE_MASK] = std::string("Square Button");
+	m_InputSettingsList[CTRL_CROSS_MASK] = std::string("Cross Button");
+	m_InputSettingsList[CTRL_CIRCLE_MASK] = std::string("Circle Button");
+	m_InputSettingsList[CTRL_TRIANGLE_MASK] = std::string("Triangle Button");
+	m_InputSettingsList[CTRL_START_MASK] = std::string("Start Button");
+	m_InputSettingsList[CTRL_SELECT_MASK] = std::string("Select Button");
+	m_InputSettingsList[CTRL_L1_MASK] = std::string("L1 Button");
+	m_InputSettingsList[CTRL_R1_MASK] = std::string("R1 Button");
+	m_InputSettingsList[CTRL_L3_MASK] = std::string("L3 Button");
+	m_InputSettingsList[CTRL_R3_MASK] = std::string("R3 Button");
+	m_InputSettingsList[CTRL_L2_MASK] = std::string("L2 Button");
+	m_InputSettingsList[CTRL_R2_MASK] = std::string("R2 Button");
+	m_InputSettingsList[CTRL_R3_MASK | CTRL_L3_MASK] = std::string("L3 + R3");
 
-	m_InputSettingsData.push_back(std::string(_T("Square Button")));
-	m_InputSettingsData.push_back(std::string(_T("Cross Button")));
-	m_InputSettingsData.push_back(std::string(_T("Circle Button")));
-	m_InputSettingsData.push_back(std::string(_T("Triangle Button")));
-	m_InputSettingsData.push_back(std::string(_T("Start Button")));
-	m_InputSettingsData.push_back(std::string(_T("Select Button")));
-	m_InputSettingsData.push_back(std::string(_T("L1 Button")));
-	m_InputSettingsData.push_back(std::string(_T("R1 Button")));
-	m_InputSettingsData.push_back(std::string(_T("L3 Button")));
-	m_InputSettingsData.push_back(std::string(_T("R3 Button")));
-	m_InputSettingsData.push_back(std::string(_T("L2 Button")));
-	m_InputSettingsData.push_back(std::string(_T("R2 Button")));
-	m_InputSettingsData.push_back(std::string(_T("L3 + R3")));
+	m_InputSettingsData.push_back(std::string("Square Button"));
+	m_InputSettingsData.push_back(std::string("Cross Button"));
+	m_InputSettingsData.push_back(std::string("Circle Button"));
+	m_InputSettingsData.push_back(std::string("Triangle Button"));
+	m_InputSettingsData.push_back(std::string("Start Button"));
+	m_InputSettingsData.push_back(std::string("Select Button"));
+	m_InputSettingsData.push_back(std::string("L1 Button"));
+	m_InputSettingsData.push_back(std::string("R1 Button"));
+	m_InputSettingsData.push_back(std::string("L3 Button"));
+	m_InputSettingsData.push_back(std::string("R3 Button"));
+	m_InputSettingsData.push_back(std::string("L2 Button"));
+	m_InputSettingsData.push_back(std::string("R2 Button"));
+	m_InputSettingsData.push_back(std::string("L3 + R3"));
 
 	m_InputSettingsOffsets.push_back(0);
 	m_InputSettingsOffsets.push_back(1);
@@ -741,7 +741,7 @@ void BuildRomList()
 	{
 		for (int d = 0; d < DIRS_MAX; d++)
 		{
-			if (!_tcsicmp(szAppRomPaths[d], _T("")))
+			if (!strcasecmp(szAppRomPaths[d], ""))
 				continue; // skip empty path
 
 			iterate_directory(szAppRomPaths[d], m_ListData);
@@ -798,9 +798,7 @@ void BuildRomList()
 
 						int nNumPlayers = BurnDrvGetMaxPlayers();
 
-						if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) ||
-								(HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) ||
-								(HideChildren == 0))
+						if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) || (HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) || (HideChildren == 0))
 						{
 							if ((ThreeOrFourPlayerOnly == 1 && nNumPlayers > 2) || ThreeOrFourPlayerOnly == 0)
 							{
@@ -2760,7 +2758,7 @@ void InGameFrameMove()
 						is_running = 0;
 
 						nPrevGame = ~0U;			 
-						RunExit();				 		 	
+						audio_stop();
 						BurnerDrvExit();				// Make sure any game driver is exited
 						mediaExit();					// Exit media
 
@@ -2935,7 +2933,7 @@ void FrameMove()
 				nBurnDrvSelect = nPrevGame;
 
 				nPrevGame = ~0U;			 
-				RunExit();				 		 	
+				audio_stop();
 				BurnerDrvExit();				// Make sure any game driver is exited
 				mediaExit();					// Exit media
 			}
@@ -3045,7 +3043,7 @@ void FrameMove()
 					nBurnDrvSelect = nPrevGame;
 
 					nPrevGame = ~0U;			 
-					RunExit();				 		 	
+					audio_stop();
 					BurnerDrvExit();				// Make sure any game driver is exited
 					mediaExit();					// Exit media
 				}
@@ -3059,7 +3057,7 @@ void FrameMove()
 				nPrevGame = m_vecAvailRomBurnDrvIndex[entryselected];
 
 				mediaInit();
-				RunInit();
+				audio_play();
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
 				nLastFilter = CurrentFilter;
@@ -3073,7 +3071,7 @@ void FrameMove()
 				nBurnDrvSelect = nPrevGame;
 
 				nPrevGame = ~0U;			 
-				RunExit();				 		 	
+				audio_stop();
 				BurnerDrvExit();				// Make sure any game driver is exited
 				mediaExit();					// Exit media
 			}

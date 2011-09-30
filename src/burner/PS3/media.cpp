@@ -74,7 +74,7 @@ int mediaReInitAudio(void)
 	nBurnSoundRate = nAudSampleRate;
 	nBurnSoundLen = nAudSegLen;
 
-	RunInit();
+	audio_play();
 
 	return 0;
 }

@@ -19,7 +19,6 @@ int bAltPause = 0;
 int autoFrameSkip = 0;
 #define NAPP_VIRTUAL_FPS 6000
 int nAppVirtualFps = 6000;				// App fps * 100
-int bOnce = 0;
 int is_running = 0;
 bool bShowFPS = false;
 int custom_aspect_ratio_mode = 0;
@@ -29,28 +28,6 @@ extern void doStretch();
 extern void StretchMenu();
 cell_audio_handle_t audio_handle;
 const struct cell_audio_driver *driver;
-
-static uint64_t inline GetTickCount()
-{
-	CellRtcTick ticks;
-	cellRtcGetCurrentTick(&ticks);
-	return ticks.tick;
-}
-
-int RunInit()
-{
-	// Try to run with sound
-	audio_play();
-	bOnce = 0;
-	return 0;
-}
-
-int RunExit()
-{
-	// Stop sound if it was playing
-	audio_stop();
-	return 0;
-}
 
 // The main message loop
 int RunMessageLoop(int argc, char **argv)
@@ -63,7 +40,7 @@ int RunMessageLoop(int argc, char **argv)
 
 	bRestartVideo = 0;
 
-	RunInit();
+	audio_play();
 
 	// get the last filter
 	CurrentFilter = nLastFilter;	 
@@ -76,7 +53,6 @@ int RunMessageLoop(int argc, char **argv)
 		const char * current_game = strrchr(strdup(argv[1]), '/');
 		directLoadGame(strdup(current_game));
 		mediaInit();
-		RunInit();
 		GameStatus = EMULATING;	
 		nPrevGame = 0;
 	}
@@ -165,7 +141,7 @@ int RunMessageLoop(int argc, char **argv)
 		}
 	}while(!exitGame);
 
-	RunExit();				 		 		 
+	audio_stop();					// Stop sound if it was playing
 	BurnerDrvExit();				// Make sure any game driver is exitted
 	mediaExit();					// Exit media
 	return 0;

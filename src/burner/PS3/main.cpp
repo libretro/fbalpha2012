@@ -9,7 +9,7 @@
 #include "menu.h"
 #include "vid_psgl.h"
 #include "cellframework2/input/pad_input.h"
-#include "../../interface/PS3/audio_driver.h"
+#include "audio_driver.h"
 #include "string.h"
 #ifdef CELL_DEBUG_CONSOLE
 #include <cell/control_console.h>

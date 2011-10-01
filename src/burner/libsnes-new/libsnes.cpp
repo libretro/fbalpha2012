@@ -162,7 +162,7 @@ void snes_run()
 
    BurnDrvFrame();
 
-   video_cb(g_fba_frame, 360, 240);
+   video_cb(g_fba_frame, 384, 240);
 
    for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
       audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);

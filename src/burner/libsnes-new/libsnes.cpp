@@ -155,6 +155,7 @@ void snes_run()
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+   nCurrentFrame++;
 
    poll_cb();
    poll_input();

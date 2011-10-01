@@ -28,6 +28,7 @@ extern unsigned char * pVidTransImage;
 // Video Output plugin:
 int VidInit();
 int VidExit();
+int VidFrame_RecalcPalette();
 int VidFrame_Recalc();
 int VidFrame();
 int VidRedraw();
@@ -39,6 +40,7 @@ extern int _psglInit(void);
 extern int _psglExit(void);
 
 extern bool bVidOkay;
+extern bool bVidRecalcPalette;
 extern unsigned int nVidSelect;
 extern int nVidDepth;
 extern int nVidRefresh;

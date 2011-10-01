@@ -126,6 +126,12 @@ int RunMessageLoop(int argc, char **argv)
 				CalculateViewports();
 				if(pVidTransImage)
 				{
+					if(bVidRecalcPalette)
+					{
+						audio_check();
+						nCurrentFrame++;
+						VidFrame_RecalcPalette();
+					}
 					do{
 						// RUN IDLE
 						audio_check();

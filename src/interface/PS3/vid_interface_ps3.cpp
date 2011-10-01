@@ -35,7 +35,7 @@ int nVidImagePitch = 0, nVidImageBPP = 0;			// Memory buffer pitch and bytes per
 int nVidImageDepth = 0;						// Memory buffer bits per pixel
 
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
-static bool bVidRecalcPalette;
+bool bVidRecalcPalette;
 
 unsigned char* pVidTransImage = NULL;
 static unsigned int* pVidTransPalette = NULL;
@@ -113,31 +113,59 @@ int VidExit()
 	return nRet;
 }
 
-int VidFrame_Recalc()
+int VidFrame_RecalcPalette()
 {
 	unsigned short* pSrc = (unsigned short*)pVidTransImage;
 	unsigned char* pDest = pVidImage;
 
-	if (bVidRecalcPalette)
-	{
-		uint64_t r = 0;
+	uint64_t r = 0;
+	do{
+		uint64_t g = 0;
 		do{
-			uint64_t g = 0;
+			uint64_t b = 0;
 			do{
-				uint64_t b = 0;
-				do{
-					uint64_t r_ = r | (r >> 5);
-					uint64_t g_ = g | (g >> 5);
-					uint64_t b_ = b | (b >> 5);
-					pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
-					b += 8;
-				}while(b < 256);
-				g += 8;
-			}while(g < 256);
-			r += 8;
-		}while(r < 256);
-		bVidRecalcPalette = false;
-	}
+				uint64_t r_ = r | (r >> 5);
+				uint64_t g_ = g | (g >> 5);
+				uint64_t b_ = b | (b >> 5);
+				pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
+				b += 8;
+			}while(b < 256);
+			g += 8;
+		}while(g < 256);
+		r += 8;
+	}while(r < 256);
+	bVidRecalcPalette = false;
+
+	pBurnDraw = pVidTransImage;
+	nBurnPitch = nVidImageWidth << 1;
+	BurnDrvFrame();
+	_psglRender();
+
+	/* set avi buffer, modified by regret */
+
+	pBurnDraw = NULL;
+	nBurnPitch = 0;
+	int y = 0;
+	do{
+		int x = 0;
+
+		do{
+			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
+			x++;
+		}while(x < nVidImageWidth);
+
+		y++;
+		pSrc += nVidImageWidth;
+		pDest += nVidImagePitch;
+	}while(y < nVidImageHeight);
+
+	return 0;
+}
+
+int VidFrame_Recalc()
+{
+	unsigned short* pSrc = (unsigned short*)pVidTransImage;
+	unsigned char* pDest = pVidImage;
 
 	pBurnDraw = pVidTransImage;
 	nBurnPitch = nVidImageWidth << 1;
@@ -192,8 +220,14 @@ int VidReinit()
 	VidInit();
 
 	if (bRunPause || !bDrvOkay)
-		VidFrame();
+			VidFrame();
 
 	CalculateViewports();
+
+	if(pVidTransImage)
+	{
+		nCurrentFrame++;
+		VidFrame_RecalcPalette();
+	}
 	return 0;
 }

@@ -110,16 +110,20 @@ static void YM2610UpdateResample(short* pSoundBuf, int nSegmentEnd)
 	}
 
 	for (int i = (nFractionalPosition & 0xFFFF0000) >> 15; i < nSegmentLength; i += 2, nFractionalPosition += nSampleSize) {
+      int pos = nFractionalPosition;
 		int nSample;
+
+      short sn, s0, s1, s2;
 
 #define CLIP(A) ((A) < -0x8000 ? -0x8000 : (A) > 0x7fff ? 0x7fff : (A))
 
 		// Left channel
+
 		nSample = INTERPOLATE4PS_16BIT((nFractionalPosition >> 4) & 0x0FFF,
-									   pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 3],
-									   pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 2],
-									   pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 1],
-									   pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 0]);
+									   pYM2610Buffer[0][(pos >> 16) - 3] + pYM2610Buffer[5][(pos >> 16) - 3],
+									   pYM2610Buffer[0][(pos >> 16) - 2] + pYM2610Buffer[5][(pos >> 16) - 2],
+									   pYM2610Buffer[0][(pos >> 16) - 1] + pYM2610Buffer[5][(pos >> 16) - 1],
+									   pYM2610Buffer[0][(pos >> 16) - 0] + pYM2610Buffer[5][(pos >> 16) - 0]);
 		if (bYM2610AddSignal) {
 			pSoundBuf[i + 0] += CLIP(nSample);
 		} else {
@@ -127,11 +131,11 @@ static void YM2610UpdateResample(short* pSoundBuf, int nSegmentEnd)
 		}
 
 		// Right channel
-		nSample = INTERPOLATE4PS_16BIT((nFractionalPosition >> 4) & 0x0FFF,
-									   pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 3],
-									   pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 2],
-									   pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 1],
-									   pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] + pYM2610Buffer[5][(nFractionalPosition >> 16) - 0]);
+		nSample = INTERPOLATE4PS_16BIT((pos >> 4) & 0x0FFF,
+									   pYM2610Buffer[1][(pos >> 16) - 3] + pYM2610Buffer[5][(pos >> 16) - 3],
+									   pYM2610Buffer[1][(pos >> 16) - 2] + pYM2610Buffer[5][(pos >> 16) - 2],
+									   pYM2610Buffer[1][(pos >> 16) - 1] + pYM2610Buffer[5][(pos >> 16) - 1],
+									   pYM2610Buffer[1][(pos >> 16) - 0] + pYM2610Buffer[5][(pos >> 16) - 0]);
 		if (bYM2610AddSignal) {
 			pSoundBuf[i + 1] += CLIP(nSample);
 		} else {

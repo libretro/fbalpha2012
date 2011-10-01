@@ -14,11 +14,11 @@ void BurnSoundCopy_FM_Add_C(int16_t* SrcL, int16_t* SrcR, int16_t* Dest, int Len
 
 extern int cmc_4p_Precalc();
 
-#ifdef __ELF__
+#if defined(__ELF__) && !defined(__LIBSNES__) // ?!?!
  #define Precalc _Precalc
 #endif
 
-extern "C" int16_t Precalc[];
+extern int16_t Precalc[4096 * 4];
 
 #define INTERPOLATE4PS_8BIT(fp, sN, s0, s1, s2)      (((int)((sN) * Precalc[(int)(fp) * 4 + 0]) + (int)((s0) * Precalc[(int)(fp) * 4 + 1]) + (int)((s1) * Precalc[(int)(fp) * 4 + 2]) + (int)((s2) * Precalc[(int)(fp) * 4 + 3])) / 64)
 #define INTERPOLATE4PS_16BIT(fp, sN, s0, s1, s2)     (((int)((sN) * Precalc[(int)(fp) * 4 + 0]) + (int)((s0) * Precalc[(int)(fp) * 4 + 1]) + (int)((s1) * Precalc[(int)(fp) * 4 + 2]) + (int)((s2) * Precalc[(int)(fp) * 4 + 3])) / 16384)

@@ -27,7 +27,11 @@ typedef unsigned char	BYTE;
 typedef unsigned short	WORD;
 typedef float		FLOAT;
 #define _T(x) x
-#define __forceinline	__attribute((always_inline))
+
+#if !defined(__forceinline)
+#define __forceinline __attribute__((always_inline))
+#endif
+
 #define _stprintf sprintf
 #define	_sntprintf	snprintf
 #define _tcslen	strlen

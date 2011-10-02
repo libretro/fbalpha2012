@@ -5,7 +5,10 @@
 
 #define XMemSet(x,y,z) memset(x,y,z)
 #define _T(x) x
-#define __forceinline	__attribute((always_inline))
+
+#if !defined(__forceinline)
+#define __forceinline __attribute__((always_inline))
+#endif
 
 typedef uint8_t UINT8;
 typedef uint32_t UINT32;

@@ -4663,7 +4663,11 @@ static int TaitoZExit()
 	return 0;
 }
 
+#ifdef __LIBSNES__
+static inline unsigned char pal5bit(unsigned char bits)
+#else
 static __forceinline unsigned char pal5bit(unsigned char bits)
+#endif
 {
 	bits &= 0x1f;
 	return (bits << 3) | (bits >> 2);

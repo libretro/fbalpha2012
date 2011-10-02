@@ -1665,7 +1665,11 @@ static void System16BAltRenderTextLayer(int PriorityDraw)
 Sprite Rendering
 ====================================================*/
 
+#ifdef __LIBSNES__
+static inline void System16DrawPixel(int x, int pix, int colour, unsigned short* pPixel)
+#else
 static __forceinline void System16DrawPixel(int x, int pix, int colour, unsigned short* pPixel)
+#endif
 {
 	x += System16SpriteXOffset;
 	if (x >= 0 && x <= 319 && pix != 0 && pix != 15) {
@@ -2328,7 +2332,11 @@ static void HangonAltRenderSpriteLayer(int Priority)
 	}
 }
 
+#ifdef __LIBSNES__
+static inline void BoardXDrawPixel(int x, int pix, int colour, int shadow, unsigned short* pPixel)
+#else
 static __forceinline void BoardXDrawPixel(int x, int pix, int colour, int shadow, unsigned short* pPixel)
+#endif
 {
 	if (x >= 0 && x <= 319 && pix != 0 && pix != 15) {
 		if (shadow && pix == 0xa) {
@@ -2476,7 +2484,11 @@ static void XBoardRenderSpriteLayer(int Priority)
 	}
 }
 
+#ifdef __LIBSNES__
+static inline void YBoardSystem16BDrawPixel(int x, int pix, int colour, unsigned short* pPixel)
+#else
 static __forceinline void YBoardSystem16BDrawPixel(int x, int pix, int colour, unsigned short* pPixel)
+#endif
 {
 	if (x >= 0 && x <= 319 && pix != 0 && pix != 15) {
 		if (pix == 14) {
@@ -2588,7 +2600,11 @@ static void YBoardSystem16BRenderSpriteLayer()
 	}
 }
 
+#ifdef __LIBSNES__
+static inline void YBoardDrawPixel(int x, unsigned int ind, unsigned int colourpri, unsigned short* pPixel)
+#else
 static __forceinline void YBoardDrawPixel(int x, unsigned int ind, unsigned int colourpri, unsigned short* pPixel)
+#endif
 {
 	if (x >= 0 && x <= 511 && ind < 0x1fe) {
 		pPixel[x] = (ind | colourpri | 0x1000)/* & (System16PaletteEntries - 1)*/;

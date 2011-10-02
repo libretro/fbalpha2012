@@ -54,8 +54,8 @@ OBJS := $(FBA_COBJ) $(FBA_CXXOBJ)
 
 FBA_DEFINES := -DNDEBUG -DNO_ASMCORE -DNO_AUTOFIRE -DNO_CHEATSEARCH -DNO_COMBO -DUSE_SPEEDHACKS -DNO_PNG -DOLD_AUDIOCORE=0 -D__LIBSNES__ -DLSB_FIRST -DTIXML_USE_TICPP
 
-CFLAGS += -O2 -std=gnu99 $(fpic) -Wno-write-strings -Werror $(FBA_DEFINES)
-CXXFLAGS += -O2 $(fpic) -Wno-write-strings -Werror $(FBA_DEFINES)
+CFLAGS += -O0 -g -std=gnu99 $(fpic) -Wno-write-strings -Werror $(FBA_DEFINES)
+CXXFLAGS += -O0 -g $(fpic) -Wno-write-strings -Werror $(FBA_DEFINES)
 LDFLAGS += -Wl,-no-undefined $(fpic)
 
 INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURNER_DIR) -I$(FBA_BURNER_DIR)/generated -I$(FBA_CPU_DIR)/m6809 -I$(FBA_CPU_DIR)/m6805 -I$(FBA_CPU_DIR)/m6800 -I$(FBA_CPU_DIR)/nec -I$(FBA_CPU_DIR)/hd6309 -I$(FBA_CPU_DIR)/arm7 -I$(FBA_CPU_DIR)/i8039 -I$(FBA_CPU_DIR)/konami -I$(FBA_CPU_DIR)/m68k -I$(FBA_CPU_DIR)/m6502 -I$(FBA_CPU_DIR)/z80 -I$(FBA_CPU_DIR)/sh2 -I$(FBA_CPU_DIR)/s2650 -I$(FBA_BURNER_DIR)/libsnes -I$(FBA_LIB_DIR)/zlib -I$(FBA_LIB_DIR)/File_Extractor -I$(FBA_BURN_DIR)/capcom -I$(FBA_BURN_DIR)/cave -I$(FBA_BURN_DIR)/neogeo -I$(FBA_BURN_DIR)/psikyo -I$(FBA_BURN_DIR)/sega -I$(FBA_BURN_DIR)/toaplan -I$(FBA_LIB_DIR)/File_Extractor/fex

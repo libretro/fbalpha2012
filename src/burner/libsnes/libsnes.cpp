@@ -1,6 +1,7 @@
 #include "libsnes.hpp"
 #include "../burner.h"
 #include "../gameinp.h"
+#include "../../burn/state.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -176,9 +177,59 @@ void snes_run()
       audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
 }
 
-unsigned snes_serialize_size() { return 0; }
-bool snes_serialize(uint8_t*, unsigned) { return false; }
-bool snes_unserialize(const uint8_t*, unsigned) { return false; }
+static uint8_t *write_state_ptr;
+static const uint8_t *read_state_ptr;
+static unsigned state_size;
+
+static int burn_write_state_cb(BurnArea *pba)
+{
+   memcpy(write_state_ptr, pba->Data, pba->nLen);
+   write_state_ptr += pba->nLen;
+   return 0;
+}
+
+static int burn_read_state_cb(BurnArea *pba)
+{
+   memcpy(pba->Data, read_state_ptr, pba->nLen);
+   read_state_ptr += pba->nLen;
+   return 0;
+}
+
+static int burn_dummy_state_cb(BurnArea *pba)
+{
+   state_size += pba->nLen;
+}
+
+unsigned snes_serialize_size()
+{
+   BurnAcb = burn_dummy_state_cb;
+   state_size = 0;
+   BurnAreaScan(ACB_VOLATILE | ACB_WRITE, 0);
+   return state_size;
+}
+
+bool snes_serialize(uint8_t *data, unsigned size)
+{
+   if (size != state_size)
+      return false;
+
+   BurnAcb = burn_write_state_cb;
+   write_state_ptr = data;
+   BurnAreaScan(ACB_VOLATILE | ACB_WRITE, 0);
+
+   return true;
+}
+
+bool snes_unserialize(const uint8_t *data, unsigned size)
+{
+   if (size != state_size)
+      return false;
+   BurnAcb = burn_read_state_cb;
+   read_state_ptr = data;
+   BurnAreaScan(ACB_VOLATILE | ACB_READ, 0);
+
+   return true;
+}
 
 void snes_cheat_reset() {}
 void snes_cheat_set(unsigned, bool, const char*) {}

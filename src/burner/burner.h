@@ -51,7 +51,7 @@
 #elif defined (SN_TARGET_PS3)
 #include "burner_ps3.h"
 #include "localise.h"
-#elif defined (_WIN32)
+#elif defined (_WIN32) && !defined(__LIBSNES__)
 #include "burner_win32.h"
 #elif defined (BUILD_SDL)
 #include "burner_sdl.h"

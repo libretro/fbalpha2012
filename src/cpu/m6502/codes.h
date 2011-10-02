@@ -12,8 +12,6 @@
 /**     changes to this file.                               **/
 /*************************************************************/
 
-#include <stdint.h>
-
 case 0x10: if(R->P&N_FLAG) R->PC.W++; else { M_JR; } break; /* BPL * REL */
 case 0x30: if(R->P&N_FLAG) { M_JR; } else R->PC.W++; break; /* BMI * REL */
 case 0xD0: if(R->P&Z_FLAG) R->PC.W++; else { M_JR; } break; /* BNE * REL */
@@ -236,6 +234,6 @@ default:
       printf
       (
         "[M6502 %lX] Unrecognized instruction: $%02X at PC=$%04X\n",
-        (unsigned)(uintptr_t)(R->User),Op6502(R->PC.W-1),(word)(R->PC.W-1)
+        (unsigned)(size_t)(R->User),Op6502(R->PC.W-1),(word)(R->PC.W-1)
       );
   break;

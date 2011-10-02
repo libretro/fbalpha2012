@@ -4,6 +4,8 @@
  #define __fastcall
 #endif
 
+#include <stdint.h>
+
 typedef unsigned char (__fastcall *pSh2ReadByteHandler)(unsigned int a);
 typedef void (__fastcall *pSh2WriteByteHandler)(unsigned int a, unsigned char d);
 typedef unsigned short (__fastcall *pSh2ReadWordHandler)(unsigned int a);
@@ -26,7 +28,7 @@ void Sh2Reset(unsigned int pc, unsigned r15);
 int Sh2Run(int cycles);
 
 int Sh2MapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd, int nType);
-int Sh2MapHandler(uintptr_t nHandler, uintptr_t nStart, uintptr_t nEnd, int nType);
+int Sh2MapHandler(uintptr_t nHandler, unsigned int nStart, unsigned int nEnd, int nType);
 
 int Sh2SetReadByteHandler(int i, pSh2ReadByteHandler pHandler);
 int Sh2SetWriteByteHandler(int i, pSh2WriteByteHandler pHandler);

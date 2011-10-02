@@ -34,6 +34,7 @@ static unsigned g_rom_count;
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];
+static uint16_t g_fba_frame_conv[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 /////
 
@@ -107,10 +108,10 @@ struct keymap
 static const keymap bindmap[] = {
    { SNES_DEVICE_ID_JOYPAD_A, P1_FIRE1, P2_FIRE1 },
    { SNES_DEVICE_ID_JOYPAD_B, P1_FIRE2, P2_FIRE2 },
-   { SNES_DEVICE_ID_JOYPAD_X, P1_FIRE3, P2_FIRE3 },
-   { SNES_DEVICE_ID_JOYPAD_Y, P1_FIRE4, P2_FIRE4 },
-   { SNES_DEVICE_ID_JOYPAD_L, P1_FIRE5, P2_FIRE5 },
-   { SNES_DEVICE_ID_JOYPAD_R, P1_FIRE6, P2_FIRE6 },
+   { SNES_DEVICE_ID_JOYPAD_Y, P1_FIRE3, P2_FIRE3 },
+   { SNES_DEVICE_ID_JOYPAD_X, P1_FIRE4, P2_FIRE4 },
+   { SNES_DEVICE_ID_JOYPAD_R, P1_FIRE5, P2_FIRE5 },
+   { SNES_DEVICE_ID_JOYPAD_L, P1_FIRE6, P2_FIRE6 },
    { SNES_DEVICE_ID_JOYPAD_START, P1_START, P2_START },
    { SNES_DEVICE_ID_JOYPAD_SELECT, P1_COIN, P2_COIN },
    { SNES_DEVICE_ID_JOYPAD_LEFT, P1_LEFT, P2_LEFT },
@@ -149,8 +150,12 @@ static void poll_input()
 
 void snes_run()
 {
+   int width, height;
+   BurnDrvGetVisibleSize(&width, &height);
    pBurnDraw = (uint8_t*)g_fba_frame;
-   nBurnPitch = 2048;
+
+   nBurnPitch = width * sizeof(uint16_t);
+
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
@@ -162,7 +167,10 @@ void snes_run()
 
    BurnDrvFrame();
 
-   video_cb(g_fba_frame, 384, 240);
+   for (int y = 0; y < height; y++)
+      memcpy(g_fba_frame_conv + y * 1024, g_fba_frame + y * (nBurnPitch >> 1), width * sizeof(uint16_t));
+
+   video_cb(g_fba_frame_conv, width, height);
 
    for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
       audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);

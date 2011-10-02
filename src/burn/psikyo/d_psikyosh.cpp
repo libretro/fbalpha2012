@@ -9,7 +9,12 @@
 #include "psikyosh_render.h"
 #include "burn_ymf278b.h"
 #include "eeprom.h"
+
+#ifdef __LIBSNES__
+#include "sh2-x86.h"
+#else
 #include "sh2.h"
+#endif
 
 static unsigned char *AllMem;
 static unsigned char *MemEnd;

@@ -28,7 +28,11 @@
 //
 // ------------------------------------------------------------------------------------
 
+#ifdef __LIBSNES__
+#include "cps3-x86.h"
+#else
 #include "cps3.h"
+#endif
 
 static struct BurnInputInfo cps3InputList[] = {
 	{"P1 Coin",			BIT_DIGITAL,	Cps3But2 +  8,	"p1 coin"	},

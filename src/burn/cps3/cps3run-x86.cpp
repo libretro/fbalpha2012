@@ -17,8 +17,17 @@ Port to FBA by OopsWare
 
 **********************************************************************/
 
+#ifdef __LIBSNES__
 #include "cps3-x86.h"
 #include "sh2-x86.h"
+#else
+#include "cps3.h"
+#include "sh2.h"
+#endif
+
+#ifdef SN_TARGET_PS3
+#include "highcol.h"
+#endif
 
 #define	BE_GFX		1
 //#define	FAST_BOOT	1
@@ -150,58 +159,60 @@ unsigned int cps3_flash_read(flash_chip * chip, unsigned int addr)
 
 void cps3_flash_write(flash_chip * chip, unsigned int addr, unsigned int data)
 {
-	bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
+	//bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
 	
-	switch( chip->flash_mode )	{
-	case FM_NORMAL:
-	case FM_READSTATUS:
-	case FM_READID:
-	case FM_READAMDID3:
-		switch( data & 0xff ) {
-		case 0xf0:
-		case 0xff: chip->flash_mode = FM_NORMAL;	break;
-		case 0x90: chip->flash_mode = FM_READID;	break;
-		case 0x40:
-		case 0x10: chip->flash_mode = FM_WRITEPART1;break;
-		case 0x50:	// clear status reg
-			chip->status = 0x80;
-			chip->flash_mode = FM_READSTATUS;
+	switch( chip->flash_mode )
+	{
+		case FM_NORMAL:
+		case FM_READSTATUS:
+		case FM_READID:
+		case FM_READAMDID3:
+			switch( data & 0xff )
+			{
+				case 0xf0:
+				case 0xff: chip->flash_mode = FM_NORMAL;	break;
+				case 0x90: chip->flash_mode = FM_READID;	break;
+				case 0x40:
+				case 0x10: chip->flash_mode = FM_WRITEPART1;break;
+				case 0x50:	// clear status reg
+					   chip->status = 0x80;
+					   chip->flash_mode = FM_READSTATUS;
+					   break;
+				case 0x20: chip->flash_mode = FM_CLEARPART1;break;
+				case 0x60: chip->flash_mode = FM_SETMASTER;	break;
+				case 0x70: chip->flash_mode = FM_READSTATUS;break;
+				case 0xaa:	// AMD ID select part 1
+					   if ((addr & 0xffff) == (0x555 << 2))
+						   chip->flash_mode = FM_READAMDID1;
+					   break;
+				default:
+					   //logerror( "Unknown flash mode byte %x\n", data & 0xff );
+					   //bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
+					   break;
+			}	
 			break;
-		case 0x20: chip->flash_mode = FM_CLEARPART1;break;
-		case 0x60: chip->flash_mode = FM_SETMASTER;	break;
-		case 0x70: chip->flash_mode = FM_READSTATUS;break;
-		case 0xaa:	// AMD ID select part 1
-			if ((addr & 0xffff) == (0x555 << 2))
-				chip->flash_mode = FM_READAMDID1;
+		case FM_READAMDID1:
+			if ((addr & 0xffff) == (0x2aa <<2) && (data & 0xff) == 0x55 )
+				chip->flash_mode = FM_READAMDID2;
+			else
+			{
+				//logerror( "unexpected %08x=%02x in FM_READAMDID1\n", address, data & 0xff );
+				chip->flash_mode = FM_NORMAL;
+			}
 			break;
-		default:
-			//logerror( "Unknown flash mode byte %x\n", data & 0xff );
-			//bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
-			break;
-		}	
-		break;
-	case FM_READAMDID1:
-		if ((addr & 0xffff) == (0x2aa <<2) && (data & 0xff) == 0x55 ) {
-			chip->flash_mode = FM_READAMDID2;
-		} else {
-			//logerror( "unexpected %08x=%02x in FM_READAMDID1\n", address, data & 0xff );
-			chip->flash_mode = FM_NORMAL;
-		}
-		break;
-	case FM_READAMDID2:
-		if ((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0x90) {
-			chip->flash_mode = FM_READAMDID3;
-		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0x80) {
-			chip->flash_mode = FM_ERASEAMD1;
-		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xa0) {
-			chip->flash_mode = FM_BYTEPROGRAM;
-		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xf0) {
-			chip->flash_mode = FM_NORMAL;
-		} else {
-			// logerror( "unexpected %08x=%02x in FM_READAMDID2\n", address, data & 0xff );
-			chip->flash_mode = FM_NORMAL;
-		}
-		break;				
+		case FM_READAMDID2:
+			if ((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0x90)
+				chip->flash_mode = FM_READAMDID3;
+			else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0x80)
+				chip->flash_mode = FM_ERASEAMD1;
+			else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xa0)
+				chip->flash_mode = FM_BYTEPROGRAM;
+			else
+			{
+				// logerror( "unexpected %08x=%02x in FM_READAMDID2\n", address, data & 0xff );
+				chip->flash_mode = FM_NORMAL;
+			}
+			break;				
 	}
 }
 
@@ -248,7 +259,8 @@ static unsigned int cps3_mask(unsigned int address, unsigned int key1, unsigned 
 static void cps3_decrypt_bios(void)
 {
 	unsigned int * coderegion = (unsigned int *)RomBios;
-	for (int i=0; i<0x20000; i+=4) {
+	for (int i=0; i<0x20000; i+=4)
+	{
 		unsigned int xormask = cps3_mask(i, cps3_key1, cps3_key2);
 		/* a bit of a hack, don't decrypt the FLASH commands which are transfered by SH2 DMA */
 		if ( (i<0x1ff00) || (i>0x1ff6b) )
@@ -261,7 +273,8 @@ static void cps3_decrypt_game(void)
 	unsigned int * coderegion = (unsigned int *)RomGame;
 	unsigned int * decrypt_coderegion = (unsigned int *)RomGame_D;
 	
-	for (int i=0; i<0x1000000; i+=4) {
+	for (int i=0; i<0x1000000; i+=4)
+	{
 		unsigned int xormask = cps3_mask(i + 0x06000000, cps3_key1, cps3_key2);
 		decrypt_coderegion[i/4] = coderegion[i/4] ^ xormask;
 	}
@@ -294,7 +307,8 @@ static unsigned int process_byte( unsigned char real_byte, unsigned int destinat
 			tranfercount++;
 			cps3_rle_length--;
 			max_length--;
-			if ((destination+tranfercount) > 0x7fffff)  return max_length;
+			if ((destination+tranfercount) > 0x7fffff)
+				return max_length;
 	//      if (max_length==0) return max_length; // this is meant to abort the transfer if we exceed dest length,, not working
 		}
 		return tranfercount;
@@ -331,23 +345,23 @@ static void cps3_do_char_dma( unsigned int real_source, unsigned int real_destin
 			length_processed = process_byte( real_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
-			if (real_destination>0x7fffff) return;
-			if (length_remaining<=0) return; // if we've expired, exit
+			if (real_destination>0x7fffff || length_remaining<=0)
+				return; // if we've expired, exit
 
 			real_byte = sourcedata[ (chardma_table_address+current_byte*2+1) ^ 0 ];
 			//if (real_byte&0x80) return;
 			length_processed = process_byte( real_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
-			if (real_destination>0x7fffff) return;
-			if (length_remaining<=0) return;  // if we've expired, exit
+			if (real_destination>0x7fffff || length_remaining<=0)
+				return;  // if we've expired, exit
 		} else {
 			unsigned int length_processed;
 			length_processed = process_byte( current_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
-			if (real_destination>0x7fffff) return;
-			if (length_remaining<=0) return;  // if we've expired, exit
+			if (real_destination>0x7fffff || length_remaining<=0)
+				return;  // if we've expired, exit
 		}
 	}
 }
@@ -462,11 +476,14 @@ static void cps3_process_character_dma(unsigned int address)
 			memcpy( (unsigned char *)RamCRam + real_destination, RomUser + real_source, real_length );
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
+		#if 0
 		default:
 			bprintf(PRINT_NORMAL, _T("Character DMA Unknown DMA List Command Type %08x\n"), dat1);
+		#endif
 		}
 	}
 }
+
 
 static int MemIndex()
 {
@@ -497,7 +514,11 @@ static int MemIndex()
 	
 	RamEnd		= Next;
 	
+	#ifdef __LIBSNES__
 	Cps3CurPal		= (unsigned short *) Next; Next += 0x040002; // iq_132 - layer disable
+	#else
+	CurPal		= (unsigned short *) Next; Next += 0x040000;	// why is this different?
+	#endif
 	RamScreen	= (unsigned int *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(int);
 	
 	MemEnd		= Next;
@@ -522,54 +543,48 @@ unsigned short __fastcall cps3ReadWord(unsigned int addr)
 	
 	switch (addr) {
 	
-	// redearth will read this !!!
-#if 0
-	case 0x040c0000:
-		return RamVReg[0] >> 16;
-	case 0x040c0002:
-		return RamVReg[0] & 0xffff;
-	case 0x040c0004:
-		return RamVReg[1] >> 16;
-	case 0x040c0006:
-		return RamVReg[1] & 0xffff;
-#else
 	case 0x040c0000:
 	case 0x040c0002:
 	case 0x040c0004:
 	case 0x040c0006:
-		return 0;
-#endif
 	// cps3_vbl_r
 	case 0x040c000c:
 	case 0x040c000e:
 		return 0;
-
-	case 0x05000000: return ~Cps3Input[1];
-	case 0x05000002: return ~Cps3Input[0];
-	case 0x05000004: return ~Cps3Input[3];
-	case 0x05000006: return ~Cps3Input[2];
-
+	case 0x05000000:
+		return ~Cps3Input[1];
+	case 0x05000002:
+		return ~Cps3Input[0];
+	case 0x05000004:
+		return ~Cps3Input[3];
+	case 0x05000006:
+		return ~Cps3Input[2];
 	case 0x05140000:
 	case 0x05140002:
 		// cd-rom read
-		
 		break;
 		
 	default:
 		if ((addr >= 0x05000a00) && (addr < 0x05000a20)) {
 			// cps3_unk_io_r
 			return 0xffff;
-		} else
-		if ((addr >= 0x05001000) && (addr < 0x05001204)) {
+		} else if ((addr >= 0x05001000) && (addr < 0x05001204))
+		{
 			// EEPROM
 			addr -= 0x05001000;
-			if (addr >= 0x100 && addr < 0x180) {
+			if (addr >= 0x100 && addr < 0x180)
+				#ifdef __LIBSNES__
 				cps3_current_eeprom_read = EEPROM[((addr-0x100) >> 1) ^ 1];
-			} else
-			if (addr == 0x202)
+				#else
+				cps3_current_eeprom_read = EEPROM[((addr-0x100) >> 1)]; //why is this different?
+				#endif
+			else if (addr == 0x202)
 				return cps3_current_eeprom_read;
-		} else
+		}
+		#if 0
+		else
 		bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %8x\n"), addr);
+		#endif
 	}
 	return 0;
 }
@@ -577,7 +592,11 @@ unsigned short __fastcall cps3ReadWord(unsigned int addr)
 unsigned int __fastcall cps3ReadLong(unsigned int addr)
 {
 	addr &= 0xc7ffffff;
+
+	if(addr == 0x04200000)
+		return 0x0404adad;
 		
+	#if 0
 	switch (addr) {
 	case 0x04200000:
 		bprintf(PRINT_NORMAL, _T("GFX Read Flash ID, cram bank %04x gfx flash bank: %04x\n"), cram_bank, gfxflash_bank);
@@ -586,6 +605,7 @@ unsigned int __fastcall cps3ReadLong(unsigned int addr)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to read long value of location %8x\n"), addr);
 	}
+	#endif
 	return 0;
 }
 
@@ -606,13 +626,14 @@ void __fastcall cps3WriteByte(unsigned int addr, unsigned char data)
 	case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
 	case 0x05050026: break;
 	case 0x05050027: break;
-
+#if 0
 	default:
 		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
 			// VideoReg
 
 		} else
 			bprintf(PRINT_NORMAL, _T("Attempt to write byte value   %02x to location %8x\n"), data, addr);
+#endif
 	}
 }
 
@@ -663,6 +684,7 @@ void __fastcall cps3WriteWord(unsigned int addr, unsigned short data)
 				unsigned short * src = (unsigned short *)RomUser;
 				unsigned short coldata = src[(paldma_source - 0x200000 + i)];
 				
+				//TODO: x86-specific, or can be commented out for 360/PS3?
 				coldata = (coldata << 8) | (coldata >> 8);
 
 				unsigned int r = (coldata & 0x001F) >>  0;
@@ -681,7 +703,11 @@ void __fastcall cps3WriteWord(unsigned int addr, unsigned short data)
 				b = b << 3;
 
 				RamPal[(paldma_dest + i) ^ 1] = coldata;
+#ifdef SN_TARGET_PS3
+				Cps3CurPal[(paldma_dest + i) ] = RGB15(r, g, b);
+#else
 				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
+#endif
 			}
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 		}
@@ -725,32 +751,44 @@ void __fastcall cps3WriteWord(unsigned int addr, unsigned short data)
 			// 0x040C0060 ~ 0x040C007f : cps3_fullscreenzoom
 
 			addr &= 0xff;
+			#ifdef __LIBSNES__
 			((unsigned short *)RamVReg)[ (addr >> 1) ^ 1 ] = data;
+			#else //TODO: big-endian hacks?
+			((uint16_t *)RamVReg)[ (addr >> 1) ] = data;
+			#endif
 			
 		} else
-		if ((addr >= 0x05000000) && (addr < 0x05001000)) {
-			
-			
-		} else 
-		if ((addr >= 0x05001000) && (addr < 0x05001204)) {
-			// EEPROM
-			addr -= 0x05001000;
-			if ((addr>=0x080) && (addr<0x100))
-				EEPROM[((addr-0x080) >> 1) ^ 1] = data;
-		} else
-		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
-			// unknow i/o
-
-		} else
-				
+			if ((addr >= 0x05000000) && (addr < 0x05001000))
+			{
+			}
+			else  if ((addr >= 0x05001000) && (addr < 0x05001204))
+			{
+				// EEPROM
+				addr -= 0x05001000;
+				if ((addr>=0x080) && (addr<0x100))
+					#ifdef __LIBSNES__
+					EEPROM[((addr-0x080) >> 1) ^ 1] = data;
+					#else	//big-endian hacks for 360/PS3?
+					EEPROM[((addr-0x080) >> 1) ] = data;
+					#endif
+			}
+			#if 0
+			else if ((addr >= 0x05050000) && (addr < 0x05060000))
+			{
+				// unknow i/o
+			}
+			else
 		bprintf(PRINT_NORMAL, _T("Attempt to write word value %04x to location %8x\n"), data, addr);
+		#endif
 	}
 }
+
 
 void __fastcall cps3WriteLong(unsigned int addr, unsigned int data)
 {
 	addr &= 0xc7ffffff;
 	
+	#if 0
 	switch (addr) {
 	case 0x07ff000c:
 	case 0x07ff0048:
@@ -760,17 +798,19 @@ void __fastcall cps3WriteLong(unsigned int addr, unsigned int data)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to write long value %8x to location %8x\n"), data, addr);
 	}
+	#endif
 }
 
 void __fastcall cps3C0WriteByte(unsigned int addr, unsigned char data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3C0WriteWord(unsigned int addr, unsigned short data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
 }
+
 
 void __fastcall cps3C0WriteLong(unsigned int addr, unsigned int data)
 {
@@ -779,7 +819,7 @@ void __fastcall cps3C0WriteLong(unsigned int addr, unsigned int data)
 		*(unsigned int *)(RamC000_D + (addr & 0x3ff)) = data ^ cps3_mask(addr, cps3_key1, cps3_key2);
 		return ;
 	}
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
 }
 
 // If fastboot != 1 
@@ -788,7 +828,9 @@ unsigned char __fastcall cps3RomReadByte(unsigned int addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
+	#ifdef __LIBSNES__	//big-endian doesn't like this?
 	addr ^= 0x03;
+	#endif
 /*	unsigned int pc = Sh2GetPC(0);
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		bprintf(PRINT_NORMAL, _T("CPS3 Hack : read byte from %08x\n"), addr);
@@ -801,7 +843,9 @@ unsigned short __fastcall cps3RomReadWord(unsigned int addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
+	#ifdef __LIBSNES__	//big-endian doesn't like this?
 	addr ^= 0x02;
+	#endif
 /*	unsigned int pc = Sh2GetPC(0);
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		bprintf(PRINT_NORMAL, _T("CPS3 Hack : read word from %08x\n"), addr);
@@ -823,19 +867,19 @@ unsigned int __fastcall cps3RomReadLong(unsigned int addr)
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		if ( main_flash.flash_mode == FM_NORMAL )
 			retvalue = *(unsigned int *)(RomGame + (addr & 0x00ffffff));
-		bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
+		//bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
 	}
 	return retvalue;
 }
 
 void __fastcall cps3RomWriteByte(unsigned int addr, unsigned char data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteWord(unsigned int addr, unsigned short data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteLong(unsigned int addr, unsigned int data)
@@ -844,18 +888,22 @@ void __fastcall cps3RomWriteLong(unsigned int addr, unsigned int data)
 	addr &= 0x00ffffff;
 	cps3_flash_write(&main_flash, addr, data);
 	
-	if ( main_flash.flash_mode == FM_NORMAL ) {
-		bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
+	if ( main_flash.flash_mode == FM_NORMAL )
+	{
+		//bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
 		*(unsigned int *)(RomGame + addr) = data;
 		*(unsigned int *)(RomGame_D + addr) = data ^ cps3_mask(addr + 0x06000000, cps3_key1, cps3_key2);
 	}
 }
 
+
 unsigned char __fastcall cps3RomReadByteSpe(unsigned int addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
+	#ifdef __LIBSNES__	//big-endian doesn't like this?
 	addr ^= 0x03;
+	#endif
 	return *(RomGame + (addr & 0x00ffffff));
 }
 
@@ -863,7 +911,9 @@ unsigned short __fastcall cps3RomReadWordSpe(unsigned int addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
+	#ifdef __LIBSNES__	//big-endian doesn't like this?
 	addr ^= 0x02;
+	#endif
 	return *(unsigned short *)(RomGame + (addr & 0x00ffffff));
 }
 
@@ -879,33 +929,35 @@ unsigned int __fastcall cps3RomReadLongSpe(unsigned int addr)
 	return retvalue;
 }
 
+
 //------------------
 
 unsigned char __fastcall cps3VidReadByte(unsigned int addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 unsigned short __fastcall cps3VidReadWord(unsigned int addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 unsigned int __fastcall cps3VidReadLong(unsigned int addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 void __fastcall cps3VidWriteByte(unsigned int addr, unsigned char data)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
+
 
 void __fastcall cps3VidWriteWord(unsigned int addr, unsigned short data)
 {
@@ -913,7 +965,11 @@ void __fastcall cps3VidWriteWord(unsigned int addr, unsigned short data)
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 		// Palette
 		unsigned int palindex = (addr - 0x04080000) >> 1;
+		#ifdef __LIBSNES__
 		RamPal[palindex ^ 1] = data;
+		#else		//Big-endian hack?
+		RamPal[palindex] = data;
+		#endif
 
 		int r = (data & 0x001F) << 3;	// Red
 		int g = (data & 0x03E0) >> 2;	// Green
@@ -922,16 +978,26 @@ void __fastcall cps3VidWriteWord(unsigned int addr, unsigned short data)
 		r |= r >> 5;
 		g |= g >> 5;
 		b |= b >> 5;
-			
+
+		#ifdef SN_TARGET_PS3
+		CurPal[palindex] = RGB15(r, g, b);
+		#else
 		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
+		#endif
 	
-	} else
+	}
+	#if 0
+	else
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %4x to location %8x\n"), data, addr);
+	#endif
 }
+
 
 void __fastcall cps3VidWriteLong(unsigned int addr, unsigned int data)
 {
+#if 0
 	addr &= 0xc7ffffff;
+
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 
 		if ( data != 0 )
@@ -940,6 +1006,7 @@ void __fastcall cps3VidWriteLong(unsigned int addr, unsigned int data)
 		
 	} else 
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 
@@ -950,7 +1017,11 @@ unsigned char __fastcall cps3RamReadByte(unsigned int addr)
 			Sh2BurnUntilInt(0);
 
 	addr &= 0x7ffff;
+	#ifdef __LIBSNES__
 	return *(RamMain + (addr ^ 0x03));
+	#else	//Big-endian hack?
+	return *(RamMain + (addr ));
+	#endif
 }
 
 unsigned short __fastcall cps3RamReadWord(unsigned int addr)
@@ -959,12 +1030,17 @@ unsigned short __fastcall cps3RamReadWord(unsigned int addr)
 	addr &= 0x7ffff;
 
 	if (addr == cps3_speedup_ram_address )
-		if (Sh2GetPC(0) == cps3_speedup_code_address) {
-			bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
+		if (Sh2GetPC(0) == cps3_speedup_code_address)
+		{
+			//bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
 			Sh2BurnUntilInt(0);
 		}
 	
+	#ifdef __LIBSNES__
 	return *(unsigned short *)(RamMain + (addr ^ 0x02));
+	#else	//Big-endian hack?
+	return *(uint16_t *)(RamMain + (addr ));
+	#endif
 }
 
 
@@ -981,12 +1057,17 @@ unsigned int __fastcall cps3RamReadLong(unsigned int addr)
 // CPS3 Region Patch
 static void Cps3PatchRegion()
 {
-	if ( cps3_region_address ) {
+	if ( cps3_region_address )
+	{
+		//bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
 
-		bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
-
+		#ifdef __LIBSNES__
 		RomBios[cps3_region_address] = (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x7f);
-		if ( cps3_ncd_address ) {
+		#else		//Big-endian hack?
+		RomBios[cps3_region_address ^ 0x03] = (RomBios[cps3_region_address ^ 0x03] & 0xf0) | (cps3_dip & 0xff);
+		#endif
+		if ( cps3_ncd_address )
+		{
 			if (cps3_dip & 0x10)
 				RomBios[cps3_ncd_address] |= 0x01;
 			else
@@ -1004,24 +1085,25 @@ static int Cps3Reset()
 	Cps3PatchRegion();
 	
 	// [CD-ROM not emulated] All CHD drivers cause a Guru Meditation with the normal bios boot.
-	if(!BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS3_NO_CD){
-		// normal boot
-		Sh2Reset( *(unsigned int *)(RomBios + 0), *(unsigned int *)(RomBios + 4) );
-	} else {
+	if(!BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS3_NO_CD)
+		Sh2Reset( *(unsigned int *)(RomBios + 0), *(unsigned int *)(RomBios + 4) ); // normal boot
+	else
+	{
 		// fast boot
-		if (cps3_isSpecial) {
+		if (cps3_isSpecial)
 			Sh2Reset( *(unsigned int *)(RomGame + 0), *(unsigned int *)(RomGame + 4) );
-			Sh2SetVBR(0x06000000);
-		} else {
+		else
 			Sh2Reset( *(unsigned int *)(RomGame_D + 0), *(unsigned int *)(RomGame_D + 4) );
-			Sh2SetVBR(0x06000000);
-		}
+		Sh2SetVBR(0x06000000);
 	}
 	
-	if (cps3_dip & 0x80) {
+	if (cps3_dip & 0x80)
+	{
 		EEPROM[0x11] = 0x100 + (EEPROM[0x11] & 0xff);
 		EEPROM[0x29] = 0x100 + (EEPROM[0x29] & 0xff);
-	} else {
+	}
+	else
+	{
 		EEPROM[0x11] = 0x000 + (EEPROM[0x11] & 0xff);
 		EEPROM[0x29] = 0x000 + (EEPROM[0x29] & 0xff);
 	}
@@ -1029,6 +1111,11 @@ static int Cps3Reset()
 	cps3_current_eeprom_read = 0;	
 	cps3SndReset();	
 	cps3_reset = 0;	
+
+	//FIXME: This is needed for 360/PS3? Check without
+	#ifndef __LIBSNES__
+	BurnAfterReset();
+	#endif
 	return 0;
 }
 
@@ -1041,6 +1128,7 @@ static void be_to_le(unsigned char * p, int size)
 	}
 }
 
+
 int cps3Init()
 {
 	int nRet, ii, offset;
@@ -1048,18 +1136,25 @@ int cps3Init()
 	
 	// calc graphic and sound roms size
 	ii = 0; cps3_data_rom_size = 0;
-	while (BurnDrvGetRomInfo(&pri, ii) == 0) {
+	while (BurnDrvGetRomInfo(&pri, ii) == 0)
+	{
 		if (pri.nType & (BRF_GRA | BRF_SND))
 			cps3_data_rom_size += pri.nLen;
 		ii++;
 	}
 	
 	// CHD games 
-	if (cps3_data_rom_size == 0) cps3_data_rom_size = 0x5000000;	
+	if (cps3_data_rom_size == 0)
+		cps3_data_rom_size = 0x5000000;	
 	
 	Mem = NULL;
 	MemIndex();
+
+	//COMMENT: Maister fix here?
 	int nLen = MemEnd - (unsigned char *)0;
+	//COMMENT: Original below
+	//int nLen = (intptr_t)MemEnd;
+
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
 	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
@@ -1069,13 +1164,18 @@ int cps3Init()
 	while (BurnDrvGetRomInfo(&pri, ii) == 0) {
 		if (pri.nType & BRF_BIOS) {
 			nRet = BurnLoadRom(RomBios + offset, ii, 1); 
-			if (nRet != 0) return 1;
+			if (nRet != 0)
+				return 1;
 			offset += pri.nLen;
 		}
 		ii++;
 	}
 
+	//COMMENT: Think I get it now - the BIOS gets converted from big endian to little endian - therefore, 
+	//the XORing gets done at certain places whenever it accesses RomBios or something similar
+	#if defined(__LIBSNES__) || defined(LSB_FIRST)
 	be_to_le( RomBios, 0x080000 );
+	#endif
 	cps3_decrypt_bios();
 
 	// load and decode sh-2 program roms
@@ -1088,7 +1188,14 @@ int cps3Init()
 		}
 		ii++;
 	}
+
+
+	//COMMENT: Think I get it now - the BIOS gets converted from big endian to little endian - therefore, 
+	//the XORing gets done at certain places whenever it accesses RomBios or something similar
+	#if defined(__LIBSNES__) || defined(LSB_FIRST)
 	be_to_le( RomGame, 0x1000000 );
+	#endif
+
 	cps3_decrypt_game();
 	
 	// load graphic and sound roms
@@ -1201,6 +1308,16 @@ int cps3Init()
 
 int cps3Exit()
 {
+	#ifndef __LIBSNES__
+	//Is this necessary because of the Street Fighter III 2nd Impact resolution switching between widescreen and normal?
+	int Width, Height;
+	BurnDrvGetVisibleSize(&Width, &Height);
+
+	if (Width != 384) {
+		BurnDrvSetVisibleSize(384, 224);
+		BurnDrvSetAspect(4, 3);
+	}
+	#endif
 	Sh2Exit();
 	
 	free(Mem);
@@ -1211,6 +1328,8 @@ int cps3Exit()
 	return 0;
 }
 
+
+//FIXME: cps3_drawgfxzoom_0 - PC differs to  360/PS3 - go with original PC code?
 
 static void cps3_drawgfxzoom_0(unsigned int code, unsigned int pal, int flipx, int flipy, int x, int y)
 {
@@ -1273,6 +1392,8 @@ static void cps3_drawgfxzoom_0(unsigned int code, unsigned int pal, int flipx, i
 	}
 	
 }
+
+//cps3_drawgfxzoom_1 - libsnes is identical to PS3/360
 
 static void cps3_drawgfxzoom_1(unsigned int code, unsigned int pal, int flipx, int flipy, int x, int y, int drawline)
 {
@@ -1439,6 +1560,7 @@ static void cps3_drawgfxzoom_1(unsigned int code, unsigned int pal, int flipx, i
 #endif
 }
 
+
 static void cps3_drawgfxzoom_2(unsigned int code, unsigned int pal, int flipx, int flipy, int sx, int sy, int scalex, int scaley, int alpha)
 {
 	//if (!scalex || !scaley) return;
@@ -1590,7 +1712,6 @@ static void cps3_drawgfxzoom_2(unsigned int code, unsigned int pal, int flipx, i
 }
 
 
-
 static void cps3_draw_tilemapsprite_line(int drawline, unsigned int * regs )
 {
 	int scrolly =  ((regs[0]&0x0000ffff)>>0)+4;
@@ -1716,38 +1837,6 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 	
-#if 0
-if (Cps3But2[9]) {
-	bprintf(0, _T("New Frame -------------------\n"));
-	
-	FILE * f = fopen("RamSpr.dump", "wb+");
-	fwrite(RamSpr, 1, 0x0080000, f);
-	fclose(f);
-	
-	f = fopen("RamVReg.dump", "wb+");
-	fwrite(RamVReg, 1, 0x0000100, f);
-	fclose(f);
-	
-	f = fopen("RamPal.dump", "wb+");
-	fwrite(RamPal, 1, 0x0040000, f);
-	fclose(f);
-	
-	f = fopen("Cps3CurPal.raw", "wb+");
-	fwrite(Cps3CurPal, 1, 0x0040000, f);
-	fclose(f);
-	
-
-	f = fopen("RamCRam.dump", "wb+");
-	fwrite(RamCRam, 1, 0x0800000, f);
-	fclose(f);	
-	
-	f = fopen("RamScreen.dump", "wb+");
-	fwrite(RamScreen + 512 * 2 * 16 + 16, 1, 512 * 2 * 224 * 2 * 2, f);
-	fclose(f);	
-	
-	//RamScreen	= (unsigned int *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(int);
-}
-#endif
 
 	if (nBurnLayer & 1) // iq_132 - layer disable
 	{
@@ -1880,29 +1969,17 @@ if (Cps3But2[9]) {
 
 					ypos2+=((ysizedraw2+1)/2);
 
-#if 0
-					if (!flipx) xpos2-= (xsize2+1)*((16*xinc)>>16);
-					else  xpos2+= (xsize2)*((16*xinc)>>16);
-
-					if (flipy) ypos2-= ysize2*((16*yinc)>>16);
-#else
 					if (!flipx) xpos2-= (((xsize2+1)*16*xinc)>>16);
 					else  xpos2+= (((xsize2)*16*xinc)>>16);
 
 					if (flipy) ypos2-= ((ysize2*16*yinc)>>16);
-#endif
 					{
 						count = 0;
 						for (xx=0;xx<xsize2+1;xx++) {
 							int current_xpos;
 
-#if 0
-							if (!flipx) current_xpos = (xpos+xpos2+xx*((16*xinc)>>16)  );
-							else current_xpos = (xpos+xpos2-xx*((16*xinc)>>16));
-#else
 							if (!flipx) current_xpos = (xpos+xpos2+((xx*16*xinc)>>16)  );
 							else current_xpos = (xpos+xpos2-((xx*16*xinc)>>16));
-#endif
 							//current_xpos +=  rand()&0x3ff;
 							current_xpos += gscrollx;
 							current_xpos += 1;
@@ -1912,13 +1989,10 @@ if (Cps3But2[9]) {
 							for (yy=0;yy<ysize2+1;yy++) {
 								int current_ypos;
 								int actualpal;
-#if 0
-								if (flipy) current_ypos = (ypos+ypos2+yy*((16*yinc)>>16));
-								else current_ypos = (ypos+ypos2-yy*((16*yinc)>>16));
-#else
-								if (flipy) current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
-								else current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
-#endif
+								if (flipy)
+									current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
+								else
+									current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
 								current_ypos += gscrolly;
 								current_ypos = 0x3ff-current_ypos;
 								current_ypos -= 17;
@@ -2013,6 +2087,35 @@ if (Cps3But2[9]) {
 		}
 	}
 
+//FIXME: Check for resolution toggling - SFIII2n
+#if 0
+	// switch wide screen
+	if (((fullscreenzoomwidecheck & 0xffff0000) >> 16) == 0x0265) {
+		int Width, Height;
+		BurnDrvGetVisibleSize(&Width, &Height);
+
+		if (Width != 496) {
+			BurnDrvSetVisibleSize(496, 224);
+			BurnDrvSetAspect(16, 9);
+			if (BurnReinitScrn) {
+				BurnReinitScrn();
+			}
+			BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
+		}
+	} else {
+		int Width, Height;
+		BurnDrvGetVisibleSize(&Width, &Height);
+
+		if (Width != 384) {
+			BurnDrvSetVisibleSize(384, 224);
+			BurnDrvSetAspect(4, 3);
+			if (BurnReinitScrn) {
+				BurnReinitScrn();
+			}
+			BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
+		}
+	}
+#endif
 
 }
 
@@ -2032,7 +2135,11 @@ int cps3Frame()
 			r |= r >> 5;
 			g |= g >> 5;
 			b |= b >> 5;
+			#ifdef SN_TARGET_PS3
+			CurPal[i] = RGB15(r, g, b);
+			#else
 			Cps3CurPal[i] = BurnHighCol(r, g, b, 0);	
+			#endif
 		}
 		cps3_palette_change = 0;
 	}
@@ -2192,3 +2299,5 @@ int cps3Scan(int nAction, int *pnMin)
 	
 	return 0;
 }
+
+//TOCONTINUE: Checked up until here

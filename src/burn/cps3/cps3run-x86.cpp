@@ -1838,26 +1838,13 @@ static void DrvDraw()
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 	
 
-	if (nBurnLayer & 1) // iq_132 - layer disable
-	{
-		// Clear Screen Buffer
-		//memset(RamScreen, 0, 512 * 448 * sizeof(int));
-		unsigned int * pscr = RamScreen;
-		int clrsz = (cps3_gfx_max_x + 1) * sizeof(int);
-		for(int yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
-			memset(pscr, 0, clrsz);
-	}
-	// iq_132 - layer disable
-	else
-	{
-		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0); // ma-fucking-genta
-
-		int i;
-		for (i = 0; i < 1024 * 448; i++) {
-			RamScreen[i] = 0x20000;
-		}
-	}
-	// iq_132 - layer disable
+	// iq_132 - layer disable - NOTE: we don't want layer disable
+	// Clear Screen Buffer
+	//memset(RamScreen, 0, 512 * 448 * sizeof(int));
+	unsigned int * pscr = RamScreen;
+	int clrsz = (cps3_gfx_max_x + 1) * sizeof(int);
+	for(int yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
+		memset(pscr, 0, clrsz);
 	
 	// Draw Sprites
 	{
@@ -1913,10 +1900,10 @@ static void DrvDraw()
 				if (ysize2==0) continue;
 				
 				// xsize of 0 tiles seems to be a special command to draw tilemaps
-				if (xsize2==0) {
+				if (xsize2==0)
+				{
 
-		if (nBurnLayer & 1) // iq_132 - layer disable
-		{
+					// iq_132 - layer disable - NOTE: We don't want layer disable
 
 					int tilemapnum = ((value3 & 0x00000030)>>4);
 					int startline;// = value2 & 0x3ff;
@@ -1937,8 +1924,8 @@ static void DrvDraw()
 					//bprintf(0, _T("tilemap draw %01x %d %d\n"),tilemapnum, startline, endline );
 
 					// Urgh, the startline / endline seem to be direct screen co-ordinates regardless of fullscreen zoom
-                    // which probably means the fullscreen zoom is applied when rendering everything, not aftewards
-					
+					// which probably means the fullscreen zoom is applied when rendering everything, not aftewards
+
 					//for (uu=startline;uu<endline+1;uu++)
 
 					if (bg_drawn[tilemapnum]==0)
@@ -1946,12 +1933,9 @@ static void DrvDraw()
 							cps3_draw_tilemapsprite_line( uu, regs );
 					bg_drawn[tilemapnum] = 1;
 
-		} // iq_132 - layer disable
-
-				} else {
-
-				if (~nSpriteEnable & 1) continue;
-
+				}
+				else
+				{
 					ysize2 = tilestable[ysize2];
 					xsize2 = tilestable[xsize2];
 
@@ -2005,7 +1989,7 @@ static void DrvDraw()
 								/* use the palette value from the main list or the sublists? */
 								if (whichpal) actualpal = global_pal;
 								else actualpal = pal;
-								
+
 								/* use the bpp value from the main list or the sublists? */
 								int color_granularity;
 								if (whichbpp) {
@@ -2020,19 +2004,19 @@ static void DrvDraw()
 								{
 									int realtileno = tileno+count;
 
-//if (Cps3But2[9])
-//	bprintf(0, _T("%08x %08x %08x %d %d %5d %5d  %4x %4x %d %02x\n"), realtileno,global_pal, pal, 0^flipx, 0^flipy, current_xpos,current_ypos,xinc,yinc, color_granularity, (global_alpha << 4) | alpha );
+									//if (Cps3But2[9])
+									//	bprintf(0, _T("%08x %08x %08x %d %d %5d %5d  %4x %4x %d %02x\n"), realtileno,global_pal, pal, 0^flipx, 0^flipy, current_xpos,current_ypos,xinc,yinc, color_granularity, (global_alpha << 4) | alpha );
 
 									if ( realtileno ) {
 										if (global_alpha || alpha) {
-											
+
 											// fix jojo's title in it's intro ???
 											if ( global_alpha && (global_pal & 0x100))
 												actualpal &= 0x0ffff;
-												
+
 											//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX_BLEND,0,xinc,yinc, NULL, 0);
 											cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
-											
+
 										} else {
 											//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX,0,xinc,yinc, NULL, 0);
 											cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, 0);
@@ -2067,28 +2051,28 @@ static void DrvDraw()
 	
 
 	// fg layer
-	if (nBurnLayer & 2) // iq_132 -- layer disable
+	// iq_132 -- layer disable - NOTE: We don't want layer disable
+	// bank select? (sfiii2 intro)
+	int count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
+	for (int y=0; y<32; y++)
 	{
-		// bank select? (sfiii2 intro)
-		int count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
-		for (int y=0; y<32; y++) {
-			for (int x=0; x<64; x++) {
-				unsigned int data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
-				unsigned int tile = (data >> 16) & 0x1ff;
-				int pal = (data & 0x003f) >> 1;
-				int flipx = (data & 0x0080) >> 7;
-				int flipy = (data & 0x0040) >> 6;
-				pal += ss_pal_base << 5;
-				tile+=0x200;
-				//cps3_drawgfxzoom(bitmap, machine->gfx[0],tile,pal,flipx,flipy,x*8,y*8,cliprect,CPS3_TRANSPARENCY_PEN,0,0x10000,0x10000,NULL,0);
-				cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
-				count++;
-			}
+		for (int x=0; x<64; x++)
+		{
+			unsigned int data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
+			unsigned int tile = (data >> 16) & 0x1ff;
+			int pal = (data & 0x003f) >> 1;
+			int flipx = (data & 0x0080) >> 7;
+			int flipy = (data & 0x0040) >> 6;
+			pal += ss_pal_base << 5;
+			tile+=0x200;
+			//cps3_drawgfxzoom(bitmap, machine->gfx[0],tile,pal,flipx,flipy,x*8,y*8,cliprect,CPS3_TRANSPARENCY_PEN,0,0x10000,0x10000,NULL,0);
+			cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
+			count++;
 		}
 	}
 
 //FIXME: Check for resolution toggling - SFIII2n
-#if 0
+#ifndef __LIBSNES__
 	// switch wide screen
 	if (((fullscreenzoomwidecheck & 0xffff0000) >> 16) == 0x0265) {
 		int Width, Height;

@@ -156,8 +156,10 @@ void s2650Init(int num)
 	memset (&sHandler, 0, sizeof (s2650_handler) * (num % MAX_S2650));
 	s2650_init(num);
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_S2650, i);
+	#endif
 }
 
 void s2650Exit()

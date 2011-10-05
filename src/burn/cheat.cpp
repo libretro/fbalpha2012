@@ -82,9 +82,8 @@ CHEAT_WRITE(konami, konami_write_rom(a,d))
 static inline void ExitCpuCheatRegister()
 {
 	nActiveCheatCpus = 0;
-	for (int i = 0; i < MAX_CHEAT_CPU; i++) {
+	for (int i = 0; i < MAX_CHEAT_CPU; i++)
 		CpuCheatRegister((CPU_CHEATTYPE)-1, i); // set them all to dummy...
-	}
 	nActiveCheatCpus = 0;
 }
 
@@ -247,16 +246,18 @@ int cheatUpdate()
 {
 	bCheatsEnabled = false;
 
-	if (bCheatsAllowed) {
+	if (bCheatsAllowed)
+	{
 		CheatInfo* pCurrentCheat = pCheatInfo;
 		CheatAddressInfo* pAddressInfo;
 
-		while (pCurrentCheat) {
-			if (pCurrentCheat->nStatus > 1) {
+		while (pCurrentCheat)
+		{
+			if (pCurrentCheat->nStatus > 1)
+			{
 				pAddressInfo = pCurrentCheat->pOption[pCurrentCheat->nCurrent]->AddressInfo;
-				if (pAddressInfo->nAddress) {
+				if (pAddressInfo->nAddress)
 					bCheatsEnabled = true;
-				}
 			}
 			pCurrentCheat = pCurrentCheat->pNext;
 		}
@@ -272,39 +273,36 @@ int cheatEnable(int nCheat, int nOption)
 	CheatAddressInfo* pAddressInfo;
 	int nOpenCPU = -1;
 
-	if (!bCheatsAllowed) {
+	if (!bCheatsAllowed)
 		return 1;
-	}
 
-	if (nOption >= CHEAT_MAX_OPTIONS) {
+	if (nOption >= CHEAT_MAX_OPTIONS)
 		return 1;
-	}
 
 	cheat_subptr = &cheat_sub_block[0]; // first cpu...
 
 	while (pCurrentCheat && nCurrentCheat <= nCheat) {
-		if (nCurrentCheat == nCheat) {
+		if (nCurrentCheat == nCheat)
+		{
 
-			if (nOption == -1) {
+			if (nOption == -1)
 				nOption = pCurrentCheat->nDefault;
-			}
 
 			if (pCurrentCheat->nType != 1) {
 
 				// Return OK if the cheat is already active with the same option
-				if (pCurrentCheat->nCurrent == nOption) {
+				if (pCurrentCheat->nCurrent == nOption)
 					return 0;
-				}
 
 				// Deactivate old option (if any)
 				pAddressInfo = pCurrentCheat->pOption[nOption]->AddressInfo;
 				while (pAddressInfo->nAddress) {
 
-					if (pAddressInfo->nCPU != nOpenCPU) {
+					if (pAddressInfo->nCPU != nOpenCPU)
+					{
 
-						if (nOpenCPU != -1) {
+						if (nOpenCPU != -1)
 							cheat_subptr->cpu_close();
-						}
 
 						nOpenCPU = pAddressInfo->nCPU;
 						cheat_subptr = &cheat_sub_block[nOpenCPU];
@@ -319,12 +317,12 @@ int cheatEnable(int nCheat, int nOption)
 
 			// Activate new option
 			pAddressInfo = pCurrentCheat->pOption[nOption]->AddressInfo;
-			while (pAddressInfo->nAddress) {
-
-				if (pAddressInfo->nCPU != nOpenCPU) {
-					if (nOpenCPU != -1) {
+			while (pAddressInfo->nAddress)
+			{
+				if (pAddressInfo->nCPU != nOpenCPU)
+				{
+					if (nOpenCPU != -1)
 						cheat_subptr->cpu_close();
-					}
 
 					nOpenCPU = pAddressInfo->nCPU;
 					cheat_subptr = &cheat_sub_block[nOpenCPU];
@@ -334,11 +332,12 @@ int cheatEnable(int nCheat, int nOption)
 				// Copy the original values
 				pAddressInfo->nOriginalValue = cheat_subptr->read(pAddressInfo->nAddress);
 
-				if (pCurrentCheat->nType != 0) {
-					if (pAddressInfo->nCPU != nOpenCPU) {
-						if (nOpenCPU != -1) {
+				if (pCurrentCheat->nType != 0)
+				{
+					if (pAddressInfo->nCPU != nOpenCPU)
+					{
+						if (nOpenCPU != -1)
 							cheat_subptr->cpu_close();
-						}
 
 						nOpenCPU = pAddressInfo->nCPU;
 						cheat_subptr = &cheat_sub_block[nOpenCPU];
@@ -353,15 +352,14 @@ int cheatEnable(int nCheat, int nOption)
 			}
 
 			// Set cheat status and active option
-			if (pCurrentCheat->nType != 1) {
+			if (pCurrentCheat->nType != 1)
 				pCurrentCheat->nCurrent = nOption;
-			}
-			if (pCurrentCheat->nType == 0) {
+
+			if (pCurrentCheat->nType == 0)
 				pCurrentCheat->nStatus = 2;
-			}
-			if (pCurrentCheat->nType == 2) {
+
+			if (pCurrentCheat->nType == 2)
 				pCurrentCheat->nStatus = 1;
-			}
 
 			break;
 		}
@@ -369,24 +367,21 @@ int cheatEnable(int nCheat, int nOption)
 		nCurrentCheat++;
 	}
 
-	if (nOpenCPU != -1) {
+	if (nOpenCPU != -1)
 		cheat_subptr->cpu_close();
-	}
 
 	cheatUpdate();
 
-	if (nCurrentCheat == nCheat && pCurrentCheat) {
+	if (nCurrentCheat == nCheat && pCurrentCheat)
 		return 0;
-	}
 
 	return 1;
 }
 
 int cheatApply()
 {
-	if (!bCheatsEnabled) {
+	if (!bCheatsEnabled)
 		return 0;
-	}
 
 	int nOpenCPU = -1;
 
@@ -397,10 +392,10 @@ int cheatApply()
 			pAddressInfo = pCurrentCheat->pOption[pCurrentCheat->nCurrent]->AddressInfo;
 			while (pAddressInfo->nAddress) {
 
-				if (pAddressInfo->nCPU != nOpenCPU) {
-					if (nOpenCPU != -1) {
+				if (pAddressInfo->nCPU != nOpenCPU)
+				{
+					if (nOpenCPU != -1)
 						cheat_subptr->cpu_close();
-					}
 
 					nOpenCPU = pAddressInfo->nCPU;
 					cheat_subptr = &cheat_sub_block[nOpenCPU];
@@ -414,9 +409,8 @@ int cheatApply()
 		pCurrentCheat = pCurrentCheat->pNext;
 	}
 
-	if (nOpenCPU != -1) {
+	if (nOpenCPU != -1)
 		cheat_subptr->cpu_close();
-	}
 
 	return 0;
 }
@@ -429,23 +423,22 @@ int cheatInit()
 
 void cheatExit(bool exitCpuReg)
 {
-	if (pCheatInfo) {
+	if (pCheatInfo)
+	{
 		CheatInfo* pCurrentCheat = pCheatInfo;
 		CheatInfo* pNextCheat;
 
 		do {
 			pNextCheat = pCurrentCheat->pNext;
-			for (int i = 0; i < CHEAT_MAX_OPTIONS; i++) {
+			for (int i = 0; i < CHEAT_MAX_OPTIONS; i++)
 				free(pCurrentCheat->pOption[i]);
-			}
 			free(pCurrentCheat);
 		} while ((pCurrentCheat = pNextCheat) != 0);
 	}
 	pCheatInfo = NULL;
 
-	if (exitCpuReg) {
+	if (exitCpuReg)
 		ExitCpuCheatRegister();
-	}
 }
 
 #ifndef NO_CHEATSEARCH
@@ -475,7 +468,8 @@ int cheatSearchInit()
 	cheatSearchInfo.RAM = new unsigned char[cheatSearchInfo.size];
 	cheatSearchInfo.CRAM = new unsigned char[cheatSearchInfo.size];
 	cheatSearchInfo.ALL_BITS = new int[(cheatSearchInfo.size >> 5)];
-	if (!cheatSearchInfo.RAM || !cheatSearchInfo.CRAM || !cheatSearchInfo.ALL_BITS) {
+	if (!cheatSearchInfo.RAM || !cheatSearchInfo.CRAM || !cheatSearchInfo.ALL_BITS)
+	{
 		cheatSearchExit();
 		return 1;
 	}
@@ -489,9 +483,8 @@ int cheatSearchInit()
 unsigned char cheatSearchGet(unsigned int address)
 {
 	nActiveCPU = cheat_subptr->active_cpu();
-	if (nActiveCPU >= 0) {
+	if (nActiveCPU >= 0)
 		cheat_subptr->cpu_close();
-	}
 
 	static unsigned char value;
 
@@ -499,33 +492,29 @@ unsigned char cheatSearchGet(unsigned int address)
 	value = cheat_subptr->read(address);
 	cheat_subptr->cpu_close();
 
-	if (nActiveCPU >= 0) {
+	if (nActiveCPU >= 0)
 		cheat_subptr->cpu_open(nActiveCPU);
-	}
 
 	return value;
 }
 
 void cheatSearchCopyRAM(unsigned char* ram)
 {
-	if (!ram) {
+	if (!ram)
 		return;
-	}
 
 	nActiveCPU = cheat_subptr->active_cpu();
-	if (nActiveCPU >= 0) {
+	if (nActiveCPU >= 0)
 		cheat_subptr->cpu_close();
-	}
 
 	cheat_subptr->cpu_open(0);
-	for (UINT32 nAddress = 0; nAddress < cheatSearchInfo.size; nAddress++) {
+	for (UINT32 nAddress = 0; nAddress < cheatSearchInfo.size; nAddress++)
 		ram[nAddress] = cheat_subptr->read(nAddress);
-	}
+
 	cheat_subptr->cpu_close();
 
-	if (nActiveCPU >= 0) {
+	if (nActiveCPU >= 0)
 		cheat_subptr->cpu_open(nActiveCPU);
-	}
 }
 
 #endif

@@ -53,7 +53,7 @@ INCLUDE                 =       -Isrc/burn              \
                                         -Isrc/burn/sega \
                                         -Isrc/burn/toaplan
                                         
-DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0
+DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS
 ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else
@@ -73,7 +73,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
 			$(BURN_DIR)/burn_y8950.cpp $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp \
 			$(BURN_DIR)/burn_ym2413.cpp $(BURN_DIR)/burn_ym2608.cpp $(BURN_DIR)/burn_ym2610.cpp \
 			$(BURN_DIR)/burn_ym2612.cpp $(BURN_DIR)/burn_ym3526.cpp \
-			$(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/cheat.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
+			$(BURN_DIR)/burn_ym3812.cpp     $(BURN_DIR)/burn_ymf278b.cpp $(BURN_DIR)/cartridge.cpp $(BURN_DIR)/dac.cpp $(BURN_DIR)/eeprom.cpp $(BURN_DIR)/fm.c $(BURN_DIR)/fmopl.c $(BURN_DIR)/hd6309_intf.cpp \
 			$(BURN_DIR)/ics2115.cpp $(BURN_DIR)/k007232.cpp $(BURN_DIR)/k051649.cpp $(BURN_DIR)/k053260.cpp $(BURN_DIR)/k054539.cpp $(BURN_DIR)/load.cpp $(BURN_DIR)/m6502_intf.cpp $(BURN_DIR)/m6800_intf.cpp $(BURN_DIR)/m6809_intf.cpp \
                                         $(BURN_DIR)/msm5205.cpp $(BURN_DIR)/msm6295.cpp $(BURN_DIR)/namco_snd.cpp $(BURN_DIR)/rf5c68.cpp $(BURN_DIR)/segapcm.cpp $(BURN_DIR)/seibusnd.cpp $(BURN_DIR)/sek.cpp $(BURN_DIR)/sn76496.cpp $(BURN_DIR)/tiles_generic.cpp \
                                         $(BURN_DIR)/timer.cpp $(BURN_DIR)/upd7759.cpp $(BURN_DIR)/vez.cpp $(BURN_DIR)/x1010.cpp $(BURN_DIR)/ym2151.c $(BURN_DIR)/ym2413.cpp $(BURN_DIR)/ymdeltat.c $(BURN_DIR)/ymf278b.c $(BURN_DIR)/ymz280b.cpp $(BURN_DIR)/zet.cpp \

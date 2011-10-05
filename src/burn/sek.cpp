@@ -956,7 +956,9 @@ int SekInit(int nCount, int nCPUType)
 	nSekCyclesTotal = 0;
 	nSekCyclesScanline = 0;
 
+	#ifndef NO_CHEATS
 	CpuCheatRegister(CPU_M68K, nCount);
+	#endif
 
 	return 0;
 }

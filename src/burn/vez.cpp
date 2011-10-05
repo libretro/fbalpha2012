@@ -124,8 +124,10 @@ int VezInit(int nCount, unsigned int * typelist)
 
 	nVezCount = nCPUCount = nCount;
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < nCount; i++)
 		CpuCheatRegister(CPU_VEZ, i);
+	#endif
 
 	return 0;
 }

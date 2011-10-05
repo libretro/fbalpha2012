@@ -117,8 +117,10 @@ void m6805Init(int num, int max)
 	memset (mem[1], 0, PAGE * sizeof(char *));
 	memset (mem[2], 0, PAGE * sizeof(char *));
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_M6805, i);
+	#endif
 }
 
 void m6805Exit()

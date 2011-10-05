@@ -25,8 +25,9 @@
 #include "burnint.h"
 #include "burn_sound.h"
 #include "../generated/driverlist.h"
+#ifndef NO_CHEATS
 #include "cheat.h"
-
+#endif
 
 // filler function, used if the application is not printing debug messages
 static int __cdecl BurnbprintfFiller(int, char* , ...) { return 0; }
@@ -579,7 +580,9 @@ extern "C" int BurnDrvInit()
 
 	BurnSetRefreshRate(60.0);
 
+#ifndef NO_CHEATS
 	cheatInit();
+#endif
 	BurnStateInit();
 #ifndef NO_COMBO
 	if (BurnInitCombo)
@@ -626,7 +629,9 @@ extern "C" int BurnDrvExit()
 	}
 #endif
 
+#ifndef NO_CHEATS
 	cheatExit();
+#endif
 	BurnStateExit();
 
 	nBurnCPUSpeedAdjust = 0x0100;
@@ -637,7 +642,9 @@ extern "C" int BurnDrvExit()
 // Do one frame of game emulation
 extern "C" int BurnDrvFrame()
 {
+#ifndef NO_CHEATS
 	cheatApply();						// Apply cheats (if any)
+#endif
 #ifndef NO_COMBO
 	if (BurnProcessCombo)
 		BurnProcessCombo();

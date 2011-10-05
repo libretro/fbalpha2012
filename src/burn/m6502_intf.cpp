@@ -24,9 +24,11 @@ void m6502Init(int num)
 
 	memset (m6502_active_cpu_regs, 0, sizeof(M6502) * MAX_CPU);
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++) {
 		CpuCheatRegister(CPU_M6502, i);
 	}
+	#endif
 }
 
 void m6502Exit()

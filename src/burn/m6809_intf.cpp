@@ -72,8 +72,10 @@ int M6809Init(int num)
 
 	m6809_init(NULL);
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_M6809, i);
+	#endif
 
 	return 0;
 }

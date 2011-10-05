@@ -241,6 +241,7 @@ static inline void DrvClearOpposites(unsigned short* joystickInputs)
 }
 
 // ------------------------------------------------------------------
+#ifndef NO_CHEATS
 // Setting up cpus for cheats
 
 typedef enum {
@@ -250,5 +251,6 @@ typedef enum {
 } CPU_CHEATTYPE;
 
 void CpuCheatRegister(CPU_CHEATTYPE type, int num);
+#endif
 
 #endif

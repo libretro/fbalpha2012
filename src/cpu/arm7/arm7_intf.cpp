@@ -46,7 +46,9 @@ void Arm7Init(int num) // only one cpu supported
 #endif
 	}
 
+#ifndef NO_CHEATS
 	CpuCheatRegister(CPU_ARM7, num);
+#endif
 }
 
 void Arm7Exit() // only one cpu supported

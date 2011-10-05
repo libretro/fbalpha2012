@@ -84,8 +84,10 @@ int M6800CoreInit(int num, int type)
 	if (type == CPU_TYPE_M6803) m6803_init();
 	if (type == CPU_TYPE_M6801) m6801_init();
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_M6800, i);
+	#endif
 
 	return 0;
 }

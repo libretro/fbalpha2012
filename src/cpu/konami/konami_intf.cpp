@@ -137,7 +137,9 @@ void konamiInit(int num) // only 1 cpu (No examples exist of multi-cpu konami ga
 		}
 	}
 
+#ifndef NO_CHEATS
 	CpuCheatRegister(CPU_KONAMICUSTOM, num);
+#endif
 }
 
 void konamiExit()

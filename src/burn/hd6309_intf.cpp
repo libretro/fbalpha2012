@@ -72,8 +72,10 @@ int HD6309Init(int num)
 
 	hd6309_init();
 
+	#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_HD6309, i);
+	#endif
 
 	return 0;
 }

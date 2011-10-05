@@ -82,11 +82,13 @@ static int CheckRoms()
 		memset(&ri, 0, sizeof(ri));
 		BurnDrvGetRomInfo(&ri, i);			// Find information about the wanted rom
 
-		if (!(ri.nType & BRF_OPT) && (ri.nCrc != 0)) {
+		if (!(ri.nType & BRF_OPT) && (ri.nCrc != 0))
+		{
 			state = RomFind[i].nState;	// Get the state of the rom in the archive file
 			error = GetBArchiveError(state);
 
-			if (state == STAT_NOFIND && ri.nType) {	// (A type of 0 means empty slot - no rom)
+			if (state == STAT_NOFIND && ri.nType)
+			{	// (A type of 0 means empty slot - no rom)
 				char* szName = "Unknown";
 				RomDescribe(&ri);
 				BurnDrvGetRomName(&szName, i, 0);
@@ -160,7 +162,8 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 		return 1;
 
 	int nWantZip = RomFind[i].nArchive;	// Which archive file it is in
-	if (nCurrentArc != nWantZip) {		// If we haven't got the right archive file currently open
+	if (nCurrentArc != nWantZip)
+	{		// If we haven't got the right archive file currently open
 		archiveClose();
 		nCurrentArc = -1;
 
@@ -208,6 +211,7 @@ int BArchiveCheckRoms(const bool& bootApp)
 		if (nBArchiveError & 0x0101)
 		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
+
 			if (nBArchiveError & 0x0001)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_ESS_MISS));
 			else
@@ -217,6 +221,7 @@ int BArchiveCheckRoms(const bool& bootApp)
 		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_PRG));
+
 			if (nBArchiveError & 0x0002)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
 			else
@@ -226,6 +231,7 @@ int BArchiveCheckRoms(const bool& bootApp)
 		{
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_GRA));
+
 			if (nBArchiveError & 0x0004)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
 			else
@@ -234,6 +240,7 @@ int BArchiveCheckRoms(const bool& bootApp)
 		if (nBArchiveError & 0x0808) {
 			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n ") _T(SEPERATOR_1));
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DET_SND));
+
 			if (nBArchiveError & 0x0008)
 				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DATA_MISS));
 			else
@@ -401,10 +408,10 @@ int BArchiveOpen(bool bootApp)
 int BArchiveClose()
 {
 	archiveClose();
-	nCurrentArc = -1;		// Close the last archive file if open
+	nCurrentArc = -1;	// Close the last archive file if open
 
 	BurnExtLoadRom = NULL;	// Can't call our function to load each rom anymore
-	nBArchiveError = 0;		// reset romset errors
+	nBArchiveError = 0;	// reset romset errors
 	nTotalSize = 0;
 
 	if (RomFind)

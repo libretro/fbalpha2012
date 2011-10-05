@@ -163,16 +163,16 @@ int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int ty
 
 	const char* pszGameName = NULL;
 
-	if (i == 0) {
+	if (i == 0)
 		pszGameName = pDriver[nBurnDrvSelect]->szShortName;
-	} else {
+	else
+	{
 		int nOldBurnDrvSelect = nBurnDrvSelect;
 		unsigned int j = pDriver[nBurnDrvSelect]->szBoardROM ? 1 : 0;
 
 		// Try BIOS/board ROMs first
-		if (i == 1 && j == 1) {										// There is a BIOS/board ROM
+		if (i == 1 && j == 1) // There is a BIOS/board ROM
 			pszGameName = pDriver[nBurnDrvSelect]->szBoardROM;
-		}
 
 		if (pszGameName == NULL) {
 			// Go through the list to seek out the parent
@@ -180,12 +180,13 @@ int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int ty
 				const char* pszParent = pDriver[nBurnDrvSelect]->szParent;
 				pszGameName = NULL;
 
-				if (pszParent == NULL) {							// No parent
+				if (pszParent == NULL)								// No parent
 					break;
-				}
 
-				for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++) {
-					if (strcmp(pszParent, pDriver[nBurnDrvSelect]->szShortName) == 0) {	// Found parent
+				for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++)
+				{
+					if (strcmp(pszParent, pDriver[nBurnDrvSelect]->szShortName) == 0)
+					{	// Found parent
 						pszGameName = pDriver[nBurnDrvSelect]->szShortName;
 						break;
 					}
@@ -207,13 +208,12 @@ int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int ty
 	strcpy(szFilename, pszGameName);
 
 	// add extension
-	if (ext) {
-		if (type == 0) {			// zip
+	if (ext)
+	{
+		if (type == 0)				// zip
 			strcat(szFilename, ".zip");
-		}
-		else if (type == 1) {		// 7z
+		else if (type == 1)			// 7z
 			strcat(szFilename, ".7z");
-		}
 	}
 
 	*pszName = szFilename;
@@ -286,7 +286,8 @@ extern "C" char* BurnDrvGetText(unsigned int i)
 			pszStringA = pDriver[nBurnDrvSelect]->szDate;
 			break;
 		case DRV_FULLNAME:
-			if (i & DRV_NEXTNAME) {
+			if (i & DRV_NEXTNAME)
+			{
 				if (!pszCurrentNameW && pDriver[nBurnDrvSelect]->szFullNameA)
 				{
 					pszCurrentNameA += strlen(pszCurrentNameA) + 1;
@@ -357,7 +358,8 @@ extern "C" char* BurnDrvGetText(unsigned int i)
 // Get the ASCII text fields for the driver in ASCII format;
 extern "C" const char * BurnDrvGetTextA(unsigned int i)
 {
-	switch (i) {
+	switch (i)
+	{
 		case DRV_NAME:			 
 			return pDriver[nBurnDrvSelect]->szShortName;
 		case DRV_DATE:			 
@@ -384,7 +386,8 @@ extern "C" const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type)
 	if (index >= nBurnDrvCount)
 		return NULL;
 
-	switch (type) {
+	switch (type)
+	{
 		case DRV_NAME:
 			return pDriver[index]->szShortName;
 		case DRV_DATE:
@@ -409,18 +412,18 @@ extern "C" const char * BurnDrvGetMyTextA(unsigned int index, unsigned int type)
 // Get the archive names for the driver
 extern "C" int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext /*=true*/, unsigned int type /*=0*/)
 {
-	if (pDriver[nBurnDrvSelect]->GetZipName) // Forward to drivers function
+	if (pDriver[nBurnDrvSelect]->GetZipName)				// Forward to drivers function
 		return pDriver[nBurnDrvSelect]->GetZipName(pszName, i);
 
-	return BurnGetArchiveName(pszName, i, ext, type); // Forward to general function
+	return BurnGetArchiveName(pszName, i, ext, type);			// Forward to general function
 }
 
-extern "C" int BurnDrvGetRomInfo(struct BurnRomInfo* pri, unsigned int i)		// Forward to drivers function
+extern "C" int BurnDrvGetRomInfo(struct BurnRomInfo* pri, unsigned int i)	// Forward to drivers function
 {
 	return pDriver[nBurnDrvSelect]->GetRomInfo(pri, i);
 }
 
-extern "C" int BurnDrvGetRomName(char** pszName, unsigned int i, int nAka)		// Forward to drivers function
+extern "C" int BurnDrvGetRomName(char** pszName, unsigned int i, int nAka)	// Forward to drivers function
 {
 	return pDriver[nBurnDrvSelect]->GetRomName(pszName, i, nAka);
 }
@@ -432,7 +435,7 @@ extern "C" int BurnDrvGetInputInfo(struct BurnInputInfo* pii, unsigned int i)	//
 
 extern "C" int BurnDrvGetDIPInfo(struct BurnDIPInfo* pdi, unsigned int i)
 {
-	if (pDriver[nBurnDrvSelect]->GetDIPInfo)	// Forward to drivers function
+	if (pDriver[nBurnDrvSelect]->GetDIPInfo)				// Forward to drivers function
 		return pDriver[nBurnDrvSelect]->GetDIPInfo(pdi, i);
 
 	return 1; // Fail automatically
@@ -457,10 +460,13 @@ extern "C" int BurnDrvGetVisibleOffs(int* pnLeft, int* pnTop)
 
 extern "C" int BurnDrvGetFullSize(int* pnWidth, int* pnHeight)
 {
-	if (pDriver[nBurnDrvSelect]->flags & BDF_ORIENTATION_VERTICAL) {
+	if (pDriver[nBurnDrvSelect]->flags & BDF_ORIENTATION_VERTICAL)
+	{
 		*pnWidth = pDriver[nBurnDrvSelect]->nHeight;
 		*pnHeight = pDriver[nBurnDrvSelect]->nWidth;
-	} else {
+	}
+	else
+	{
 		*pnWidth = pDriver[nBurnDrvSelect]->nWidth;
 		*pnHeight = pDriver[nBurnDrvSelect]->nHeight;
 	}
@@ -480,10 +486,13 @@ extern "C" int BurnDrvGetAspect(int* pnXAspect, int* pnYAspect)
 // Set the screen size [Hack]
 extern "C" int BurnDrvSetVisibleSize(int pnWidth, int pnHeight)
 {
-	if (pDriver[nBurnDrvSelect]->flags & BDF_ORIENTATION_VERTICAL) {
+	if (pDriver[nBurnDrvSelect]->flags & BDF_ORIENTATION_VERTICAL)
+	{
 		pDriver[nBurnDrvSelect]->nHeight = pnWidth;
 		pDriver[nBurnDrvSelect]->nWidth = pnHeight;
-	} else {
+	}
+	else
+	{
 		pDriver[nBurnDrvSelect]->nWidth = pnWidth;
 		pDriver[nBurnDrvSelect]->nHeight = pnHeight;
 	}
@@ -550,7 +559,7 @@ extern "C" int BurnDrvInit()
 
 		if (nName > 1)
 		{
-			bprintf(PRINT_IMPORTANT, _T("    Alternative %s "), (nName > 2) ? _T("titles are") : _T("title is"));
+			bprintf(PRINT_IMPORTANT, "    Alternative %s ", (nName > 2) ? "titles are" : "title is");
 			pszName = BurnDrvGetText(DRV_FULLNAME);
 			nName = 1;
 			while ((pszName = BurnDrvGetText(DRV_NEXTNAME | DRV_FULLNAME)) != NULL)
@@ -560,10 +569,10 @@ extern "C" int BurnDrvInit()
 				if (nName > 1)
 					bprintf(PRINT_IMPORTANT, _T(SEPERATOR_1));
 
-				bprintf(PRINT_IMPORTANT, _T("%s"), pszName);
+				bprintf(PRINT_IMPORTANT, "%s", pszName);
 				nName++;
 			}
-			bprintf(PRINT_IMPORTANT, _T(".\n"));
+			bprintf(PRINT_IMPORTANT, ".\n");
 		}
 	}
 #endif
@@ -628,7 +637,7 @@ extern "C" int BurnDrvExit()
 // Do one frame of game emulation
 extern "C" int BurnDrvFrame()
 {
-	cheatApply();									// Apply cheats (if any)
+	cheatApply();						// Apply cheats (if any)
 #ifndef NO_COMBO
 	if (BurnProcessCombo)
 		BurnProcessCombo();
@@ -644,11 +653,10 @@ extern "C" int BurnDrvFrame()
 // Force redraw of the screen
 extern "C" int BurnDrvRedraw()
 {
-	if (pDriver[nBurnDrvSelect]->Redraw) {
+	if (pDriver[nBurnDrvSelect]->Redraw)
 		return pDriver[nBurnDrvSelect]->Redraw();	// Forward to drivers function
-	}
 
-	return 1;										// No funtion provide, so simply return
+	return 1;						// No function provide, so simply return
 }
 
 // Refresh Palette
@@ -670,9 +678,8 @@ int (__cdecl *BurnExtProgressUpdateCallback)(double fProgress, const char* pszTe
 
 int BurnSetProgressRange(double fProgressRange)
 {
-	if (BurnExtProgressRangeCallback) {
+	if (BurnExtProgressRangeCallback)
 		return BurnExtProgressRangeCallback(fProgressRange);
-	}
 	return 1;
 }
 
@@ -683,9 +690,8 @@ int BurnUpdateProgress(double fProgress, const char* pszText, bool bAbs)
 	UpdateConsole((char *)pszText);	 
 #else
  
-	if (BurnExtProgressUpdateCallback) {
+	if (BurnExtProgressUpdateCallback)
 		return BurnExtProgressUpdateCallback(fProgress, pszText, bAbs);
-	}
 #endif
 	return 1;
 
@@ -704,9 +710,8 @@ int BurnAfterReset()
 
 int BurnSetRefreshRate(double dFrameRate)
 {
-	if (!bForce60Hz) {
+	if (!bForce60Hz)
 		nBurnFPS = (int)(100.0 * dFrameRate);
-	}
 
 	return 0;
 }
@@ -719,9 +724,8 @@ static inline int BurnClearSize(int w, int h)
 	w *= nBurnBpp;
 
 	// clear the screen to zero
-	for (pl = pBurnDraw, y = 0; y < h; pl += nBurnPitch, y++) {
+	for (pl = pBurnDraw, y = 0; y < h; pl += nBurnPitch, y++)
 		XMemSet(pl, 0x00, w);
-	}
 
 	return 0;
 }
@@ -730,20 +734,20 @@ int BurnClearScreen()
 {
 	const struct BurnDriver* pbd = pDriver[nBurnDrvSelect];
 
-	if (pbd->flags & BDF_ORIENTATION_VERTICAL) {
+	if (pbd->flags & BDF_ORIENTATION_VERTICAL)
 		BurnClearSize(pbd->nHeight, pbd->nWidth);
-	} else {
+	else
 		BurnClearSize(pbd->nWidth, pbd->nHeight);
-	}
 
 	return 0;
 }
 
 void BurnSwitch68kCore(bool useAsmCore, bool restore)
 {
-	if (restore) {
+	if (restore)
 		bBurnUseASM68K = bBurnOldUseASM68K;
-	} else {
+	else
+	{
 		bBurnOldUseASM68K = bBurnUseASM68K;
 		bBurnUseASM68K = useAsmCore;
 	}
@@ -778,66 +782,63 @@ void BurnTransferClear()
 
 static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restrict pDest, UINT32* __restrict pPalette)
 {
-	if (!nTransWidth || !nTransHeight || !pTransDraw) {
-      #ifndef SN_TARGET_PS3
-		bprintf(PRINT_NORMAL, _T("BurnTransferCopy called without BurnTransferInit!\n"));
-      #endif
-		return;
-	}
-
 #ifndef SN_TARGET_PS3
 	switch (nBurnBpp) {
 		case 2: {
-			for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
-                    for (int x = 0; x < (nTransWidth); x +=8 ) {
-                          ((UINT16*)pDest)[x] = pPalette[pSrc[x]];
-                          ((UINT16*)pDest)[x+1] = pPalette[pSrc[x+1]];
-                          ((UINT16*)pDest)[x+2] = pPalette[pSrc[x+2]];
-                          ((UINT16*)pDest)[x+3] = pPalette[pSrc[x+3]];
-                          ((UINT16*)pDest)[x+4] = pPalette[pSrc[x+4]];
-                          ((UINT16*)pDest)[x+5] = pPalette[pSrc[x+5]];
-                          ((UINT16*)pDest)[x+6] = pPalette[pSrc[x+6]];
-                          ((UINT16*)pDest)[x+7] = pPalette[pSrc[x+7]];
-                    }
-              }
-              break;
-		}
-		case 3: {
-			for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
-				for (int x = 0; x < nTransWidth; x++) {
-					UINT32 c = pPalette[pSrc[x]];
-					*(pDest + (x * 3) + 0) = c & 0xFF;
-					*(pDest + (x * 3) + 1) = (c >> 8) & 0xFF;
-					*(pDest + (x * 3) + 2) = c >> 16;
-
+				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+					for (int x = 0; x < (nTransWidth); x +=8 ) {
+						((UINT16*)pDest)[x] = pPalette[pSrc[x]];
+						((UINT16*)pDest)[x+1] = pPalette[pSrc[x+1]];
+						((UINT16*)pDest)[x+2] = pPalette[pSrc[x+2]];
+						((UINT16*)pDest)[x+3] = pPalette[pSrc[x+3]];
+						((UINT16*)pDest)[x+4] = pPalette[pSrc[x+4]];
+						((UINT16*)pDest)[x+5] = pPalette[pSrc[x+5]];
+						((UINT16*)pDest)[x+6] = pPalette[pSrc[x+6]];
+						((UINT16*)pDest)[x+7] = pPalette[pSrc[x+7]];
+					}
 				}
+				break;
 			}
-			break;
-		}
+		case 3: {
+				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+					for (int x = 0; x < nTransWidth; x++) {
+						UINT32 c = pPalette[pSrc[x]];
+						*(pDest + (x * 3) + 0) = c & 0xFF;
+						*(pDest + (x * 3) + 1) = (c >> 8) & 0xFF;
+						*(pDest + (x * 3) + 2) = c >> 16;
+
+					}
+				}
+				break;
+			}
 		case 4: {
 #endif
-			for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
-				for (int x = 0; x < nTransWidth; x+=8) {
-					((UINT32*)pDest)[x] = pPalette[pSrc[x]];                           
-					((UINT32*)pDest)[x+1] = pPalette[pSrc[x+1]];
-					((UINT32*)pDest)[x+2] = pPalette[pSrc[x+2]];
-					((UINT32*)pDest)[x+3] = pPalette[pSrc[x+3]];
-					((UINT32*)pDest)[x+4] = pPalette[pSrc[x+4]];
-					((UINT32*)pDest)[x+5] = pPalette[pSrc[x+5]];
-					((UINT32*)pDest)[x+6] = pPalette[pSrc[x+6]];
-					((UINT32*)pDest)[x+7] = pPalette[pSrc[x+7]];
+				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+					for (int x = 0; x < nTransWidth; x+=8) {
+						((UINT32*)pDest)[x] = pPalette[pSrc[x]];                           
+						((UINT32*)pDest)[x+1] = pPalette[pSrc[x+1]];
+						((UINT32*)pDest)[x+2] = pPalette[pSrc[x+2]];
+						((UINT32*)pDest)[x+3] = pPalette[pSrc[x+3]];
+						((UINT32*)pDest)[x+4] = pPalette[pSrc[x+4]];
+						((UINT32*)pDest)[x+5] = pPalette[pSrc[x+5]];
+						((UINT32*)pDest)[x+6] = pPalette[pSrc[x+6]];
+						((UINT32*)pDest)[x+7] = pPalette[pSrc[x+7]];
+					}
 				}
-			}
 #ifndef SN_TARGET_PS3
-			break;
-		}
+				break;
+			}
 	}
 #endif
 }
 
 int BurnTransferCopy(UINT32* pPalette)
 {
-	BurnTransferCopyIn(pTransDraw, pBurnDraw, pPalette);
+	// BurnTransferCopy called without BurnTransferInit if this is false\n"
+	if (!(!nTransWidth || !nTransHeight || !pTransDraw))
+	{
+		BurnTransferCopyIn(pTransDraw, pBurnDraw, pPalette);
+	}
 
 	return 0;
 }
@@ -850,16 +851,14 @@ void BurnTransferExit()
 
 int BurnTransferInit()
 {
-	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
+	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
 		BurnDrvGetVisibleSize(&nTransHeight, &nTransWidth);
-	} else {
+	else
 		BurnDrvGetVisibleSize(&nTransWidth, &nTransHeight);
-	}
 
 	pTransDraw = (unsigned short*)malloc(nTransWidth * nTransHeight * sizeof(short));
-	if (pTransDraw == NULL) {
+	if (pTransDraw == NULL)
 		return 1;
-	}
 
 	BurnTransferClear();
 
@@ -879,14 +878,12 @@ int BurnAreaScan(int nAction, int* pnMin)
 	int nRet = 0;
 
 	// Handle any MAME-style variables
-	if (nAction & ACB_DRIVER_DATA) {
+	if (nAction & ACB_DRIVER_DATA)
 		nRet = BurnStateMAMEScan(nAction, pnMin);
-	}
 
 	// Forward to the driver
-	if (pDriver[nBurnDrvSelect]->AreaScan) {
+	if (pDriver[nBurnDrvSelect]->AreaScan)
 		nRet |= pDriver[nBurnDrvSelect]->AreaScan(nAction, pnMin);
-	}
 
 	return nRet;
 }
@@ -911,7 +908,7 @@ void logerror(char* szFormat, ...)
 
 	va_end(vaFormat);
 
-	bprintf(PRINT_ERROR, _T("%hs"), szLogMessage);
+	bprintf(PRINT_ERROR, "%hs", szLogMessage);
 
 	return;
 }
@@ -930,17 +927,16 @@ static inline void BurnStateRegister(const char* module, int instance, const cha
 {
 	// Allocate new node
 	BurnStateEntry* pNewEntry = (BurnStateEntry*)malloc(sizeof(BurnStateEntry));
-	if (pNewEntry == NULL) {
+	if (pNewEntry == NULL)
 		return;
-	}
 
 	memset(pNewEntry, 0, sizeof(BurnStateEntry));
 
 	// Link the new node
 	pNewEntry->pNext = pStateEntryAnchor;
-	if (pStateEntryAnchor) {
+	if (pStateEntryAnchor)
 		pStateEntryAnchor->pPrev = pNewEntry;
-	}
+
 	pStateEntryAnchor = pNewEntry;
 
 	sprintf(pNewEntry->szName, "%s:%s %i", module, name, instance);
@@ -963,9 +959,8 @@ void BurnStateExit()
 
 	pStateEntryAnchor = NULL;
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++)
 		BurnPostload[i] = NULL;
-	}
 }
 
 int BurnStateInit()
@@ -979,9 +974,8 @@ int BurnStateMAMEScan(int nAction, int* pnMin)
 {
 	if (nAction & ACB_VOLATILE) {
 
-		if (pnMin && *pnMin < 0x029418) {						// Return minimum compatible version
+		if (pnMin && *pnMin < 0x029418)	// Return minimum compatible version
 			*pnMin = 0x029418;
-		}
 
 		if (pStateEntryAnchor) {
 			struct BurnArea ba;

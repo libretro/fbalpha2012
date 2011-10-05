@@ -4,15 +4,12 @@
 #include "burner.h"
 #include "../../interface/PS3/audio_driver.h"
 
-static int nBaseFps;
-
 // Media init / exit
 int mediaInit(void)
 {
 	if (!bInputOkay)
 		InputInit();					// Init Input
 
-	nBaseFps = nBurnFPS;
 	nAppVirtualFps = nBurnFPS;
 
 	if (!bAudOkay)
@@ -82,7 +79,7 @@ int mediaReInitAudio(void)
 // change FPS
 int mediaChangeFps(int scale)
 {
-	nAppVirtualFps = nBaseFps * scale / 100;
+	nAppVirtualFps = nBurnFPS * scale / 100;
 
 	if (!bAudOkay)
 		return 1;

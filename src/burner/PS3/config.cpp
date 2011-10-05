@@ -3,7 +3,6 @@
 /* changelog:
  update 4: change format, improve compatibility
  update 3: improve xml loading
- update 2: add inline functions
  update 1: create
 */
 
@@ -14,15 +13,9 @@
 #include "../lib/ticpp/ticpp.h"
 #include <locale.h>
 
-bool bMenuEnabled = true;
-
-int menuNewStyle = 0;
-bool bModelessMenu = false;
 int nPatchLang = 0;
-bool bDoPatch = false;
 int bEnforceDep = 0;
 int nInputMacroEnabled = 0;			// if 0, macro will not be processed
-unsigned int nComCount = 0;			// how many combos are built
 int nLoadMenuShowX;
 int nLoadMenuShowY;
 
@@ -30,8 +23,7 @@ int nIniVersion = 0;
 static string str = "";
 const float configVersion = 0.03f;
 
-// inline functions
-static inline void addTextNode(ticpp::Element& parent, const char* title, const char* value)
+static void addTextNode(ticpp::Element& parent, const char* title, const char* value)
 {
 	if (!value)
 		return;
@@ -48,7 +40,7 @@ static inline void addTextNode(ticpp::Element& parent, const char* title, const 
 }
 
 template <typename T>
-static inline void setAttr(ticpp::Element& element, const char* attr, const T& value)
+static void setAttr(ticpp::Element& element, const char* attr, const T& value)
 {
 	if (!attr)
 		return;
@@ -56,7 +48,7 @@ static inline void setAttr(ticpp::Element& element, const char* attr, const T& v
 	element.SetAttribute(attr, value);
 }
 
-static inline ticpp::Element* findElement(ticpp::Element* element, const char* attr)
+static ticpp::Element* findElement(ticpp::Element* element, const char* attr)
 {
 	if (!element || !attr)
 		return NULL;
@@ -65,7 +57,7 @@ static inline ticpp::Element* findElement(ticpp::Element* element, const char* a
 }
 
 template <typename T>
-static inline void getAttr(ticpp::Element* element, const char* attr, T* value)
+static void getAttr(ticpp::Element* element, const char* attr, T* value)
 {
 	if (!element || !attr || !value)
 		return;
@@ -73,7 +65,7 @@ static inline void getAttr(ticpp::Element* element, const char* attr, T* value)
 	element->GetAttribute(attr, value, false);
 }
 
-static inline void getTextStr(ticpp::Element* element, TCHAR* name)
+static void getTextStr(ticpp::Element* element, TCHAR* name)
 {
 	if (!element || !name)
 		return;
@@ -82,11 +74,11 @@ static inline void getTextStr(ticpp::Element* element, TCHAR* name)
 	element->GetText(&str, false);
 
 	if (str != "")
-		_tcscpy(name, str.c_str());
+		strcpy(name, str.c_str());
 }
 
 // get config filename
-static inline void createConfigName(char* config)
+static void createConfigName(char* config)
 {
 	sprintf(config, "/dev_hdd0/game/FBAN00000/USRDIR/fbanext-ps3.xml");
 }
@@ -122,7 +114,6 @@ int configAppLoadXml()
 	// emulation
 	element = findElement(root, "emulation");
 	getAttr(element, "asm-68k", &bBurnUseASM68K);
-	getAttr(element, "all-ram", &bDrvSaveAll);
 
 	// video
 	element = findElement(root, "video");
@@ -192,10 +183,6 @@ int configAppLoadXml()
 		child = findElement(element, "language");
 		child = findElement(element, "gamelist");
 
-		child = findElement(element, "menu");
-		getAttr(child, "modeless", &bModelessMenu);
-		getAttr(child, "style", &menuNewStyle);
-
 		child = findElement(element, "gui-misc");
 		getAttr(child, "lastRom", &nLastRom);
 		getAttr(child, "lastFilter", &nLastFilter);
@@ -217,7 +204,6 @@ int configAppLoadXml()
 	{
 		child = findElement(element, "settings");
 		getAttr(child, "always-processkey", &bAlwaysProcessKey);
-		getAttr(child, "auto-pause", &bAutoPause);
 		child = findElement(element, "macro");
 		getAttr(child, "enable", &nInputMacroEnabled);
 
@@ -283,7 +269,6 @@ int configAppSaveXml()
 	ticpp::Element emulation("emulation");
 	root.LinkEndChild(&emulation);
 	setAttr(emulation, "asm-68k", bBurnUseASM68K);
-	setAttr(emulation, "all-ram", bDrvSaveAll);
 
 	// video
 	ticpp::Element video("video");
@@ -373,11 +358,6 @@ int configAppSaveXml()
 	root.LinkEndChild(&gui);
 	//addTextNode(gui, "gamelist", szTransGamelistFile);
 
-	ticpp::Element menu("menu");
-	gui.LinkEndChild(&menu);
-	setAttr(menu, "modeless", bModelessMenu);
-	setAttr(menu, "style", menuNewStyle);
-
 	ticpp::Element gui_misc("gui-misc");
 	gui.LinkEndChild(&gui_misc);
 	setAttr(gui_misc, "lastRom", nLastRom);
@@ -404,7 +384,6 @@ int configAppSaveXml()
 	ticpp::Element settings("settings");
 	preference.LinkEndChild(&settings);
 	setAttr(settings, "always-processkey", bAlwaysProcessKey);
-	setAttr(settings, "auto-pause", bAutoPause);
 
 	ticpp::Element macro("macro");
 	preference.LinkEndChild(&macro);
@@ -412,7 +391,9 @@ int configAppSaveXml()
 
 	ticpp::Element controls("controls");
 	preference.LinkEndChild(&controls);
-	for (int i = 0; i < 4; i++) {
+
+	for (int i = 0; i < 4; i++)
+	{
 		sprintf(tempStr, "default%d", i);
 		addTextNode(controls, tempStr, szPlayerDefaultIni[i]);
 	}
@@ -429,7 +410,9 @@ int configAppSaveXml()
 
 	ticpp::Element misc_path("misc");
 	paths.LinkEndChild(&misc_path);
-	for (int i = PATH_PREVIEW; i < PATH_SUM; i++) {
+
+	for (int i = PATH_PREVIEW; i < PATH_SUM; i++)
+	{
 		sprintf(tempStr, "path%d", i);
 		addTextNode(misc_path, tempStr, szMiscPaths[i]);
 	}

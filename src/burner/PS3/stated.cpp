@@ -1,11 +1,8 @@
 // State dialog module
 #include "burner.h"
 
-int bDrvSaveAll = 0;
-
 static void StateMakeOfn(char* pszFilter)
 {
-
 	return;
 }
 
@@ -17,36 +14,22 @@ int StatedAuto(int bSave)
 
 int StatedLoad(int nSlot)
 {
-	char szFilter[1024];
-	int nRet;
-	int bOldPause;
+	int ret;
 
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
 
-	bOldPause = bRunPause;
-	bRunPause = 1;
+	ret = BurnStateLoad(szChoice, 1, &DrvInitCallback);
 
-	bRunPause = bOldPause;
-
-
-	nRet = BurnStateLoad(szChoice, 1, &DrvInitCallback);
-
-	return nRet;
+	return ret;
 }
 
 int StatedSave(int nSlot)
 {
-	char szFilter[1024];
-	int nRet;
-	int bOldPause;
+	int ret;
 
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
 
-	bOldPause = bRunPause;
-	bRunPause = 1; 
-	bRunPause = bOldPause;		
+	ret = BurnStateSave(szChoice, 1);
 
-	nRet = BurnStateSave(szChoice, 1);
-
-	return nRet;
+	return ret;
 }

@@ -20,16 +20,16 @@ static int StateInfo(int* pnLen, int* pnMinVer, int bAll)
 	nTotalLen = 0;
 	BurnAcb = StateLenAcb;
 
-	BurnAreaScan(ACB_NVRAM, &nMin);						// Scan nvram
+	BurnAreaScan(ACB_NVRAM, &nMin);				// Scan nvram
 	if (bAll)
 	{
 		int m;
-		BurnAreaScan(ACB_MEMCARD, &m);					// Scan memory card
-		if (m > nMin) // Up the minimum, if needed
+		BurnAreaScan(ACB_MEMCARD, &m);			// Scan memory card
+		if (m > nMin)					// Up the minimum, if needed
 			nMin = m;
 
-		BurnAreaScan(ACB_VOLATILE, &m);					// Scan volatile ram
-		if (m > nMin) // Up the minimum, if needed
+		BurnAreaScan(ACB_VOLATILE, &m);			// Scan volatile ram
+		if (m > nMin)					// Up the minimum, if needed
 			nMin = m;
 	}
 	*pnLen = nTotalLen;
@@ -41,7 +41,7 @@ static int StateInfo(int* pnLen, int* pnMinVer, int bAll)
 // State load
 int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 {
-	const char* szHeader = "FS1 ";						// Chunk identifier
+	const char* szHeader = "FS1 ";			// Chunk identifier
 
 	int nLen = 0;
 	int nMin = 0, nFileVer = 0, nFileMin = 0;
@@ -50,7 +50,7 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 	char szForName[33];
 	int nChunkSize = 0;
 	unsigned char *Def = NULL;
-	int nDefLen = 0;									// Deflated version
+	int nDefLen = 0;				// Deflated version
 	int nRet = 0;
 
 	if (nOffset >= 0)
@@ -64,32 +64,32 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 	}
 
 	memset(ReadHeader, 0, 4);
-	fread(ReadHeader, 1, 4, fp);						// Read identifier
-	if (memcmp(ReadHeader, szHeader, 4))					// Not the right file type
+	fread(ReadHeader, 1, 4, fp);			// Read identifier
+	if (memcmp(ReadHeader, szHeader, 4))		// Not the right file type
 		return -2;
 
 	fread(&nChunkSize, 1, 4, fp);
-	if (nChunkSize <= 0x40)							// Not big enough
+	if (nChunkSize <= 0x40)				// Not big enough
 		return -1;
 
 	int nChunkData = ftell(fp);
 
-	fread(&nFileVer, 1, 4, fp);							// Version of FB that this file was saved from
+	fread(&nFileVer, 1, 4, fp);			// Version of FB that this file was saved from
 
-	fread(&t1, 1, 4, fp);								// Min version of FB that NV  data will work with
-	fread(&t2, 1, 4, fp);								// Min version of FB that All data will work with
+	fread(&t1, 1, 4, fp);				// Min version of FB that NV  data will work with
+	fread(&t2, 1, 4, fp);				// Min version of FB that All data will work with
 
-	if (bAll) // Get the min version number which applies to us
+	if (bAll)					// Get the min version number which applies to us
 		nFileMin = t2;
 	else
 		nFileMin = t1;
 
-	fread(&nDefLen, 1, 4, fp);							// Get the size of the compressed data block
+	fread(&nDefLen, 1, 4, fp);			// Get the size of the compressed data block
 
 	memset(szForName, 0, sizeof(szForName));
 	fread(szForName, 1, 32, fp);
 
-	if (nBurnVer < nFileMin) // Error - emulator is too old to load this state
+	if (nBurnVer < nFileMin)			// Error - emulator is too old to load this state
 		return -5;
 
 	// Check the game the savestate is for, and load it if needed.
@@ -138,20 +138,20 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 	if (nFileVer < nMin) // Error - this state is too old and cannot be loaded.
 		return -4;
 
-	fseek(fp, nChunkData + 0x30, SEEK_SET);				// Read current frame
-	fread(&nCurrentFrame, 1, 4, fp);					//
+	fseek(fp, nChunkData + 0x30, SEEK_SET);			// Read current frame
+	fread(&nCurrentFrame, 1, 4, fp);
 
-	fseek(fp, 0x0C, SEEK_CUR);							// Move file pointer to the start of the compressed block
+	fseek(fp, 0x0C, SEEK_CUR);				// Move file pointer to the start of the compressed block
 	Def = (unsigned char*)malloc(nDefLen);
 
 	if (Def == NULL)
 		return -1;
 
 	memset(Def, 0, nDefLen);
-	fread(Def, 1, nDefLen, fp);							// Read in deflated block
+	fread(Def, 1, nDefLen, fp);				// Read in deflated block
 
 	nRet = BurnStateDecompress(Def, nDefLen, bAll);		// Decompress block into driver
-	free(Def);											// free deflated block
+	free(Def);						// free deflated block
 
 	fseek(fp, nChunkData + nChunkSize, SEEK_SET);
 
@@ -220,25 +220,25 @@ int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll)
 			fseek(fp, 0, SEEK_CUR);
 	}
 
-	fwrite(szHeader, 1, 4, fp);						// Chunk identifier
-	int nSizeOffset = ftell(fp);						// Reserve space to write the size of this chunk
-	fwrite(&nZero, 1, 4, fp);						//
+	fwrite(szHeader, 1, 4, fp);		// Chunk identifier
+	int nSizeOffset = ftell(fp);		// Reserve space to write the size of this chunk
+	fwrite(&nZero, 1, 4, fp);
 
-	fwrite(&nBurnVer, 1, 4, fp);						// Version of FB this was saved from
-	fwrite(&nNvMin, 1, 4, fp);							// Min version of FB NV  data will work with
-	fwrite(&nAMin, 1, 4, fp);							// Min version of FB All data will work with
+	fwrite(&nBurnVer, 1, 4, fp);		// Version of FB this was saved from
+	fwrite(&nNvMin, 1, 4, fp);		// Min version of FB NV  data will work with
+	fwrite(&nAMin, 1, 4, fp);		// Min version of FB All data will work with
 
-	fwrite(&nZero, 1, 4, fp);							// Reserve space to write the compressed data size
+	fwrite(&nZero, 1, 4, fp);		// Reserve space to write the compressed data size
 
-	memset(szGame, 0, sizeof(szGame));					// Game name
-	sprintf(szGame, "%.32s", BurnDrvGetTextA(DRV_NAME));			//
-	fwrite(szGame, 1, 32, fp);							//
+	memset(szGame, 0, sizeof(szGame));	// Game name
+	sprintf(szGame, "%.32s", BurnDrvGetTextA(DRV_NAME));
+	fwrite(szGame, 1, 32, fp);
 
-	fwrite(&nCurrentFrame, 1, 4, fp);			// Current frame
+	fwrite(&nCurrentFrame, 1, 4, fp);	// Current frame
 
-	fwrite(&nZero, 1, 4, fp);				// Reserved
-	fwrite(&nZero, 1, 4, fp);				//
-	fwrite(&nZero, 1, 4, fp);				//
+	fwrite(&nZero, 1, 4, fp);		// Reserved
+	fwrite(&nZero, 1, 4, fp);
+	fwrite(&nZero, 1, 4, fp);
 
 	nRet = BurnStateCompress(&Def, &nDefLen, bAll);		// Compress block from driver and return deflated buffer
 	if (Def == NULL)

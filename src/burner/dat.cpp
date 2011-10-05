@@ -4,7 +4,6 @@
 // updated    2008 by regret -- support clrmamepro xml dat
 
 #include "burner.h"
-//#include "build_details.h"
 #include "../lib/ticpp/ticpp.h"
 
 // ==> write clrmamepro xml dat, added by regret
@@ -42,7 +41,7 @@ int write_xmlfile(const char* szFilename, FILE* file)
 
 		// game
 		int nRet = 0;
-		unsigned int nOldSelect = nBurnDrvSelect;					// preserve the currently selected driver
+		unsigned int nOldSelect = nBurnDrvSelect;				// preserve the currently selected driver
 		unsigned int nParentSelect, nBoardROMSelect;
 
 		char sgName[MAX_PATH];
@@ -52,47 +51,48 @@ int write_xmlfile(const char* szFilename, FILE* file)
 		int nPass = 0;
 
 		// Go over each of the games
-		for (unsigned int nGameSelect = 0; nGameSelect < nBurnDrvCount; nGameSelect++) {
-			nBurnDrvSelect = nGameSelect; 							// Switch to driver nGameSelect
+		for (unsigned int nGameSelect = 0; nGameSelect < nBurnDrvCount; nGameSelect++)
+		{
+			nBurnDrvSelect = nGameSelect; 					// Switch to driver nGameSelect
 
-			if (BurnDrvGetFlags() & BDF_BOARDROM) {
+			if (BurnDrvGetFlags() & BDF_BOARDROM)
 				continue;
-			}
 
 			strcpy(sgName, BurnDrvGetTextA(DRV_NAME));
-			strcpy(spName, ""); 									// make sure this string is empty before we start
-			strcpy(sbName, ""); 									// make sure this string is empty before we start
+			strcpy(spName, ""); 						// make sure this string is empty before we start
+			strcpy(sbName, ""); 						// make sure this string is empty before we start
 
 			// Check to see if the game has a parent
-			if (BurnDrvGetTextA(DRV_PARENT)) {
+			if (BurnDrvGetTextA(DRV_PARENT))
+			{
 				while (BurnDrvGetTextA(DRV_PARENT))
 				{
 					strcpy(spName, BurnDrvGetTextA(DRV_PARENT));
 					nParentSelect = BurnDrvGetIndexByNameA(spName);
 					nBurnDrvSelect = nParentSelect;
-					if (nParentSelect >= nBurnDrvCount) {
+					if (nParentSelect >= nBurnDrvCount)
+					{
 						nParentSelect = -1U;
 						break;
 					}
 				}
 
-				nBurnDrvSelect = nGameSelect; 						// restore driver select
-			} else {
-				nParentSelect = nGameSelect;
+				nBurnDrvSelect = nGameSelect; 				// restore driver select
 			}
+			else
+				nParentSelect = nGameSelect;
 
 			// Check to see if the game has a BoardROM
 			if (BurnDrvGetTextA(DRV_BOARDROM)) {
 				strcpy(sbName, BurnDrvGetTextA(DRV_BOARDROM));
 				nBoardROMSelect = BurnDrvGetIndexByNameA(sbName);
-				if (nBoardROMSelect >= nBurnDrvCount) {
+				if (nBoardROMSelect >= nBurnDrvCount)
 					nBoardROMSelect = -1U;
-				}
 
-				nBurnDrvSelect = nGameSelect; 						// restore driver select
-			} else {
-				nBoardROMSelect = nGameSelect;
+				nBurnDrvSelect = nGameSelect; 				// restore driver select
 			}
+			else
+				nBoardROMSelect = nGameSelect;
 
 			// Report problems
 			//			if (nParentSelect == -1U) {
@@ -106,14 +106,16 @@ int write_xmlfile(const char* szFilename, FILE* file)
 			ticpp::Element game("game");
 			game.SetAttribute("name", sgName);
 
-			if (nParentSelect != nGameSelect && nParentSelect != -1U) {
+			if (nParentSelect != nGameSelect && nParentSelect != -1U)
+			{
 				game.SetAttribute("cloneof", spName);
 				game.SetAttribute("romof", spName);
-			} else {
+			}
+			else
+			{
 				// Add "romof" (but not 'cloneof') line for games that have boardROMs
-				if (nBoardROMSelect != nGameSelect && nBoardROMSelect != -1U) {
+				if (nBoardROMSelect != nGameSelect && nBoardROMSelect != -1U)
 					game.SetAttribute("romof", sbName);
-				}
 			}
 
 			ticpp::Element gamedesc("description", decorateGameName(nBurnDrvSelect));
@@ -132,7 +134,8 @@ int write_xmlfile(const char* szFilename, FILE* file)
 					continue;
 
 				// Go over each of the files needed for this game (upto 0x0100)
-				for (i = 0, nRet = 0; nRet == 0 && i < 0x100; i++) {
+				for (i = 0, nRet = 0; nRet == 0 && i < 0x100; i++)
+				{
 					int nRetTmp = 0;
 					struct BurnRomInfo ri;
 					int nLen; unsigned int nCrc;
@@ -165,8 +168,10 @@ int write_xmlfile(const char* szFilename, FILE* file)
 								nRetTmp += BurnDrvGetRomInfo(&riTmp, j);
 								nRetTmp += BurnDrvGetRomName(&szPossibleNameTmp, j, 0);
 
-								if (nRetTmp == 0) {
-									if (riTmp.nLen && riTmp.nCrc == nCrc && !strcmp(szPossibleName, szPossibleNameTmp)) {
+								if (nRetTmp == 0)
+								{
+									if (riTmp.nLen && riTmp.nCrc == nCrc && !strcmp(szPossibleName, szPossibleNameTmp))
+									{
 										// This file is from a boardROM
 										nMerged |= 2;
 										nRetTmp++;
@@ -175,12 +180,14 @@ int write_xmlfile(const char* szFilename, FILE* file)
 							}
 						}
 
-						if (!nMerged && nParentSelect != nGameSelect && nParentSelect != -1U) {
+						if (!nMerged && nParentSelect != nGameSelect && nParentSelect != -1U)
+						{
 							nBurnDrvSelect = nParentSelect;
 							nRetTmp = 0;
 
 							// Go over each of the files needed for this game (upto 0x0100)
-							for (j = 0; nRetTmp == 0 && j < 0x100; j++) {
+							for (j = 0; nRetTmp == 0 && j < 0x100; j++)
+							{
 								memset(&riTmp, 0, sizeof(riTmp));
 
 								nRetTmp += BurnDrvGetRomInfo(&riTmp, j);
@@ -203,17 +210,20 @@ int write_xmlfile(const char* szFilename, FILE* file)
 					bool addNode = false;
 
 					// Selectable BIOS meta info
-					if (nPass == 0 && (nMerged & 2) && (ri.nType & BRF_SELECT)) {
-						//						fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i - 128, szPossibleName, ri.nType & BRF_OPT ? "" : "default yes ");
+					if (nPass == 0 && (nMerged & 2) && (ri.nType & BRF_SELECT))
+					{
+						//fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i - 128, szPossibleName, ri.nType & BRF_OPT ? "" : "default yes ");
 					}
 					// File info
-					if (nPass == 1 && !nMerged) {
+					if (nPass == 1 && !nMerged)
+					{
 						rom.SetAttribute("name", szPossibleName);
 						rom.SetAttribute("size", ri.nLen);
 
-						if (ri.nType & BRF_NODUMP) {
+						if (ri.nType & BRF_NODUMP)
 							rom.SetAttribute("status", "nodump");
-						} else {
+						else
+						{
 							sprintf(str, "%08x", ri.nCrc);
 							rom.SetAttribute("crc", str);
 						}
@@ -225,15 +235,17 @@ int write_xmlfile(const char* szFilename, FILE* file)
 						rom.SetAttribute("size", ri.nLen);
 
 						// Selectable BIOS file info
-						if (nMerged & 2 && ri.nType & BRF_SELECT) {
+						if (nMerged & 2 && ri.nType & BRF_SELECT)
+						{
 							sprintf(str, "%08x", ri.nCrc);
 							rom.SetAttribute("crc", str);
 						}
 						// Files from parent/boardROMs
 						else {
-							if (ri.nType & BRF_NODUMP) {
+							if (ri.nType & BRF_NODUMP)
 								rom.SetAttribute("status", "nodump");
-							} else {
+							else
+							{
 								sprintf(str, "%08x", ri.nCrc);
 								rom.SetAttribute("crc", str);
 							}
@@ -241,9 +253,8 @@ int write_xmlfile(const char* szFilename, FILE* file)
 						addNode = true;
 					}
 
-					if (addNode) {
+					if (addNode)
 						game.LinkEndChild(&rom);
-					}
 				}
 			}
 
@@ -251,10 +262,10 @@ int write_xmlfile(const char* szFilename, FILE* file)
 		}
 
 		// Do another pass over each of the games to find boardROMs
-		for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++) {
-			if (!(BurnDrvGetFlags() & BDF_BOARDROM)) {
+		for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++)
+		{
+			if (!(BurnDrvGetFlags() & BDF_BOARDROM))
 				continue;
-			}
 
 			ticpp::Element game("game");
 			game.SetAttribute("isbios", "yes");
@@ -266,7 +277,8 @@ int write_xmlfile(const char* szFilename, FILE* file)
 			game.LinkEndChild(&gameyear);
 			game.LinkEndChild(&gamemanuf);
 
-			for (int nPass = 0; nPass < 2; nPass++) {
+			for (int nPass = 0; nPass < 2; nPass++)
+			{
 				// Go over each of the individual files (upto 0x0100)
 				for (int i = 0; i < 0x100; i++)
 				{
@@ -278,14 +290,13 @@ int write_xmlfile(const char* szFilename, FILE* file)
 					nRet = BurnDrvGetRomInfo(&ri, i);
 					nRet += BurnDrvGetRomName(&szPossibleName, i, 0);
 
-					if (ri.nLen == 0) continue;
+					if (ri.nLen == 0)
+						continue;
 
-					if (nRet == 0) {
-						if (nPass == 0) {
-							if (ri.nType & BRF_SELECT) {
-								//								fprintf(file, "\tbiosset ( name %d description \"%s\" %s)\n", i, szPossibleName, ri.nType & 0x80 ? "" : "default yes ");
-							}
-						} else {
+					if (nRet == 0)
+					{
+						if (nPass != 0)
+						{
 							sprintf(str, "%08x", ri.nCrc);
 
 							ticpp::Element rom("rom");
@@ -305,16 +316,14 @@ int write_xmlfile(const char* szFilename, FILE* file)
 		nBurnDrvSelect = nOldSelect;
 
 		// write xml
-		if (file) {
+		if (file)
 			doc.SaveFile(file);
-		} else {
+		else
 			doc.SaveFile(szFilename);
-		}
 #ifndef SN_TARGET_PS3
 	}
-	catch (ticpp::Exception& ex) {
+	catch (ticpp::Exception& ex)
 		return 1;
-	}
 #endif
 
 	return 0;
@@ -399,9 +408,7 @@ int write_datfile(FILE* file)
 		{
 			// Add "romof" (but not 'cloneof') line for games that have boardROMs
 			if (nBoardROMSelect != nGameSelect && nBoardROMSelect != -1U)
-			{
 				fprintf(file, "\tromof %s\n", sbName);
-			}
 		}
 
 		fprintf(file, "\tdescription \"%s\"\n", decorateGameName(nBurnDrvSelect));

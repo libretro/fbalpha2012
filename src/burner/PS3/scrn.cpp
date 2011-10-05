@@ -15,9 +15,6 @@
 #include "cartridge.h"
 #include "../../interface/PS3/audio_driver.h"
  
-int bAutoPause = 0;
-int nSavestateSlot = 1;
-
 void setPauseModeScreen(bool bPause)
 {
 	bRunPause = bPause;

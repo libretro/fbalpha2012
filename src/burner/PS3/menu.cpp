@@ -1,10 +1,8 @@
 #include <sysutil/sysutil_msgdialog.h>
 #include <sysutil/sysutil_sysparam.h>
-#include <cell/dbgfont.h>
 #include <cell/cell_fs.h>
-#include <cell/codec/pngdec.h>
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 #include <map>
 #include "menu.h"
 #include "burner.h"
@@ -23,7 +21,7 @@
 #define TAITO 5
 #define SEGA 6
 #define PGM 7
-#define PSYKIO 8
+#define PSIKYO 8
 #define KONAMI 9
 #define KANEKO 10
 #define CAVE 11
@@ -43,10 +41,10 @@
 #define MASKCPS3		(1 << (HARDWARE_PREFIX_CPS3		>> 24))
 #define MASKTAITO		(1 << (HARDWARE_PREFIX_TAITO	>> 24))
 #define MASKPSIKYO		(1 << (HARDWARE_PREFIX_PSIKYO	>> 24))
-#define MASKKANEKO16	(1 << (HARDWARE_PREFIX_KANEKO16	>> 24))
+#define MASKKANEKO16		(1 << (HARDWARE_PREFIX_KANEKO16	>> 24))
 #define MASKKONAMI		(1 << (HARDWARE_PREFIX_KONAMI	>> 24))
 #define MASKPACMAN		(1 << (HARDWARE_PREFIX_PACMAN	>> 24))
-#define MASKGALAXIAN	(1 << (HARDWARE_PREFIX_GALAXIAN >> 24))
+#define MASKGALAXIAN		(1 << (HARDWARE_PREFIX_GALAXIAN >> 24))
 #define MASKATARI		(1 << (HARDWARE_PREFIX_ATARI	>> 24))
 
 #define MASKALL \
@@ -56,8 +54,9 @@
 	| MASKGALAXIAN | MASKATARI)
 
       
-#define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x); }
-#define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch.nCode = (unsigned short)(x); }
+#define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x);
+
+#define MACRO(x) pgi->Macro.nMode = 1; pgi->Macro.Switch.nCode = (unsigned short)(x);
 
 /****************************************************/
 /* PNG SECTION                                      */
@@ -65,7 +64,6 @@
  
 extern bool DoReset;
 extern bool CheckSetting(int i);
-extern char msg[1024];
 
 unsigned int nPrevGame = ~0U;
 static unsigned char nPrevDIPSettings[4];
@@ -74,7 +72,6 @@ static unsigned int nDIPSel;
 static unsigned int nInpSel;
 static int nDIPOffset;
 
-static float brightness = 1.0f;
 static uint64_t save_state_slot = 0;
 
 std::map<std::string,std::string> m_DipList;
@@ -90,55 +87,10 @@ std::vector<int> m_InputListOffsets;
 std::map<int,std::string> m_InputSettingsList;
 std::vector<std::string> m_InputSettingsData;
 std::vector<std::string> m_InputSettingsValues;
-std::vector<int> m_InputSettingsOffsets;
 
 char DipSetting[64];
 char InpSetting[64];
-char InpListSetting[64];
-char SpeedAdjustString[16];
-char AnalogAdjustString[16];
 bool dialog_is_running = false;
-
-typedef struct CtrlMallocArg
-{
-	uint32_t mallocCallCounts;
-
-} CtrlMallocArg;
-
-
-typedef struct CtrlFreeArg
-{
-	uint32_t freeCallCounts;
-
-} CtrlFreeArg;
-
-
-void *png_malloc(uint32_t size, void * a)
-{
-    CtrlMallocArg *arg;
-    
-	arg = (CtrlMallocArg *) a;
-    
-	arg->mallocCallCounts++;
-
-	return malloc(size);
-}
-
-
-static int png_free(void *ptr, void * a)
-{
-    CtrlFreeArg *arg;
-  
-	arg = (CtrlFreeArg *) a;
-    
-	arg->freeCallCounts++;
-	
-	free(ptr);
-	
-	return 0;
-}
-
-int png_w=0, png_h=0;
 
 int CurrentFilter = 0;
 
@@ -152,20 +104,18 @@ int _fd = 0;
 
 float fGameSelect;
 float fCursorPos;
-float fMaxCount;
-float m_fFrameTime;			// amount of time per frame
 
-int	  iGameSelect;
-int	  iCursorPos;
-int	  iNumGames;
-int	  m_iMaxWindowList;
-int	  m_iWindowMiddle;
+int iGameSelect;
+int iCursorPos;
+int iNumGames;
+int m_iMaxWindowList;
+int m_iWindowMiddle;
 
-int   shaderindex;
-int   currentConfigIndex = 0;
-int	  inGameIndex = 0;
-int	  inputListSel = 0;
-int	  dipListSel = 0;
+int shaderindex;
+int currentConfigIndex = 0;
+int inGameIndex = 0;
+int inputListSel = 0;
+int dipListSel = 0;
  
 // Input Movement
 
@@ -173,11 +123,11 @@ float fInputSelect;
 float fInputCursorPos;
 float fInputMaxCount;
  
-int	  iInputSelect;
-int	  iInputCursorPos;
-int	  iNumInput;
-int	  m_iMaxWindowListInput;
-int	  m_iWindowMiddleInput;
+int iInputSelect;
+int iInputCursorPos;
+int iNumInput;
+int m_iMaxWindowListInput;
+int m_iWindowMiddleInput;
 
 int inputList = 0;
 
@@ -187,29 +137,18 @@ float fDipSelect;
 float fDipCursorPos;
 float fDipMaxCount;
  
-int	  iDipSelect;
-int	  iDipCursorPos;
-int	  iNumDips;
-int	  m_iMaxWindowListDip;
-int	  m_iWindowMiddleDip;
+int  iDipSelect;
+int  iDipCursorPos;
+int  iNumDips;
+int  m_iMaxWindowListDip;
+int  m_iWindowMiddleDip;
 
 int dipList = 0;
  
- 
-const int GAMESEL_MaxWindowList	= 28;		 
-const int GAMESEL_WindowMiddle = 14;	
-const float	GAMESEL_cfDeadZone = 0.3f;
-const float	GAMESEL_cfMaxThresh	= 0.93f;
-const float	GAMESEL_cfMaxPossible =	1.0f;
-const float	GAMESEL_cfRectifyScale = GAMESEL_cfMaxPossible/(GAMESEL_cfMaxPossible-GAMESEL_cfDeadZone);
-const float	GAMESEL_cfSpeedBandFastest = 2.0f;	// seconds (don`t worry	for	PAL	NTSC dif xbapp handles that)
-const float	GAMESEL_cfFastestScrollMult	= 6.0f;
-const float	GAMESEL_cfSpeedBandMedium =	1.0f;	// if the pad is held at max for given seconds list	will move faster
-const float	GAMESEL_cfMediumScrollMult = 5.0f;
-const float	GAMESEL_cfSpeedBandLowest =	0.5f;
-const float	GAMESEL_cfLowestScrollMult = 2.0f;	 
+#define GAMESEL_MaxWindowList 28
+#define GAMESEL_WindowMiddle 14
 
-static uint32_t cols=0xFFFF7F7f;
+#define COLS 0xFFFF7F7f
 
 std::vector<std::string> m_ListData;
 std::vector<std::string> m_ListShaderData;
@@ -222,22 +161,21 @@ std::vector<std::int32_t> m_vecAvailRomBurnDrvIndex;
 
 std::map<int, int> m_HardwareFilterMap;
 std::map<int, std::string> m_HardwareFilterDesc;
-std::map<int, std::string> m_HardwareFilterBackGroundMap;
 
 std::vector<std::string> m_vecAvailRomList;
 
 extern int GameStatus;
 
-
 // DIP Switch Handler Code
-static bool bOK;
 
 static void InpDIPSWGetOffset()
 {
 	BurnDIPInfo bdi;
 	nDIPOffset = 0;
-	for (int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++) {
-		if (bdi.nFlags == 0xF0) {
+	for (int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
+	{
+		if (bdi.nFlags == 0xF0)
+		{
 			nDIPOffset = bdi.nInput;
 			break;
 		}
@@ -319,7 +257,6 @@ static int InpDIPSWExit()
 	if (!bAltPause && bRunPause)
 		bRunPause = 0;
 
-	GameInpCheckMouse();
 	return 0;
 }
 
@@ -383,7 +320,7 @@ void LoadDIPS()
 		}
 		else
 		{
-			if (CheckSetting(i))
+			if(CheckSetting(i))
 			{ 
 				if (pDIPGroup)
 				{
@@ -415,11 +352,6 @@ void LoadDIPS()
 void LoadInputs()
 {
 	unsigned int i, j = 0;
-
-	// get button info
-	int nButtons = 0; // buttons per player
-	int nPlayer = 0;
-	int nPlayerTemp = 0;
 
 	m_InputList.clear();
 	m_InputListData.clear();
@@ -540,25 +472,7 @@ int InitInputList()
 
 	m_InputSettingsList.clear();
 	m_InputSettingsData.clear();
-	m_InputSettingsOffsets.clear();
 
-/*
-	m_InputSettingsList[PS3_BUTTON_SQUARE] = std::string(_T("Square Button"));
-	m_InputSettingsList[PS3_BUTTON_CROSS] = std::string(_T("Cross Button"));
-	m_InputSettingsList[PS3_BUTTON_CIRCLE] = std::string(_T("Circle Button"));
-	m_InputSettingsList[PS3_BUTTON_TRIANGLE] = std::string(_T("Triangle Button"));
-	m_InputSettingsList[PS3_BUTTON_START] = std::string(_T("Start Button"));
-	m_InputSettingsList[PS3_BUTTON_SELECT] = std::string(_T("Select Button"));
-	m_InputSettingsList[PS3_BUTTON_L1] = std::string(_T("L1 Button"));
-	m_InputSettingsList[PS3_BUTTON_R1] = std::string(_T("R1 Button"));
-	m_InputSettingsList[PS3_BUTTON_L3] = std::string(_T("L3 Button"));
-	m_InputSettingsList[PS3_BUTTON_R3] = std::string(_T("R3 Button"));
-	m_InputSettingsList[PS3_BUTTON_L2] = std::string(_T("L2 Button"));
-	m_InputSettingsList[PS3_BUTTON_R2] = std::string(_T("R2 Button"));
-	m_InputSettingsList[PS3_BUTTON_R3 | PS3_BUTTON_L3] = std::string(_T("L3 + R3"));
-*/
-
-//FIXME: Check if this is correct - compare with the original above
 	m_InputSettingsList[CTRL_SQUARE_MASK] = std::string("Square Button");
 	m_InputSettingsList[CTRL_CROSS_MASK] = std::string("Cross Button");
 	m_InputSettingsList[CTRL_CIRCLE_MASK] = std::string("Circle Button");
@@ -586,21 +500,6 @@ int InitInputList()
 	m_InputSettingsData.push_back(std::string("L2 Button"));
 	m_InputSettingsData.push_back(std::string("R2 Button"));
 	m_InputSettingsData.push_back(std::string("L3 + R3"));
-
-	m_InputSettingsOffsets.push_back(0);
-	m_InputSettingsOffsets.push_back(1);
-	m_InputSettingsOffsets.push_back(2);
-	m_InputSettingsOffsets.push_back(3);
-	m_InputSettingsOffsets.push_back(4);
-	m_InputSettingsOffsets.push_back(5);
-	m_InputSettingsOffsets.push_back(6);
-	m_InputSettingsOffsets.push_back(7);
-	m_InputSettingsOffsets.push_back(8);
-	m_InputSettingsOffsets.push_back(9);
-	m_InputSettingsOffsets.push_back(10);
-	m_InputSettingsOffsets.push_back(11);
-	m_InputSettingsOffsets.push_back(12);
- 
 }
 
 int InitRomList()
@@ -614,10 +513,6 @@ int InitRomList()
 	iGameSelect	= 0;
 	fCursorPos = 0.0f;
 	iCursorPos = 0;
-	fMaxCount =	0.0f;
-
-	//set frame	time
-	m_fFrameTime = 1.0f	/ 60.0f;
 
 	// build the hardware filter map
  
@@ -629,7 +524,7 @@ int InitRomList()
 	m_HardwareFilterMap[TAITO] = MASKTAITO;
 	m_HardwareFilterMap[SEGA] = MASKSEGA;
 	m_HardwareFilterMap[PGM] = MASKPGM;
-	m_HardwareFilterMap[PSYKIO] = MASKPSIKYO;
+	m_HardwareFilterMap[PSIKYO] = MASKPSIKYO;
 	m_HardwareFilterMap[KONAMI] = MASKKONAMI;
 	m_HardwareFilterMap[KANEKO] = MASKKANEKO16;
 	m_HardwareFilterMap[CAVE] = MASKCAVE;
@@ -645,7 +540,7 @@ int InitRomList()
 	m_HardwareFilterDesc[TAITO] = "Taito";
 	m_HardwareFilterDesc[SEGA] = "Sega System 16";
 	m_HardwareFilterDesc[PGM] = "PGM";
-	m_HardwareFilterDesc[PSYKIO] = "Psikyo";
+	m_HardwareFilterDesc[PSIKYO] = "Psikyo";
 	m_HardwareFilterDesc[KONAMI] = "Konami";
 	m_HardwareFilterDesc[KANEKO] = "Kaneko 16";
 	m_HardwareFilterDesc[CAVE] = "Cave";
@@ -653,44 +548,22 @@ int InitRomList()
 	m_HardwareFilterDesc[SEGAMD] = "Sega Megadrive";
 	m_HardwareFilterDesc[MISC] = "Misc";
 
-	m_HardwareFilterBackGroundMap[ALL] = "fbanext-bg-all.png";
-	m_HardwareFilterBackGroundMap[CPS1] = "fbanext-bg-cps1.png";
-	m_HardwareFilterBackGroundMap[CPS2] = "fbanext-bg-cps2.png";
-	m_HardwareFilterBackGroundMap[CPS3] = "fbanext-bg-cps3.png";
-	m_HardwareFilterBackGroundMap[NEOGEO] = "fbanext-bg-ng.png";
-	m_HardwareFilterBackGroundMap[TAITO] = "fbanext-bg-tai.png";
-	m_HardwareFilterBackGroundMap[SEGA] = "fbanext-bg-s16.png";
-	m_HardwareFilterBackGroundMap[PGM] = "fbanext-bg-pgm.png";
-	m_HardwareFilterBackGroundMap[PSYKIO] = "fbanext-bg-psi.png";
-	m_HardwareFilterBackGroundMap[KONAMI] = "fbanext-bg-kon.png";
-	m_HardwareFilterBackGroundMap[KANEKO] = "fbanext-bg-kan.png";
-	m_HardwareFilterBackGroundMap[CAVE] = "fbanext-bg-cave.png";
-	m_HardwareFilterBackGroundMap[TOAPLAN] = "fbanext-bg-toa.png";
-	m_HardwareFilterBackGroundMap[SEGAMD] = "fbanext-bg-md.png";
-	m_HardwareFilterBackGroundMap[MISC] = "fbanext-bg-misc.png";
-
 	return 0;
 } 
 
-void ResetMenuVars()
-{
-	fGameSelect = 0.0f;
-	iGameSelect = 0;
-	fCursorPos = 0.0f;
-	iCursorPos = 0;
-	fMaxCount = 0.0f;
-
-	//set frame	time
-	m_fFrameTime = 1.0f/60.0f;
-
-	m_vecAvailRomList.clear();
-	m_vecAvailRomIndex.clear();
+#define ResetMenuVars() \
+	fGameSelect = 0.0f; \
+	iGameSelect = 0; \
+	fCursorPos = 0.0f; \
+	iCursorPos = 0; \
+	\
+	m_vecAvailRomList.clear(); \
+	m_vecAvailRomIndex.clear(); \
 	m_vecAvailRomBurnDrvIndex.clear();
-}
 
-int AvRoms()
+static int AvRoms()
 {
-	iNumGames =	m_vecAvailRomList.size();
+	iNumGames = m_vecAvailRomList.size();
 
 	if (iNumGames < GAMESEL_MaxWindowList)
 	{
@@ -727,7 +600,7 @@ void BuildRomList()
 	std::vector<std::string> vecTempRomList;
 	std::vector<std::string> vecAvailRomListFileName;
 	std::vector<std::string> vecAvailRomList;
-	std::vector<int>		 vecAvailRomIndex;
+	std::vector<int> vecAvailRomIndex;
 
 	m_vecAvailRomList.clear();
 	m_vecAvailRomReleasedBy.clear();
@@ -789,11 +662,8 @@ void BuildRomList()
 					IsFiltered = true;
 
 
-#if defined (FBA_DEBUG)
 				if ((IsFiltered))  // skip roms marked as not working
-#else
 					if (BurnDrvIsWorking() && (IsFiltered))  // skip roms marked as not working
-#endif
 					{
 
 						int nNumPlayers = BurnDrvGetMaxPlayers();
@@ -849,35 +719,35 @@ void ConfigMenu()
 	cellDbgFontDraw();
 
 	int number = 0;
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_DISPLAY_FRAMERATE ? cols : 0xFFFFFFFF, "Show Framerate : %s", bShowFPS ? "Yes" : "No" );     
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_DISPLAY_FRAMERATE ? COLS : 0xFFFFFFFF, "Show Framerate : %s", bShowFPS ? "Yes" : "No" );     
 	cellDbgFontDraw();
 	number++;
 
 	switch(psglGetCurrentResolutionId())
 	{
 		case CELL_VIDEO_OUT_RESOLUTION_480:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 720x480 (480p)");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 720x480 (480p)");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_720:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 1280x720 (720p)");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 1280x720 (720p)");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_1080:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 1920x1080 (1080p)");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 1920x1080 (1080p)");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_576:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 720x576 (576p)");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 720x576 (576p)");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_1600x1080:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 1600x1080");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 1600x1080");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_1440x1080:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 1440x1080");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 1440x1080");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_1280x1080:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 1280x1080");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 1280x1080");
 			break;
 		case CELL_VIDEO_OUT_RESOLUTION_960x1080:
-			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? cols : 0xFFFFFFFF, "Resolution : 960x1080");
+			cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_RESOLUTION ? COLS : 0xFFFFFFFF, "Resolution : 960x1080");
 			break;
 	}
 	cellDbgFontDraw();
@@ -899,40 +769,40 @@ void ConfigMenu()
 			sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
 			break;
 	}
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_KEEP_ASPECT ? cols : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_KEEP_ASPECT ? COLS : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
 	cellDbgFontDraw();
 	number++;
 
 	char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_ROTATE ? cols : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_ROTATE ? COLS : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_AUTO_FRAMESKIP ? cols : 0xFFFFFFFF, "Auto Frameskip Enabled: %s", autoFrameSkip ? "Yes" : "No");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_AUTO_FRAMESKIP ? COLS : 0xFFFFFFFF, "Auto Frameskip Enabled: %s", autoFrameSkip ? "Yes" : "No");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? cols : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
 	cellDbgFontDraw();	
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? cols : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_VSYNC ? cols : 0xFFFFFFFF, "Vertical Sync : %s", bVidVSync ? "Yes" : "No");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_VSYNC ? COLS : 0xFFFFFFFF, "Vertical Sync : %s", bVidVSync ? "Yes" : "No");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_HIDE_CLONES ? cols : 0xFFFFFFFF, "Hide Clone Roms : %s", HideChildren ? "Yes" : "No");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_HIDE_CLONES ? COLS : 0xFFFFFFFF, "Hide Clone Roms : %s", HideChildren ? "Yes" : "No");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_SHOW_THREE_FOUR_PLAYER_ONLY ? cols : 0xFFFFFFFF, "Show 3 or 4 Player Roms Only : %s", ThreeOrFourPlayerOnly ? "Yes" : "No");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_SHOW_THREE_FOUR_PLAYER_ONLY ? COLS : 0xFFFFFFFF, "Show 3 or 4 Player Roms Only : %s", ThreeOrFourPlayerOnly ? "Yes" : "No");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_TRIPLE_BUFFER ? cols : 0xFFFFFFFF, "Triple Buffering Enabled : %s", bVidTripleBuffer ? "Yes" : "No");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_TRIPLE_BUFFER ? COLS : 0xFFFFFFFF, "Triple Buffering Enabled : %s", bVidTripleBuffer ? "Yes" : "No");
 	cellDbgFontDraw();
 
 	cellDbgFontPrintf(0.05f, 0.92f + 0.025f, 0.50f, 0xFFFFE0E0, "Core %s - r%s - %s", szAppBurnVer, szSVNVer, szSVNDate);
@@ -960,19 +830,16 @@ void ConfigFrameMove()
 	if (CTRL_CIRCLE(new_state))
 	{
 		// switch to config
+		old_state = new_state;
 		if (bDrvOkay)	// theres a game loaded, return to game
 		{
-			old_state = new_state;
 			setPauseMode(0);
 			audio_play();
 			GameStatus = EMULATING;
 			return;
 		}
 		else
-		{
-			old_state = new_state;
 			GameStatus = MENU;	// back to romlist
-		}
 	}
 	else if (CTRL_TRIANGLE(old_state & diff_state))
 	{
@@ -1171,7 +1038,7 @@ void RomMenu()
 
 	if (iNumGames == 0)
 	{		
-		cellDbgFontPuts(0.05f, 0.08f, 0.75f, cols, "No Roms Found");             
+		cellDbgFontPuts(0.05f, 0.08f, 0.75f, COLS, "No Roms Found");             
 		cellDbgFontDraw();
 	}
 
@@ -1180,7 +1047,7 @@ void RomMenu()
 	{
 		if (iGameidx==iCursorPos)
 		{	
-			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx ), 0.75f, cols, m_vecAvailRomList[iTempGameSel++].c_str());             
+			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx ), 0.75f, COLS, m_vecAvailRomList[iTempGameSel++].c_str());             
 			cellDbgFontDraw();	
 
 			cellDbgFontPuts(0.6f, 0.80f + 0.025f, 0.75f, 0xFFE0EEFF ,"Select - Options Menu");     
@@ -1197,11 +1064,11 @@ void RomMenu()
 			}
 
 #ifdef CELL_DEBUG_MEMORY
-			cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, cols ,"%ld free memory",mem_info.available_user_memory );     
+			cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, COLS ,"%ld free memory",mem_info.available_user_memory );     
 			cellDbgFontDraw();
-			cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, cols ,"%ld total memory",mem_info.total_user_memory );     
+			cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, COLS ,"%ld total memory",mem_info.total_user_memory );     
 			cellDbgFontDraw();
-			cellDbgFontPrintf(0.75f, 0.95f + 0.025f, 0.75f, cols ,"BurnDrvSelect = %ld ", m_vecAvailRomBurnDrvIndex[iGameSelect+iCursorPos]);     
+			cellDbgFontPrintf(0.75f, 0.95f + 0.025f, 0.75f, COLS ,"BurnDrvSelect = %ld ", m_vecAvailRomBurnDrvIndex[iGameSelect+iCursorPos]);     
 			cellDbgFontDraw();
 #endif
 
@@ -1280,24 +1147,24 @@ void DipFrameMove()
 					BurnDrvGetDIPInfo(&bdiGroup, nDIPGroup);
 
 					int nCurrentSetting = 0;
-					for (int i = 0, j = 0; i < bdiGroup.nSetting; i++) {
+					for (int i = 0, j = 0; i < bdiGroup.nSetting; i++)
+					{
 						char szText[MAX_PATH];
 						BurnDIPInfo bdi;
 
 						do {
 							BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++);
 						} while (bdi.nFlags == 0);
-						if (bdiGroup.szText) {
-							_stprintf(szText, _T("%hs: %hs"), bdiGroup.szText, bdi.szText);
-						} else {
-							_stprintf(szText, _T("%hs"), bdi.szText);
-						}
+
+						if (bdiGroup.szText)
+							sprintf(szText, "%hs: %hs", bdiGroup.szText, bdi.szText);
+						else
+							sprintf(szText, "%hs", bdi.szText);
 
 						m_DipListValues.push_back(std::string(szText));
 
-						if (CheckSetting(nDIPGroup + j)) {
+						if(CheckSetting(nDIPGroup + j))
 							nCurrentSetting = i;
-						}
 					}
 				}
 
@@ -1311,7 +1178,8 @@ void DipFrameMove()
 			int id = dipListSel;
 			BurnDIPInfo bdi = {0, 0, 0, 0, NULL};
 			int j = 0;
-			for (int i = 0; i <= id; i++) {
+			for (int i = 0; i <= id; i++)
+			{
 				do {
 					BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++);
 				} while (bdi.nFlags == 0);
@@ -1320,14 +1188,17 @@ void DipFrameMove()
 
 			struct GameInp* pgi = GameInp + bdi.nInput + nDIPOffset;
 			pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
-			if (bdi.nFlags & 0x40) {
-				while (BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++) == 0) {
-					if (bdi.nFlags == 0) {
+			if (bdi.nFlags & 0x40)
+			{
+				while (BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++) == 0)
+				{
+					if (bdi.nFlags == 0)
+					{
 						pgi = GameInp + bdi.nInput + nDIPOffset;
 						pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
-					} else {
-						break;
 					}
+					else
+						break;
 				}
 			}
 
@@ -1352,7 +1223,7 @@ void DipFrameMove()
 				bClampCursor = TRUE;
 
 				// advance gameselect
-				if(fDipSelect == 0) fDipSelect +=	(fDipCursorPos - m_iWindowMiddleDip);
+				if(fDipSelect == 0) fDipSelect += (fDipCursorPos - m_iWindowMiddleDip);
 				else fDipSelect ++;
 
 				// clamp game window range (high)
@@ -1360,7 +1231,7 @@ void DipFrameMove()
 				{
 
 					// clamp to	end
-					fDipSelect	= iNumDips	- m_iMaxWindowListDip;
+					fDipSelect = iNumDips - m_iMaxWindowListDip;
 
 					// advance cursor pos after	all!
 					bClampCursor = FALSE;
@@ -1372,7 +1243,7 @@ void DipFrameMove()
 			}
 
 			// check for cursor	clamp
-			if(	bClampCursor )
+			if(bClampCursor)
 				fDipCursorPos = m_iWindowMiddleDip;	
 		}
 		else
@@ -1453,13 +1324,13 @@ void DipMenu()
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - DIP Switch Menu");             
 	cellDbgFontDraw();
 
-	for	(iDipidx=0; iDipidx<m_iMaxWindowListDip;	iDipidx++)
+	for(iDipidx=0; iDipidx < m_iMaxWindowListDip; iDipidx++)
 	{ 
 		int val = iTempDipSel++;
 		sprintf(DipSetting,"%s : %s", m_DipListData[val].c_str(), m_DipList[std::string((char *)m_DipListData[val].c_str())].c_str());
 
 		if (iDipidx==iDipCursorPos)
-			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iDipidx ), 0.75f, cols, DipSetting);
+			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iDipidx ), 0.75f, COLS, DipSetting);
 		else		 
 		{
 			if (dipList)
@@ -1485,7 +1356,7 @@ void DipMenu()
 		for	(i=0; i<m_DipListValues.size();	i++)
 		{ 		
 			if (i==dipListSel)
-				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, cols, m_DipListValues[i].c_str());
+				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, COLS, m_DipListValues[i].c_str());
 			else		 
 				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, 0xFFFFFFFF, m_DipListValues[i].c_str());
 
@@ -1513,15 +1384,13 @@ void InputMenu()
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - Input Mapping Menu");             
 	cellDbgFontDraw();
 
-	for	(iInputidx=0; iInputidx<m_iMaxWindowListInput;	iInputidx++)
+	for(iInputidx=0; iInputidx < m_iMaxWindowListInput; iInputidx++)
 	{ 
 		int val = iTempInputSel++;
 		sprintf(InpSetting,"%s : %s", m_InputListData[val].c_str(), m_InputList[std::string((char *)m_InputListData[val].c_str())].c_str());
 
 		if (iInputidx==iInputCursorPos)
-		{	 		 				
-			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iInputidx ), 0.75f, cols, InpSetting);
-		}
+			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iInputidx ), 0.75f, COLS, InpSetting);
 		else		 
 		{
 			if (inputList)
@@ -1547,16 +1416,12 @@ void InputMenu()
 
 	if (inputList)
 	{
-		for	(i=0; i<m_InputSettingsData.size();	i++)
+		for(i=0; i < m_InputSettingsData.size(); i++)
 		{ 		
 			if (i==inputListSel)
-			{	 		 				
-				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, cols, m_InputSettingsData[i].c_str());
-			}
+				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, COLS, m_InputSettingsData[i].c_str());
 			else		 
-			{
 				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, 0xFFFFFFFF, m_InputSettingsData[i].c_str());
-			}
 			cellDbgFontDraw();	
 		}
 	}
@@ -1681,7 +1546,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(FBK_C);
-						}			 
+						}
 						break;
 					case 1:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1691,7 +1556,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(FBK_Z);
-						}	
+						}
 						break;
 					case 2:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1955,7 +1820,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4182);
-						} 
+						}
 						break;
 					case 1:				 
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1965,7 +1830,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4180);
-						} 
+						}
 						break;
 					case 2:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1975,7 +1840,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4181);
-						} 
+						}
 						break;
 					case 3:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1985,7 +1850,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4183);
-						} 
+						}
 						break; 
 					case 4:	
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1995,7 +1860,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x04);
-						} 
+						}
 						break;
 					case 5:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2005,7 +1870,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x08);
-						} 
+						}
 						break;
 					case 6:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2015,7 +1880,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4184);
-						} 
+						}
 						break;
 					case 7:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2025,7 +1890,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4185);
-						} 
+						}
 						break;
 					case 8:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2035,7 +1900,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_L3_BUTTON | 0x4100);
-						} 
+						}
 						break;
 					case 9:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2045,7 +1910,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_R3_BUTTON | 0x4100);
-						} 
+						}
 						break;
 					case 10: 
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2055,7 +1920,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_L2_BUTTON | 0x4100);
-						} 
+						}
 						break;
 					case 11:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2065,7 +1930,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_R2_BUTTON | 0x4100);
-						} 
+						}
 						break;
 				}
 			}
@@ -2082,7 +1947,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4282);
-						} 
+						}
 						break;
 					case 1:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2092,7 +1957,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4280);
-						} 
+						}
 						break;
 					case 2:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2102,7 +1967,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4281);
-						}  
+						}
 						break;
 					case 3:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2112,7 +1977,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4283);
-						}  
+						}
 						break;
 					case 4:	
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2122,7 +1987,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x05);
-						} 
+						}
 						break;
 					case 5:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2132,7 +1997,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x09);
-						} 
+						}
 						break;
 					case 6:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2142,7 +2007,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4284);
-						} 
+						}
 						break;
 					case 7:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2152,7 +2017,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(0x4285);
-						} 
+						}
 						break;
 					case 8:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2162,7 +2027,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_L3_BUTTON | 0x4200);
-						} 
+						}
 						break;
 					case 9:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2172,7 +2037,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_R3_BUTTON | 0x4200);
-						} 
+						}
 						break;
 					case 10: 
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2182,7 +2047,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_L2_BUTTON | 0x4200);
-						} 
+						}
 						break;
 					case 11:
 						if (pgi->nInput & GIT_GROUP_MACRO)
@@ -2192,7 +2057,7 @@ void InputFrameMove()
 						else
 						{
 							KEY(PS3_R2_BUTTON | 0x4200);
-						} 
+						}
 						break;
 				}
 			}
@@ -2261,15 +2126,13 @@ void InputFrameMove()
 		sys_timer_usleep(FILEBROWSER_DELAY/2);
 		if (!inputList)
 		{
-			// default don`t clamp cursor
-			bool bClampCursor =	FALSE;
+			bool bClampCursor = FALSE;		// default don`t clamp cursor
 
 			fInputCursorPos ++;
 
 			if(fInputCursorPos > m_iWindowMiddleInput)
 			{
-				// clamp cursor	position
-				bClampCursor = TRUE;
+				bClampCursor = TRUE;		// clamp cursor position
 
 				// advance gameselect
 				if(fInputSelect == 0)
@@ -2278,23 +2141,20 @@ void InputFrameMove()
 					fInputSelect ++;
 
 				// clamp game window range (high)
-				if((fInputSelect	+ m_iMaxWindowListInput)	> iNumInput)
+				if((fInputSelect + m_iMaxWindowListInput) > iNumInput)
 				{
+					fInputSelect = iNumInput - m_iMaxWindowListInput;	// clamp to end
 
-					// clamp to	end
-					fInputSelect	= iNumInput	- m_iMaxWindowListInput;
-
-					// advance cursor pos after	all!
-					bClampCursor = FALSE;
+					bClampCursor = FALSE;					// advance cursor pos after all!
 
 					// clamp cursor	to end
-					if((fInputSelect	+ fInputCursorPos) >= iNumInput)
+					if((fInputSelect + fInputCursorPos) >= iNumInput)
 						fInputCursorPos = m_iMaxWindowListInput-1;
 				}
 			}
 
 			// check for cursor	clamp
-			if(	bClampCursor )
+			if(bClampCursor)
 				fInputCursorPos = m_iWindowMiddleInput;	
 		}
 		else
@@ -2302,9 +2162,7 @@ void InputFrameMove()
 			inputListSel++;
 
 			if (inputListSel > m_InputSettingsData.size()-1)
-			{
 				inputListSel = m_InputSettingsData.size()-1;
-			}
 		}
 		old_state = new_state;
 
@@ -2318,7 +2176,7 @@ void InputFrameMove()
 			bool bClampCursor =	FALSE;
 
 			fInputCursorPos --;
-			if(	fInputCursorPos < m_iWindowMiddleInput )
+			if(fInputCursorPos < m_iWindowMiddleInput)
 			{
 				// clamp cursor	position
 				bClampCursor = TRUE;
@@ -2336,13 +2194,13 @@ void InputFrameMove()
 					bClampCursor = FALSE;
 
 					// clamp cursor	to end
-					if(	fInputCursorPos < 0 )
+					if(fInputCursorPos < 0)
 						fInputCursorPos = 0;
 				}
 			}
 
 			// check for cursor	clamp
-			if(	bClampCursor )
+			if(bClampCursor)
 				fInputCursorPos = m_iWindowMiddleInput;
 		}
 		else
@@ -2405,7 +2263,7 @@ void InputFrameMove()
 				continue;
 			if (bii.szInfo == NULL)
 				bii.szInfo = "";
-			GamcPlayer(pgi, bii.szInfo, 0, -1);						// Keyboard
+			GamcPlayer(pgi, bii.szInfo, 0, -1);	// Keyboard
 			GamcAnalogKey(pgi, bii.szInfo, 0, 1);
 			GamcMisc(pgi, bii.szInfo, 0);
 		}	
@@ -2424,23 +2282,23 @@ void InGameMenu()
 	cellDbgFontDraw();
 
 	int number = 0;
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_MAP_BUTTONS ? cols : 0xFFFFFFFF, "Map Gamepad Buttons" );     
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_MAP_BUTTONS ? COLS : 0xFFFFFFFF, "Map Gamepad Buttons" );     
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_DIP_SWITCHES ? cols : 0xFFFFFFFF, "Map Dip Switches");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_DIP_SWITCHES ? COLS : 0xFFFFFFFF, "Map Dip Switches");
 	cellDbgFontDraw(); 
 	number++;
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESIZE_SCREEN ? cols : 0xFFFFFFFF, "Resize Screen");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESIZE_SCREEN ? COLS : 0xFFFFFFFF, "Resize Screen");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_FRAME_ADVANCE ? cols : 0xFFFFFFFF, "Frame Advance");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_FRAME_ADVANCE ? COLS : 0xFFFFFFFF, "Frame Advance");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER ? cols : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
 	cellDbgFontDraw();	
 	number++;
 
@@ -2460,42 +2318,42 @@ void InGameMenu()
 			sprintf(msg,"%d:%d", nVidScrnAspectX, nVidScrnAspectY);
 			break;
 	}
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_KEEP_ASPECT ? cols : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_KEEP_ASPECT ? COLS : 0xFFFFFFFF, "Aspect Ratio : %s", msg);
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER ? cols : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
 	cellDbgFontDraw();
 	number++;
 
 	char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_ROTATE ? cols : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_ROTATE ? COLS : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_SAVE_STATE ? cols : 0xFFFFFFFF, "Save State #%d", save_state_slot);
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_SAVE_STATE ? COLS : 0xFFFFFFFF, "Save State #%d", save_state_slot);
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_LOAD_STATE ? cols : 0xFFFFFFFF, "Load State #%d", save_state_slot);
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_LOAD_STATE ? COLS : 0xFFFFFFFF, "Load State #%d", save_state_slot);
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESET_GAME ? cols : 0xFFFFFFFF, "Reset Game");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RESET_GAME ? COLS : 0xFFFFFFFF, "Reset Game");
 	cellDbgFontDraw();
 	number++;
 
 #ifdef MULTIMAN_SUPPORT
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RETURN_TO_MULTIMAN ? cols : 0xFFFFFFFF, "Return to multiMAN");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_RETURN_TO_MULTIMAN ? COLS : 0xFFFFFFFF, "Return to multiMAN");
 	cellDbgFontDraw();
 	number++;
 #endif
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_EXIT_GAME ? cols : 0xFFFFFFFF, "Exit Game");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_EXIT_GAME ? COLS : 0xFFFFFFFF, "Exit Game");
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BACK_TO_GAME ? cols : 0xFFFFFFFF, "Return to current Game");
+	cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BACK_TO_GAME ? COLS : 0xFFFFFFFF, "Return to current Game");
 	cellDbgFontDraw();
 
 	cellDbgFontPrintf(0.05f, 0.92f + 0.025f, 0.50f, 0xFFFFE0E0, "Core %s - r%s - %s", szAppBurnVer, szSVNVer, szSVNDate);
@@ -2656,9 +2514,7 @@ void InGameFrameMove()
 				nVidRotationAdjust++;
 
 				if (nVidRotationAdjust > 2)
-				{
 					nVidRotationAdjust = 0;
-				}
 				BurnReinitScrn();	//apply_rotation_settings();
 				psglRedraw();
 			}
@@ -2751,7 +2607,7 @@ void InGameFrameMove()
 			{
 				if (bDrvOkay)
 				{
-					if ( nPrevGame < nBurnDrvCount ) 
+					if (nPrevGame < nBurnDrvCount) 
 					{				
 						old_state = new_state;
 						nBurnDrvSelect = nPrevGame;
@@ -2813,24 +2669,22 @@ void FrameMove()
 
 		fCursorPos ++;
 
-		if(	fCursorPos > m_iWindowMiddle )
+		if(fCursorPos > m_iWindowMiddle)
 		{
-			// clamp cursor	position
-			bClampCursor = TRUE;
+			bClampCursor = TRUE;					// clamp cursor	position
 
 			// advance gameselect
-			if(fGameSelect == 0) fGameSelect +=	(fCursorPos	- m_iWindowMiddle);
-			else fGameSelect ++;
+			if(fGameSelect == 0)
+				fGameSelect += (fCursorPos	- m_iWindowMiddle);
+			else
+				fGameSelect ++;
 
 			// clamp game window range (high)
-			if((fGameSelect	+ m_iMaxWindowList)	> iNumGames)
+			if((fGameSelect	+ m_iMaxWindowList) > iNumGames)
 			{
 
-				// clamp to	end
-				fGameSelect	= iNumGames	- m_iMaxWindowList;
-
-				// advance cursor pos after	all!
-				bClampCursor = FALSE;
+				fGameSelect = iNumGames - m_iMaxWindowList;	// clamp to end
+				bClampCursor = FALSE;				// advance cursor pos after all!
 
 				// clamp cursor	to end
 				if((fGameSelect	+ fCursorPos) >= iNumGames)
@@ -2838,7 +2692,7 @@ void FrameMove()
 			}
 		}
 
-		// check for cursor	clamp
+		// check for cursor clamp
 		if(	bClampCursor )
 			fCursorPos = m_iWindowMiddle;	
 	}
@@ -2858,16 +2712,15 @@ void FrameMove()
 
 			// advance gameselect
 			if(fGameSelect == 0)
-				fGameSelect +=	(fCursorPos	- m_iWindowMiddle);
+				fGameSelect +=	(fCursorPos - m_iWindowMiddle);
 			else
 				fGameSelect ++;
 
 			// clamp game window range (high)
-			if((fGameSelect	+ m_iMaxWindowList)	> iNumGames)
+			if((fGameSelect	+ m_iMaxWindowList) > iNumGames)
 			{
-
 				// clamp to	end
-				fGameSelect	= iNumGames	- m_iMaxWindowList;
+				fGameSelect = iNumGames	- m_iMaxWindowList;
 
 				// advance cursor pos after	all!
 				bClampCursor = FALSE;
@@ -2934,8 +2787,8 @@ void FrameMove()
 
 				nPrevGame = ~0U;			 
 				audio_stop();
-				BurnerDrvExit();				// Make sure any game driver is exited
-				mediaExit();					// Exit media
+				BurnerDrvExit();		// Make sure any game driver is exited
+				mediaExit();			// Exit media
 			}
 		}
 	}
@@ -2959,20 +2812,12 @@ void FrameMove()
 		fCursorPos --;
 		if(fCursorPos < m_iWindowMiddle)
 		{
-			// clamp cursor	position
-			bClampCursor = TRUE;
-
-			// backup window pos
-			fGameSelect	--;
-
-			// clamp game window range (low)
-			if(fGameSelect < 0)
+			bClampCursor = TRUE;		// clamp cursor	position
+			fGameSelect	--;		// backup window pos
+			if(fGameSelect < 0)		// clamp game window range (low)
 			{
-				// clamp to	start
-				fGameSelect	= 0;
-
-				// backup cursor pos after all!
-				bClampCursor = FALSE;
+				fGameSelect	= 0;		// clamp to	start
+				bClampCursor = FALSE;		// backup cursor pos after all!
 
 				// clamp cursor	to end
 				if(	fCursorPos < 0 )
@@ -2992,20 +2837,14 @@ void FrameMove()
 		fCursorPos --;
 		if(fCursorPos < m_iWindowMiddle)
 		{
-			// clamp cursor	position
-			bClampCursor = TRUE;
-
-			// backup window pos
-			fGameSelect	--;
+			bClampCursor = TRUE;		// clamp cursor	position
+			fGameSelect	--;		// backup window pos
 
 			// clamp game window range (low)
 			if(fGameSelect < 0)
 			{
-				// clamp to	start
-				fGameSelect	= 0;
-
-				// backup cursor pos after all!
-				bClampCursor = FALSE;
+				fGameSelect	= 0;			// clamp to	start
+				bClampCursor = FALSE;			// backup cursor pos after all!
 
 				// clamp cursor	to end
 				if(	fCursorPos < 0 )
@@ -3013,17 +2852,17 @@ void FrameMove()
 			}
 		}
 
-		// check for cursor	clamp
-		if(	bClampCursor )
+		// check for cursor clamp
+		if(bClampCursor)
 			fCursorPos = m_iWindowMiddle;
 	}			 			 			 
 	else if(CTRL_CROSS(new_state))
 	{
-		// initalise emulation here	and	set	emulating to true
-		int	entryselected =	iGameSelect	+ iCursorPos;
+		// initalise emulation here and set emulating to true
+		int entryselected = iGameSelect	+ iCursorPos;
 
 		if (iNumGames >	0)
-		{	
+		{
 			nBurnDrvSelect = (unsigned int)m_vecAvailRomBurnDrvIndex[entryselected];
 
 			if (nPrevGame == nBurnDrvSelect)
@@ -3038,14 +2877,14 @@ void FrameMove()
 
 			if (bDrvOkay)
 			{
-				if ( nPrevGame < nBurnDrvCount ) 
+				if ( nPrevGame < nBurnDrvCount) 
 				{				
 					nBurnDrvSelect = nPrevGame;
 
 					nPrevGame = ~0U;			 
 					audio_stop();
-					BurnerDrvExit();				// Make sure any game driver is exited
-					mediaExit();					// Exit media
+					BurnerDrvExit();	// Make sure any game driver is exited
+					mediaExit();		// Exit media
 				}
 			}
 

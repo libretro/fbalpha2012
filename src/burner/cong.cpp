@@ -1,10 +1,6 @@
 // Burner Config for Game file module
 #include "burner.h"
 
-#ifdef __LIBSNES__
-#include "../burn/ssnes-typedefs.h"
-#endif
-
 const int nConfigMinVersion = 0x020921;
 
 static char* GameConfigName()
@@ -26,11 +22,11 @@ int ConfigGameLoad(bool bOverWrite)
 	int nFileVersion = 0;
 
 	FILE* h = fopen(GameConfigName(), "rt");
-	if (h == NULL) {
+	if (h == NULL)
 		return 1;
-	}
 
-	if (bOverWrite) {
+	if (bOverWrite)
+	{
 		nAnalogSpeed = 0x0100;
 		nBurnCPUSpeedAdjust = 0x0100;
 #ifndef NO_AUTOFIRE
@@ -50,58 +46,59 @@ int ConfigGameLoad(bool bOverWrite)
 		}
 
 		szValue = labelCheck(szLine, "version");
-		if (szValue) {
+		if (szValue)
 			nFileVersion = strtol(szValue, NULL, 0);
-		}
 
-		if (bOverWrite) {
+		if (bOverWrite)
+		{
 			szValue = labelCheck(szLine, "analog");
-			if (szValue) {
+
+			if (szValue)
 				nAnalogSpeed = strtol(szValue, NULL, 0);
-			}
+
 			szValue = labelCheck(szLine, "cpu");
-			if (szValue) {
+			if (szValue)
 				nBurnCPUSpeedAdjust = strtol(szValue, NULL, 0);
-			}
 #ifndef NO_AUTOFIRE
 			szValue = labelCheck(szLine, _T("autofire-delay"));
-			if (szValue) {
+			if (szValue)
 				autofireDelay = strtol(szValue, NULL, 0);
-			}
 #endif
 #if 0
 			szValue = labelCheck(szLine, _T("top"));
-			if (szValue) {
+			if (szValue)
 				nScrnVisibleOffset[0] = strtol(szValue, NULL, 0);
-			} szValue = labelCheck(szLine, _T("left")); if (szValue) {
+			szValue = labelCheck(szLine, _T("left"));
+			if (szValue)
 				nScrnVisibleOffset[1] = strtol(szValue, NULL, 0);
-			}
 			szValue = labelCheck(szLine, _T("bottom"));
-			if (szValue) {
+			if (szValue)
 				nScrnVisibleOffset[2] = strtol(szValue, NULL, 0);
-			}
 			szValue = labelCheck(szLine, _T("right"));
-			if (szValue) {
+			if (szValue)
 				nScrnVisibleOffset[3] = strtol(szValue, NULL, 0);
-			}
 #endif
 		}
 
-		if (nConfigMinVersion <= nFileVersion && nFileVersion <= nBurnVer) {
+		if (nConfigMinVersion <= nFileVersion && nFileVersion <= nBurnVer)
+		{
 			szValue = labelCheck(szLine, _T("input"));
-			if (szValue) {
+			if (szValue)
+			{
 				GameInpRead(szValue, bOverWrite);
 				continue;
 			}
 
 			szValue = labelCheck(szLine, _T("macro"));
-			if (szValue) {
+			if (szValue)
+			{
 				GameInpMacroRead(szValue, bOverWrite);
 				continue;
 			}
 
 			szValue = labelCheck(szLine, _T("custom"));
-			if (szValue) {
+			if (szValue)
+			{
 				GameInpCustomRead(szValue, bOverWrite);
 				continue;
 			}
@@ -115,21 +112,19 @@ int ConfigGameLoad(bool bOverWrite)
 // Write out the config file for the game-specific inputs
 int ConfigGameSave(bool bSave)
 {
-	if (!bSave) {
+	if (!bSave)
+	{
 		GameInpBlank(0);
 		ConfigGameLoad(false);
 	}
 
 	FILE* h = fopen(GameConfigName(), _T("w+"));
-	if (h == NULL) {
+
+	if (h == NULL)
 		return 1;
-	}
 
 	// Write title
-	#ifndef __LIBSNES__
-	fprintf(h, _T("// ") _T(APP_TITLE) _T(" v%s --- Config File for %s (%hs)\n\n"),
-		szAppBurnVer, BurnDrvGetText(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME));
-	#endif
+	fprintf(h, _T("// ") _T(APP_TITLE) _T(" v%s --- Config File for %s (%hs)\n\n"), szAppBurnVer, BurnDrvGetText(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME));
 
 	fprintf(h, "// --- Miscellaneous ----------------------------------------------------------\n\n");
 	// Write version number

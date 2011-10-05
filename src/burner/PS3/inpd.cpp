@@ -2,9 +2,6 @@
 // added default mapping and autofire settings, by regret
 #include "burner.h"
 
-static unsigned char* LastVal = NULL; // Last input values/defined
-static int bLastValDefined = 0;	
-
 static void GameInpConfigOne(int nPlayer, int nPcDev, int nAnalog, struct GameInp* pgi, char* szi)
 {
 	switch (nPcDev)
@@ -74,8 +71,6 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 	for (i = 0; i < nMacroCount; i++, pgi++)
 		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, pgi->Macro.szName);
 
-	GameInpCheckLeftAlt();
-
 	return 0;
 }
  
@@ -103,9 +98,9 @@ int UsePreset(bool bMakeDefault)
 }
 
 // ==> default input mapping, added by regret
-char* defaultInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini");
-char* defaultNeoInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini");
-char* defaultCpsInpFilename = _T("/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini");
+char* defaultInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini";
+char* defaultNeoInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini";
+char* defaultCpsInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini";
 
 static const char * GetDefaultInputFilename()
 {
@@ -125,13 +120,13 @@ int SaveDefaultInput()
 {
 
 	const char * fileName = GetDefaultInputFilename();
-	FILE* h = _tfopen(fileName, _T("wt"));
+	FILE* h = fopen(fileName, "wt");
 
 	if (h == NULL)
 		return 1;
 
 	// Write version number
-	_ftprintf(h, _T("version 0x%06X\n\n"), nBurnVer);
+	fprintf(h, "version 0x%06X\n\n", nBurnVer);
 	GameInpWrite(h, false);
 
 	if(h)

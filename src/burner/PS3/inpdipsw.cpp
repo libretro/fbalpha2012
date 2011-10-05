@@ -5,7 +5,6 @@
 static unsigned char nPrevDIPSettings[4];
 static unsigned int nDIPGroup;
 static int nDIPOffset;
-static bool bOK;
 
 static void InpDIPSWGetOffset()
 {

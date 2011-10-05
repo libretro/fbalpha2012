@@ -3,10 +3,8 @@
 #include "burner.h"
   
 static char* pszBufferEnglish = NULL;
-static char* pszBufferLocal = NULL;
 
 static int nBufferEnglishSize = 0;
-static int nBufferLocalSize = 0;
 
 static int nPopupFlags;
 
@@ -49,7 +47,8 @@ int FBAPopupAddText(int nFlags, char* pszFormat, ...)
 	pszStringEnglish = pszFormat;
 
 	// See if we need to load strings from reources
-	if (nFlags & PUF_TEXT_TRANSLATE) {
+	if (nFlags & PUF_TEXT_TRANSLATE)
+	{
 		char* pszStringLocal;
 
 		va_list vaLocal;
@@ -87,10 +86,6 @@ int FBAPopupDestroyText()
 	free(pszBufferEnglish);
 	pszBufferEnglish = NULL;
 	nBufferEnglishSize = 0;
-
-	free(pszBufferLocal);
-	pszBufferLocal = NULL;
-	nBufferLocalSize = 0;
 
 	return 0;
 }

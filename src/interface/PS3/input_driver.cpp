@@ -8,9 +8,6 @@
 #include "menu.h"
 #include "audio_driver.h"
 
-int nPlayerToGamepad[4] = {0, 1, 2, 3};
-static int nJoystickCount = 4;		// We poll all 4 gamepad ps3 ports by default
-
 bool bInputOkay = false;
 
 #define CinpState(nCode) CellinpState(nCode)

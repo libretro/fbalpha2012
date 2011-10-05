@@ -319,6 +319,7 @@ int GamcAnalogKey(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 	return 0;
 }
 
+#ifndef SN_TARGET_PS3
 int GamcAnalogJoy(struct GameInp* pgi, char* szi, int nPlayer, int nJoy, int nSlide)
 {
 	int nAxis = 0;
@@ -390,6 +391,7 @@ int GamcAnalogJoy(struct GameInp* pgi, char* szi, int nPlayer, int nJoy, int nSl
 
 	return 0;
 }
+#endif
 
 // Set a Game Input to use Device 'nDevice' if it belongs to 'nPlayer'
 // -2 = nothing  -1 == keyboard, 0 == joystick 1, 1 == joystick 2 etc...

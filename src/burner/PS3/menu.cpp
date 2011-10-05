@@ -1888,7 +1888,6 @@ void InputFrameMove()
 			if (bii.szInfo == NULL)
 				bii.szInfo = "";
 			GamcPlayer(pgi, bii.szInfo, 0, -1);	// Keyboard
-			GamcAnalogKey(pgi, bii.szInfo, 0, 1);
 			GamcMisc(pgi, bii.szInfo, 0);
 		}	
 

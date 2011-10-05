@@ -68,9 +68,6 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, bii.szInfo);
 	}
 
-	for (i = 0; i < nMacroCount; i++, pgi++)
-		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, pgi->Macro.szName);
-
 	return 0;
 }
  

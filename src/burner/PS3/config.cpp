@@ -15,7 +15,6 @@
 
 int nPatchLang = 0;
 int bEnforceDep = 0;
-int nInputMacroEnabled = 0;			// if 0, macro will not be processed
 int nLoadMenuShowX;
 int nLoadMenuShowY;
 
@@ -204,8 +203,6 @@ int configAppLoadXml()
 	{
 		child = findElement(element, "settings");
 		getAttr(child, "always-processkey", &bAlwaysProcessKey);
-		child = findElement(element, "macro");
-		getAttr(child, "enable", &nInputMacroEnabled);
 
 		child = findElement(element, "controls");
 		if (child)
@@ -384,10 +381,6 @@ int configAppSaveXml()
 	ticpp::Element settings("settings");
 	preference.LinkEndChild(&settings);
 	setAttr(settings, "always-processkey", bAlwaysProcessKey);
-
-	ticpp::Element macro("macro");
-	preference.LinkEndChild(&macro);
-	setAttr(macro, "enable", nInputMacroEnabled);
 
 	ticpp::Element controls("controls");
 	preference.LinkEndChild(&controls);

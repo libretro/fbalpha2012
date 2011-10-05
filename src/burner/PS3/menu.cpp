@@ -56,8 +56,6 @@
       
 #define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x);
 
-#define MACRO(x) pgi->Macro.nMode = 1; pgi->Macro.Switch.nCode = (unsigned short)(x);
-
 /****************************************************/
 /* PNG SECTION                                      */
 /****************************************************/
@@ -379,18 +377,6 @@ void LoadInputs()
 	}
 
 	struct GameInp* pgi = GameInp + nGameInpCount;
-	for (unsigned int i = 0; i < nMacroCount; i++, pgi++)
-	{
-		if (pgi->nInput & GIT_GROUP_MACRO)
-		{
-			m_InputList[std::string(pgi->Macro.szName)] = std::string(" ");
-			m_InputListData.push_back(std::string(pgi->Macro.szName));
-			m_InputListOffsets.push_back(j);
-		}
-
-		j++;
-	}	 
-
 
 	pgi = NULL;
 
@@ -415,18 +401,6 @@ void LoadInputs()
 		char* pszVal = InpToDesc(pgi);
 
 		m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
-
-		j++;
-		z++;
-	}
-
-	for (i = 0, pgi = GameInp + nGameInpCount; i < nMacroCount; i++, pgi++)
-	{
-		if (pgi->nInput & GIT_GROUP_MACRO)
-		{
-			char* pszVal = InpMacroToDesc(pgi);
-			m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
-		}
 
 		j++;
 		z++;
@@ -1539,144 +1513,46 @@ void InputFrameMove()
 				switch (id)
 				{
 					case 0:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_C);
-						}
-						else
-						{
-							KEY(FBK_C);
-						}
+						KEY(FBK_C);
 						break;
 					case 1:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_Z);
-						}
-						else
-						{
-							KEY(FBK_Z);
-						}
+						KEY(FBK_Z);
 						break;
 					case 2:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_X);
-						}
-						else
-						{
-							KEY(FBK_X);
-						}
+						KEY(FBK_X);
 						break;
 					case 3:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_V);
-						}
-						else
-						{
-							KEY(FBK_V);
-						}
+						KEY(FBK_V);
 						break;
 					case 4:	
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_1);
-						}
-						else
-						{
-							KEY(FBK_1);
-						}
+						KEY(FBK_1);
 						break;
 					case 5:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_5);
-						}
-						else
-						{
-							KEY(FBK_5);
-						}
+						KEY(FBK_5);
 						break;
 					case 6:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_S);
-						}
-						else
-						{
-							KEY(FBK_S);
-						}
+						KEY(FBK_S);
 						break;
 					case 7:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_D);
-						}
-						else
-						{
-							KEY(FBK_D);
-						}
+						KEY(FBK_D);
 						break;
 					case 8:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_F1);
-						}
-						else
-						{
-							KEY(FBK_F1);
-						}
+						KEY(FBK_F1);
 						break;
 					case 9:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(FBK_F2);
-						}
-						else
-						{
-							KEY(FBK_F2);
-						}
+						KEY(FBK_F2);
 						break;
 					case 10: 
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L2_BUTTON);
-						}
-						else
-						{
-							KEY(PS3_L2_BUTTON);
-						}
+						KEY(PS3_L2_BUTTON);
 						break;
 					case 11:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R2_BUTTON);
-						}
-						else
-						{
-							KEY(PS3_R2_BUTTON);
-						}
+						KEY(PS3_R2_BUTTON);
 						break;
 					case 12:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L3_BUTTON);
-						}
-						else
-						{
-							KEY(PS3_L3_BUTTON);
-						}
+						KEY(PS3_L3_BUTTON);
 						break;
 					case 13:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R3_BUTTON);
-						}
-						else
-						{
-							KEY(PS3_R3_BUTTON);
-						}
+						KEY(PS3_R3_BUTTON);
 						break;
 				}
 			}
@@ -1686,124 +1562,40 @@ void InputFrameMove()
 				switch (id)
 				{
 					case 0:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4082);
-						}
-						else
-						{
-							KEY(0x4082);
-						}
+						KEY(0x4082);
 						break;
 					case 1:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4080);
-						}
-						else
-						{
-							KEY(0x4080);
-						}
+						KEY(0x4080);
 						break;
 					case 2:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4081);
-						}
-						else
-						{
-							KEY(0x4081);
-						}
+						KEY(0x4081);
 						break;
 					case 3:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4083);
-						}
-						else
-						{
-							KEY(0x4083);
-						}
+						KEY(0x4083);
 						break;
 					case 4:	
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x03);
-						}
-						else
-						{
-							KEY(0x03);
-						}
+						KEY(0x03);
 						break;
 					case 5:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x07);
-						}
-						else
-						{
-							KEY(0x07);
-						}
+						KEY(0x07);
 						break;
 					case 6:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4084);
-						}
-						else
-						{
-							KEY(0x4084);
-						}
+						KEY(0x4084);
 						break;
 					case 7:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4085);
-						}
-						else
-						{
-							KEY(0x4085);
-						}
+						KEY(0x4085);
 						break;
 					case 8:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L3_BUTTON | 0x4000);
-						}
-						else
-						{
-							KEY(PS3_L3_BUTTON | 0x4000);
-						}
+						KEY(PS3_L3_BUTTON | 0x4000);
 						break;
 					case 9:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R3_BUTTON | 0x4000);
-						}
-						else
-						{
-							KEY(PS3_R3_BUTTON | 0x4000);
-						}
+						KEY(PS3_R3_BUTTON | 0x4000);
 						break;
 					case 10: 
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L2_BUTTON | 0x4000);
-						}
-						else
-						{
-							KEY(PS3_L2_BUTTON | 0x4000);
-						}
+						KEY(PS3_L2_BUTTON | 0x4000);
 						break;
 					case 11:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R2_BUTTON | 0x4000);
-						}
-						else
-						{
-							KEY(PS3_R2_BUTTON | 0x4000);
-						}
+						KEY(PS3_R2_BUTTON | 0x4000);
 						break;
 				}
 			}
@@ -1813,124 +1605,40 @@ void InputFrameMove()
 				switch (id)
 				{
 					case 0:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4182);
-						}
-						else
-						{
-							KEY(0x4182);
-						}
+						KEY(0x4182);
 						break;
 					case 1:				 
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4180);
-						}
-						else
-						{
-							KEY(0x4180);
-						}
+						KEY(0x4180);
 						break;
 					case 2:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4181);
-						}
-						else
-						{
-							KEY(0x4181);
-						}
+						KEY(0x4181);
 						break;
 					case 3:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4183);
-						}
-						else
-						{
-							KEY(0x4183);
-						}
+						KEY(0x4183);
 						break; 
 					case 4:	
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x04);
-						}
-						else
-						{
-							KEY(0x04);
-						}
+						KEY(0x04);
 						break;
 					case 5:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x08);
-						}
-						else
-						{
-							KEY(0x08);
-						}
+						KEY(0x08);
 						break;
 					case 6:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4184);
-						}
-						else
-						{
-							KEY(0x4184);
-						}
+						KEY(0x4184);
 						break;
 					case 7:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4185);
-						}
-						else
-						{
-							KEY(0x4185);
-						}
+						KEY(0x4185);
 						break;
 					case 8:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L3_BUTTON | 0x4100);
-						}
-						else
-						{
-							KEY(PS3_L3_BUTTON | 0x4100);
-						}
+						KEY(PS3_L3_BUTTON | 0x4100);
 						break;
 					case 9:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R3_BUTTON | 0x4100);
-						}
-						else
-						{
-							KEY(PS3_R3_BUTTON | 0x4100);
-						}
+						KEY(PS3_R3_BUTTON | 0x4100);
 						break;
 					case 10: 
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L2_BUTTON | 0x4100);
-						}
-						else
-						{
-							KEY(PS3_L2_BUTTON | 0x4100);
-						}
+						KEY(PS3_L2_BUTTON | 0x4100);
 						break;
 					case 11:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R2_BUTTON | 0x4100);
-						}
-						else
-						{
-							KEY(PS3_R2_BUTTON | 0x4100);
-						}
+						KEY(PS3_R2_BUTTON | 0x4100);
 						break;
 				}
 			}
@@ -1940,124 +1648,40 @@ void InputFrameMove()
 				switch (id)
 				{
 					case 0:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4282);
-						}
-						else
-						{
-							KEY(0x4282);
-						}
+						KEY(0x4282);
 						break;
 					case 1:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4280);
-						}
-						else
-						{
-							KEY(0x4280);
-						}
+						KEY(0x4280);
 						break;
 					case 2:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4281);
-						}
-						else
-						{
-							KEY(0x4281);
-						}
+						KEY(0x4281);
 						break;
 					case 3:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4283);
-						}
-						else
-						{
-							KEY(0x4283);
-						}
+						KEY(0x4283);
 						break;
 					case 4:	
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x05);
-						}
-						else
-						{
-							KEY(0x05);
-						}
+						KEY(0x05);
 						break;
 					case 5:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x09);
-						}
-						else
-						{
-							KEY(0x09);
-						}
+						KEY(0x09);
 						break;
 					case 6:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4284);
-						}
-						else
-						{
-							KEY(0x4284);
-						}
+						KEY(0x4284);
 						break;
 					case 7:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(0x4285);
-						}
-						else
-						{
-							KEY(0x4285);
-						}
+						KEY(0x4285);
 						break;
 					case 8:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L3_BUTTON | 0x4200);
-						}
-						else
-						{
-							KEY(PS3_L3_BUTTON | 0x4200);
-						}
+						KEY(PS3_L3_BUTTON | 0x4200);
 						break;
 					case 9:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R3_BUTTON | 0x4200);
-						}
-						else
-						{
-							KEY(PS3_R3_BUTTON | 0x4200);
-						}
+						KEY(PS3_R3_BUTTON | 0x4200);
 						break;
 					case 10: 
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_L2_BUTTON | 0x4200);
-						}
-						else
-						{
-							KEY(PS3_L2_BUTTON | 0x4200);
-						}
+						KEY(PS3_L2_BUTTON | 0x4200);
 						break;
 					case 11:
-						if (pgi->nInput & GIT_GROUP_MACRO)
-						{
-							MACRO(PS3_R2_BUTTON | 0x4200);
-						}
-						else
-						{
-							KEY(PS3_R2_BUTTON | 0x4200);
-						}
+						KEY(PS3_R2_BUTTON | 0x4200);
 						break;
 				}
 			}

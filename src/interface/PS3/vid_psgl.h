@@ -19,7 +19,7 @@ extern void psglRenderStretch(void);
 extern void psglRenderPaused(void);			 
 extern void psglRenderAlpha(void);
 extern void CalculateViewports(void);
-extern void _psglRender(void);
+extern void psglRender(void);
 
 #define psglRedraw() \
 	if(pVidTransImage) \
@@ -149,22 +149,5 @@ extern void _psglRender(void);
    glClear(GL_COLOR_BUFFER_BIT); \
    glMatrixMode(GL_MODELVIEW); \
    glLoadIdentity();
-
-#define init() \
-   /*enable useful and required features */ \
-   glDisable(GL_LIGHTING); \
-   glEnable(GL_TEXTURE_2D); \
-   glGenBuffers(1, &bufferID); \
-   glBindBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, bufferID);
-
-#define term() \
-   if (buffer) \
-   { \
-      delete[] buffer; \
-      buffer = 0; \
-      iwidth = 0; \
-      iheight = 0; \		
-   } \
-   glDeleteBuffers(1, &bufferID); 
 
 #endif

@@ -139,12 +139,8 @@ int VidFrame_RecalcPalette()
 	pBurnDraw = pVidTransImage;
 	nBurnPitch = nVidImageWidth << 1;
 	BurnDrvFrame();
-	_psglRender();
+	psglRender();
 
-	/* set avi buffer, modified by regret */
-
-	pBurnDraw = NULL;
-	nBurnPitch = 0;
 	int y = 0;
 	do{
 		int x = 0;
@@ -170,12 +166,8 @@ int VidFrame_Recalc()
 	pBurnDraw = pVidTransImage;
 	nBurnPitch = nVidImageWidth << 1;
 	BurnDrvFrame();
-	_psglRender();
+	psglRender();
 
-	/* set avi buffer, modified by regret */
-
-	pBurnDraw = NULL;
-	nBurnPitch = 0;
 	int y = 0;
 	do{
 		int x = 0;
@@ -198,10 +190,7 @@ int VidFrame()
 	pBurnDraw = pVidImage;
 	nBurnPitch = nVidImagePitch;
 	BurnDrvFrame();
-	_psglRender();
-	/* set avi buffer, modified by regret */
-	pBurnDraw = NULL;
-	nBurnPitch = 0;
+	psglRender();
 
 	return 0;
 }

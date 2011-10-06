@@ -14,7 +14,6 @@ PSGLcontext* psgl_context = NULL;
 
 static GLuint gl_width = 0;
 static GLuint gl_height = 0;
-static int nGameImageWidth, nGameImageHeight;
 static int nImageWidth, nImageHeight;
  
 extern std::vector<std::string> m_ListShaderData;
@@ -48,7 +47,7 @@ static const GLfloat   verts  [] = {
       -1.0f, -1.0f, 0.0f,			// bottom left
       1.0f, -1.0f, 0.0f,			// bottom right
       1.0f,  1.0f, 0.0f,			// top right
-      -1.0f, 1.0f, 0.0f          // top left
+      -1.0f, 1.0f, 0.0f				// top left
 };			
 
 static const GLfloat   tverts[] = {
@@ -72,11 +71,11 @@ static const GLfloat   tvertsFlipped[] = {
       1.0f, 1.0f
 };
 
-static const GLfloat   tvertsVertical[] = {
-      0.0f, 0.0f,						
-      0.0f, 1.0f, 
-      1.0f, 1.0f, 
-      1.0f, 0.0f
+static const GLfloat   tvertsVertical[] ={
+	0.0f, 0.0f,						
+	0.0f, 1.0f, 
+	1.0f, 1.0f, 
+	1.0f, 0.0f
 };
 
 
@@ -482,7 +481,14 @@ void psglSetVSync(uint32_t enable)
 
 int _psglExit(void)
 {
-	term();
+	if (buffer)
+	{
+		delete[] buffer;
+		buffer = 0;
+		iwidth = 0;
+		iheight = 0;
+	}
+	glDeleteBuffers(1, &bufferID); 
 	VidSFreeVidImage();
 	nRotateGame = 0;
 	return 0;
@@ -501,9 +507,6 @@ static int _psglTextureInit()
 		nVidImageHeight = nGameHeight;
 	}
 
-	nGameImageWidth = nVidImageWidth;
-	nGameImageHeight = nVidImageHeight;
-
 	nVidImageDepth = nVidScrnDepth;
 
 	nVidImageBPP = (nVidImageDepth + 7) >> 3;
@@ -520,8 +523,8 @@ static int _psglTextureInit()
 		return 1;
 	}
 
-	unsigned int nTextureWidth = VidGetTextureSize(nGameImageWidth);
-	unsigned int nTextureHeight = VidGetTextureSize(nGameImageHeight);
+	unsigned int nTextureWidth = VidGetTextureSize(nVidImageWidth);
+	unsigned int nTextureHeight = VidGetTextureSize(nVidImageHeight);
 
 	resize(nTextureWidth, nTextureHeight);
 
@@ -557,7 +560,11 @@ int _psglInit(void)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	init();
+	/*enable useful and required features */
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	glGenBuffers(1, &bufferID);
+	glBindBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, bufferID);
 
 	_psglInitCG();
 
@@ -597,24 +604,19 @@ int _psglInit(void)
 		dst += pitch; \
 	}while(height);
 
-#define common_video_rotate_function() \
-	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
-	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask); \
-	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
-
 #define common_video_copy_function() \
 	unsigned int * pd; \
 	unsigned int pitch; \
 	lock(pd, pitch); \
 	uint8_t * ps = pVidImage + (nVidImageLeft << 2); \
 	int s = nVidImageWidth << 2; \
-	VidSCopyImage32(pd); \
-	unsigned int inwidth = nGameImageWidth; \
-	unsigned int inheight = nGameImageHeight;
+	VidSCopyImage32(pd);
 
 #define common_render_function_body() \
    \
-   common_video_rotate_function(); \
+	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
+	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask); \
+	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask); \
    \
 	if (nImageWidth != nNewImageWidth || nImageHeight != nNewImageHeight) \
    { \
@@ -637,11 +639,11 @@ void CalculateViewports(void)
 	common_render_function_body();
 }
 
-void _psglRender(void)
+void psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	common_video_copy_function();
-	refresh(inwidth, inheight);
+	refresh(nVidImageWidth, nVidImageHeight);
 
 	if (bShowFPS)
 	{
@@ -655,15 +657,14 @@ void _psglRender(void)
 void psglRenderPaused()			 
 {
 	common_render_function_body();
-	refreshwithalpha(inwidth, inheight, 0xA0);
+	refreshwithalpha(nVidImageWidth, GameImageHeight, 0xA0);
 }
 
 void psglRenderStretch()			 
-{	
-	common_video_rotate_function();
-
-	nImageWidth  = nNewImageWidth;
-	nImageHeight = nNewImageHeight;
+{
+	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
+	nImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
+	nImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
 
 	// Set the size of the image on the PC screen
 	int vpx, vpy, vpw, vph;
@@ -689,7 +690,7 @@ void psglRenderStretch()
 
 void psglRenderAlpha(void)
 {
-	refreshwithalpha(nGameImageWidth, nGameImageHeight, 0xA0);
+	refreshwithalpha(nVidImageWidth, nVidImageHeight, 0xA0);
 }
 
 int32_t psglInitShader(const char* filename)

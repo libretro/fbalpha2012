@@ -6,10 +6,7 @@
 #include "audio_driver.h"
 #include "burner.h"
 
-#define AUDIO_SEGMENT_LENGTH 801
-#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS 1602
-
-int nAudSampleRate = 44100;		// Sample rate
+int nAudSampleRate = 48010;		// Sample rate
 int nAudSegCount = 6;			// Segments in the pdsbLoop buffer
 int nAudSegLen = 0;			// Segment length in samples (calculated from Rate/Fps)
 int nAudAllocSegLen = 0;		// Allocated segment length in samples
@@ -48,14 +45,6 @@ int audio_exit()
 	return 0;
 }
 
-void audio_check(void)
-{
-	pBurnSoundOut = pAudNextSound;
-
-	int16_t * currentSound = pAudNextSound;
-	driver->write(audio_handle, currentSound, AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS);
-}
-
 int audio_init(void)
 {
 	nAudSegLen = AUDIO_SEGMENT_LENGTH;
@@ -72,7 +61,7 @@ int audio_init(void)
 	audio_handle = driver->init(&params);
 
 	// The next sound block to put in the stream
-	pAudNextSound = (int16_t*)malloc(nAudAllocSegLen);
+	pAudNextSound = (int16_t*)memalign(128, nAudAllocSegLen);
 
 	if (pAudNextSound == NULL)
 	{

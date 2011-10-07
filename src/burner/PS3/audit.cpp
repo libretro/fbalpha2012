@@ -12,7 +12,7 @@
 #include "burner.h"
 #include "seldef.h"
 
-char* auditState = NULL;
+static char* auditState = NULL;
 
 // variable definitions
 struct RomInfo

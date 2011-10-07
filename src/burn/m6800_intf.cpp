@@ -45,9 +45,9 @@ void M6800Reset()
 
 void M6800NewFrame()
 {
-	for (int i = 0; i < nM6800Count; i++) {
+	for (int i = 0; i < nM6800Count; i++)
 		nM6800CyclesDone[i] = 0;
-	}
+
 	nM6800CyclesTotal = 0;
 }
 
@@ -56,13 +56,13 @@ int M6800CoreInit(int num, int type)
 	nM6800Count = num % MAX_CPU;
 
 	M6800CPUContext = (M6800Ext*)malloc(num * sizeof(M6800Ext));
-	if (M6800CPUContext == NULL) {
+	if (M6800CPUContext == NULL)
 		return 1;
-	}
 
 	memset(M6800CPUContext, 0, num * sizeof(M6800Ext));
 
-	for (int i = 0; i < num; i++) {
+	for (int i = 0; i < num; i++)
+	{
 		M6800CPUContext[i].ReadByte = M6800ReadByteDummyHandler;
 		M6800CPUContext[i].WriteByte = M6800WriteByteDummyHandler;
 		M6800CPUContext[i].ReadOp = M6800ReadOpDummyHandler;
@@ -72,9 +72,8 @@ int M6800CoreInit(int num, int type)
 
 		nM6800CyclesDone[i] = 0;
 
-		for (int j = 0; j < (0x0100 * 3); j++) {
+		for (int j = 0; j < (0x0100 * 3); j++)
 			M6800CPUContext[i].pMemMap[j] = NULL;
-		}
 	}
 
 	nM6800CyclesTotal = 0;
@@ -84,10 +83,10 @@ int M6800CoreInit(int num, int type)
 	if (type == CPU_TYPE_M6803) m6803_init();
 	if (type == CPU_TYPE_M6801) m6801_init();
 
-	#ifndef NO_CHEATS
+#ifndef NO_CHEATS
 	for (int i = 0; i < num; i++)
 		CpuCheatRegister(CPU_M6800, i);
-	#endif
+#endif
 
 	return 0;
 }
@@ -122,13 +121,11 @@ void M6800Exit()
 
 void M6800SetIRQ(int vector, int status)
 {
-	if (status == M6800_IRQSTATUS_NONE) {
+	if (status == M6800_IRQSTATUS_NONE)
 		m6800_set_irq_line(vector, 0);
-	}
 
-	if (status == M6800_IRQSTATUS_ACK) {
+	if (status == M6800_IRQSTATUS_ACK)
 		m6800_set_irq_line(vector, 1);
-	}
 
 	if (status == M6800_IRQSTATUS_AUTO) {
 		m6800_set_irq_line(vector, 1);
@@ -140,13 +137,11 @@ void M6800SetIRQ(int vector, int status)
 
 void HD63701SetIRQ(int vector, int status)
 {
-	if (status == HD63701_IRQSTATUS_NONE) {
+	if (status == HD63701_IRQSTATUS_NONE)
 		m6800_set_irq_line(vector, 0);
-	}
 
-	if (status == HD63701_IRQSTATUS_ACK) {
+	if (status == HD63701_IRQSTATUS_ACK)
 		m6800_set_irq_line(vector, 1);
-	}
 
 	if (status == HD63701_IRQSTATUS_AUTO) {
 		m6800_set_irq_line(vector, 1);
@@ -158,13 +153,11 @@ void HD63701SetIRQ(int vector, int status)
 
 void M6803SetIRQ(int vector, int status)
 {
-	if (status == M6803_IRQSTATUS_NONE) {
+	if (status == M6803_IRQSTATUS_NONE)
 		m6800_set_irq_line(vector, 0);
-	}
 
-	if (status == M6803_IRQSTATUS_ACK) {
+	if (status == M6803_IRQSTATUS_ACK)
 		m6800_set_irq_line(vector, 1);
-	}
 
 	if (status == M6803_IRQSTATUS_AUTO) {
 		m6800_set_irq_line(vector, 1);
@@ -176,13 +169,11 @@ void M6803SetIRQ(int vector, int status)
 
 void M6801SetIRQ(int vector, int status)
 {
-	if (status == M6801_IRQSTATUS_NONE) {
+	if (status == M6801_IRQSTATUS_NONE)
 		m6800_set_irq_line(vector, 0);
-	}
 
-	if (status == M6801_IRQSTATUS_ACK) {
+	if (status == M6801_IRQSTATUS_ACK)
 		m6800_set_irq_line(vector, 1);
-	}
 
 	if (status == M6801_IRQSTATUS_AUTO) {
 		m6800_set_irq_line(vector, 1);
@@ -234,16 +225,14 @@ int M6800MapMemory(unsigned char* pMemory, unsigned short nStart, unsigned short
 	unsigned char cStart = (nStart >> 8);
 	unsigned char **pMemMap = M6800CPUContext[0].pMemMap;
 
-	for (unsigned short i = cStart; i <= (nEnd >> 8); i++) {
-		if (nType & M6800_READ)	{
+	for (unsigned short i = cStart; i <= (nEnd >> 8); i++)
+	{
+		if (nType & M6800_READ)
 			pMemMap[0     + i] = pMemory + ((i - cStart) << 8);
-		}
-		if (nType & M6800_WRITE) {
+		if (nType & M6800_WRITE)
 			pMemMap[0x100 + i] = pMemory + ((i - cStart) << 8);
-		}
-		if (nType & M6800_FETCH) {
+		if (nType & M6800_FETCH)
 			pMemMap[0x200 + i] = pMemory + ((i - cStart) << 8);
-		}
 	}
 	return 0;
 
@@ -283,14 +272,12 @@ unsigned char M6800ReadByte(unsigned short Address)
 {
 	// check mem map
 	unsigned char * pr = M6800CPUContext[0].pMemMap[0x000 | (Address >> 8)];
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[Address & 0xff];
-	}
 
 	// check handler
-	if (M6800CPUContext[0].ReadByte != NULL) {
+	if (M6800CPUContext[0].ReadByte != NULL)
 		return M6800CPUContext[0].ReadByte(Address);
-	}
 
 	return 0;
 }
@@ -331,14 +318,12 @@ unsigned char M6800ReadOpArg(unsigned short Address)
 {
 	// check mem map
 	unsigned char * pr = M6800CPUContext[0].pMemMap[0x200 | (Address >> 8)];
-	if (pr != NULL) {
+	if (pr != NULL)
 		return pr[Address & 0xff];
-	}
 
 	// check handler
-	if (M6800CPUContext[0].ReadOpArg != NULL) {
+	if (M6800CPUContext[0].ReadOpArg != NULL)
 		return M6800CPUContext[0].ReadOpArg(Address);
-	}
 
 	return 0;
 }
@@ -346,9 +331,8 @@ unsigned char M6800ReadOpArg(unsigned short Address)
 unsigned char M6800ReadPort(unsigned short Address)
 {
 	// check handler
-	if (M6800CPUContext[0].ReadPort != NULL) {
+	if (M6800CPUContext[0].ReadPort != NULL)
 		return M6800CPUContext[0].ReadPort(Address);
-	}
 
 	return 0;
 }
@@ -369,17 +353,14 @@ void M6800WriteRom(unsigned short Address, unsigned char Data)
 	unsigned char * pw = M6800CPUContext[0].pMemMap[0x100 | (Address >> 8)];
 	unsigned char * pf = M6800CPUContext[0].pMemMap[0x200 | (Address >> 8)];
 
-	if (pr != NULL) {
+	if (pr != NULL)
 		pr[Address & 0xff] = Data;
-	}
 
-	if (pw != NULL) {
+	if (pw != NULL)
 		pw[Address & 0xff] = Data;
-	}
 
-	if (pf != NULL) {
+	if (pf != NULL)
 		pf[Address & 0xff] = Data;
-	}
 
 	// check handler
 	if (M6800CPUContext[0].WriteByte != NULL) {

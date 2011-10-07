@@ -984,7 +984,8 @@ unsigned int __fastcall cps3RamReadLong(unsigned int addr)
 // CPS3 Region Patch
 static void Cps3PatchRegion()
 {
-	if ( cps3_region_address ) {
+	if ( cps3_region_address )
+	{
 
 		bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
 

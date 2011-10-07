@@ -83,9 +83,6 @@ extern int bsavedecryptedprom;
 
 // main.cpp
 
-extern int nAppThreadPriority;
-extern int nAppShowCmd;
-extern int nDisableSplash;
 extern int nLastFilter;
 extern int nLastRom;
 extern int nLastFilter;
@@ -102,15 +99,7 @@ extern char szAppBurnVer[16];
 extern char szSVNVer[16];
 extern char szSVNDate[30];
 
-extern bool bCmdOptUsed;
-extern bool bAlwaysProcessKey;
-
-// Used for the load/save dialog in commdlg.h
-extern char szChoice[MAX_PATH];	// File chosen by the user
-
 int dprintf(char* pszFormat, ...);	// Use instead of printf() in the UI
-
-bool AppProcessKeyboardInput();
 
 // popup_win32.cpp
 enum FBAPopupType { MT_NONE = 0, MT_ERROR, MT_WARNING, MT_INFO };
@@ -304,7 +293,6 @@ int ProgressDestroy();
 #define AUDIT_FAIL	0
 #define AUDIT_PARTPASS	1
 #define AUDIT_FULLPASS	3
-extern char* auditState;
 
 int getAllRomsetInfo();
 void auditPrepare();

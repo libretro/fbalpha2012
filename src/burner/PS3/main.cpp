@@ -15,22 +15,15 @@
 #include <cell/control_console.h>
 #endif
 
-bool IsCurrentlyInGame = false; 
-char szAppBurnVer[16] = "";
-char szSVNVer[16] = "";
-char szSVNDate[30] = "";
+char	szAppBurnVer[16] = "";
+char	szSVNVer[16] = "";
+char	szSVNDate[30] = "";
 
-bool bCmdOptUsed = 0;
-bool bAlwaysProcessKey = false;
-bool DoReset = false;
+bool	DoReset = false;
 
-int ArcadeJoystick = 0;
-int exitGame = 0;
+int	ArcadeJoystick = 0;
+int	exitGame = 0;
 
-// Used for the load/save dialog in commdlg.h (savestates)
-char szChoice[MAX_PATH] = "";
- 
-extern std::vector<std::string> m_ListShaderData;
 extern void reset_frame_counter();
  
 SYS_PROCESS_PARAM(1001, 0x80000);
@@ -59,7 +52,6 @@ static int AppInit()
 		configAppSaveXml();	// Create initial config file
 
 	BurnLibInit();			// Init the Burn library
-
 
 	getAllRomsetInfo();		// Build the ROM information
 	nVidFullscreen = 1;
@@ -121,11 +113,11 @@ int  main(int argc, char **argv)
 		sprintf(szSVNDate, "%s", SVN_DATE);
 	}
 
-	configAppLoadXml();				// Load config for the application
+	configAppLoadXml();		// Load config for the application
 
 	cell_pad_input_init();
 
-	createNeedDir();				// Make sure there are roms and cfg subdirectories
+	createNeedDir();		// Make sure there are roms and cfg subdirectories
 
 	AppInit();
 
@@ -136,11 +128,11 @@ int  main(int argc, char **argv)
 	mediaInit();
 	RunMessageLoop(argc, argv); 
 
-	AppExit();					// Exit the application
+	AppExit();			// Exit the application
 
 	cell_pad_input_deinit();
 
-	configAppSaveXml();				// Save config for the application
+	configAppSaveXml();		// Save config for the application
 
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     

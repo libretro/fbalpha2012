@@ -1,12 +1,7 @@
-// OpenGL video output, added by regret
-// TODO: osd
-#ifndef NO_OPENGL
-
 #include <sys/sys_time.h>
 
 #include "burner.h"
 #include "vid_support.h"
-
 #include "vid_psgl.h"
 
 PSGLdevice* psgl_device = NULL;
@@ -76,9 +71,6 @@ static const GLfloat   tvertsVertical[] ={
 	1.0f, 1.0f, 
 	1.0f, 0.0f
 };
-
-
-CellDbgFontConsoleId DbgFontID;
 
 #define min(a,b) (((a)<(b))?(a):(b)) 
 #define max(a,b) (((a)>(b))?(a):(b))
@@ -155,32 +147,32 @@ void _psglInitCG()
 }
 
 #define _apply_rotation_settings() \
-   if (nRotateGame & 1) \
-   {	\
-		if (nRotateGame & 2) \
-      { \
-			glVertexPointer(3, GL_FLOAT, 0, verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated); \
-		} \
-      else \
-      { \
-			glVertexPointer(3, GL_FLOAT, 0, verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical); \
-		} \
+	if (nRotateGame & 1) \
+{	\
+	if (nRotateGame & 2) \
+	{ \
+		glVertexPointer(3, GL_FLOAT, 0, verts); \
+		glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated); \
 	} \
-   else \
-   { \
-		if (nRotateGame & 2) \
-      { \
-			glVertexPointer(3, GL_FLOAT, 0, verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped); \
-		} \
-      else \
-      { \
-			glVertexPointer(3, GL_FLOAT, 0, verts); \
-			glTexCoordPointer(2, GL_FLOAT, 0, tverts); \
-		} \
-	}
+	else \
+	{ \
+		glVertexPointer(3, GL_FLOAT, 0, verts); \
+		glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical); \
+	} \
+} \
+else \
+{ \
+	if (nRotateGame & 2) \
+	{ \
+		glVertexPointer(3, GL_FLOAT, 0, verts); \
+		glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped); \
+	} \
+	else \
+	{ \
+		glVertexPointer(3, GL_FLOAT, 0, verts); \
+		glTexCoordPointer(2, GL_FLOAT, 0, tverts); \
+	} \
+}
 
 void reset_frame_counter()
 {
@@ -256,7 +248,8 @@ void psglInitGL_with_resolution(uint32_t resolutionId)
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
 
-	nVidScrnWidth = gl_width; nVidScrnHeight = gl_height;
+	nVidScrnWidth = gl_width;
+	nVidScrnHeight = gl_height;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -357,7 +350,8 @@ void psglInitGL()
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
 
-	nVidScrnWidth = gl_width; nVidScrnHeight = gl_height;
+	nVidScrnWidth = gl_width;
+	nVidScrnHeight = gl_height;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -505,13 +499,9 @@ static int _psglTextureInit()
 	}
 
 	nVidImageDepth = nVidScrnDepth;
-
 	nVidImageBPP = (nVidImageDepth + 7) >> 3;
-
-	nBurnBpp = nVidImageBPP;					// Set Burn library Bytes per pixel
-
-	// Use our callback to get colors:
-	SetBurnHighCol(nVidImageDepth);
+	nBurnBpp = nVidImageBPP;			// Set Burn library Bytes per pixel
+	SetBurnHighCol(nVidImageDepth);			// Use our callback to get colors:
 
 	// Make the normal memory buffer
 	if (VidSAllocVidImage())
@@ -539,7 +529,8 @@ int _psglInit(void)
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
 
-	nVidScrnWidth = gl_width; nVidScrnHeight = gl_height;
+	nVidScrnWidth = gl_width;
+	nVidScrnHeight = gl_height;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -588,6 +579,8 @@ int _psglInit(void)
 #define DEST_TOP    0
 
 #define VidSCopyImage32(dst_ori) \
+	uint8_t * ps = pVidImage + (nVidImageLeft << 2); \
+	int s = nVidImageWidth << 2; \
 	register uint16_t lineSize = nVidImageWidth << 2; \
 	uint16_t height = nVidImageHeight; \
 	uint8_t * dst = (uint8_t *)dst_ori; \
@@ -602,8 +595,6 @@ int _psglInit(void)
 	unsigned int * pd; \
 	unsigned int pitch; \
 	lock(pd, pitch); \
-	uint8_t * ps = pVidImage + (nVidImageLeft << 2); \
-	int s = nVidImageWidth << 2; \
 	VidSCopyImage32(pd);
 
 #define common_render_function_body() \
@@ -702,5 +693,3 @@ int32_t psglInitShader(const char* filename)
 	}
 	return !CELL_OK;
 }
-
-#endif

@@ -1,6 +1,8 @@
 // State dialog module
 #include "burner.h"
 
+static char szChoice[MAX_PATH] = "";
+
 static void StateMakeOfn(char* pszFilter)
 {
 	return;
@@ -15,21 +17,15 @@ int StatedAuto(int bSave)
 int StatedLoad(int nSlot)
 {
 	int ret;
-
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
-
 	ret = BurnStateLoad(szChoice, 1, &DrvInitCallback);
-
 	return ret;
 }
 
 int StatedSave(int nSlot)
 {
 	int ret;
-
 	sprintf(szChoice, "/dev_hdd0/game/FBAN00000/USRDIR/savestates/%s.%d.fs", BurnDrvGetTextA(DRV_NAME), nSlot);
-
 	ret = BurnStateSave(szChoice, 1);
-
 	return ret;
 }

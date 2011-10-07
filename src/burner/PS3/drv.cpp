@@ -9,8 +9,8 @@
 #endif
 #include "audio_driver.h"
 
-int bDrvOkay = 0; // 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
-static bool bSaveRAM = false;
+int		bDrvOkay = 0; // 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
+static bool	bSaveRAM = false;
 
 static int DoLibInit() // Do Init of Burn library driver
 {
@@ -93,9 +93,9 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	BurnReinitScrn = simpleReinitScrn;
 
 #ifndef NO_IPS
-	//	bDoPatch = true; // play with ips
-	//	loadActivePatches();
-	//	BurnApplyPatch = applyPatches;
+	//bDoPatch = true; // play with ips
+	//loadActivePatches();
+	//BurnApplyPatch = applyPatches;
 #endif
 
 	int nStatus = DoLibInit();		// Init the Burn library's driver

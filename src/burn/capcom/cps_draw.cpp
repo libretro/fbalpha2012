@@ -7,8 +7,8 @@ static int LayerCont;
 int nStartline, nEndline;
 int nRasterline[MAX_RASTER + 2];
 
-int nCpsLcReg = 0;						// Address of layer controller register
-int CpsLayEn[6] = {0, 0, 0, 0, 0, 0};	// bits for layer enable
+int nCpsLcReg = 0;				// Address of layer controller register
+int CpsLayEn[6] = {0, 0, 0, 0, 0, 0};		// bits for layer enable
 int MaskAddr[4] = {0, 0, 0, 0};
 
 int CpsLayer1XOffs = 0;
@@ -67,7 +67,7 @@ static int DrawScroll1(int i)
 
 	nScrX += 0x40;
 
-	//	bprintf(PRINT_NORMAL, _T("1 %x, %x, %x\n"), nOff, nScrX, nScrY);
+	//bprintf(PRINT_NORMAL, _T("1 %x, %x, %x\n"), nOff, nScrX, nScrY);
 
 	if (kludge == 10 || kludge == 21) nScrX -= 0x0c;
 	if (kludge == 6 || kludge == 11) nScrX += 0xFFC0;
@@ -106,7 +106,7 @@ static int DrawScroll2Init(int i)
 
 	nCpsrScrX += 0x40;
 
-	//	bprintf(PRINT_NORMAL, _T("2 %x, %x, %x\n"), nScr2Off, nCpsrScrX, nCpsrScrY);
+	//bprintf(PRINT_NORMAL, _T("2 %x, %x, %x\n"), nScr2Off, nCpsrScrX, nCpsrScrY);
 
 	if (kludge == 10 || kludge == 21) nCpsrScrX -= 0x0e;
 	if (kludge == 11) nCpsrScrX += 0xFFC0;
@@ -145,6 +145,7 @@ static int DrawScroll2Init(int i)
 
 	//CpsrPrepareDoX();
 	CpsrPrepare();
+
 	return 0;
 }
 
@@ -414,150 +415,6 @@ static void Cps2Layers()
 
 		nSlice = 0;
 		do {
-#ifdef SN_TARGET_PS3
-			//0
-			if (Prio[nSlice][Draw[nSlice][0]] == nCurrPrio) {
-
-				// Render sprites between the previous layer and this one
-				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-					nPrevPrio = nCurrPrio;
-				}
-
-				nStartline = nRasterline[nSlice];
-				nEndline = nRasterline[nSlice + 1];
-				if (!nEndline) {
-					nEndline = 224;
-				}
-
-				// Render layer
-				switch (Draw[nSlice][0]) {
-					case 1:
-						if (nDrawMask[nSlice] & 2)
-							DrawScroll1(nSlice);
-						break;
-					case 2:
-						if (nDrawMask[nSlice] & 4)
-						{
-							DrawScroll2Init(nSlice);
-							DrawScroll2DoCps2();
-							DrawScroll2Exit();
-						}
-						break;
-					case 3:
-						if (nDrawMask[nSlice] & 8)
-							DrawScroll3(nSlice);
-						break;
-				}
-			}
-			//1
-			if (Prio[nSlice][Draw[nSlice][1]] == nCurrPrio) {
-
-				// Render sprites between the previous layer and this one
-				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-					nPrevPrio = nCurrPrio;
-				}
-
-				nStartline = nRasterline[nSlice];
-				nEndline = nRasterline[nSlice + 1];
-
-				if (!nEndline)
-					nEndline = 224;
-
-				// Render layer
-				switch (Draw[nSlice][1])
-				{
-					case 1:
-						if (nDrawMask[nSlice] & 2)
-							DrawScroll1(nSlice);
-						break;
-					case 2:
-						if (nDrawMask[nSlice] & 4)
-						{
-							DrawScroll2Init(nSlice);
-							DrawScroll2DoCps2();
-							DrawScroll2Exit();
-						}
-						break;
-					case 3:
-						if (nDrawMask[nSlice] & 8)
-							DrawScroll3(nSlice);
-						break;
-				}
-			}
-			//2
-			if (Prio[nSlice][Draw[nSlice][2]] == nCurrPrio) {
-
-				// Render sprites between the previous layer and this one
-				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-					nPrevPrio = nCurrPrio;
-				}
-
-				nStartline = nRasterline[nSlice];
-				nEndline = nRasterline[nSlice + 1];
-
-				if (!nEndline)
-					nEndline = 224;
-
-				// Render layer
-				switch (Draw[nSlice][2])
-				{
-					case 1:
-						if (nDrawMask[nSlice] & 2)
-							DrawScroll1(nSlice);
-						break;
-					case 2:
-						if (nDrawMask[nSlice] & 4)
-						{
-							DrawScroll2Init(nSlice);
-							DrawScroll2DoCps2();
-							DrawScroll2Exit();
-						}
-						break;
-					case 3:
-						if (nDrawMask[nSlice] & 8)
-							DrawScroll3(nSlice);
-						break;
-				}
-			}
-			//3
-			if (Prio[nSlice][Draw[nSlice][3]] == nCurrPrio) {
-
-				// Render sprites between the previous layer and this one
-				if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
-					Cps2ObjDraw(nPrevPrio + 1, nCurrPrio);
-					nPrevPrio = nCurrPrio;
-				}
-
-				nStartline = nRasterline[nSlice];
-				nEndline = nRasterline[nSlice + 1];
-				if (!nEndline) {
-					nEndline = 224;
-				}
-
-				// Render layer
-				switch (Draw[nSlice][3])
-				{
-					case 1:
-						if (nDrawMask[nSlice] & 2)
-							DrawScroll1(nSlice);
-						break;
-					case 2:
-						if (nDrawMask[nSlice] & 4) {
-							DrawScroll2Init(nSlice);
-							DrawScroll2DoCps2();
-							DrawScroll2Exit();
-						}
-						break;
-					case 3:
-						if (nDrawMask[nSlice] & 8)
-							DrawScroll3(nSlice);
-						break;
-				}
-			}
-#else
 			for (int i = 0; i < 4; i++) {
 
 				if (Prio[nSlice][Draw[nSlice][i]] == nCurrPrio) {
@@ -594,7 +451,6 @@ static void Cps2Layers()
 					}
 				}
 			}
-#endif
 			nSlice++;
 		}  while (nSlice < MAX_RASTER && nRasterline[nSlice]);
 	}

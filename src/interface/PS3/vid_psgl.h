@@ -38,10 +38,14 @@ extern void psglRender(void);
 	psglSwap();
 
 #define resize(width, height) \
-      if (buffer) { delete[] buffer; buffer = NULL; } \
-      buffer = new unsigned int[nVidImageWidth * nVidImageHeight]; \
-      memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int)); \
-      glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight * 4, buffer, GL_SYSTEM_DRAW_SCE);
+if (buffer) \
+{ \
+	delete[] buffer; \
+	buffer = NULL; \
+} \
+buffer = new unsigned int[nVidImageWidth * nVidImageHeight]; \
+memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int)); \
+glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight * 4, buffer, GL_SYSTEM_DRAW_SCE);
 
 #define lock(data, pitch) \
    pitch = nVidImageWidth * sizeof(unsigned int); \

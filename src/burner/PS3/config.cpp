@@ -7,9 +7,11 @@
 */
 
 #include "burner.h"
+
 #ifndef NO_IPS
 //#include "patch.h"
 #endif
+
 #include "../lib/ticpp/ticpp.h"
 #include <locale.h>
 
@@ -104,7 +106,7 @@ int configAppLoadXml()
 		// TODO: don't read config ?
 	}
 
-	ticpp::Element* element, *parent, *child; //
+	ticpp::Element* element, *parent, *child;
 
 	element = findElement(root, "version");
 	element->GetText(&str);
@@ -201,9 +203,6 @@ int configAppLoadXml()
 	element = findElement(root, "preferences");
 	if (element)
 	{
-		child = findElement(element, "settings");
-		getAttr(child, "always-processkey", &bAlwaysProcessKey);
-
 		child = findElement(element, "controls");
 		if (child)
 		{
@@ -238,9 +237,6 @@ int configAppLoadXml()
 // Write out the config file for the whole application
 int configAppSaveXml()
 {
-	if (bCmdOptUsed)
-		return 1;
-
 	char configName[MAX_PATH];
 	createConfigName(configName);
 
@@ -377,10 +373,6 @@ int configAppSaveXml()
 	// preferences
 	ticpp::Element preference("preferences");
 	root.LinkEndChild(&preference);
-
-	ticpp::Element settings("settings");
-	preference.LinkEndChild(&settings);
-	setAttr(settings, "always-processkey", bAlwaysProcessKey);
 
 	ticpp::Element controls("controls");
 	preference.LinkEndChild(&controls);

@@ -1,7 +1,7 @@
 #include <sys/sys_time.h>
 
 #include "burner.h"
-#include "vid_support.h"
+#include "vid_support-ps3.h"
 #include "vid_psgl.h"
 
 PSGLdevice* psgl_device = NULL;
@@ -248,9 +248,6 @@ void psglInitGL_with_resolution(uint32_t resolutionId)
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
 
-	nVidScrnWidth = gl_width;
-	nVidScrnHeight = gl_height;
-
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glEnable(GL_TEXTURE_2D);
@@ -349,9 +346,6 @@ void psglInitGL()
 	psglResetCurrentContext();
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
-
-	nVidScrnWidth = gl_width;
-	nVidScrnHeight = gl_height;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -498,7 +492,7 @@ static int _psglTextureInit()
 		nVidImageHeight = nGameHeight;
 	}
 
-	nVidImageDepth = nVidScrnDepth;
+	nVidImageDepth = SCREEN_RENDER_TEXTURE_BITDEPTH;
 	nVidImageBPP = (nVidImageDepth + 7) >> 3;
 	nBurnBpp = nVidImageBPP;			// Set Burn library Bytes per pixel
 	SetBurnHighCol(nVidImageDepth);			// Use our callback to get colors:
@@ -523,14 +517,9 @@ void setlinear(unsigned int smooth)
 
 int _psglInit(void)
 {
-	nVidScrnDepth = 32;
-
 	psglResetCurrentContext();
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
-
-	nVidScrnWidth = gl_width;
-	nVidScrnHeight = gl_height;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -573,29 +562,16 @@ int _psglInit(void)
 	return 0;
 }
 
-#define DEST_BOTTOM nVidScrnHeight
-#define DEST_RIGHT  nVidScrnWidth
+#define DEST_BOTTOM gl_height
+#define DEST_RIGHT  gl_width
 #define DEST_LEFT   0
 #define DEST_TOP    0
-
-#define VidSCopyImage32(dst_ori) \
-	uint8_t * ps = pVidImage + (nVidImageLeft << 2); \
-	int s = nVidImageWidth << 2; \
-	register uint16_t lineSize = nVidImageWidth << 2; \
-	uint16_t height = nVidImageHeight; \
-	uint8_t * dst = (uint8_t *)dst_ori; \
-	do{ \
-		height--; \
-		memcpy(dst, ps, lineSize); \
-		ps += s; \
-		dst += pitch; \
-	}while(height);
 
 #define common_video_copy_function() \
 	unsigned int * pd; \
 	unsigned int pitch; \
 	lock(pd, pitch); \
-	VidSCopyImage32(pd);
+	VidSCopyImage(pd);
 
 #define common_render_function_body() \
    \

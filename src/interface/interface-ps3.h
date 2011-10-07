@@ -41,18 +41,12 @@ extern int _psglExit(void);
 
 extern bool bVidOkay;
 extern bool bVidRecalcPalette;
-extern unsigned int nVidSelect;
 extern int nVidDepth;
 extern int nVidRefresh;
-extern int nVidFullscreen;
 extern int bVidCorrectAspect;
 extern int nVidRotationAdjust;
-extern int bVidForce16bit;
-extern int bVidFullStretch;
 extern int bVidTripleBuffer;
 extern int bVidVSync;
-extern int nVidScrnWidth, nVidScrnHeight;
-extern int nVidScrnDepth;
 
 extern unsigned int vidFilterLinear;
 

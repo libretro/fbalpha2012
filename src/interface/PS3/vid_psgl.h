@@ -45,7 +45,7 @@ if (buffer) \
 } \
 buffer = new unsigned int[nVidImageWidth * nVidImageHeight]; \
 memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int)); \
-glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight * 4, buffer, GL_SYSTEM_DRAW_SCE);
+glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE);
 
 #define lock(data, pitch) \
    pitch = nVidImageWidth * sizeof(unsigned int); \
@@ -63,15 +63,15 @@ glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight *
 
 #define refresh(inwidth, inheight) \
    frame_count += 1; \
-   glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << 2, buffer); \
-   glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, GL_ARGB_SCE, nVidImageWidth << 2, 0); \
+   glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer); \
+   glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, GL_ARGB_SCE, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0); \
    set_cg_params(); \
    glDrawArrays(GL_QUADS, 0, 4); \
    glFlush();
 
 #define refreshwithalpha(inwidth, inheight, alpha) \
    frame_count += 1; \
-   glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << 2, buffer, GL_SYSTEM_DRAW_SCE); \
+   glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE); \
    uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY); \
    for(int i = 0; i != nVidImageHeight; i ++) \
    { \
@@ -114,7 +114,7 @@ glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight *
       real_height = h + nYScale; \
       left = x + nXOffset; \
       right = y + nYOffset; \
-      bottom = nVidScrnHeight + nYOffset; \
+      bottom = gl_height + nYOffset; \
    } \
    else if ( (int)(device_aspect*1000) > (int)(desired_aspect*1000) ) \
    { \

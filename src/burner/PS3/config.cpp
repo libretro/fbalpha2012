@@ -119,7 +119,6 @@ int configAppLoadXml()
 	// video
 	element = findElement(root, "video");
 	child = findElement(element, "fullscreen");
-	getAttr(child, "depth", &nVidDepth);
 	getAttr(child, "refresh", &nVidRefresh);
 
 	child = findElement(element, "adjust");
@@ -130,7 +129,6 @@ int configAppLoadXml()
 	child = findElement(element, "window-position");
 
 	child = findElement(element, "stretch");
-	getAttr(child, "full-stretch", &bVidFullStretch);
 	getAttr(child, "correct-aspect", &bVidCorrectAspect);
 
 	child = findElement(element, "vsync");
@@ -144,7 +142,6 @@ int configAppLoadXml()
 	child = findElement(parent, "filter");
 	getAttr(child, "linear", &vidFilterLinear);
 	child = findElement(parent, "option");
-	getAttr(child, "force-16bit", &bVidForce16bit);
 	getAttr(child, "currentshader", &shaderindex);
 
 	getAttr(child, "x-offset", &nXOffset);
@@ -170,14 +167,10 @@ int configAppLoadXml()
 		child = findElement(element, "sound");
 		child = findElement(element, "device");
 		child = findElement(element, "setting");
-		//getAttr(child, "rate", &nAudSampleRate);
 		getAttr(child, "frame", &nAudSegCount);
 		getAttr(child, "pcm-interp", &nInterpolation);
 		getAttr(child, "fm-interp", &nFMInterpolation);
 	}
-	//FIXME: Audio hardcoded to 48010 here for PS3
-	nAudSampleRate = 48010;
-
 	// gui
 	element = findElement(root, "gui");
 	if (element) {
@@ -269,7 +262,6 @@ int configAppSaveXml()
 
 	ticpp::Element fullscreen("fullscreen");
 	video.LinkEndChild(&fullscreen);
-	setAttr(fullscreen, "depth", nVidDepth);
 	setAttr(fullscreen, "refresh", nVidRefresh);
 
 	ticpp::Element adjust("adjust");
@@ -284,7 +276,6 @@ int configAppSaveXml()
 
 	ticpp::Element stretch("stretch");
 	video.LinkEndChild(&stretch);
-	setAttr(stretch, "full-stretch", bVidFullStretch);
 	setAttr(stretch, "correct-aspect", bVidCorrectAspect);
 
 	ticpp::Element vsync("vsync");
@@ -307,7 +298,6 @@ int configAppSaveXml()
 	setAttr(filter, "linear", vidFilterLinear);
 	ticpp::Element option("option");
 	render.LinkEndChild(&option);
-	setAttr(option, "force-16bit", bVidForce16bit);
 	setAttr(option, "currentshader", shaderindex);
 
 	setAttr(option, "x-offset", nXOffset);
@@ -339,9 +329,6 @@ int configAppSaveXml()
 
 	ticpp::Element audio_set("setting");
 	audio.LinkEndChild(&audio_set);
-	//FIXME: Audio sample rate hardcoded to 48010 here for PS3
-	setAttr(audio_set, "rate", 48010);
-	//setAttr(audio_set, "rate", nAudSampleRate);
 	setAttr(audio_set, "frame", nAudSegCount);
 	setAttr(audio_set, "pcm-interp", nInterpolation);
 	setAttr(audio_set, "fm-interp", nFMInterpolation);

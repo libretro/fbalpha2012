@@ -54,7 +54,6 @@ static int AppInit()
 	BurnLibInit();			// Init the Burn library
 
 	getAllRomsetInfo();		// Build the ROM information
-	nVidFullscreen = 1;
 
 	BurnExtLoadOneRom = archiveLoadOneFile; 
 	InitRomList();

@@ -3,36 +3,29 @@
 #include "highcol.h"
 #include "vid_psgl.h"
 
-#undef ENABLE_PREVIEW
 bool bVidOkay = false;
 
-int nVidDepth = 16;
 int nVidRefresh = 0;
 int nVidFullscreen = 0;
-int bVidFullStretch = 0;					// 1 = stretch to fill the entire window/screen
-int bVidCorrectAspect = 1;					// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
-int bVidVSync = 0;						// 1 = sync blits/pageflips/presents to the screen
-int bVidTripleBuffer = 0;					// 1 = use triple buffering
-int nVidRotationAdjust = 0;					// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
-int bVidForce16bit = 1;						// Emulate the game in 16-bit even when the screen is 32-bit (D3D blitter)
-unsigned int vidFilterLinear = 0;				// 1 = linear filter, or point filter
+int bVidCorrectAspect = 1;			// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
+int bVidVSync = 0;				// 1 = sync blits/pageflips/presents to the screen
+int bVidTripleBuffer = 0;			// 1 = use triple buffering
+int nVidRotationAdjust = 0;			// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
+unsigned int vidFilterLinear = 0;		// 1 = linear filter, or point filter
 int nVidOriginalScrnAspectX;
 int nVidOriginalScrnAspectY;
 
-int nVidScrnWidth = 0, nVidScrnHeight = 0;			// Actual Screen dimensions (0 if in windowed mode)
-int nVidScrnDepth = 0;						// Actual screen depth
-
-int nVidScrnAspectX = 4, nVidScrnAspectY = 3;			// Aspect ratio of the display screen
+int nVidScrnAspectX = 4, nVidScrnAspectY = 3;	// Aspect ratio of the display screen
 int nVidScrnAspectMode = ASPECT_RATIO_4_3;
-float vidScrnAspect = (float)4 / (float)3;			// Aspect ratio
-extern bool autoVidScrnAspect = true;				// Automatical Aspect ratio
+float vidScrnAspect = (float)4 / (float)3;	// Aspect ratio
+extern bool autoVidScrnAspect = true;		// Automatical Aspect ratio
 
-unsigned char* pVidImage = NULL;				// Memory buffer
-int nVidImageWidth = DEFAULT_IMAGE_WIDTH;			// Memory buffer size
-int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;			//
-int nVidImageLeft = 0, nVidImageTop = 0;			// Memory buffer visible area offsets
-int nVidImagePitch = 0, nVidImageBPP = 0;			// Memory buffer pitch and bytes per pixel
-int nVidImageDepth = 0;						// Memory buffer bits per pixel
+unsigned char* pVidImage = NULL;		// Memory buffer
+int nVidImageWidth = DEFAULT_IMAGE_WIDTH;	// Memory buffer size
+int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
+int nVidImageLeft = 0, nVidImageTop = 0;	// Memory buffer visible area offsets
+int nVidImagePitch = 0, nVidImageBPP = 0;	// Memory buffer pitch and bytes per pixel
+int nVidImageDepth = 0;				// Memory buffer bits per pixel
 
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 bool bVidRecalcPalette;
@@ -102,8 +95,10 @@ int VidExit()
 	nVidImageWidth = DEFAULT_IMAGE_WIDTH;
 	nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
 
-	nVidImageBPP = nVidImageDepth = 0;
-	nBurnPitch = nBurnBpp = 0;
+	nVidImageBPP = 0;
+	nVidImageDepth = 0;
+	nBurnPitch = 0;
+	nBurnBpp = 0;
 
 	free(pVidTransPalette);
 	pVidTransPalette = NULL;
@@ -209,7 +204,7 @@ int VidReinit()
 	VidInit();
 
 	if (bRunPause || !bDrvOkay)
-			VidFrame();
+		VidFrame();
 
 	CalculateViewports();
 

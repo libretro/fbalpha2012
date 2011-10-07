@@ -8,18 +8,29 @@ void VidSFreeVidImage();
 int VidSAllocVidImage();
 
 void VidInitInfo();
+#if defined (_XBOX)
+static inline uint32_t next_pow2(uint32_t v)
+{
+   v--;
+   v |= v >> 1;
+   v |= v >> 2;
+   v |= v >> 4;
+   v |= v >> 8;
+   v |= v >> 16;
+   v++;
+   return v;
+}
+
 static inline int VidGetTextureSize(int size)
 {
-#if defined (_XBOX)
 	int textureSize = 128;
-	while (textureSize < size) {
+	//ugly code, could be replaced by call to next_pow2
+	while (textureSize < size)
 		textureSize <<= 1;
-	}
+	//end of ugly code
 	return textureSize;
-#else
-	return size;
-#endif
 }
+#endif
 
 // Image size
 #ifndef SN_TARGET_PS3

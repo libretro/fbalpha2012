@@ -27,7 +27,6 @@ static CGparameter cg_v_video_size, cg_v_texture_size, cg_v_output_size, cgp_tim
 static GLuint cg_viewport_width, cg_viewport_height;
 static GLuint bufferID = 0;
 static uint32_t frame_count;
-static unsigned iwidth = 0, iheight = 0;
 static unsigned int* buffer = 0;
 
 typedef struct dstResType
@@ -485,8 +484,6 @@ int _psglExit(void)
 	{
 		delete[] buffer;
 		buffer = 0;
-		iwidth = 0;
-		iheight = 0;
 	}
 	glDeleteBuffers(1, &bufferID); 
 	VidSFreeVidImage();
@@ -523,10 +520,7 @@ static int _psglTextureInit()
 		return 1;
 	}
 
-	unsigned int nTextureWidth = VidGetTextureSize(nVidImageWidth);
-	unsigned int nTextureHeight = VidGetTextureSize(nVidImageHeight);
-
-	resize(nTextureWidth, nTextureHeight);
+	resize(nVidImageWidth, nVidImageHeight);
 
 	return 0;
 }

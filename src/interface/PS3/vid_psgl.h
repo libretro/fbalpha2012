@@ -38,58 +38,53 @@ extern void psglRender(void);
 	psglSwap();
 
 #define resize(width, height) \
-   if (!(iwidth >= width && iheight >= height)) \
-   { \
-      iwidth  = max(width,  iwidth); \
-      iheight = max(height, iheight); \
       if (buffer) { delete[] buffer; buffer = NULL; } \
-      buffer = new unsigned int[iwidth * iheight]; \
-      memset(buffer, 0, iwidth * iheight * sizeof(unsigned int)); \
-      glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, iwidth * iheight * 4, buffer, GL_SYSTEM_DRAW_SCE); \
-   }
+      buffer = new unsigned int[nVidImageWidth * nVidImageHeight]; \
+      memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int)); \
+      glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, nVidImageWidth * nVidImageHeight * 4, buffer, GL_SYSTEM_DRAW_SCE);
 
 #define lock(data, pitch) \
-   pitch = iwidth * sizeof(unsigned int); \
+   pitch = nVidImageWidth * sizeof(unsigned int); \
    data = buffer;
 
 #define set_cg_params() \
-   cgGLSetParameter2f(cg_video_size, iwidth, iheight); \
-   cgGLSetParameter2f(cg_texture_size, iwidth, iheight); \
+   cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
+   cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
    cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
-   cgGLSetParameter2f(cg_v_video_size, iwidth, iheight); \
-   cgGLSetParameter2f(cg_v_texture_size, iwidth, iheight); \
+   cgGLSetParameter2f(cg_v_video_size, nVidImageWidth, nVidImageHeight); \
+   cgGLSetParameter2f(cg_v_texture_size, nVidImageWidth, nVidImageHeight); \
    cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
    cgGLSetParameter1f(cgp_timer, frame_count); \
    cgGLSetParameter1f(cgp_vertex_timer, frame_count);
 
 #define refresh(inwidth, inheight) \
    frame_count += 1; \
-   glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (iwidth * iheight) << 2, buffer); \
-   glTextureReferenceSCE(GL_TEXTURE_2D, 1, iwidth, iheight, 0, GL_ARGB_SCE, iwidth << 2, 0); \
+   glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << 2, buffer); \
+   glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, GL_ARGB_SCE, nVidImageWidth << 2, 0); \
    set_cg_params(); \
    glDrawArrays(GL_QUADS, 0, 4); \
    glFlush();
 
 #define refreshwithalpha(inwidth, inheight, alpha) \
    frame_count += 1; \
-   glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (iwidth * iheight) << 2, buffer, GL_SYSTEM_DRAW_SCE); \
+   glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << 2, buffer, GL_SYSTEM_DRAW_SCE); \
    uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY); \
-   for(int i = 0; i != iheight; i ++) \
+   for(int i = 0; i != nVidImageHeight; i ++) \
    { \
-      for(int j = 0; j != iwidth; j ++) \
+      for(int j = 0; j != nVidImageWidth; j ++) \
       { \
-         unsigned char r = (buffer[(i) * iwidth + (j)] >> 16); \
-         unsigned char g = (buffer[(i) * iwidth + (j)] >> 8 ); \
-         unsigned char b = (buffer[(i) * iwidth + (j)] & 0xFF); \
+         unsigned char r = (buffer[(i) * nVidImageWidth + (j)] >> 16); \
+         unsigned char g = (buffer[(i) * nVidImageWidth + (j)] >> 8 ); \
+         unsigned char b = (buffer[(i) * nVidImageWidth + (j)] & 0xFF); \
          r/=2; \
          g/=2; \
          b/=2; \
          uint32_t pix = (r << 16) | (g << 8 )|  b | (0xA0 << 24); \
-         texture[i * iwidth + j] = pix; \
+         texture[i * nVidImageWidth + j] = pix; \
       } \
    } \
    glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE); \
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iwidth, iheight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 0); \
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nVidImageWidth, nVidImageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 0); \
    set_cg_params(); \
    glDrawArrays(GL_QUADS, 0, 4);	\
    glFlush();

@@ -70,6 +70,7 @@ void snes_term()
 
 static bool g_reset;
 static uint8_t *g_reset_ptr;
+static uint8_t *g_service_ptr;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
@@ -106,6 +107,14 @@ static const bind_conv neogeo_map[] = {
    DECL_MAP("fire 4", Y),
 };
 
+static void check_generic_input(const char *name, uint8_t *ptr)
+{
+   if (strcmp(name, "reset") == 0)
+      g_reset_ptr = ptr;
+   else if (strcmp(name, "service") == 0)
+      g_service_ptr = ptr;
+}
+
 static void init_neogeo_binds()
 {
    for (unsigned i = 0; i < bind_map_count; i++)
@@ -127,8 +136,7 @@ static void init_neogeo_binds()
       const char *name = name_.c_str();
       unsigned snes = ~0;
 
-      if (strcmp(bii.szInfo, "reset") == 0)
-         g_reset_ptr = bii.pVal;
+      check_generic_input(bii.szInfo, bii.pVal);
 
       for (unsigned j = 0; j < ARRAY_SIZE(neogeo_map); j++)
       {
@@ -210,8 +218,7 @@ static void init_cps_binds()
 		const char *name = name_.c_str();
 		unsigned snes = ~0;
 
-      if (strcmp(bii.szInfo, "reset") == 0)
-         g_reset_ptr = bii.pVal;
+      check_generic_input(bii.szInfo, bii.pVal);
 
       for (unsigned j = 0; j < ARRAY_SIZE(cps_map); j++)
       {
@@ -255,8 +262,7 @@ static void init_dummy_binds()
 	   const char *name = name_.c_str();
 	   unsigned snes = ~0;
 
-      if (strcmp(bii.szInfo, "reset") == 0)
-         g_reset_ptr = bii.pVal;
+      check_generic_input(bii.szInfo, bii.pVal);
 
       for (unsigned j = 0; j < ARRAY_SIZE(dummy_map); j++)
       {
@@ -312,6 +318,18 @@ static void poll_input()
    {
       *g_reset_ptr = g_reset;
       g_reset = false;
+   }
+
+   if (g_service_ptr)
+   {
+      static bool old_service = false;
+      bool new_service = 
+         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_L) &&
+         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_R) &&
+         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_START);
+      *g_service_ptr = new_service && !old_service;
+
+      old_service = new_service;
    }
 }
 

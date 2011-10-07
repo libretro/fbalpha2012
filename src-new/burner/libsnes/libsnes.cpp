@@ -79,8 +79,30 @@ struct fba_bind
    unsigned player;
 };
 
+struct bind_conv
+{
+   const char *fba;
+   unsigned snes;
+};
+
+#define DECL_MAP(fba, snes) { fba, SNES_DEVICE_ID_JOYPAD_##snes }
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+
 static fba_bind bind_map[MAX_BINDS];
 static unsigned bind_map_count;
+
+static const bind_conv neogeo_map[] = {
+   DECL_MAP("coin", SELECT),
+   DECL_MAP("start", START),
+   DECL_MAP("up", UP),
+   DECL_MAP("down", DOWN),
+   DECL_MAP("left", LEFT),
+   DECL_MAP("right", RIGHT),
+   DECL_MAP("fire 1", B),
+   DECL_MAP("fire 2", A),
+   DECL_MAP("fire 3", X),
+   DECL_MAP("fire 4", Y),
+};
 
 static void init_neogeo_binds()
 {
@@ -103,32 +125,64 @@ static void init_neogeo_binds()
       const char *name = name_.c_str();
       unsigned snes = ~0;
 
-      if (strstr(name, "coin"))
-         snes = SNES_DEVICE_ID_JOYPAD_SELECT;
-      else if (strstr(name, "start"))
-         snes = SNES_DEVICE_ID_JOYPAD_START;
-
-      else if (strstr(name, "up"))
-         snes = SNES_DEVICE_ID_JOYPAD_UP;
-      else if (strstr(name, "down"))
-         snes = SNES_DEVICE_ID_JOYPAD_DOWN;
-      else if (strstr(name, "left"))
-         snes = SNES_DEVICE_ID_JOYPAD_LEFT;
-      else if (strstr(name, "right"))
-         snes = SNES_DEVICE_ID_JOYPAD_RIGHT;
-
-      else if (strstr(name, "fire 1"))
-         snes = SNES_DEVICE_ID_JOYPAD_B;
-      else if (strstr(name, "fire 3"))
-         snes = SNES_DEVICE_ID_JOYPAD_X;
-      else if (strstr(name, "fire 4"))
-         snes = SNES_DEVICE_ID_JOYPAD_Y;
-      else if (strstr(name, "fire 2"))
-         snes = SNES_DEVICE_ID_JOYPAD_A;
+      for (unsigned j = 0; j < ARRAY_SIZE(neogeo_map); j++)
+      {
+         if (strstr(name, neogeo_map[j].fba))
+         {
+            snes = neogeo_map[j].snes;
+            break;
+         }
+      }
 
       bind_map[i].snes = snes;
    }
 }
+
+static const bind_conv cps_map[] = {
+   DECL_MAP("coin", SELECT),
+   DECL_MAP("start", START),
+   DECL_MAP("up", UP),
+   DECL_MAP("down", DOWN),
+   DECL_MAP("left", LEFT),
+   DECL_MAP("right", RIGHT),
+   DECL_MAP("weak punch", Y),
+   DECL_MAP("medium punch", X),
+   DECL_MAP("strong punch", L),
+   DECL_MAP("weak kick", B),
+   DECL_MAP("medium kick", A),
+   DECL_MAP("strong kick", R),
+   DECL_MAP("button 4", X),
+
+   // for Super Puzzle Fighter II Turbo
+   DECL_MAP("rotate left", Y),
+   DECL_MAP("rotate right", B),
+
+   // for Mega man 2
+   DECL_MAP("jump", X),
+
+   // for Eco figher
+   DECL_MAP("turn 1", X),
+   DECL_MAP("attack", Y),
+   DECL_MAP("turn 2", B),
+
+   // for Dungeons & Dragons
+   DECL_MAP("use", B),
+   DECL_MAP("select", A),
+
+   // for Pang
+   DECL_MAP("shot1", Y),
+   DECL_MAP("shot2", B),
+
+   // for Pro Gear
+   DECL_MAP("shot", Y),
+   DECL_MAP("bomb", X),
+   DECL_MAP("auto", B),
+
+   // for Super Gem Fighter / Pocket Fighter (only has Punch/kick)
+   DECL_MAP("special", A),
+   DECL_MAP("punch", X),
+   DECL_MAP("kick", B),
+};
 
 static void init_cps_binds()
 {
@@ -151,77 +205,30 @@ static void init_cps_binds()
 		const char *name = name_.c_str();
 		unsigned snes = ~0;
 
-		if (strstr(name, "coin"))
-			snes = SNES_DEVICE_ID_JOYPAD_SELECT;
-		else if (strstr(name, "start"))
-			snes = SNES_DEVICE_ID_JOYPAD_START;
-
-		else if (strstr(name, "up"))
-			snes = SNES_DEVICE_ID_JOYPAD_UP;
-		else if (strstr(name, "down"))
-			snes = SNES_DEVICE_ID_JOYPAD_DOWN;
-		else if (strstr(name, "left"))
-			snes = SNES_DEVICE_ID_JOYPAD_LEFT;
-		else if (strstr(name, "right"))
-			snes = SNES_DEVICE_ID_JOYPAD_RIGHT;
-
-		else if (strstr(name, "weak punch"))
-			snes = SNES_DEVICE_ID_JOYPAD_Y;
-		else if (strstr(name, "medium punch"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		else if (strstr(name, "strong punch"))
-			snes = SNES_DEVICE_ID_JOYPAD_L;
-		else if (strstr(name, "weak kick"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		else if (strstr(name, "medium kick"))
-			snes = SNES_DEVICE_ID_JOYPAD_A;
-		else if (strstr(name, "strong kick"))
-			snes = SNES_DEVICE_ID_JOYPAD_R;
-		else if (strstr(name, "button 4"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		//for Super Puzzle Fighter II Turbo
-		else if (strstr(name, "rotate left"))
-			snes = SNES_DEVICE_ID_JOYPAD_Y;
-		else if (strstr(name, "rotate right"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		//for Mega man 2
-		else if (strstr(name, "jump"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		//for Eco figher
-		else if (strstr(name, "turn 1"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		else if (strstr(name, "attack"))
-			snes = SNES_DEVICE_ID_JOYPAD_Y;
-		else if (strstr(name, "turn 2"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		//for Dungeons & Dragons
-		else if (strstr(name, "use"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		else if (strstr(name, "select"))
-			snes = SNES_DEVICE_ID_JOYPAD_A;
-		//for Pang
-		else if (strstr(name, "shot1"))
-			snes = SNES_DEVICE_ID_JOYPAD_Y;
-		else if (strstr(name, "shot2"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		//for Pro Gear
-		else if (strstr(name, "shot"))
-			snes = SNES_DEVICE_ID_JOYPAD_Y;
-		else if (strstr(name, "bomb"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		else if (strstr(name, "auto"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
-		//for Super Gem Fighter / Pocket Fighter (only has Punch/kick)
-		else if (strstr(name, "special"))
-			snes = SNES_DEVICE_ID_JOYPAD_A;
-		else if (strstr(name, "punch"))
-			snes = SNES_DEVICE_ID_JOYPAD_X;
-		else if (strstr(name, "kick"))
-			snes = SNES_DEVICE_ID_JOYPAD_B;
+      for (unsigned j = 0; j < ARRAY_SIZE(cps_map); j++)
+      {
+         if (strstr(name, cps_map[j].fba))
+         {
+            snes = cps_map[j].snes;
+            break;
+         }
+      }
 
 		bind_map[i].snes = snes;
 	}
 }
+
+static const bind_conv dummy_map[] = {
+   DECL_MAP("coin", SELECT),
+   DECL_MAP("start", START),
+   DECL_MAP("up", UP),
+   DECL_MAP("down", DOWN),
+   DECL_MAP("left", LEFT),
+   DECL_MAP("right", RIGHT),
+   DECL_MAP("button 1", Y),
+   DECL_MAP("button 2", X),
+   DECL_MAP("button 3", B),
+};
 
 static void init_dummy_binds()
 {
@@ -240,25 +247,14 @@ static void init_dummy_binds()
 	   const char *name = name_.c_str();
 	   unsigned snes = ~0;
 
-	   if (strstr(name, "coin"))
-		   snes = SNES_DEVICE_ID_JOYPAD_SELECT;
-	   else if (strstr(name, "start"))
-		   snes = SNES_DEVICE_ID_JOYPAD_START;
-
-	   else if (strstr(name, "up"))
-		   snes = SNES_DEVICE_ID_JOYPAD_UP;
-	   else if (strstr(name, "down"))
-		   snes = SNES_DEVICE_ID_JOYPAD_DOWN;
-	   else if (strstr(name, "left"))
-		   snes = SNES_DEVICE_ID_JOYPAD_LEFT;
-	   else if (strstr(name, "right"))
-		   snes = SNES_DEVICE_ID_JOYPAD_RIGHT;
-	   else if (strstr(name, "button 1"))
-		   snes = SNES_DEVICE_ID_JOYPAD_Y;
-	   else if (strstr(name, "button 2"))
-		   snes = SNES_DEVICE_ID_JOYPAD_X;
-	   else if (strstr(name, "button 3"))
-		   snes = SNES_DEVICE_ID_JOYPAD_B;
+      for (unsigned j = 0; j < ARRAY_SIZE(dummy_map); j++)
+      {
+         if (strstr(name, dummy_map[j].fba))
+         {
+            snes = dummy_map[j].snes;
+            break;
+         }
+      }
 
 	   bind_map[i].snes = snes;
    }

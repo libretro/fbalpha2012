@@ -113,6 +113,8 @@ static void check_generic_input(const char *name, uint8_t *ptr)
       g_reset_ptr = ptr;
    else if (strcmp(name, "service") == 0)
       g_service_ptr = ptr;
+   else if (strcmp(name, "dip") == 0)
+      fprintf(stderr, "DIP set to 0x%x\n", (unsigned)*ptr);
 }
 
 static void init_neogeo_binds()
@@ -601,6 +603,23 @@ static void init_audio()
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 }
 
+static void reset_dips()
+{
+   // Just checking DIP options ...
+   BurnDIPInfo bdi;
+   fprintf(stderr, "=== DIP enumeration ===\n");
+   for (unsigned i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
+   {
+      fprintf(stderr, "DIP #%u:\n", i);
+      fprintf(stderr, "   nInput:   %d\n", (int)bdi.nInput);
+      fprintf(stderr, "   nFlags:   0x%x\n", (unsigned)bdi.nFlags);
+      fprintf(stderr, "   nMask:    0x%x\n", (unsigned)bdi.nMask);
+      fprintf(stderr, "   nSetting: %d\n", (int)bdi.nSetting);
+      fprintf(stderr, "   szText:   %s\n", bdi.szText);
+   }
+   fprintf(stderr, "=== DIP END ===\n");
+}
+
 // Infer paths from basename.
 bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
@@ -614,6 +633,7 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
          return false;
 
       init_input();
+      reset_dips();
 
       return true;
    }

@@ -68,8 +68,10 @@ void snes_term()
    BurnLibExit();
 }
 
-void snes_power() {}
-void snes_reset() {}
+static bool g_reset;
+static uint8_t *g_reset_ptr;
+void snes_power() { g_reset = true; }
+void snes_reset() { g_reset = true; }
 
 #define MAX_BINDS 64
 struct fba_bind
@@ -124,6 +126,9 @@ static void init_neogeo_binds()
 
       const char *name = name_.c_str();
       unsigned snes = ~0;
+
+      if (strcmp(bii.szInfo, "reset") == 0)
+         g_reset_ptr = bii.pVal;
 
       for (unsigned j = 0; j < ARRAY_SIZE(neogeo_map); j++)
       {
@@ -205,6 +210,9 @@ static void init_cps_binds()
 		const char *name = name_.c_str();
 		unsigned snes = ~0;
 
+      if (strcmp(bii.szInfo, "reset") == 0)
+         g_reset_ptr = bii.pVal;
+
       for (unsigned j = 0; j < ARRAY_SIZE(cps_map); j++)
       {
          if (strstr(name, cps_map[j].fba))
@@ -246,6 +254,9 @@ static void init_dummy_binds()
 
 	   const char *name = name_.c_str();
 	   unsigned snes = ~0;
+
+      if (strcmp(bii.szInfo, "reset") == 0)
+         g_reset_ptr = bii.pVal;
 
       for (unsigned j = 0; j < ARRAY_SIZE(dummy_map); j++)
       {
@@ -295,6 +306,12 @@ static void poll_input()
    {
       *bind_map[i].ptr = input_cb(bind_map[i].player,
             SNES_DEVICE_JOYPAD, 0, bind_map[i].snes);
+   }
+
+   if (g_reset_ptr)
+   {
+      *g_reset_ptr = g_reset;
+      g_reset = false;
    }
 }
 

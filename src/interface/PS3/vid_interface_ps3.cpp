@@ -5,7 +5,6 @@
 
 bool bVidOkay = false;
 
-int nVidRefresh = 0;
 int nVidFullscreen = 0;
 int bVidCorrectAspect = 1;			// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
 int bVidVSync = 0;				// 1 = sync blits/pageflips/presents to the screen

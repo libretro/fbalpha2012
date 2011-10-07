@@ -112,14 +112,8 @@ int configAppLoadXml()
 	element->GetText(&str);
 	nIniVersion = strtol(str.c_str(), NULL, 0);
 
-	// emulation
-	element = findElement(root, "emulation");
-	getAttr(element, "asm-68k", &bBurnUseASM68K);
-
 	// video
 	element = findElement(root, "video");
-	child = findElement(element, "fullscreen");
-	getAttr(child, "refresh", &nVidRefresh);
 
 	child = findElement(element, "adjust");
 	getAttr(child, "rotate-vertical", &nVidRotationAdjust);
@@ -138,7 +132,6 @@ int configAppLoadXml()
 
 	// render
 	parent = findElement(element, "render");
-	child = findElement(parent, "render-driver");
 	child = findElement(parent, "filter");
 	getAttr(child, "linear", &vidFilterLinear);
 	child = findElement(parent, "option");
@@ -159,18 +152,7 @@ int configAppLoadXml()
 
 	child = findElement(element, "frame");
 	getAttr(child, "auto-frameskip", &autoFrameSkip);
-	getAttr(child, "force-60hz", &bForce60Hz);
 
-	// audio
-	element = findElement(root, "audio");
-	if (element) {
-		child = findElement(element, "sound");
-		child = findElement(element, "device");
-		child = findElement(element, "setting");
-		getAttr(child, "frame", &nAudSegCount);
-		getAttr(child, "pcm-interp", &nInterpolation);
-		getAttr(child, "fm-interp", &nFMInterpolation);
-	}
 	// gui
 	element = findElement(root, "gui");
 	if (element) {
@@ -251,18 +233,9 @@ int configAppSaveXml()
 	sprintf(tempStr, "0x%06X", nBurnVer);
 	addTextNode(root, "version", tempStr);
 
-	// emulation
-	ticpp::Element emulation("emulation");
-	root.LinkEndChild(&emulation);
-	setAttr(emulation, "asm-68k", bBurnUseASM68K);
-
 	// video
 	ticpp::Element video("video");
 	root.LinkEndChild(&video);
-
-	ticpp::Element fullscreen("fullscreen");
-	video.LinkEndChild(&fullscreen);
-	setAttr(fullscreen, "refresh", nVidRefresh);
 
 	ticpp::Element adjust("adjust");
 	video.LinkEndChild(&adjust);
@@ -290,9 +263,6 @@ int configAppSaveXml()
 	ticpp::Element render("render");
 	video.LinkEndChild(&render);
 
-	ticpp::Element render_driver("render-driver");
-	render.LinkEndChild(&render_driver);
-
 	ticpp::Element filter("filter");
 	render.LinkEndChild(&filter);
 	setAttr(filter, "linear", vidFilterLinear);
@@ -318,20 +288,6 @@ int configAppSaveXml()
 	ticpp::Element frame("frame");
 	video.LinkEndChild(&frame);
 	setAttr(frame, "auto-frameskip", autoFrameSkip);
-	setAttr(frame, "force-60hz", bForce60Hz);
-
-	// audio
-	ticpp::Element audio("audio");
-	root.LinkEndChild(&audio);
-
-	ticpp::Element device("device");
-	audio.LinkEndChild(&device);
-
-	ticpp::Element audio_set("setting");
-	audio.LinkEndChild(&audio_set);
-	setAttr(audio_set, "frame", nAudSegCount);
-	setAttr(audio_set, "pcm-interp", nInterpolation);
-	setAttr(audio_set, "fm-interp", nFMInterpolation);
 
 	// gui
 	ticpp::Element gui("gui");
@@ -388,10 +344,6 @@ int configAppSaveXml()
 		sprintf(tempStr, "path%d", i);
 		addTextNode(misc_path, tempStr, szMiscPaths[i]);
 	}
-
-	// hotkeys
-	ticpp::Element hotkeys("hotkeys");
-	root.LinkEndChild(&hotkeys);
 
 	// save file
 	doc.SaveFile(configName, TIXML_ENCODING_UTF8);

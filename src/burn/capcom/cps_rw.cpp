@@ -748,52 +748,27 @@ int Cps2RwGetInp()
 	return 0;
 }
 
-int CpsRwGetInp()
+int Cps1RwGetInp()
 {
 	// Compile separate buttons into Inpxxx
 #define INP(nnn) \
-  { int i = 0; Inp##nnn = 0; \
-    for (i = 0; i < 8; i++) { Inp##nnn |= (CpsInp##nnn[i] & 1) << i; }  }
+	{ int i = 0; Inp##nnn = 0; \
+		for (i = 0; i < 8; i++) { Inp##nnn |= (CpsInp##nnn[i] & 1) << i; }  }
 	CPSINPSET
 #undef INP
 
 #define INP(nnnn) \
-  { int i = 0; Inp##nnnn = 0; \
-    for (i = 0; i < 8; i++) { Inp##nnnn |= (CpsInp##nnnn[i] & 1) << i; }  }
-	CPSINPEX
+	{ int i = 0; Inp##nnnn = 0; \
+		for (i = 0; i < 8; i++) { Inp##nnnn |= (CpsInp##nnnn[i] & 1) << i; }  }
+		CPSINPEX
 #undef INP
 
-	// Forgottn
-	if (kludge == 7) {
-		// Handle analog controls
-		nDial055 += (int)((short)CpsInp055);
-		nDial05d += (int)((short)CpsInp05d);
-	}
-
-	if (Pzloop2) {
-		if (ReadPaddle) {
-			CpsPaddle1Value = 0;
-			CpsPaddle2Value = 0;
-			if (CpsInpPaddle1) {
-				if (CpsInpPaddle1 > 0x8000)
-					CpsPaddle1Value = 2;
-
-				if (CpsInpPaddle1 < 0x7fff)
-					CpsPaddle1Value = 1;
-			}
-
-			if (CpsInpPaddle2) {
-				if (CpsInpPaddle2 > 0x8000)
-					CpsPaddle2Value = 2;
-
-				if (CpsInpPaddle2 < 0x7fff)
-					CpsPaddle2Value = 1;
-			}
+		// Forgottn
+		if (kludge == 7) {
+			// Handle analog controls
+			nDial055 += (int)((short)CpsInp055);
+			nDial05d += (int)((short)CpsInp05d);
 		}
-
-		CpsPaddle1 += (CpsInpPaddle1 >> 8) & 0xff;
-		CpsPaddle2 += (CpsInpPaddle2 >> 8) & 0xff;
-	}
 
 	DrvClearOpposites(&Inp000);
 	DrvClearOpposites(&Inp001);
@@ -814,23 +789,14 @@ int CpsRwGetInp()
 	}
 
 	if (nMaxPlayers > 2) {
-		if (Cps == 2)
+		DrvClearOpposites(&Inp177);
+		if (nMaxPlayers == 4)
+			DrvClearOpposites(&Inp179);
+		if (Cps1Qs)
 		{
-			DrvClearOpposites(&Inp011);
+			DrvClearOpposites(&Inpc001);
 			if (nMaxPlayers == 4)
-				DrvClearOpposites(&Inp010);
-		}
-		else
-		{
-			DrvClearOpposites(&Inp177);
-			if (nMaxPlayers == 4)
-				DrvClearOpposites(&Inp179);
-			if (Cps1Qs)
-			{
-				DrvClearOpposites(&Inpc001);
-				if (nMaxPlayers == 4)
-					DrvClearOpposites(&Inpc003);
-			}
+				DrvClearOpposites(&Inpc003);
 		}
 	}
 

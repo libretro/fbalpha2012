@@ -179,7 +179,7 @@ extern unsigned char* CpsEncZRom;
 
 int CpsRwInit();
 int CpsRwExit();
-int CpsRwGetInp();
+int Cps1RwGetInp();
 int Cps2RwGetInp();
 unsigned char __fastcall CpsReadByte(unsigned int a);
 unsigned char __fastcall Cps2ReadByte(unsigned int a);

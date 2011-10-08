@@ -303,7 +303,7 @@ int Cps1Frame()
 
 	nCpsCycles = (int)((long long)nCPS68KClockspeed * nBurnCPUSpeedAdjust >> 8);
 
-	CpsRwGetInp();							// Update the input port values
+	Cps1RwGetInp();							// Update the input port values
 
 	nDisplayEnd = (nCpsCycles * (nFirstLine + 224)) / 0x0106;	// Account for VBlank
 

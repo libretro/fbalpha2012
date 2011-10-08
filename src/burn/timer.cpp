@@ -9,7 +9,7 @@
 
 #define MAX_TIMER_VALUE ((1 << 30) - 65536)
 
-double dTime;									// Time elapsed since the emulated machine was started
+double dTime;					// Time elapsed since the emulated machine was started
 
 static int nTimerCount[2], nTimerStart[2];
 
@@ -52,14 +52,13 @@ int BurnTimerUpdate(int nCycles)
 		int nTimer, nCyclesSegment, nTicksSegment;
 
 		// Determine which timer fires first
-		if (nTimerCount[0] <= nTimerCount[1]) {
+		if (nTimerCount[0] <= nTimerCount[1])
 			nTicksSegment = nTimerCount[0];
-		} else {
+		else
 			nTicksSegment = nTimerCount[1];
-		}
-		if (nTicksSegment > nTicksTotal) {
+
+		if (nTicksSegment > nTicksTotal)
 			nTicksSegment = nTicksTotal;
-		}
 
 		nCyclesSegment = MAKE_CPU_CYLES(nTicksSegment + nTicksExtra, nCPUClockspeed);
 //		bprintf(PRINT_NORMAL, _T("  - Timer: %08X, %08X, %08X, cycles %i, %i\n"), nTicksDone, nTicksSegment, nTicksTotal, nCyclesSegment, pCPUTotalCycles());
@@ -71,29 +70,26 @@ int BurnTimerUpdate(int nCycles)
 
 		nTimer = 0;
 		if (nTicksDone >= nTimerCount[0]) {
-			if (nTimerStart[0] == MAX_TIMER_VALUE) {
+			if (nTimerStart[0] == MAX_TIMER_VALUE)
 				nTimerCount[0] = MAX_TIMER_VALUE;
-			} else {
+			else
 				nTimerCount[0] += nTimerStart[0];
-			}
 //			bprintf(PRINT_NORMAL, _T("  - timer 0 fired\n"));
 			nTimer |= 1;
 		}
 		if (nTicksDone >= nTimerCount[1]) {
-			if (nTimerStart[1] == MAX_TIMER_VALUE) {
+			if (nTimerStart[1] == MAX_TIMER_VALUE)
 				nTimerCount[1] = MAX_TIMER_VALUE;
-			} else {
+			else
 				nTimerCount[1] += nTimerStart[1];
-			}
 //			bprintf(PRINT_NORMAL, _T("  - timer 1 fired\n"));
 			nTimer |= 2;
 		}
-		if (nTimer & 1) {
+
+		if (nTimer & 1)
 			nIRQStatus |= pTimerOverCallback(0, 0);
-		}
-		if (nTimer & 2) {
+		if (nTimer & 2)
 			nIRQStatus |= pTimerOverCallback(0, 1);
-		}
 	}
 
 	return nIRQStatus;
@@ -105,12 +101,11 @@ void BurnTimerEndFrame(int nCycles)
 
 	BurnTimerUpdate(nCycles);
 
-	if (nTimerCount[0] < MAX_TIMER_VALUE) {
+	if (nTimerCount[0] < MAX_TIMER_VALUE)
 		nTimerCount[0] -= nTicks;
-	}
-	if (nTimerCount[1] < MAX_TIMER_VALUE) {
+
+	if (nTimerCount[1] < MAX_TIMER_VALUE)
 		nTimerCount[1] -= nTicks;
-	}
 
 	nTicksDone -= nTicks;
 	if (nTicksDone < 0) {
@@ -243,9 +238,8 @@ void BurnTimerSetOneshot(int c, double period)
 
 void BurnTimerScan(int nAction, int* pnMin)
 {
-	if (pnMin && *pnMin < 0x029521) {
+	if (pnMin && *pnMin < 0x029521)
 		*pnMin = 0x029521;
-	}
 
 	if (nAction & ACB_DRIVER_DATA) {
 		SCAN_VAR(nTimerCount);

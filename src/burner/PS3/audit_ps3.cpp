@@ -21,7 +21,7 @@ static int FBAPopupLog()
 		if (nLen)
 		{
 			char szFormat[16];
-			_stprintf(szFormat, "    %%.%is\n", nLen);
+			sprintf(szFormat, "    %%.%is\n", nLen);
 		}
 
 		if (!szText[nLen])

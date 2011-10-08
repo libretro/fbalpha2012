@@ -14,95 +14,79 @@ void setWindowAspect(bool first_boot)
 		case ASPECT_RATIO_4_3:
 			nVidScrnAspectX = 4;
 			nVidScrnAspectY = 3;
-			bVidCorrectAspect = 1;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_5_4:
 			nVidScrnAspectX = 5;
 			nVidScrnAspectY = 4;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_7_5:
 			nVidScrnAspectX = 7;
 			nVidScrnAspectY = 5;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_8_7:
 			nVidScrnAspectX = 8;
 			nVidScrnAspectY = 7;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_10_7:
 			nVidScrnAspectX = 10;
 			nVidScrnAspectY = 7;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_11_8:
 			nVidScrnAspectX = 11;
 			nVidScrnAspectY = 8;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_12_7:
 			nVidScrnAspectX = 12;
 			nVidScrnAspectY = 7;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_16_9:
 			nVidScrnAspectX = 16;
 			nVidScrnAspectY = 9;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_16_10:
 			nVidScrnAspectX = 16;
 			nVidScrnAspectY = 10;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_16_15:
 			nVidScrnAspectX = 16;
 			nVidScrnAspectY = 15;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_19_14:
 			nVidScrnAspectX = 19;
 			nVidScrnAspectY = 14;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_1_1:
 			nVidScrnAspectX = 1;
 			nVidScrnAspectY = 1;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_2_1:
 			nVidScrnAspectX = 2;
 			nVidScrnAspectY = 1;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_3_2:
 			nVidScrnAspectX = 3;
 			nVidScrnAspectY = 2;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_3_4:
 			nVidScrnAspectX = 3;
 			nVidScrnAspectY = 4;
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 0;
 			break;
 		case ASPECT_RATIO_CUSTOM:
-			bVidCorrectAspect = 0;
 			custom_aspect_ratio_mode = 1;
 			break;
 		case ASPECT_RATIO_AUTO:
@@ -120,7 +104,6 @@ void setWindowAspect(bool first_boot)
 
 				nVidScrnAspectX = width / highest;
 				nVidScrnAspectY = height / highest;
-				bVidCorrectAspect = 0;
 			}
 			custom_aspect_ratio_mode = 0;
 			break;
@@ -129,7 +112,6 @@ void setWindowAspect(bool first_boot)
 			{
 				nVidScrnAspectX = nVidOriginalScrnAspectX;
 				nVidScrnAspectY = nVidOriginalScrnAspectY;
-				bVidCorrectAspect = 0;
 			}
 			custom_aspect_ratio_mode = 0;
 			break; 

@@ -5,7 +5,6 @@
 #include <cell/sysmodule.h>
 #include <sysutil/sysutil_sysparam.h>
 #include <sysutil/sysutil_msgdialog.h>
-#include <sys/spu_initialize.h>
 #include <sys/paths.h>
 
 #endif

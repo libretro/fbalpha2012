@@ -8,8 +8,8 @@
 
 #define CPS3_VOICES		16
 
-#define CPS3_SND_INT_RATE		(nBurnFPS / 100)
-#define CPS3_SND_RATE			(42954500 / 3 / 384)
+#define CPS3_SND_INT_RATE	(nBurnFPS / 100)
+#define CPS3_SND_RATE		(42954500 / 3 / 384)
 #define CPS3_SND_BUFFER_SIZE	(CPS3_SND_RATE / CPS3_SND_INT_RATE)
 #define CPS3_SND_LINEAR_SHIFT	12
 
@@ -32,7 +32,7 @@ static cps3snd_chip * chip;
 
 unsigned char __fastcall cps3SndReadByte(unsigned int addr)
 {
-	addr &= 0x000003ff;
+	//addr &= 0x000003ff;
 	//bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
 	return 0;
 }
@@ -54,14 +54,14 @@ unsigned short __fastcall cps3SndReadWord(unsigned int addr)
 
 unsigned int __fastcall cps3SndReadLong(unsigned int addr)
 {
-	addr &= 0x000003ff;
+	//addr &= 0x000003ff;
 	//bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
 	return 0;
 }
 
 void __fastcall cps3SndWriteByte(unsigned int addr, unsigned char data)
 {
-	addr &= 0x000003ff;
+	//addr &= 0x000003ff;
 	//bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
@@ -133,21 +133,14 @@ void cps3SndExit()
 
 void cps3SndUpdate()
 {
-#ifndef SN_TARGET_PS3
-	if (!pBurnSoundOut) {
-		// TODO: ???
-		// chip->key = 0;
-		return;	
-	}
-#endif
-	
 	memset(pBurnSoundOut, 0, nBurnSoundLen * 2 * 2 );
 	signed char * base = (signed char *)chip->rombase;
 	cps3_voice *vptr = &chip->voice[0];
 
-	for(int i=0; i<CPS3_VOICES; i++, vptr++) {
-		if (chip->key & (1 << i)) {
-			
+	for(int i=0; i<CPS3_VOICES; i++, vptr++)
+	{
+		if (chip->key & (1 << i))
+		{
 			unsigned int start = ((vptr->regs[ 3] << 16) | vptr->regs[ 2]) - 0x400000;
 			unsigned int end   = ((vptr->regs[11] << 16) | vptr->regs[10]) - 0x400000;
 			unsigned int loop  = ((vptr->regs[ 9] << 16) | vptr->regs[ 7]) - 0x400000;
@@ -160,7 +153,7 @@ void cps3SndUpdate()
 
 			unsigned int pos = vptr->pos;
 			unsigned int frac = vptr->frac;
-			
+
 			/* Go through the buffer and add voice contributions */
 			signed short * buffer = (signed short *)pBurnSoundOut;
 
@@ -197,7 +190,7 @@ void cps3SndUpdate()
 					buffer[0] = -32768;
 				else
 					buffer[0] = sample_l;
-				
+
 				sample_l = ((sample * vol_l) >> 8) + buffer[1];
 				if (sample_l > 32767)
 					buffer[1] = 32767;

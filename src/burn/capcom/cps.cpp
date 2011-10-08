@@ -9,17 +9,23 @@ int kludge = 0;							// Game kludges
 
 int nCPS68KClockspeed = 0;
 int nCpsCycles = 0;						// 68K Cycles per frame
-int	nCpsZ80Cycles;
+int nCpsZ80Cycles;
 
-unsigned char *CpsGfx =NULL; unsigned int nCpsGfxLen =0; // All the graphics
-unsigned char *CpsRom =NULL; unsigned int nCpsRomLen =0; // Program Rom (as in rom)
-unsigned char *CpsCode=NULL; unsigned int nCpsCodeLen=0; // Program Rom (decrypted)
-unsigned char *CpsZRom=NULL; unsigned int nCpsZRomLen=0; // Z80 Roms
-char *CpsQSam=NULL; unsigned int nCpsQSamLen=0;	// QSound Sample Roms
-unsigned char *CpsAd  =NULL; unsigned int nCpsAdLen  =0; // ADPCM Data
+unsigned char *CpsGfx =NULL;					// All the graphics
+unsigned int nCpsGfxLen =0;					// All the graphics
+unsigned char *CpsRom =NULL;					// Program Rom (as in rom)
+unsigned int nCpsRomLen =0;					// Program Rom (as in rom)
+unsigned char *CpsCode=NULL;					// Program Rom (decrypted)
+unsigned int nCpsCodeLen=0;					// Program Rom (decrypted)
+unsigned char *CpsZRom=NULL;					// Z80 Roms
+unsigned int nCpsZRomLen=0;					// Z80 Roms
+char *CpsQSam=NULL;						// QSound Sample Roms
+unsigned int nCpsQSamLen=0;					// QSound Sample Roms
+unsigned char *CpsAd  =NULL;					// ADPCM Data
+unsigned int nCpsAdLen  =0;					// ADPCM Data
 unsigned char *CpsStar=NULL;
-unsigned int nCpsGfxScroll[4]={0,0,0,0}; // Offset to Scroll tiles
-unsigned int nCpsGfxMask=0;	  // Address mask
+unsigned int nCpsGfxScroll[4]={0,0,0,0};			// Offset to Scroll tiles
+unsigned int nCpsGfxMask=0;					// Address mask
 
 void (*pCpsInitCallback)() = NULL;
 
@@ -28,13 +34,13 @@ void (*pCpsInitCallback)() = NULL;
 /* Game specific data */
 struct CPS1config
 {
-	const char *name;             /* game driver name */
+	const char *name;		/* game driver name */
 
 	/* Some games interrogate a couple of registers on bootup. */
 	/* These are CPS1 board B self test checks. They wander from game to */
 	/* game. */
-	int cpsb_addr;        /* CPS board B test register address */
-	int cpsb_value;       /* CPS board B test register expected value */
+	int cpsb_addr;			/* CPS board B test register address */
+	int cpsb_value;			/* CPS board B test register expected value */
 
 	/* some games use as a protection check the ability to do 16-bit multiplies */
 	/* with a 32-bit result, by writing the factors to two ports and reading the */
@@ -47,7 +53,7 @@ struct CPS1config
 
 	int layer_control;
 	int priority[4];
-	int control_reg;  /* Control register? seems to be always 0x3f */
+	int control_reg;		/* Control register? seems to be always 0x3f */
 
 	/* ideally, the layer enable masks should consist of only one bit, */
 	/* but in many cases it is unknown which bit is which. */
@@ -323,9 +329,7 @@ void CpsGetInfo()
 		while(pCFG->name)
 		{
 			if (strcmp(pCFG->name, BurnDrvGetTextA(DRV_NAME)) == 0)
-			{
 				break;
-			}
 			pCFG++;
 		}
 		cps1_game_config = pCFG;
@@ -354,14 +358,11 @@ void CpsGetInfo()
 
 		SetGfxMapper(cps1_game_config->MapperId);
 
-		if (Cps == 2) {
+		if (Cps == 2)
 			nCpsGfxScroll[1] = nCpsGfxScroll[2] = nCpsGfxScroll[3] = 0x800000;
-		}
 
 		if (Ssf2 | Ssf2t)
-		{
 			nCpsGfxScroll[3] = 0;
-		}
 
 		// Board ID test
 		CpsBID[0] = cps1_game_config->cpsb_addr;
@@ -409,9 +410,8 @@ static int LoadUp(unsigned char** pRom, int* pnRomLen, int nNum)
 
 	ri.nLen = 0;
 	BurnDrvGetRomInfo(&ri, nNum);	// Find out how big the rom is
-	if (ri.nLen <= 0) {
+	if (ri.nLen <= 0)
 		return 1;
-	}
 
 	// Load the rom
 	Rom = (unsigned char*)malloc(ri.nLen);
@@ -443,10 +443,12 @@ static int LoadUpSplit(unsigned char** pRom, int* pnRomLen, int nNum)
 	}
 
 	nTotalRomSize = nRomSize[0] + nRomSize[1] + nRomSize[2] + nRomSize[3];
-	if (!nTotalRomSize) return 1;
+	if (!nTotalRomSize)
+		return 1;
 
 	Rom = (unsigned char*)malloc(nTotalRomSize);
-	if (Rom == NULL) return 1;
+	if (Rom == NULL)
+		return 1;
 
 	int Offset = 0;
 	for (i = 0; i < 4; i++) {
@@ -481,13 +483,13 @@ static int CpsLoadOne(unsigned char* Tile, int nNum, int nWord, int nShift)
 
 	nRomLen &= ~1;								// make sure even
 
-	for (i = 0, pt = Tile, pr = Rom; i < nRomLen; pt += 8) {
+	for (i = 0, pt = Tile, pr = Rom; i < nRomLen; pt += 8)
+	{
 		unsigned int Pix;						// Eight pixels
 		unsigned char b;
 		b = *pr++; i++; Pix = SepTable[b];
-		if (nWord) {
+		if (nWord)
 			b = *pr++; i++; Pix |= SepTable[b] << 1;
-		}
 
 		Pix <<= nShift;
 		*((unsigned int *)pt) |= Pix;

@@ -118,13 +118,6 @@ int configAppLoadXml()
 	child = findElement(element, "adjust");
 	getAttr(child, "rotate-vertical", &nVidRotationAdjust);
 
-	child = findElement(element, "screen-size");
-
-	child = findElement(element, "window-position");
-
-	child = findElement(element, "stretch");
-	getAttr(child, "correct-aspect", &bVidCorrectAspect);
-
 	child = findElement(element, "vsync");
 	getAttr(child, "enable", &bVidVSync);
 	child = findElement(element, "triple-buffer");
@@ -233,16 +226,6 @@ int configAppSaveXml()
 	ticpp::Element adjust("adjust");
 	video.LinkEndChild(&adjust);
 	setAttr(adjust, "rotate-vertical", nVidRotationAdjust);
-
-	ticpp::Element screen_size("screen-size");
-	video.LinkEndChild(&screen_size);
-
-	ticpp::Element window_position("window-position");
-	video.LinkEndChild(&window_position);
-
-	ticpp::Element stretch("stretch");
-	video.LinkEndChild(&stretch);
-	setAttr(stretch, "correct-aspect", bVidCorrectAspect);
 
 	ticpp::Element vsync("vsync");
 	video.LinkEndChild(&vsync);

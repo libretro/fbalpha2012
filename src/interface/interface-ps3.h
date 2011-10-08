@@ -28,7 +28,6 @@ extern unsigned char *	pVidTransImage;
 // Video
 extern bool		bVidOkay;
 extern bool		bVidRecalcPalette;
-extern int		bVidCorrectAspect;
 extern int		nVidRotationAdjust;
 extern int		bVidTripleBuffer;
 extern int		bVidVSync;

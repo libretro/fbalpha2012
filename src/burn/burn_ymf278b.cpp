@@ -24,9 +24,8 @@ static int YMF278BStreamCallbackDummy(int /* nSoundRate */)
 
 static void YMF278BRender(int nSegmentLength)
 {
-	if (nYMF278BPosition >= nSegmentLength) {
+	if (nYMF278BPosition >= nSegmentLength)
 		return;
-	}
 
 //	bprintf(PRINT_NORMAL, _T("    YMF278B render %6i -> %6i\n"), nYMF278BPosition, nSegmentLength);
 
@@ -50,17 +49,14 @@ void BurnYMF278BUpdate(int nSegmentEnd)
 
 //	bprintf(PRINT_NORMAL, _T("    YMF278B render %6i -> %6i\n"), nYMF278BPosition, nSegmentEnd);
 
-	if (nBurnSoundRate == 0) {
+	if (nBurnSoundRate == 0)
 		return;
-	}
 
-	if (nSegmentEnd < nYMF278BPosition) {
+	if (nSegmentEnd < nYMF278BPosition)
 		nSegmentEnd = nYMF278BPosition;
-	}
 
-	if (nSegmentLength > nBurnSoundLen) {
+	if (nSegmentLength > nBurnSoundLen)
 		nSegmentLength = nBurnSoundLen;
-	}
 
 	YMF278BRender(nSegmentEnd);
 
@@ -160,9 +156,8 @@ int BurnYMF278BInit(int /* nClockFrequency */, unsigned char* YMF278BROM, void (
 	BurnYMF278BExit();
 
 	BurnYMF278BStreamCallback = YMF278BStreamCallbackDummy;
-	if (StreamCallback) {
+	if (StreamCallback)
 		BurnYMF278BStreamCallback = StreamCallback;
-	}
 
 	ymf278b_start(0, YMF278BROM, IRQCallback, BurnYMFTimerCallback, YMF278B_STD_CLOCK, nBurnSoundRate);
 	BurnTimerInit(ymf278b_timer_over, NULL);

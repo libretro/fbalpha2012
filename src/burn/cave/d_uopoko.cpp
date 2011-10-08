@@ -341,16 +341,14 @@ static int DrvFrame()
 		if (!bVBlank && nNext > nCyclesVBlank) {
 			if (nCyclesDone[nCurrentCPU] < nCyclesVBlank) {
 				nCyclesSegment = nCyclesVBlank - nCyclesDone[nCurrentCPU];
-				if (!CheckSleep(nCurrentCPU)) {							// See if this CPU is busywaiting
+				if (!CheckSleep(nCurrentCPU))	// See if this CPU is busywaiting
 					nCyclesDone[nCurrentCPU] += SekRun(nCyclesSegment);
-				} else {
+				else
 					nCyclesDone[nCurrentCPU] += SekIdle(nCyclesSegment);
-				}
 			}
 
-			if (pBurnDraw != NULL) {
-				DrvDraw();												// Draw screen if needed
-			}
+			if (pBurnDraw != NULL)
+				DrvDraw();	// Draw screen if needed
 
 			bVBlank = true;
 			nVideoIRQ = 0;
@@ -358,11 +356,10 @@ static int DrvFrame()
 		}
 
 		nCyclesSegment = nNext - nCyclesDone[nCurrentCPU];
-		if (!CheckSleep(nCurrentCPU)) {									// See if this CPU is busywaiting
+		if (!CheckSleep(nCurrentCPU))	// See if this CPU is busywaiting
 			nCyclesDone[nCurrentCPU] += SekRun(nCyclesSegment);
-		} else {
+		else
 			nCyclesDone[nCurrentCPU] += SekIdle(nCyclesSegment);
-		}
 
 		nCurrentCPU = -1;
 	}
@@ -388,15 +385,15 @@ static int DrvFrame()
 static int MemIndex()
 {
 	unsigned char* Next; Next = Mem;
-	Rom01			= Next; Next += 0x100000;		// 68K program
+	Rom01			= Next; Next += 0x100000;	// 68K program
 	CaveSpriteROM	= Next; Next += 0x800000;
 	CaveTileROM[0]	= Next; Next += 0x400000;		// Tile layer 0
 	YMZ280BROM		= Next; Next += 0x200000;
 	RamStart		= Next;
-	Ram01			= Next; Next += 0x010000;		// CPU #0 work RAM
+	Ram01			= Next; Next += 0x010000;	// CPU #0 work RAM
 	CaveTileRAM[0]	= Next; Next += 0x008000;
 	CaveSpriteRAM	= Next; Next += 0x010000;
-	CavePalSrc		= Next; Next += 0x010000;		// palette
+	CavePalSrc		= Next; Next += 0x010000;	// palette
 	RamEnd			= Next;
 	MemEnd			= Next;
 
@@ -452,13 +449,12 @@ static int DrvScan(int nAction, int *pnMin)
 {
 	struct BurnArea ba;
 
-	if (pnMin) {						// Return minimum compatible version
+	if (pnMin)					// Return minimum compatible version
 		*pnMin = 0x020902;
-	}
 
 	EEPROMScan(nAction, pnMin);			// Scan EEPROM
 
-	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
+	if (nAction & ACB_VOLATILE) {			// Scan volatile ram
 
 		memset(&ba, 0, sizeof(ba));
 		ba.Data		= RamStart;
@@ -466,7 +462,7 @@ static int DrvScan(int nAction, int *pnMin)
 		ba.szName	= "RAM";
 		BurnAcb(&ba);
 
-		SekScan(nAction);				// scan 68000 states
+		SekScan(nAction);			// scan 68000 states
 
 		YMZ280BScan();
 
@@ -499,43 +495,40 @@ static int DrvInit()
 	Mem = NULL;
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
-	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
+	if ((Mem = (unsigned char *)malloc(nLen)) == NULL)
 		return 1;
-	}
-	memset(Mem, 0, nLen);										// blank all memory
-	MemIndex();													// Index the allocated memory
+
+	memset(Mem, 0, nLen);								// blank all memory
+	MemIndex();									// Index the allocated memory
 
 	EEPROMInit(&eeprom_interface_93C46);
 	if (!EEPROMAvailable()) EEPROMFill(default_eeprom,0, sizeof(default_eeprom));
 
 	// Load the roms into memory
-	if (LoadRoms()) {
+	if (LoadRoms())
 		return 1;
-	}
 
-	{
-		SekInit(0, 0x68000);												// Allocate 68000
-		SekOpen(0);
+	SekInit(0, 0x68000);				// Allocate 68000
+	SekOpen(0);
 
-		// Map 68000 memory:
-		SekMapMemory(Rom01,					0x000000, 0x0FFFFF, SM_ROM);	// CPU 0 ROM
-		SekMapMemory(Ram01,					0x100000, 0x10FFFF, SM_RAM);
-		SekMapMemory(CaveSpriteRAM,			0x400000, 0x40FFFF, SM_RAM);
-		SekMapMemory(CaveTileRAM[0],		0x500000, 0x507FFF, SM_RAM);
+	// Map 68000 memory:
+	SekMapMemory(Rom01, 0x000000, 0x0FFFFF, SM_ROM);	// CPU 0 ROM
+	SekMapMemory(Ram01, 0x100000, 0x10FFFF, SM_RAM);
+	SekMapMemory(CaveSpriteRAM, 0x400000, 0x40FFFF, SM_RAM);
+	SekMapMemory(CaveTileRAM[0], 0x500000, 0x507FFF, SM_RAM);
 
-		SekMapMemory(CavePalSrc,			0x800000, 0x80FFFF, SM_ROM);	// Palette RAM (write goes through handler)
-		SekMapHandler(1,					0x800000, 0x80FFFF, SM_WRITE);	//
+	SekMapMemory(CavePalSrc, 0x800000, 0x80FFFF, SM_ROM);	// Palette RAM (write goes through handler)
+	SekMapHandler(1, 0x800000, 0x80FFFF, SM_WRITE);
 
-		SekSetReadWordHandler(0, uopokoReadWord);
-		SekSetReadByteHandler(0, uopokoReadByte);
-		SekSetWriteWordHandler(0, uopokoWriteWord);
-		SekSetWriteByteHandler(0, uopokoWriteByte);
+	SekSetReadWordHandler(0, uopokoReadWord);
+	SekSetReadByteHandler(0, uopokoReadByte);
+	SekSetWriteWordHandler(0, uopokoWriteWord);
+	SekSetWriteByteHandler(0, uopokoWriteByte);
 
-		SekSetWriteWordHandler(1,uopokoWriteWordPalette);
-		SekSetWriteByteHandler(1, uopokoWriteBytePalette);
+	SekSetWriteWordHandler(1,uopokoWriteWordPalette);
+	SekSetWriteByteHandler(1, uopokoWriteBytePalette);
 
-		SekClose();
-	}
+	SekClose();
 
 	nCaveRowModeOffset = 1;
 

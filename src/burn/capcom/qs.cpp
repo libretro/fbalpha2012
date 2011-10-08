@@ -19,9 +19,9 @@ int QsndInit()
 	int nRate;
 
 	// Init QSound z80
-	if (QsndZInit()) {
+	if (QsndZInit())
 		return 1;
-	}
+
 	BurnTimerInit(qsndTimerOver, NULL);
 
 //	if (Cps1Qs == 1) {
@@ -80,24 +80,21 @@ void QsndReset()
 
 void QsndExit()
 {
-	QscExit();							// Exit QSound chip
+	QscExit();				// Exit QSound chip
 	QsndZExit();
 }
 
 int QsndScan(int nAction)
 {
 	if (nAction & ACB_DRIVER_DATA) {
-		QsndZScan(nAction);				// Scan Z80
-		QscScan(nAction);				// Scan QSound Chip
+		QsndZScan(nAction);		// Scan Z80
+		QscScan(nAction);		// Scan QSound Chip
 	}
 
 	return 0;
 }
 
 static int nPos;
-
-#define QscNewFrame() \
-	nPos = 0;
 
 void QsndNewFrame()
 {
@@ -106,7 +103,7 @@ void QsndNewFrame()
 	ZetOpen(0);
 	ZetIdle(nQsndCyclesExtra);
 
-	QscNewFrame();
+	nPos = 0;
 }
 
 void QsndEndFrame()
@@ -146,21 +143,21 @@ static int* Qs_s = NULL;
 
 struct QChan {
 		unsigned char bKey;				// 1 if channel is playing
-		char nBank;						// Bank we are currently playing a sample from
+		char nBank;					// Bank we are currently playing a sample from
 
 		char* PlayBank;					// Pointer to current bank
 
 		int nPlayStart;					// Start of being played
-		int nStart;						// Start of sample 16.12
-		int nEnd;						// End of sample   16.12
-		int nLoop;						// Loop offset from end
-		int nPos;						// Current position within the bank 16.12
+		int nStart;					// Start of sample 16.12
+		int nEnd;					// End of sample   16.12
+		int nLoop;					// Loop offset from end
+		int nPos;					// Current position within the bank 16.12
 		int nAdvance;					// Sample size
 
 		int nMasterVolume;				// Master volume for the channel
 		int nVolume[2];					// Left & right side volumes (panning)
 
-		int nPitch;						// Playback frequency
+		int nPitch;					// Playback frequency
 
 		char nEndBuffer[8];				// Buffer to enable correct cubic interpolation
 };

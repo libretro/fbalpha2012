@@ -48,11 +48,6 @@ int GenericTilesExit()
 Graphics Decoding
 ================================================================================================*/
 
-static inline int readbit(const uint8_t *src, int bitnum)
-{
-	return src[bitnum / 8] & (0x80 >> (bitnum % 8));
-}
-
 #ifdef SN_TARGET_PS3
 #define READBIT(src, bitnum) (src[bitnum / 8] & (0x80 >> (bitnum % 8)))
 #endif
@@ -77,7 +72,7 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 				dp = pDest + (c * xSize * ySize) + (y * xSize);
 
 				for (x = 0; x < xSize; x++)
-					if (readbit(pSrc, yoffs + xoffsets[x]))
+					if (READBIT(pSrc, yoffs + xoffsets[x]))
 						dp[x] |= planebit;
 			}
 		}
@@ -122,7 +117,8 @@ void Render8x8Tile_Clip(unsigned short* pDestDraw, int nTileNumber, int StartX, 
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
 		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
 
@@ -163,10 +159,10 @@ void Render8x8Tile_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, int St
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(7, StartX, nScreenWidth, PLOTPIXEL_FLIPX(7, 0));
 		CLIPPIXEL(6, StartX, nScreenWidth, PLOTPIXEL_FLIPX(6, 1));
@@ -186,7 +182,8 @@ void Render8x8Tile_FlipY(unsigned short* pDestDraw, int nTileNumber, int StartX,
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
 
-	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8) {
+	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8)
+	{
 		PLOTPIXEL(0);
 		PLOTPIXEL(1);
 		PLOTPIXEL(2);
@@ -205,10 +202,10 @@ void Render8x8Tile_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber, int St
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
 
-	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(0, StartX, nScreenWidth, PLOTPIXEL(0));
 		CLIPPIXEL(1, StartX, nScreenWidth, PLOTPIXEL(1));
@@ -228,7 +225,8 @@ void Render8x8Tile_FlipXY(unsigned short* pDestDraw, int nTileNumber, int StartX
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
 
-	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8) {
+	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8)
+	{
 		PLOTPIXEL_FLIPX(7, 0);
 		PLOTPIXEL_FLIPX(6, 1);
 		PLOTPIXEL_FLIPX(5, 2);
@@ -247,10 +245,10 @@ void Render8x8Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int S
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 7) * nScreenWidth) + StartX;
 
-	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 7; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 8)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(7, StartX, nScreenWidth, PLOTPIXEL_FLIPX(7, 0));
 		CLIPPIXEL(6, StartX, nScreenWidth, PLOTPIXEL_FLIPX(6, 1));
@@ -274,7 +272,8 @@ void Render8x8Tile_Mask(unsigned short* pDestDraw, int nTileNumber, int StartX, 
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
 		PLOTPIXEL_MASK(0, nMaskColour);
 		PLOTPIXEL_MASK(1, nMaskColour);
 		PLOTPIXEL_MASK(2, nMaskColour);
@@ -293,10 +292,10 @@ void Render8x8Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int Sta
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(0, StartX, nScreenWidth, PLOTPIXEL_MASK(0, nMaskColour));
 		CLIPPIXEL(1, StartX, nScreenWidth, PLOTPIXEL_MASK(1, nMaskColour));
@@ -316,7 +315,8 @@ void Render8x8Tile_Mask_FlipX(unsigned short* pDestDraw, int nTileNumber, int St
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
 		PLOTPIXEL_MASK_FLIPX(7, 0, nMaskColour);
 		PLOTPIXEL_MASK_FLIPX(6, 1, nMaskColour);
 		PLOTPIXEL_MASK_FLIPX(5, 2, nMaskColour);
@@ -335,10 +335,10 @@ void Render8x8Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber, i
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < 8; y++, pPixel += nScreenWidth, pTileData += 8)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(7, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(7, 0, nMaskColour));
 		CLIPPIXEL(6, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(6, 1, nMaskColour));
@@ -648,9 +648,8 @@ void Render16x16Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int
 	unsigned short* pPixel = pDestDraw + ((StartY + 15) * nScreenWidth) + StartX;
 
 	for (int y = 15; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 16) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(15, StartX, nScreenWidth, PLOTPIXEL_FLIPX(15,  0));
 		CLIPPIXEL(14, StartX, nScreenWidth, PLOTPIXEL_FLIPX(14,  1));
@@ -1231,10 +1230,10 @@ void Render32x32Tile_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber, int
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
 
-	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(31, StartX, nScreenWidth, PLOTPIXEL_FLIPX(31,  0));
 		CLIPPIXEL(30, StartX, nScreenWidth, PLOTPIXEL_FLIPX(30,  1));
@@ -1325,10 +1324,10 @@ void Render32x32Tile_Mask_Clip(unsigned short* pDestDraw, int nTileNumber, int S
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 32; y++, pPixel += nScreenWidth, pTileData += 32) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < 32; y++, pPixel += nScreenWidth, pTileData += 32)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL( 0, StartX, nScreenWidth, PLOTPIXEL_MASK( 0, nMaskColour));
 		CLIPPIXEL( 1, StartX, nScreenWidth, PLOTPIXEL_MASK( 1, nMaskColour));
@@ -1415,10 +1414,10 @@ void Render32x32Tile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < 32; y++, pPixel += nScreenWidth, pTileData += 32) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < 32; y++, pPixel += nScreenWidth, pTileData += 32)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(31, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(31,  0, nMaskColour));
 		CLIPPIXEL(30, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(30,  1, nMaskColour));
@@ -1505,10 +1504,10 @@ void Render32x32Tile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nTileNumber,
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
 
-	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL( 0, StartX, nScreenWidth, PLOTPIXEL_MASK( 0, nMaskColour));
 		CLIPPIXEL( 1, StartX, nScreenWidth, PLOTPIXEL_MASK( 1, nMaskColour));
@@ -1595,10 +1594,10 @@ void Render32x32Tile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nTileNumber
 
 	unsigned short* pPixel = pDestDraw + ((StartY + 31) * nScreenWidth) + StartX;
 
-	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 31; y >= 0; y--, pPixel -= nScreenWidth, pTileData += 32)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
 		CLIPPIXEL(31, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(31,  0, nMaskColour));
 		CLIPPIXEL(30, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(30,  1, nMaskColour));
@@ -1647,9 +1646,8 @@ void RenderCustomTile(unsigned short* pDestDraw, int nWidth, int nHeight, int nT
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL(x);
-		}
 	}
 }
 
@@ -1660,14 +1658,13 @@ void RenderCustomTile_Clip(unsigned short* pDestDraw, int nWidth, int nHeight, i
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(x, StartX, nScreenWidth, PLOTPIXEL(x));
-		}
 	}
 }
 
@@ -1678,10 +1675,10 @@ void RenderCustomTile_FlipX(unsigned short* pDestDraw, int nWidth, int nHeight, 
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight)
+	{
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_FLIPX(nWidth - x - 1, x);
-		}
 	}
 }
 
@@ -1692,14 +1689,13 @@ void RenderCustomTile_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int nHei
 
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
-	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(nWidth - x - 1, StartX, nScreenWidth, PLOTPIXEL_FLIPX(nWidth - x - 1, x));
-		}
 	}
 }
 
@@ -1711,9 +1707,8 @@ void RenderCustomTile_FlipY(unsigned short* pDestDraw, int nWidth, int nHeight, 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL(x);
-		}
 	}
 }
 
@@ -1724,14 +1719,13 @@ void RenderCustomTile_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int nHei
 
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
-	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight)
+	{
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(x, StartX, nScreenWidth, PLOTPIXEL(x));
-		}
 	}
 }
 
@@ -1743,9 +1737,8 @@ void RenderCustomTile_FlipXY(unsigned short* pDestDraw, int nWidth, int nHeight,
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_FLIPX(nWidth - x - 1, x);
-		}
 	}
 }
 
@@ -1757,13 +1750,11 @@ void RenderCustomTile_FlipXY_Clip(unsigned short* pDestDraw, int nWidth, int nHe
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(nWidth - x - 1, StartX, nScreenWidth, PLOTPIXEL_FLIPX(nWidth - x - 1, x));
-		}
 	}
 }
 
@@ -1779,9 +1770,8 @@ void RenderCustomTile_Mask(unsigned short* pDestDraw, int nWidth, int nHeight, i
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_MASK(x, nMaskColour);
-		}
 	}
 }
 
@@ -1793,13 +1783,11 @@ void RenderCustomTile_Mask_Clip(unsigned short* pDestDraw, int nWidth, int nHeig
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(x, StartX, nScreenWidth, PLOTPIXEL_MASK(x, nMaskColour));
-		}
 	}
 }
 
@@ -1811,9 +1799,8 @@ void RenderCustomTile_Mask_FlipX(unsigned short* pDestDraw, int nWidth, int nHei
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_MASK_FLIPX(nWidth - x - 1, x, nMaskColour);
-		}
 	}
 }
 
@@ -1825,13 +1812,11 @@ void RenderCustomTile_Mask_FlipX_Clip(unsigned short* pDestDraw, int nWidth, int
 	unsigned short* pPixel = pDestDraw + (StartY * nScreenWidth) + StartX;
 
 	for (int y = 0; y < nHeight; y++, pPixel += nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(nWidth - x - 1, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(nWidth - x - 1, x, nMaskColour));
-		}
 	}
 }
 
@@ -1843,9 +1828,8 @@ void RenderCustomTile_Mask_FlipY(unsigned short* pDestDraw, int nWidth, int nHei
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_MASK(x, nMaskColour);
-		}
 	}
 }
 
@@ -1857,13 +1841,11 @@ void RenderCustomTile_Mask_FlipY_Clip(unsigned short* pDestDraw, int nWidth, int
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 		
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(x, StartX, nScreenWidth, PLOTPIXEL_MASK(x, nMaskColour));
-		}
 	}
 }
 
@@ -1875,9 +1857,8 @@ void RenderCustomTile_Mask_FlipXY(unsigned short* pDestDraw, int nWidth, int nHe
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			PLOTPIXEL_MASK_FLIPX(nWidth - x - 1, x, nMaskColour);
-		}
 	}
 }
 
@@ -1889,13 +1870,11 @@ void RenderCustomTile_Mask_FlipXY_Clip(unsigned short* pDestDraw, int nWidth, in
 	unsigned short* pPixel = pDestDraw + ((StartY + nHeight - 1) * nScreenWidth) + StartX;
 
 	for (int y = nHeight - 1; y >= 0; y--, pPixel -= nScreenWidth, pTileData += nHeight) {
-		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight) {
+		if ((StartY + y) < 0 || (StartY + y) >= nScreenHeight)
 			continue;
-		}
 
-		for (int x = 0; x < nWidth; x++) {
+		for (int x = 0; x < nWidth; x++)
 			CLIPPIXEL(nWidth - x - 1, StartX, nScreenWidth, PLOTPIXEL_MASK_FLIPX(nWidth - x - 1, x, nMaskColour));
-		}
 	}
 }
 
@@ -1913,10 +1892,13 @@ void RenderZoomedTile(unsigned short *dest, unsigned char *gfx, int code, int co
 	int h = ((zoomy << 4) + 0x8000) >> 16;
 	int w = ((zoomx << 4) + 0x8000) >> 16;
 
-	if (!h || !w || sx + w < 0 || sy + h < 0 || sx >= nScreenWidth || sy >= nScreenHeight) return;
+	if (!h || !w || sx + w < 0 || sy + h < 0 || sx >= nScreenWidth || sy >= nScreenHeight)
+		return;
 
-	if (fy) fy  = (height-1)*width;
-	if (fx) fy |= (width-1);
+	if (fy)
+		fy  = (height-1)*width;
+	if (fx)
+		fy |= (width-1);
 
 	int hz = (height << 12) / h;
 	int wz = (width << 12) / w;
@@ -1938,7 +1920,8 @@ void RenderZoomedTile(unsigned short *dest, unsigned char *gfx, int code, int co
 		{
 			int pxl = src[(zy + ((x * wz) >> 12)) ^ fy];
 
-			if (pxl != t) dst[x] = pxl | color;
+			if (pxl != t)
+				dst[x] = pxl | color;
 		}
 
 		dst += nScreenWidth;
@@ -1958,14 +1941,17 @@ void RenderTileTranstab(unsigned short *dest, unsigned char *gfx, int code, int 
 	gfx += code * width * height;
 
 	for (int y = 0; y < height; y++, sy++) {
-		if (sy < 0 || sy >= nScreenHeight) continue;
+		if (sy < 0 || sy >= nScreenHeight)
+			continue;
 
 		for (int x = 0; x < width; x++, sx++) {
-			if (sx < 0 || sx >= nScreenWidth) continue;
+			if (sx < 0 || sx >= nScreenWidth)
+				continue;
 
 			int pxl = gfx[((y * width) + x) ^ flip] | color;
 
-			if (tab[pxl] == trans_col) continue;
+			if (tab[pxl] == trans_col)
+				continue;
 
 			dest[sy * nScreenWidth + sx] = pxl;
 		}

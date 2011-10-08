@@ -629,7 +629,6 @@ struct BurnDriver BurnDrvSfiiin = {
 	384, 224, 4, 3
 };
 
-#ifdef SN_TARGET_PS3
 struct BurnDriver BurnDrvSfiii2 = {
 	"sfiii2", NULL, NULL, "1997",
 	"Street Fighter III 2nd Impact: Giant Attack (USA 970930)\0", NULL, "Capcom", "CPS3",
@@ -659,37 +658,6 @@ struct BurnDriver BurnDrvSfiii2n = {
 	sfiii2Init, cps3Exit, cps3Frame_sfiii2, NULL, cps3Scan, &cps3_palette_change,
 	384, 224, 4, 3
 };
-#else
-struct BurnDriver BurnDrvSfiii2 = {
-	"sfiii2", NULL, NULL, "1997",
-	"Street Fighter III 2nd Impact: Giant Attack (USA 970930)\0", NULL, "Capcom", "CPS3",
-	NULL, NULL, NULL, NULL,
-	BDF_16BIT_ONLY, 2, HARDWARE_CAPCOM_CPS3,
-	NULL, sfiii2RomInfo, sfiii2RomName, cps3InputInfo, usaDIPInfo,
-	sfiii2Init, cps3Exit, cps3Frame, NULL, cps3Scan, &cps3_palette_change,
-	384, 224, 4, 3
-};
-
-struct BurnDriver BurnDrvSfiii2j = {
-	"sfiii2j", "sfiii2", NULL, "1997",
-	"Street Fighter III 2nd Impact: Giant Attack (Japan 970930)\0", NULL, "Capcom", "CPS3",
-	NULL, NULL, NULL, NULL,
-	BDF_16BIT_ONLY | BDF_CLONE, 2, HARDWARE_CAPCOM_CPS3,
-	NULL, sfiii2jRomInfo, sfiii2jRomName, cps3InputInfo, japanDIPInfo,
-	sfiii2Init, cps3Exit, cps3Frame, NULL, cps3Scan, &cps3_palette_change,
-	384, 224, 4, 3
-};
-
-struct BurnDriver BurnDrvSfiii2n = {
-	"sfiii2n", "sfiii2", NULL, "1997",
-	"Street Fighter III 2nd Impact: Giant Attack (Asia 970930, NO CD)\0", NULL, "Capcom", "CPS3",
-	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_16BIT_ONLY | BDF_CLONE, 2, HARDWARE_CAPCOM_CPS3 | HARDWARE_CAPCOM_CPS3_NO_CD,
-	NULL, sfiii2nRomInfo, sfiii2nRomName, cps3InputInfo, asiaDIPInfo,
-	sfiii2Init, cps3Exit, cps3Frame, NULL, cps3Scan, &cps3_palette_change,
-	384, 224, 4, 3
-};
-#endif
 
 struct BurnDriver BurnDrvSfiii3 = {
 	"sfiii3", NULL, NULL, "1999",

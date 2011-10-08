@@ -19,9 +19,7 @@ extern unsigned char Cps3But3[16];
 int cps3Init();
 int cps3Exit();
 int cps3Frame();
-#ifdef  SN_TARGET_PS3
 int cps3Frame_sfiii2();
-#endif
 int cps3Scan(int nAction,int *pnMin);
 
 // sound 

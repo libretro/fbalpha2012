@@ -1287,6 +1287,71 @@ int Cps1GetRoms(bool bLoad)
 	return 0;
 }
 
+int Cps2Init()
+{
+	Cps = 2; // Cps 2
+
+	CpsGetInfo();
+
+	if (CpsGetROMs(false))
+		return 1;
+
+	int nMemLen, i;
+
+	BurnSetRefreshRate(80000/51.8/25.9);
+
+	if (!nCPS68KClockspeed)
+		nCPS68KClockspeed = 11800000;
+
+	nCPS68KClockspeed = nCPS68KClockspeed * 100 / nBurnFPS;
+
+	nMemLen = nCpsGfxLen + nCpsRomLen + nCpsCodeLen + nCpsZRomLen + nCpsQSamLen + nCpsAdLen;
+
+	// Allocate space for Program and data roms
+	CpsGfx = (unsigned char*)malloc(nMemLen);
+
+	if (CpsGfx == NULL)
+		return 1;
+
+	memset(CpsGfx, 0, nMemLen);
+
+	CpsRom  = CpsGfx + nCpsGfxLen;
+	CpsCode = CpsRom + nCpsRomLen;
+
+	CpsZRom = CpsCode + nCpsCodeLen;
+
+	CpsQSam = (char*)(CpsZRom + nCpsZRomLen);
+	CpsAd   = (unsigned char*)(CpsQSam + nCpsQSamLen);
+
+	// Create Gfx addr mask
+	for (i = 0; i < 31; i++)
+	{
+		if ((1 << i) >= (int)nCpsGfxLen)
+			break;
+	}
+	nCpsGfxMask = (1 << i) - 1;
+
+#if 0	// Really needed anymore?
+	if (nCpsZRomLen >= 5) {
+		// 77->cfff and rst 00 in case driver doesn't load
+		unsigned char Z80hack[8] = { 0x3e, 0x77, 0x32, 0xff, 0xcf, 0xc7 };
+		memcpy (CpsZRom, Z80hack, 8);
+	}
+#endif
+
+	SepTableCalc();					// Precalc the separate table
+
+	CpsReset = 0; Cpi01A = Cpi01C = Cpi01E = 0;	// blank other inputs
+
+	if (CpsGetROMs(true))
+		return 1;
+
+	if (pCpsInitCallback)
+		pCpsInitCallback();
+
+	return Cps2RunInit();
+}
+
 int CpsInit()
 {
 	// figure out what system we're looking at

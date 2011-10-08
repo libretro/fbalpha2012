@@ -44,6 +44,119 @@ CPSINPEX
 CPSINPEX
 #undef  INP
 
+// Read input port 0x000-0x1ff
+static unsigned char Cps2ReadPort(const unsigned int ia)
+{
+	unsigned char d = 0xFF;
+
+	//	bprintf(PRINT_NORMAL, _T("Read Port %x\n"), ia);
+
+	if (ia == 0x000) {
+		d = (unsigned char)~Inp000;
+		if (Pzloop2) {
+			if (ReadPaddle)
+				d -= CpsPaddle2Value;
+			else
+				d = CpsPaddle2;
+		}
+		return d;
+	}
+	if (ia == 0x001) {
+		d = (unsigned char)~Inp001;
+		if (Pzloop2) {
+			if (ReadPaddle)
+				d -= CpsPaddle1Value;
+			else
+				d = CpsPaddle1;
+		}
+		return d;
+	}
+	if (ia == 0x010) {
+		d = (unsigned char)~Inp010;
+		return d;
+	}
+	if (ia == 0x011) {
+		d = (unsigned char)~Inp011;
+		return d;
+	}
+	if (ia == 0x012) {
+		d = (unsigned char)~Inp012;
+		return d;
+	}
+	if (ia == 0x018) {
+		d = (unsigned char)~Inp018;
+		return d;
+	}
+	if (ia == 0x019) {
+		d = (unsigned char)~Inp019;
+		return d;
+	}
+	if (ia == 0x01A) {
+		d = (unsigned char)~Cpi01A;
+		return d;
+	}
+	if (ia == 0x01C) {
+		d = (unsigned char)~Cpi01C;
+		return d;
+	}
+	if (ia == 0x01E) {
+		d = (unsigned char)~Cpi01E;
+		return d;
+	}
+
+	// Used on CPS2 only I think
+	if (ia == 0x020) {
+		d = (unsigned char)~Inp020;
+		return d;
+	}
+	if (ia == 0x021) {
+		d = (unsigned char)~Inp021;
+		d &= 0xFE;
+		d |= EEPROMRead();
+		return d;
+	}
+
+	// CPS2 Volume control
+	if (ia == 0x030) {
+		//			if (Ssf2tb) {
+		//				d = 0x20;
+		//			} else {
+		d = 0xe0;
+		//			}
+		return d;
+	}
+	if (ia == 0x031) {
+		d = 0x21;
+		return d;
+	}
+
+	if (ia >= 0x0100 && ia < 0x0200) {
+		static int nRasterLine;
+
+		//			bprintf(PRINT_NORMAL, _T("  - port 0x%02X (%3i)\n"), ia & 255, SekCurrentScanline());
+
+		// The linecounters seem to return the line at which the last IRQ triggered by this counter is scheduled minus the current line
+		if ((ia & 0x0FE) == 0x50) {
+			if ((ia & 1) == 0) {
+				nRasterLine = nIrqLine50 - SekCurrentScanline();
+				return nRasterLine >> 8;
+			} else {
+				return nRasterLine & 0xFF;
+			}
+		}
+		if ((ia & 0x0FE) == 0x52) {
+			if ((ia & 1) == 0) {
+				nRasterLine = nIrqLine52 - SekCurrentScanline();
+				return nRasterLine >> 8;
+			} else {
+				return nRasterLine & 0xFF;
+			}
+		}
+
+	}
+
+	return d;
+}
 
 // Read input port 0x000-0x1ff
 static unsigned char CpsReadPort(const unsigned int ia)
@@ -256,6 +369,43 @@ static unsigned char CpsReadPort(const unsigned int ia)
 }
 
 // Write output port 0x000-0x1ff
+static void Cps2WritePort(const unsigned int ia, unsigned char d)
+{
+	//	if (d) bprintf(PRINT_NORMAL, _T("Write Port %x, %x\n"), ia, d);
+
+	// CPS registers
+	if (ia >= 0x100 && ia < 0x200)
+	{
+		CpsReg[(ia ^ 1) & 0xFF] = d;
+		return;
+	}
+
+	if (ia == 0x40) {
+		EEPROMWrite(d & 0x20, d & 0x40, d & 0x10);
+
+		return;
+	}
+
+	// Coin control, Z80 reset, LEDs
+	//		if (ia == 0x41) {
+	//			return;
+	//		}
+
+	// CPS2 object bank select
+	if ((ia & 0x1FF) == 0x0E1) {
+		//			bprintf(PRINT_NORMAL, _T("  - %2i (%3i)\n"), d & 1, SekCurrentScanline());
+		//			CpsObjGet();
+		CpsMapObjectBanks(d & 1);
+		return;
+		EEPROMWrite(d & 0x40, d & 0x80, d & 0x01);
+		return;
+	}
+
+	if (ia == 0x41 && Pzloop2)
+		ReadPaddle = d & 0x02;
+}
+
+// Write output port 0x000-0x1ff
 static void CpsWritePort(const unsigned int ia, unsigned char d)
 {
 //	if (d) bprintf(PRINT_NORMAL, _T("Write Port %x, %x\n"), ia, d);
@@ -337,6 +487,28 @@ static void CpsWritePort(const unsigned int ia, unsigned char d)
 	}
 }
 
+unsigned char __fastcall Cps2ReadByte(unsigned int a)
+{
+	// Input ports mirrored between 0x800000 and 0x807fff
+	if ((a & 0xFF8000) == 0x800000)
+		return Cps2ReadPort(a & 0x1FF);
+
+		if ((a & 0xFF8000) == 0x660000)
+		{
+			if (a == 0x664001)
+				return n664001;
+		}
+
+		return 0x00;
+
+	if (a >= 0xF1C000 && a <= 0xF1C007)
+		return Cps2ReadPort(a & 0xC00F);
+
+//	bprintf(PRINT_NORMAL, _T("Read Byte %x\n"), a);
+
+	return 0x00;
+}
+
 unsigned char __fastcall CpsReadByte(unsigned int a)
 {
 	// Input ports mirrored between 0x800000 and 0x807fff
@@ -366,6 +538,30 @@ unsigned char __fastcall CpsReadByte(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("Read Byte %x\n"), a);
 
 	return 0x00;
+}
+
+void __fastcall Cps2WriteByte(unsigned int a,unsigned char d)
+{
+	// Output ports mirrored between 0x800000 and 0x807fff
+	if ((a & 0xFF8000) == 0x800000) {
+		CpsWritePort(a & 0x1FF, d);
+		return;
+	}
+
+	// 0x400000 registers
+	if ((a & 0xFFFFF0) == 0x400000)	{
+		CpsFrg[a & 0x0F] = d;
+		return;
+	}
+	if ((a & 0xFF8000) == 0x660000)
+	{
+		if (a == 0x664001)
+			n664001 = d;	// bit 1 toggled on/off each frame
+		return;
+	}
+	return;
+
+	//	if (a <= 0x990000 || a >= 0x993fff) bprintf(PRINT_NORMAL, _T("Write Byte %x, %x\n"), a, d);
 }
 
 void __fastcall CpsWriteByte(unsigned int a,unsigned char d)
@@ -423,6 +619,26 @@ unsigned short __fastcall CpsReadWord(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("Read Word %x\n"), a);
 
 	SEK_DEF_READ_WORD(0, a);
+}
+
+void __fastcall Cps2WriteWord(unsigned int a, unsigned short d)
+{
+	 
+	// ports mirrored between 0x800000 and 0x807fff
+	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[0])
+		nCalc[0] = d;
+	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[1])
+		nCalc[1] = d;
+
+	if (a == 0x804040)
+	{
+		if ((d & 0x0008) == 0)
+			ZetReset();
+	}
+
+//	bprintf(PRINT_NORMAL, _T("Write Word %x, %x\n"), a, d);
+
+	SEK_DEF_WRITE_WORD(0, a, (d));
 }
 
 void __fastcall CpsWriteWord(unsigned int a, unsigned short d)

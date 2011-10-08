@@ -31,6 +31,7 @@ extern unsigned int nCpsGfxMask;					// Address mask
 extern unsigned char* CpsStar;
 
 int CpsInit();
+int Cps2Init();
 int CpsExit();
 
 int CpsLoadTiles(unsigned char *Tile, int nStart);
@@ -125,6 +126,7 @@ extern unsigned char *CpsSaveFrg[MAX_RASTER + 1];
 extern unsigned char *CpsRamFF;
 void CpsMapObjectBanks(int nBank);
 int CpsMemInit();
+int Cps2MemInit();
 int CpsMemExit();
 int CpsAreaScan(int nAction,int *pnMin);
 
@@ -133,6 +135,7 @@ extern unsigned char CpsReset;
 extern unsigned char Cpi01A, Cpi01C, Cpi01E;
 extern int nIrqLine50, nIrqLine52;								// The scanlines at which the interrupts are triggered
 int CpsRunInit();
+int Cps2RunInit();
 int CpsRunExit();
 int Cps1Frame();
 int Cps2Frame();
@@ -179,9 +182,12 @@ int CpsRwExit();
 int CpsRwGetInp();
 int Cps2RwGetInp();
 unsigned char __fastcall CpsReadByte(unsigned int a);
+unsigned char __fastcall Cps2ReadByte(unsigned int a);
 void __fastcall CpsWriteByte(unsigned int a, unsigned char d);
+void __fastcall Cps2WriteByte(unsigned int a, unsigned char d);
 unsigned short __fastcall CpsReadWord(unsigned int a);
 void __fastcall CpsWriteWord(unsigned int a, unsigned short d);
+void __fastcall Cps2WriteWord(unsigned int a, unsigned short d);
 
 // cps_draw.cpp
 extern unsigned char CpsRecalcPal;		// Flag - If it is 1, recalc the whole palette

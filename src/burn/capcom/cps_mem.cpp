@@ -174,6 +174,64 @@ void __fastcall CPSQSoundF0WriteByte(unsigned int sekAddress, unsigned char byte
 	CpsZRamF0[sekAddress >> 1] = byteValue;
 }
 
+int Cps2MemInit()
+{
+	if (AllocateMemory())
+		return 1;
+
+	SekOpen(0);
+
+	SekSetResetCallback(CPSResetCallback);
+
+	// Map in memory:
+	// 68000 Rom (as seen as is, through read)
+	SekMapMemory(CpsRom, 0, nCpsRomLen - 1, SM_READ);
+
+	// 68000 Rom (as seen decrypted, through fetch)
+	if (nCpsCodeLen > 0)
+		SekMapMemory(CpsCode, 0, nCpsCodeLen - 1, SM_FETCH);	// Decoded part (up to nCpsCodeLen)
+
+	if (nCpsRomLen > nCpsCodeLen)
+		SekMapMemory(CpsRom + nCpsCodeLen, nCpsCodeLen, nCpsRomLen - 1, SM_FETCH);	// The rest (up to nCpsRomLen)
+
+	nCpsObjectBank = -1;
+	CpsMapObjectBanks(0);
+
+#if 0
+	SekMapHandler(3, 0x660000, 0x663FFF, SM_RAM);
+	SekSetReadByteHandler(3, CPSExtraNVRAMReadByte);
+	SekSetWriteByteHandler(3, CPSExtraNVRAMWriteByte);
+#else
+	SekMapMemory(CpsRam660, 0x660000, 0x663FFF, SM_RAM);
+#endif
+
+	//		SekMapHandler(4, 0x708000, 0x709FFF, SM_WRITE);
+	//		SekMapHandler(4, 0x70A000, 0x70BFFF, SM_WRITE);
+	//		SekMapHandler(4, 0x70C000, 0x70DFFF, SM_WRITE);
+	//		SekMapHandler(4, 0x70E000, 0x70FFFF, SM_WRITE);
+
+	//		SekSetWriteByteHandler(4, CpsWriteSpriteByte);
+	//		SekSetWriteWordHandler(4, CpsWriteSpriteWord);
+
+	SekMapMemory(CpsRam90,		0x900000, 0x92FFFF, SM_RAM);	// Gfx Ram
+	SekMapMemory(CpsRamFF,		0xFF0000, 0xFFFFFF, SM_RAM);	// Work Ram
+
+	SekSetReadByteHandler(0, Cps2ReadByte);
+	SekSetWriteByteHandler(0, Cps2WriteByte);
+	SekSetReadWordHandler(0, CpsReadWord);
+	SekSetWriteWordHandler(0, Cps2WriteWord);
+
+	// QSound
+	SekMapHandler(1,	0x618000, 0x619FFF, SM_RAM);
+
+	SekSetReadByteHandler(1, CPSQSoundC0ReadByte);
+	SekSetWriteByteHandler(1, CPSQSoundC0WriteByte);
+
+	SekClose();
+
+	return 0;
+}
+
 int CpsMemInit()
 {
 	if (AllocateMemory())

@@ -87,6 +87,41 @@ static const eeprom_interface cps2_eeprom_interface =
 	0
 };
 
+int Cps2RunInit()
+{
+	nLagObjectPalettes = 0;
+
+	nLagObjectPalettes = 1;
+
+	SekInit(0, 0x68000);					// Allocate 68000
+
+	if (Cps2MemInit())					// Memory init
+		return 1;
+
+	EEPROMInit(&cps2_eeprom_interface);
+
+	CpsRwInit();							// Registers setup
+
+	if (CpsPalInit())						// Palette init
+		return 1;
+
+	if (CpsObjInit())						// Sprite init
+		return 1;
+
+	// Sound init (QSound)
+	if (QsndInit())
+		return 1;
+
+	EEPROMReset();
+
+	DrvReset();
+
+	//Init Draw Function
+	DrawFnInit();
+
+	return 0;
+}
+
 int CpsRunInit()
 {
 	nLagObjectPalettes = 0;

@@ -837,75 +837,27 @@ static int DrvDraw()
 
 static int DrvFrame()
 {
-#ifdef SN_TARGET_PS3
-   #define nInterleave 10
-#else
 	int nInterleave = 10;
-#endif
 
-	if (DrvReset) {
+	if (DrvReset)
 		DrvDoReset();
-	}
 
+	DrvInputs[0] = DrvInputs[1] = DrvInputs[2] = 0xff;
+
+	for (int i = 0 ; i < 8; i++)
 	{
-		DrvInputs[0] = DrvInputs[1] = DrvInputs[2] = 0xff;
-
-#ifdef SN_TARGET_PS3
-         //0
-			DrvInputs[0] ^= (DrvJoy1[0] & 1) << 0;
-			DrvInputs[1] ^= (DrvJoy2[0] & 1) << 0;
-			DrvInputs[2] ^= (DrvJoy3[0] & 1) << 0;
-
-         //1
-			DrvInputs[0] ^= (DrvJoy1[1] & 1) << 1;
-			DrvInputs[1] ^= (DrvJoy2[1] & 1) << 1;
-			DrvInputs[2] ^= (DrvJoy3[1] & 1) << 1;
-
-         //2
-			DrvInputs[0] ^= (DrvJoy1[2] & 1) << 2;
-			DrvInputs[1] ^= (DrvJoy2[2] & 1) << 2;
-			DrvInputs[2] ^= (DrvJoy3[2] & 1) << 2;
-
-         //3
-			DrvInputs[0] ^= (DrvJoy1[3] & 1) << 3;
-			DrvInputs[1] ^= (DrvJoy2[3] & 1) << 3;
-			DrvInputs[2] ^= (DrvJoy3[3] & 1) << 3;
-
-         //4
-			DrvInputs[0] ^= (DrvJoy1[4] & 1) << 4;
-			DrvInputs[1] ^= (DrvJoy2[4] & 1) << 4;
-			DrvInputs[2] ^= (DrvJoy3[4] & 1) << 4;
-
-         //5
-			DrvInputs[0] ^= (DrvJoy1[5] & 1) << 5;
-			DrvInputs[1] ^= (DrvJoy2[5] & 1) << 5;
-			DrvInputs[2] ^= (DrvJoy3[5] & 1) << 5;
-
-         //6
-			DrvInputs[0] ^= (DrvJoy1[6] & 1) << 6;
-			DrvInputs[1] ^= (DrvJoy2[6] & 1) << 6;
-			DrvInputs[2] ^= (DrvJoy3[6] & 1) << 6;
-
-         //7
-			DrvInputs[0] ^= (DrvJoy1[7] & 1) << 7;
-			DrvInputs[1] ^= (DrvJoy2[7] & 1) << 7;
-			DrvInputs[2] ^= (DrvJoy3[7] & 1) << 7;
-#else
-		for (int i = 0 ; i < 8; i++) {
-			DrvInputs[0] ^= (DrvJoy1[i] & 1) << i;
-			DrvInputs[1] ^= (DrvJoy2[i] & 1) << i;
-			DrvInputs[2] ^= (DrvJoy3[i] & 1) << i;
-		}
-#endif
+		DrvInputs[0] ^= (DrvJoy1[i] & 1) << i;
+		DrvInputs[1] ^= (DrvJoy2[i] & 1) << i;
+		DrvInputs[2] ^= (DrvJoy3[i] & 1) << i;
 	}
 
 	int nCyclesSegment = 0;
 	int nSoundBufferPos = 0;
 #ifdef SN_TARGET_PS3
-   #define AUDIO_SEGMENT_LENGTH 801
-   #define AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE 80
-   #define N_CYCLES_TOTAL_0 25000
-   #define N_CYCLES_TOTAL_1 33333
+#define AUDIO_SEGMENT_LENGTH 801
+#define AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE 80
+#define N_CYCLES_TOTAL_0 25000
+#define N_CYCLES_TOTAL_1 33333
 #else
 	int nCyclesTotal[2] =  { 1500000 / 60, 2000000 / 60 };
 #endif
@@ -913,323 +865,323 @@ static int DrvFrame()
 
 
 #ifdef SN_TARGET_PS3
-      //0
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 2500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 3333
+	//0
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 2500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 3333
 
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
 
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-
-//1
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 5000 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 6666
-
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-
-//2
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 7500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 9999
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-//3
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 10000 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 13332
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-
-//4
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 12500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 16665
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-//5
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 15000 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 19998
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-//6
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 17500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 23331
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-
-//7
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 20500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 26664
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-//8
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 22500 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 29997
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-		M6809Close();
-
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
-
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
-
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
-//9
-      #define nCurrentCPU 0
-      #define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 25000 
-      #define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 33330
-		M6809Open(nCurrentCPU);
-		nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
 		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-		M6809Close();
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
 
-      #undef nCurrentCPU
-      #define nCurrentCPU 1
-		M6809Open(nCurrentCPU);
-		if (trigger_sound_irq) {
-			M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
-			trigger_sound_irq = 0;
-		}
-		nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
-		nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
 
-		if (pBurnSoundOut) {
-      #define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
-			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			nSoundBufferPos += nSegmentLength;
-		}
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
 
-		M6809Close();
-      #undef nCurrentCPU
-      #undef nSegmentLength
-      #undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
-      #undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//1
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 5000 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 6666
+
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+
+	//2
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 7500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 9999
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//3
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 10000 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 13332
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+
+	//4
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 12500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 16665
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//5
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 15000 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 19998
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//6
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 17500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 23331
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+
+	//7
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 20500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 26664
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//8
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 22500 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 29997
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
+	//9
+#define nCurrentCPU 0
+#define N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE 25000 
+#define N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE 33330
+	M6809Open(nCurrentCPU);
+	nCyclesSegment = N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+	M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+	M6809Close();
+
+#undef nCurrentCPU
+#define nCurrentCPU 1
+	M6809Open(nCurrentCPU);
+	if (trigger_sound_irq) {
+		M6809SetIRQ(0, M6809_IRQSTATUS_AUTO);
+		trigger_sound_irq = 0;
+	}
+	nCyclesSegment = N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE - nCyclesDone[nCurrentCPU];
+	nCyclesDone[nCurrentCPU] += M6809Run(nCyclesSegment);
+
+	if (pBurnSoundOut) {
+#define nSegmentLength AUDIO_SEGMENT_LENGTH_DIVIDED_BY_NINTERLEAVE
+		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
+		BurnYM2151Render(pSoundBuf, nSegmentLength);
+		nSoundBufferPos += nSegmentLength;
+	}
+
+	M6809Close();
+#undef nCurrentCPU
+#undef nSegmentLength
+#undef N_CYCLES_TOTAL_0_DIVIDED_BY_NINTERLEAVE
+#undef N_CYCLES_TOTAL_1_DIVIDED_BY_NINTERLEAVE
 #else
 	for (int i = 0; i < nInterleave; i++) {
 		int nCurrentCPU, nNext;
@@ -1266,11 +1218,7 @@ static int DrvFrame()
 #endif
 
 	if (pBurnSoundOut) {
-#ifdef SN_TARGET_PS3
-		int nSegmentLength = AUDIO_SEGMENT_LENGTH - nSoundBufferPos;
-#else
 		int nSegmentLength = nBurnSoundLen - nSoundBufferPos;
-#endif
 		short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
 
 		if (nSegmentLength) {

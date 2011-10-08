@@ -54,19 +54,18 @@ int NeoLoadSprites(int nOffset, int nNum, unsigned char* pDest, unsigned int nSp
 	unsigned int nRomSize = 0;
 
 	if (BurnDrvGetHardwareCode() & (HARDWARE_SNK_ENCRYPTED_A | HARDWARE_SNK_ENCRYPTED_B)) {
-		if (BurnDrvGetHardwareCode() & HARDWARE_SNK_ENCRYPTED_A) {
+		if (BurnDrvGetHardwareCode() & HARDWARE_SNK_ENCRYPTED_A)
 			NeoGfxDecryptCMC42Init();
-		} else {
-			if (BurnDrvGetHardwareCode() & HARDWARE_SNK_ENCRYPTED_B) {
+		else
+		{
+			if (BurnDrvGetHardwareCode() & HARDWARE_SNK_ENCRYPTED_B)
 				NeoGfxDecryptCMC50Init();
-			}
 		}
 
 		nRomSize = ((nSpriteSize / nNum) & 0xf00000) ? 0x1000000 : 0x2000000;
 		unsigned char* pBuf = (unsigned char *)malloc( nRomSize );
-		if (pBuf == NULL) {
+		if (pBuf == NULL)
 			return 1;
-		}
 
 		for (int i = 0; i < ((nNum + ROM32MB) >> 1); i++) {
 			if ((nSpriteSize / nNum) == 0x2000000) {	// svcpcb

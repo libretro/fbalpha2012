@@ -725,7 +725,11 @@ int pgmDraw()
 
 	{
 		// black / magenta
+		#ifdef NO_LAYER_ENABLE_TOGGLE
+		RamCurPal[0x1200/2] = 0;
+		#else
 		RamCurPal[0x1200/2] = (nBurnLayer & 1) ? 0 : BurnHighCol(0xff, 0, 0xff, 0);
+		#endif
 	}
 
 	// Fill in background color (0x1200/2)
@@ -739,10 +743,22 @@ int pgmDraw()
 	}
 
 	pgm_drawsprites();
-	if (nSpriteEnable & 1) copy_sprite_priority(1);
-	if (nBurnLayer & 1) draw_background();
-	if (nSpriteEnable & 2) copy_sprite_priority(0);
-	if (nBurnLayer & 2) draw_text();
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 1)
+	#endif
+		copy_sprite_priority(1);
+	#ifndef NO_LAYER_ENABLE_TOGGLE
+	if (nBurnLayer & 1)
+	#endif
+		draw_background();
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 2)
+	#endif
+		copy_sprite_priority(0);
+	#ifndef NO_LAYER_ENABLE_TOGGLE
+	if (nBurnLayer & 2)
+	#endif
+		draw_text();
 
 	BurnTransferCopy(RamCurPal);
 

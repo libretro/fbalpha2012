@@ -70,9 +70,11 @@ int CaveSpriteRender(int nLowPriority, int nHighPriority)
 		nMaskRight = nMaskBottom = -1;
 	}
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if ((nBurnLayer & 1) == 0) {
 		return 0;
 	}
+	#endif
 
 	if (nHighPriority < 3) {
 		for (int i = nHighPriority + 1; i < 4; i++) {
@@ -99,9 +101,8 @@ int CaveSpriteRender(int nLowPriority, int nHighPriority)
 
 	for (pBuffer = pSpriteList + nCurrentZPos; nCurrentZPos <= nMaxZPos; pBuffer++, nCurrentZPos++) {
 
-		if ((pBuffer->priority & nPriorityMask) == 0) {
+		if ((pBuffer->priority & nPriorityMask) == 0)
 			continue;
-		}
 
 		nXPos = pBuffer->x;
 		nYPos = pBuffer->y;

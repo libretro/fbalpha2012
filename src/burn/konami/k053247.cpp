@@ -257,15 +257,15 @@ void K053247SpritesRender(unsigned char *gfxbase, int priority)
 
 	int screen_width = nScreenWidth-1;
 
-	if (K053247Flags & 1) {
-		if (K053247Flags & 2) {
+	if (K053247Flags & 1)
+	{
+		if (K053247Flags & 2)
 			shdmask = 3;
-		} else {
+		else
 			shdmask = 0;
-		}
-	} else {
-		shdmask = -1;
 	}
+	else
+		shdmask = -1;
 
 	// Prebuild a sorted table by descending Z-order.
 	zcode = K05324xZRejection;

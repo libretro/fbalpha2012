@@ -676,32 +676,71 @@ static int DrvDraw()
 
 	if (gradius3_priority == 0)
 	{
-		if (nSpriteEnable & 1) K052109RenderLayer(1, 1, DrvGfxROMExp0);
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 1)
+		#endif
+			K052109RenderLayer(1, 1, DrvGfxROMExp0);
 
-		if (nBurnLayer & 4) K051960SpritesRender(DrvGfxROMExp1, 3);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 4)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 3);
 
-		if (nBurnLayer & 2) K051960SpritesRender(DrvGfxROMExp1, 1);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 2)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 1);
 
-		if (nBurnLayer & 8) K051960SpritesRender(DrvGfxROMExp1, 0);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 8)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 0);
 
-		if (nSpriteEnable & 2) K052109RenderLayer(2, 0, DrvGfxROMExp0);
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 2)
+		#endif
+			K052109RenderLayer(2, 0, DrvGfxROMExp0);
 
-		if (nSpriteEnable & 4) K052109RenderLayer(0, 0, DrvGfxROMExp0);
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 4)
+		#endif
+			K052109RenderLayer(0, 0, DrvGfxROMExp0);
 
-		if (nBurnLayer & 1) K051960SpritesRender(DrvGfxROMExp1, 2);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 1)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 2);
 	}
 	else
 	{
-
-		if (nSpriteEnable & 1) K052109RenderLayer(0, 1, DrvGfxROMExp0);
-		if (nSpriteEnable & 2) K052109RenderLayer(1, 0, DrvGfxROMExp0);
-		if (nSpriteEnable & 4) K052109RenderLayer(2, 0, DrvGfxROMExp0);
-#if 1
-	if (nBurnLayer & 1) K051960SpritesRender(DrvGfxROMExp1, 2);
-	if (nBurnLayer & 2) K051960SpritesRender(DrvGfxROMExp1, 1);
-	if (nBurnLayer & 4) K051960SpritesRender(DrvGfxROMExp1, 3);
-	if (nBurnLayer & 8) K051960SpritesRender(DrvGfxROMExp1, 0);
-#endif
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 1)
+		#endif
+			K052109RenderLayer(0, 1, DrvGfxROMExp0);
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 2)
+		#endif
+			K052109RenderLayer(1, 0, DrvGfxROMExp0);
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if (nSpriteEnable & 4)
+		#endif
+			K052109RenderLayer(2, 0, DrvGfxROMExp0);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 1)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 2);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 2)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 1);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 4)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 3);
+		#ifndef NO_LAYER_ENABLE_TOGGLE
+		if (nBurnLayer & 8)
+		#endif
+			K051960SpritesRender(DrvGfxROMExp1, 0);
 	}
 
 

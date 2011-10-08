@@ -1740,7 +1740,7 @@ static void DrvDraw_sfiii2()
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
 
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (nBurnLayer & 1) // layer disable
 	{
 #endif
@@ -1750,196 +1750,195 @@ static void DrvDraw_sfiii2()
 		int clrsz = (cps3_gfx_max_x + 1) * sizeof(int);
 		for(int yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
 			memset(pscr, 0, clrsz);
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 	}
 #endif
 
 	// Draw Sprites
+	for (int i=0x00000/4;i<0x2000/4;i+=4)
 	{
-		for (int i=0x00000/4;i<0x2000/4;i+=4)
-		{
-			int xpos =			(RamSpr[i+1]&0x03ff0000)>>16;
-			int ypos =			(RamSpr[i+1]&0x000003ff)>>0;
+		int xpos =			(RamSpr[i+1]&0x03ff0000)>>16;
+		int ypos =			(RamSpr[i+1]&0x000003ff)>>0;
 
-			int gscroll =		(RamSpr[i+0]&0x70000000)>>28;
-			int length	=		(RamSpr[i+0]&0x01ff0000)>>14; // how many entries in the sprite table
-			uint32_t start=	(RamSpr[i+0]&0x00007ff0)>>4;
+		int gscroll =		(RamSpr[i+0]&0x70000000)>>28;
+		int length	=		(RamSpr[i+0]&0x01ff0000)>>14; // how many entries in the sprite table
+		uint32_t start=	(RamSpr[i+0]&0x00007ff0)>>4;
 
-			int whichbpp =		(RamSpr[i+2]&0x40000000)>>30; // not 100% sure if this is right, jojo title / characters
-			int whichpal =		(RamSpr[i+2]&0x20000000)>>29;
-			int global_xflip =	(RamSpr[i+2]&0x10000000)>>28;
-			int global_yflip =	(RamSpr[i+2]&0x08000000)>>27;
-			int global_alpha =	(RamSpr[i+2]&0x04000000)>>26; // alpha / shadow? set on sfiii2 shadows, and big black image in jojo intro
-			int global_bpp =	(RamSpr[i+2]&0x02000000)>>25;
-			int global_pal =	(RamSpr[i+2]&0x01ff0000)>>16;
+		int whichbpp =		(RamSpr[i+2]&0x40000000)>>30; // not 100% sure if this is right, jojo title / characters
+		int whichpal =		(RamSpr[i+2]&0x20000000)>>29;
+		int global_xflip =	(RamSpr[i+2]&0x10000000)>>28;
+		int global_yflip =	(RamSpr[i+2]&0x08000000)>>27;
+		int global_alpha =	(RamSpr[i+2]&0x04000000)>>26; // alpha / shadow? set on sfiii2 shadows, and big black image in jojo intro
+		int global_bpp =	(RamSpr[i+2]&0x02000000)>>25;
+		int global_pal =	(RamSpr[i+2]&0x01ff0000)>>16;
 
-			int gscrollx = (RamVReg[gscroll]&0x03ff0000)>>16;
-			int gscrolly = (RamVReg[gscroll]&0x000003ff)>>0;
+		int gscrollx = (RamVReg[gscroll]&0x03ff0000)>>16;
+		int gscrolly = (RamVReg[gscroll]&0x000003ff)>>0;
 
-			start = (start * 0x100) >> 2;
+		start = (start * 0x100) >> 2;
 
-			if ((RamSpr[i+0]&0xf0000000) == 0x80000000) break;
+		if ((RamSpr[i+0]&0xf0000000) == 0x80000000) break;
 
-			for (int j=0; j<length; j+=4) {
+		for (int j=0; j<length; j+=4) {
 
-				uint32_t value1 = (RamSpr[start+j+0]);
-				uint32_t value2 = (RamSpr[start+j+1]);
-				uint32_t value3 = (RamSpr[start+j+2]);
-				uint32_t tileno = (value1&0xfffe0000)>>17;
-				int count;
-				int xpos2 = (value2 & 0x03ff0000)>>16;
-				int ypos2 = (value2 & 0x000003ff)>>0;
-				int flipx = (value1 & 0x00001000)>>12;
-				int flipy = (value1 & 0x00000800)>>11;
-				int alpha = (value1 & 0x00000400)>>10; //? this one is used for alpha effects on warzard
-				int bpp =   (value1 & 0x00000200)>>9;
-				int pal =   (value1 & 0x000001ff);
+			uint32_t value1 = (RamSpr[start+j+0]);
+			uint32_t value2 = (RamSpr[start+j+1]);
+			uint32_t value3 = (RamSpr[start+j+2]);
+			uint32_t tileno = (value1&0xfffe0000)>>17;
+			int count;
+			int xpos2 = (value2 & 0x03ff0000)>>16;
+			int ypos2 = (value2 & 0x000003ff)>>0;
+			int flipx = (value1 & 0x00001000)>>12;
+			int flipy = (value1 & 0x00000800)>>11;
+			int alpha = (value1 & 0x00000400)>>10; //? this one is used for alpha effects on warzard
+			int bpp =   (value1 & 0x00000200)>>9;
+			int pal =   (value1 & 0x000001ff);
 
-				/* these are the sizes to actually draw */
-				int ysizedraw2 = ((value3 & 0x7f000000)>>24);
-				int xsizedraw2 = ((value3 & 0x007f0000)>>16);
-				int xx,yy;
+			/* these are the sizes to actually draw */
+			int ysizedraw2 = ((value3 & 0x7f000000)>>24);
+			int xsizedraw2 = ((value3 & 0x007f0000)>>16);
+			int xx,yy;
 
-				int tilestable[4] = { 8,1,2,4 };
-				int ysize2 = ((value3 & 0x0000000c)>>2);
-				int xsize2 = ((value3 & 0x00000003)>>0);
-				uint32_t xinc,yinc;
+			int tilestable[4] = { 8,1,2,4 };
+			int ysize2 = ((value3 & 0x0000000c)>>2);
+			int xsize2 = ((value3 & 0x00000003)>>0);
+			uint32_t xinc,yinc;
 
-				// invalid sprite ysize of 0 tiles
-				if (ysize2==0) continue;
+			// invalid sprite ysize of 0 tiles
+			if (ysize2==0) continue;
 
-				// xsize of 0 tiles seems to be a special command to draw tilemaps
-				if (xsize2==0) {
+			// xsize of 0 tiles seems to be a special command to draw tilemaps
+			if (xsize2==0) {
 
-#ifndef SN_TARGET_PS3
-					if (nBurnLayer & 1) // layer disable
-					{
+#ifndef NO_LAYER_ENABLE_TOGGLE
+				if (nBurnLayer & 1) // layer disable
+				{
 #endif
-						int tilemapnum = ((value3 & 0x00000030)>>4);
-						int startline;// = value2 & 0x3ff;
-						int endline;
-						int height = (value3 & 0x7f000000)>>24;
-						uint32_t * regs;
-						//uint32_t * tmapregs[4] = { tilemap20_regs_base, tilemap30_regs_base, tilemap40_regs_base, tilemap50_regs_base };
-						//regs = tmapregs[tilemapnum];
-						regs = RamVReg + 8 + tilemapnum * 4;
-						endline = value2;
-						startline = endline - height;
+					int tilemapnum = ((value3 & 0x00000030)>>4);
+					int startline;// = value2 & 0x3ff;
+					int endline;
+					int height = (value3 & 0x7f000000)>>24;
+					uint32_t * regs;
+					//uint32_t * tmapregs[4] = { tilemap20_regs_base, tilemap30_regs_base, tilemap40_regs_base, tilemap50_regs_base };
+					//regs = tmapregs[tilemapnum];
+					regs = RamVReg + 8 + tilemapnum * 4;
+					endline = value2;
+					startline = endline - height;
 
-						startline &=0x3ff;
-						endline &=0x3ff;
+					startline &=0x3ff;
+					endline &=0x3ff;
 
-						//printf("tilemap draw %01x %02x %02x %02x\n",tilemapnum, value2, height, regs[0]&0x000003ff );
-						//printf("tilemap draw %01x %d %d\n",tilemapnum, startline, endline );
-						//bprintf(0, _T("tilemap draw %01x %d %d\n"),tilemapnum, startline, endline );
+					//printf("tilemap draw %01x %02x %02x %02x\n",tilemapnum, value2, height, regs[0]&0x000003ff );
+					//printf("tilemap draw %01x %d %d\n",tilemapnum, startline, endline );
+					//bprintf(0, _T("tilemap draw %01x %d %d\n"),tilemapnum, startline, endline );
 
-						// Urgh, the startline / endline seem to be direct screen co-ordinates regardless of fullscreen zoom
-						// which probably means the fullscreen zoom is applied when rendering everything, not aftewards
+					// Urgh, the startline / endline seem to be direct screen co-ordinates regardless of fullscreen zoom
+					// which probably means the fullscreen zoom is applied when rendering everything, not aftewards
 
-						//for (uu=startline;uu<endline+1;uu++)
+					//for (uu=startline;uu<endline+1;uu++)
 
-						if (bg_drawn[tilemapnum]==0)
-							for (int uu=0;uu<1023;uu++)
-								cps3_draw_tilemapsprite_line( uu, regs );
-						bg_drawn[tilemapnum] = 1;
-#ifndef SN_TARGET_PS3
-					}
+					if (bg_drawn[tilemapnum]==0)
+						for (int uu=0;uu<1023;uu++)
+							cps3_draw_tilemapsprite_line( uu, regs );
+					bg_drawn[tilemapnum] = 1;
+#ifndef NO_LAYER_ENABLE_TOGGLE
+				}
 #endif
 
-				} else {
+			} else {
 
-#ifndef SN_TARGET_PS3
-					if (~nSpriteEnable & 1) continue;
+#ifndef NO_SPRITE_ENABLE_TOGGLE
+				if (~nSpriteEnable & 1)
+					continue;
 #endif
 
-					ysize2 = tilestable[ysize2];
-					xsize2 = tilestable[xsize2];
+				ysize2 = tilestable[ysize2];
+				xsize2 = tilestable[xsize2];
 
-					xinc = ((xsizedraw2+1)<<16) / ((xsize2*0x10));
-					yinc = ((ysizedraw2+1)<<16) / ((ysize2*0x10));
-					xsize2-=1;
-					ysize2-=1;
+				xinc = ((xsizedraw2+1)<<16) / ((xsize2*0x10));
+				yinc = ((ysizedraw2+1)<<16) / ((ysize2*0x10));
+				xsize2-=1;
+				ysize2-=1;
 
-					flipx ^= global_xflip;
-					flipy ^= global_yflip;
+				flipx ^= global_xflip;
+				flipy ^= global_yflip;
 
-					if (!flipx) xpos2+=((xsizedraw2+1)/2);
-					else xpos2-=((xsizedraw2+1)/2);
+				if (!flipx) xpos2+=((xsizedraw2+1)/2);
+				else xpos2-=((xsizedraw2+1)/2);
 
-					ypos2+=((ysizedraw2+1)/2);
+				ypos2+=((ysizedraw2+1)/2);
 
-					if (!flipx) xpos2-= (((xsize2+1)*16*xinc)>>16);
-					else  xpos2+= (((xsize2)*16*xinc)>>16);
+				if (!flipx) xpos2-= (((xsize2+1)*16*xinc)>>16);
+				else  xpos2+= (((xsize2)*16*xinc)>>16);
 
-					if (flipy) ypos2-= ((ysize2*16*yinc)>>16);
-					{
-						count = 0;
-						for (xx=0;xx<xsize2+1;xx++) {
-							int current_xpos;
+				if (flipy) ypos2-= ((ysize2*16*yinc)>>16);
+				{
+					count = 0;
+					for (xx=0;xx<xsize2+1;xx++) {
+						int current_xpos;
 
-							if (!flipx) current_xpos = (xpos+xpos2+((xx*16*xinc)>>16)  );
-							else current_xpos = (xpos+xpos2-((xx*16*xinc)>>16));
-							//current_xpos +=  rand()&0x3ff;
-							current_xpos += gscrollx;
-							current_xpos += 1;
-							current_xpos &=0x3ff;
-							if (current_xpos&0x200) current_xpos-=0x400;
+						if (!flipx) current_xpos = (xpos+xpos2+((xx*16*xinc)>>16)  );
+						else current_xpos = (xpos+xpos2-((xx*16*xinc)>>16));
+						//current_xpos +=  rand()&0x3ff;
+						current_xpos += gscrollx;
+						current_xpos += 1;
+						current_xpos &=0x3ff;
+						if (current_xpos&0x200) current_xpos-=0x400;
 
-							for (yy=0;yy<ysize2+1;yy++)
+						for (yy=0;yy<ysize2+1;yy++)
+						{
+							int current_ypos;
+							int actualpal;
+							if (flipy)
+								current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
+							else
+								current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
+							current_ypos += gscrolly;
+							current_ypos = 0x3ff-current_ypos;
+							current_ypos -= 17;
+							current_ypos &=0x3ff;
+
+							if (current_ypos&0x200) current_ypos-=0x400;
+
+							//if ( (whichbpp) && (cpu_getcurrentframe() & 1)) continue;
+
+							/* use the palette value from the main list or the sublists? */
+							if (whichpal) actualpal = global_pal;
+							else actualpal = pal;
+
+							/* use the bpp value from the main list or the sublists? */
+							int color_granularity;
+							if (whichbpp) {
+								if (!global_bpp) color_granularity = 8;
+								else color_granularity = 6;
+							} else {
+								if (!bpp) color_granularity = 8;
+								else color_granularity = 6;
+							}
+							actualpal <<= color_granularity;
+
 							{
-								int current_ypos;
-								int actualpal;
-								if (flipy)
-									current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
-								else
-									current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
-								current_ypos += gscrolly;
-								current_ypos = 0x3ff-current_ypos;
-								current_ypos -= 17;
-								current_ypos &=0x3ff;
+								int realtileno = tileno+count;
 
-								if (current_ypos&0x200) current_ypos-=0x400;
+								//									if (Cps3But2[9])
+								//										bprintf(0, _T("%08x %08x %08x %d %d %5d %5d  %4x %4x %d %02x\n"), realtileno,global_pal, pal, 0^flipx, 0^flipy, current_xpos,current_ypos,xinc,yinc, color_granularity, (global_alpha << 4) | alpha );
 
-								//if ( (whichbpp) && (cpu_getcurrentframe() & 1)) continue;
+								if ( realtileno ) {
+									if (global_alpha || alpha) {
 
-								/* use the palette value from the main list or the sublists? */
-								if (whichpal) actualpal = global_pal;
-								else actualpal = pal;
+										// fix jojo's title in it's intro ???
+										if ( global_alpha && (global_pal & 0x100))
+											actualpal &= 0x0ffff;
 
-								/* use the bpp value from the main list or the sublists? */
-								int color_granularity;
-								if (whichbpp) {
-									if (!global_bpp) color_granularity = 8;
-									else color_granularity = 6;
-								} else {
-									if (!bpp) color_granularity = 8;
-									else color_granularity = 6;
-								}
-								actualpal <<= color_granularity;
+										//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX_BLEND,0,xinc,yinc, NULL, 0);
+										cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
 
-								{
-									int realtileno = tileno+count;
-
-									//									if (Cps3But2[9])
-									//										bprintf(0, _T("%08x %08x %08x %d %d %5d %5d  %4x %4x %d %02x\n"), realtileno,global_pal, pal, 0^flipx, 0^flipy, current_xpos,current_ypos,xinc,yinc, color_granularity, (global_alpha << 4) | alpha );
-
-									if ( realtileno ) {
-										if (global_alpha || alpha) {
-
-											// fix jojo's title in it's intro ???
-											if ( global_alpha && (global_pal & 0x100))
-												actualpal &= 0x0ffff;
-
-											//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX_BLEND,0,xinc,yinc, NULL, 0);
-											cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
-
-										} else {
-											//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX,0,xinc,yinc, NULL, 0);
-											cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, 0);
-										}
+									} else {
+										//cps3_drawgfxzoom(renderbuffer_bitmap, machine->gfx[1],realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,&renderbuffer_clip,CPS3_TRANSPARENCY_PEN_INDEX,0,xinc,yinc, NULL, 0);
+										cps3_drawgfxzoom_2(realtileno,actualpal,0^flipx,0^flipy,current_xpos,current_ypos,xinc,yinc, 0);
 									}
-									count++;
 								}
+								count++;
 							}
 						}
 					}
@@ -2046,7 +2045,7 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (nBurnLayer & 1) // layer disable
 	{
 #endif
@@ -2056,7 +2055,7 @@ static void DrvDraw()
 		int clrsz = (cps3_gfx_max_x + 1) * sizeof(int);
 		for(int yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
 			memset(pscr, 0, clrsz);
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 	}
 #endif
 
@@ -2120,7 +2119,7 @@ static void DrvDraw()
 					// xsize of 0 tiles seems to be a special command to draw tilemaps
 					if (xsize2==0) {
 
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 						if (nBurnLayer & 1) // layer disable
 						{
 #endif
@@ -2151,13 +2150,17 @@ static void DrvDraw()
 								for (uint32_t uu=0; uu < 1023; uu++)
 									cps3_draw_tilemapsprite_line( uu, regs );
 							bg_drawn[tilemapnum] = 1;
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 						}
 #endif
 
-					} else {
-
-						if (~nSpriteEnable & 1) continue;
+					}
+					else
+					{
+						#ifndef NO_SPRITE_ENABLE_TOGGLE
+						if (~nSpriteEnable & 1)
+							continue;
+						#endif
 
 						ysize2 = tilestable[ysize2];
 						xsize2 = tilestable[xsize2];
@@ -2270,7 +2273,7 @@ static void DrvDraw()
 		}
 
 		// fg layer
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 		if (nBurnLayer & 2) // layer disable
 		{
 #endif
@@ -2290,7 +2293,7 @@ static void DrvDraw()
 					count++;
 				}
 			}
-#ifndef SN_TARGET_PS3
+#ifndef NO_LAYER_ENABLE_TOGGLE
 		}
 #endif
 

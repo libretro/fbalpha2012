@@ -800,25 +800,39 @@ static int DrvDraw()
 	BurnTransferClear();
 
 	// this order makes sense...
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
 	if (nSpriteEnable & 8)
+	#endif
 		K053247SpritesRender(DrvGfxROMExp1, 0);
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (nBurnLayer & 1)
+	#endif
 		K052109RenderLayer(layer[0], 1, DrvGfxROMExp0);
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (nBurnLayer & 2)
+	#endif
 		K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
 
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
 	if (nSpriteEnable & 4)
+	#endif
 		K053247SpritesRender(DrvGfxROMExp1, 1);
 
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
 	if (nSpriteEnable & 2)
+	#endif
 		K053247SpritesRender(DrvGfxROMExp1, 2);
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (nBurnLayer & 4)
+	#endif
 		K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
 
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
 	if (nSpriteEnable & 1)
+	#endif
 		K053247SpritesRender(DrvGfxROMExp1, 3);
 
 	KonamiBlendCopy(Palette, DrvPalette);

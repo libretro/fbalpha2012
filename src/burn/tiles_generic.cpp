@@ -67,7 +67,8 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 		uint8_t *dp = pDest + (c * xSize * ySize);
 		XMemSet(dp, 0, xSize * ySize);
 
-		for (plane = 0; plane < numPlanes; plane++) {
+		for (plane = 0; plane < numPlanes; plane++)
+		{
 			int planebit = 1 << (numPlanes - 1 - plane);
 			int planeoffs = (c * modulo) + planeoffsets[plane];
 
@@ -75,9 +76,9 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 				int yoffs = planeoffs + yoffsets[y];
 				dp = pDest + (c * xSize * ySize) + (y * xSize);
 
-				for (x = 0; x < xSize; x++) {
-					if (readbit(pSrc, yoffs + xoffsets[x])) dp[x] |= planebit;
-				}
+				for (x = 0; x < xSize; x++)
+					if (readbit(pSrc, yoffs + xoffsets[x]))
+						dp[x] |= planebit;
 			}
 		}
 	}

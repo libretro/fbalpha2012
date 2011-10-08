@@ -44,9 +44,11 @@ int NeoRenderText()
 	unsigned int nTileLeft = nBurnBpp << 3;
 	unsigned short* pTileRow = (unsigned short*)(NeoGraphicsRAM + 0xE000);
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (!(nBurnLayer & 2)) {
 		return 0;
 	}
+	#endif
 
    #ifdef SN_TARGET_PS3
 	if (nLastBPP != nBurnBpp )

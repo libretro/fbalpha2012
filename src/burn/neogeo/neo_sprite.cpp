@@ -44,9 +44,11 @@ int NeoRenderSprites()
 	   }
    #endif
 
+	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (!(nBurnLayer & 1)) {
 		return 0;
 	}
+	#endif
 
 	unsigned short BankAttrib01, BankAttrib02, BankAttrib03;
 

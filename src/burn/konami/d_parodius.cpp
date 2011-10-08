@@ -522,9 +522,8 @@ static void DrvRecalcPal()
 
 static int DrvDraw()
 {
-	if (DrvRecalc) {
+	if (DrvRecalc)
 		DrvRecalcPal();
-	}
 
 	K052109UpdateScroll();
 
@@ -545,18 +544,38 @@ static int DrvDraw()
 
 	sortlayers(layer,layerpri);
 
-	for (int i = 0; i < nScreenWidth * nScreenHeight; i++) {
+	for (int i = 0; i < nScreenWidth * nScreenHeight; i++)
 		pTransDraw[i] = 16 * bg_colorbase;
-	}
 
-	if (nBurnLayer & 1) K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);
-	if (nSpriteEnable & 4) K053245SpritesRender(0, DrvGfxROMExp1, 2); // right?
-	if (nSpriteEnable & 8) K053245SpritesRender(0, DrvGfxROMExp1, 3);
-	if (nBurnLayer & 2) K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
-	if (nSpriteEnable & 2) K053245SpritesRender(0, DrvGfxROMExp1, 1);
-	if (nBurnLayer & 4) K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
+	#ifndef NO_LAYER_ENABLE_TOGGLE
+	if (nBurnLayer & 1)
+	#endif
+		K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 4)
+	#endif
+		K053245SpritesRender(0, DrvGfxROMExp1, 2); // right?
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 8)
+	#endif
+		K053245SpritesRender(0, DrvGfxROMExp1, 3);
+	#ifndef NO_LAYER_ENABLE_TOGGLE
+	if (nBurnLayer & 2)
+	#endif
+		K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 2)
+	#endif
+		K053245SpritesRender(0, DrvGfxROMExp1, 1);
+	#ifndef NO_LAYER_ENABLE_TOGGLE
+	if (nBurnLayer & 4)
+	#endif
+		K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
 
-	if (nSpriteEnable & 1) K053245SpritesRender(0, DrvGfxROMExp1, 0); // used (back)?
+	#ifndef NO_SPRITE_ENABLE_TOGGLE
+	if (nSpriteEnable & 1)
+	#endif
+		K053245SpritesRender(0, DrvGfxROMExp1, 0); // used (back)?
 
 	KonamiBlendCopy(Palette, DrvPalette);
 

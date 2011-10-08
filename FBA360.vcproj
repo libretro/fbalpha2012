@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLX360CompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng"
+				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\libs\zlib;src\libs\libpng"
 				PreprocessorDefinitions="_DEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;TIXML_USE_TICPP"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -351,7 +351,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng"
+				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\libs\zlib;src\libs\libpng"
 				PreprocessorDefinitions="TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -438,7 +438,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng"
+				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\libs\zlib;src\libs\libpng"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -522,7 +522,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\lib\zlib;src\lib\libpng"
+				AdditionalIncludeDirectories="src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\c68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\Xbox360;src\interface;src\interface\Xbox360;src\libs\zlib;src\libs\libpng"
 				PreprocessorDefinitions="TIXML_USE_TICPP;NDEBUG;_XBOX;USE_SPEEDHACKS;INLINE=static __inline;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -2774,33 +2774,33 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="lib"
+					Name="libs"
 					>
 					<Filter
 						Name="ticpp"
 						>
 						<File
-							RelativePath=".\src\lib\ticpp\ticpp.cpp"
+							RelativePath=".\src\libs\ticpp\ticpp.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\ticpp_sugar.cpp"
+							RelativePath=".\src\libs\ticpp\ticpp_sugar.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinystr.cpp"
+							RelativePath=".\src\libs\ticpp\tinystr.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxml.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxml.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxmlerror.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxmlerror.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxmlparser.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxmlparser.cpp"
 							>
 						</File>
 					</Filter>
@@ -2808,63 +2808,63 @@
 						Name="libpng"
 						>
 						<File
-							RelativePath=".\src\lib\libpng\png.c"
+							RelativePath=".\src\libs\libpng\png.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngerror.c"
+							RelativePath=".\src\libs\libpng\pngerror.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngget.c"
+							RelativePath=".\src\libs\libpng\pngget.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngmem.c"
+							RelativePath=".\src\libs\libpng\pngmem.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngpread.c"
+							RelativePath=".\src\libs\libpng\pngpread.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngread.c"
+							RelativePath=".\src\libs\libpng\pngread.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngrio.c"
+							RelativePath=".\src\libs\libpng\pngrio.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngrtran.c"
+							RelativePath=".\src\libs\libpng\pngrtran.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngrutil.c"
+							RelativePath=".\src\libs\libpng\pngrutil.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngset.c"
+							RelativePath=".\src\libs\libpng\pngset.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngtrans.c"
+							RelativePath=".\src\libs\libpng\pngtrans.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngwio.c"
+							RelativePath=".\src\libs\libpng\pngwio.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngwrite.c"
+							RelativePath=".\src\libs\libpng\pngwrite.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngwtran.c"
+							RelativePath=".\src\libs\libpng\pngwtran.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\libpng\pngwutil.c"
+							RelativePath=".\src\libs\libpng\pngwutil.c"
 							>
 						</File>
 					</Filter>
@@ -2872,103 +2872,103 @@
 						Name="File_Extractor"
 						>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zAlloc.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zAlloc.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zBuf.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zBuf.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zCrc.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zCrc.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zDecode.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zDecode.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zExtract.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zExtract.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zHeader.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zHeader.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zIn.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zIn.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zItem.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zItem.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zStream.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zStream.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Bcj2.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Bcj2.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Binary_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Binary_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\blargg_common.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\blargg_common.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\blargg_errors.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\blargg_errors.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Bra86.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Bra86.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Data_Reader.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Data_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\fex.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\fex.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\File_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\File_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Gzip_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Gzip_Reader.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Lzma2Dec.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Lzma2Dec.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\LzmaDec.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\LzmaDec.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Rar_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Rar_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zip7_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Zip7_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zip_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Zip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zlib_Inflater.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Zlib_Inflater.cpp"
 							>
 						</File>
 					</Filter>
@@ -2976,43 +2976,43 @@
 						Name="zlib"
 						>
 						<File
-							RelativePath=".\src\lib\zlib\adler32.c"
+							RelativePath=".\src\libs\zlib\adler32.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\compress.c"
+							RelativePath=".\src\libs\zlib\compress.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\crc32.c"
+							RelativePath=".\src\libs\zlib\crc32.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\deflate.c"
+							RelativePath=".\src\libs\zlib\deflate.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inffast.c"
+							RelativePath=".\src\libs\zlib\inffast.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inflate.c"
+							RelativePath=".\src\libs\zlib\inflate.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inftrees.c"
+							RelativePath=".\src\libs\zlib\inftrees.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\trees.c"
+							RelativePath=".\src\libs\zlib\trees.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\uncompr.c"
+							RelativePath=".\src\libs\zlib\uncompr.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\zutil.c"
+							RelativePath=".\src\libs\zlib\zutil.c"
 							>
 						</File>
 					</Filter>

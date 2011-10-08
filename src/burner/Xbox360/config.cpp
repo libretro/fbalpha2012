@@ -11,7 +11,7 @@
 #ifndef NO_IPS
 //#include "patch.h"
 #endif
-#include "../lib/ticpp/ticpp.h"
+#include "../libs/ticpp/ticpp.h"
 #include <locale.h>
 
 bool bMenuEnabled = true;

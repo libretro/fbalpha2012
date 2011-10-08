@@ -122,9 +122,9 @@ int InputMake(bool bCopy)
 		if (pgi->nInput == GIT_KEYSLIDER)
 		{
 			// Get states of the two keys
-			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[0]))
+			if (CinpState(pgi->Input.Slider.SliderAxis[0]))
 				nAdd -= 0x100;
-			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[1]))
+			if (CinpState(pgi->Input.Slider.SliderAxis[1]))
 				nAdd += 0x100;
 		}
 
@@ -168,12 +168,12 @@ int InputMake(bool bCopy)
 				pgi->Input.nVal = 0;
 				break;
 			case GIT_CONSTANT:						// Constant value
-				pgi->Input.nVal = pgi->Input.Constant.nConst;
+				pgi->Input.nVal = pgi->Input.Constant;
 				if (bCopy)
 					*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH: {						// Digital input
-						 int s = CinpState(pgi->Input.Switch.nCode);
+						 int s = CinpState(pgi->Input.Switch);
 
 						 if (pgi->nType & BIT_GROUP_ANALOG) {
 							 // Set analog controls to full
@@ -329,7 +329,7 @@ int InputMake(bool bCopy)
 		if (pgi->Macro.nMode)
 		{	 // Macro is defined
 
-			if (bCopy && CinpState(pgi->Macro.Switch.nCode))
+			if (bCopy && CinpState(pgi->Macro.Switch))
 			{
 				for (int j = 0; j < 4; j++)
 				{

@@ -10,9 +10,6 @@
 #ifndef __LIBSNES__
 int write_xmlfile(const char* szFilename, FILE* file)
 {
-#ifndef SN_TARGET_PS3
-	try {
-#endif
 		char str[128];
 		sprintf(str, "%s v%.20s", APP_TITLE, szAppBurnVer);
 
@@ -320,11 +317,6 @@ int write_xmlfile(const char* szFilename, FILE* file)
 			doc.SaveFile(file);
 		else
 			doc.SaveFile(szFilename);
-#ifndef SN_TARGET_PS3
-	}
-	catch (ticpp::Exception& ex)
-		return 1;
-#endif
 
 	return 0;
 }

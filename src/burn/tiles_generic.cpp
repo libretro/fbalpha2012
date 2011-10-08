@@ -48,9 +48,7 @@ int GenericTilesExit()
 Graphics Decoding
 ================================================================================================*/
 
-#ifdef SN_TARGET_PS3
 #define READBIT(src, bitnum) (src[bitnum / 8] & (0x80 >> (bitnum % 8)))
-#endif
 
 void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[], int xoffsets[], int yoffsets[], int modulo, unsigned char *pSrc, unsigned char *pDest)
 {

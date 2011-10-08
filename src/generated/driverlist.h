@@ -5690,30 +5690,15 @@ DRV		BurnDrvMDg_xmen2s;		// no comment [NOT WORKING]
 DRV		BurnDrvMDg_xmen2;		// no comment [NOT WORKING]
 #endif
 DRV		BurnDrvCpsXmvsfar1;
-#ifndef SN_TARGET_PS3
-DRV		BurnDrvCpsXmvsfa4p;
-#endif
 DRV		BurnDrvCpsXmvsfa;
 DRV		BurnDrvCpsXmvsfb;
-#ifndef SN_TARGET_PS3
-DRV		BurnDrvCpsXmvsfr14p;
-#endif
 DRV		BurnDrvCpsXmvsfr1;
-#ifndef SN_TARGET_PS3
-DRV		BurnDrvCpsXmvsf4p;
-#endif
 DRV		BurnDrvCpsXmvsf;
 DRV		BurnDrvCpsXmvsfh;
 DRV		BurnDrvCpsXmvsfjr2;
 DRV		BurnDrvCpsXmvsfjr1;
-#ifndef SN_TARGET_PS3
-DRV		BurnDrvCpsXmvsfj4p;
-#endif
 DRV		BurnDrvCpsXmvsfj;
 DRV		BurnDrvCpsXmvsfur1;
-#ifndef SN_TARGET_PS3
-DRV		BurnDrvCpsXmvsfu4p;
-#endif
 DRV		BurnDrvCpsXmvsfu;
 DRV		BurnDrvCpsXmvsfu1d;
 DRV		BurnDrvCpsXmcotaa;
@@ -8458,48 +8443,24 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvCpsMshu,			// Marvel Super Heroes (USA 951024)
 	&BurnDrvCpsMshud,			// Marvel Super Heroes (USA 951024, Phoenix Edition)
 	&BurnDrvCpsMshvsfa1,		// Marvel Super Heroes vs Street Fighter (Asia 970620)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMshvsfa4p,		// Marvel Super Heroes vs Street Fighter (Asia 970625 / 4 Players)
-#endif
 	&BurnDrvCpsMshvsfa,			// Marvel Super Heroes vs Street Fighter (Asia 970625)
 	&BurnDrvCpsMshvsfb1,		// Marvel Super Heroes vs Street Fighter (Brazil 970625)
 	&BurnDrvCpsMshvsfb,			// Marvel Super Heroes vs Street Fighter (Brazil 970827)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMshvsf4p,		// Marvel Super Heroes vs Street Fighter (Euro 970625 / 4 Players)
-#endif
 	&BurnDrvCpsMshvsf,			// Marvel Super Heroes vs Street Fighter (Euro 970625)
 	&BurnDrvCpsMshvsfh,			// Marvel Super Heroes vs Street Fighter (Hispanic 970625)
 	&BurnDrvCpsMshvsfj2,		// Marvel Super Heroes vs Street Fighter (Japan 970625)
 	&BurnDrvCpsMshvsfj1,		// Marvel Super Heroes vs Street Fighter (Japan 970702)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMshvsfj4p,		// Marvel Super Heroes vs Street Fighter (Japan 970707 / 4 Players)
-#endif
 	&BurnDrvCpsMshvsfj,			// Marvel Super Heroes vs Street Fighter (Japan 970707)
 	&BurnDrvCpsMshvsfu1,		// Marvel Super Heroes vs Street Fighter (USA 970625)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMshvsfu4p,		// Marvel Super Heroes vs Street Fighter (USA 970827 / 4 Players)
-#endif
 	&BurnDrvCpsMshvsfu,			// Marvel Super Heroes vs Street Fighter (USA 970827)
 	&BurnDrvCpsMvscar1,			// Marvel Vs. Capcom: Clash of Super Heroes (Asia 980112)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMvsca4p,			// Marvel Vs. Capcom: Clash of Super Heroes (Asia 980123 / 4 Players)
-#endif
 	&BurnDrvCpsMvsca,			// Marvel Vs. Capcom: Clash of Super Heroes (Asia 980123)
 	&BurnDrvCpsMvscb,			// Marvel Vs. Capcom: Clash of Super Heroes (Brazil 980123)
 	&BurnDrvCpsMvscr1,			// Marvel Vs. Capcom: Clash of Super Heroes (Euro 980112)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMvsc4p,			// Marvel Vs. Capcom: Clash of Super Heroes (Euro 980123 / 4 Players)
-#endif
 	&BurnDrvCpsMvsc,			// Marvel Vs. Capcom: Clash of Super Heroes (Euro 980123)
 	&BurnDrvCpsMvsch,			// Marvel Vs. Capcom: Clash of Super Heroes (Hispanic 980123)
 	&BurnDrvCpsMvscjr1,			// Marvel Vs. Capcom: Clash of Super Heroes (Japan 980112)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMvscj4p,			// Marvel Vs. Capcom: Clash of Super Heroes (Japan 980123 / 4 Players)
-#endif
 	&BurnDrvCpsMvscj,			// Marvel Vs. Capcom: Clash of Super Heroes (Japan 980123)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsMvscu4p,			// Marvel Vs. Capcom: Clash of Super Heroes (USA 980123 / 4 Players)
-#endif
 	&BurnDrvCpsMvscu,			// Marvel Vs. Capcom: Clash of Super Heroes (USA 980123)
 	&BurnDrvCpsMvscud,			// Marvel vs. Capcom: Clash of Super Heroes (USA 980123, Phoenix Edition)
 #if defined FBA_DEBUG
@@ -11517,30 +11478,15 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvMDg_xmen2,			// X-Men 2 - Clone Wars (USA, Europe) [no comment, NOT WORKING]
 #endif
 	&BurnDrvCpsXmvsfar1,		// X-Men vs Street Fighter (Asia 960919)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsXmvsfa4p,		// X-Men vs Street Fighter (Asia 961023 / 4 Players)
-#endif
 	&BurnDrvCpsXmvsfa,			// X-Men vs Street Fighter (Asia 961023)
 	&BurnDrvCpsXmvsfb,			// X-Men vs Street Fighter (Brazil 961023)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsXmvsfr14p,		// X-Men vs Street Fighter (Euro 960910 / 4 Players)
-#endif
 	&BurnDrvCpsXmvsfr1,			// X-Men vs Street Fighter (Euro 960910)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsXmvsf4p,			// X-Men vs Street Fighter (Euro 961004 / 4 Players)
-#endif
 	&BurnDrvCpsXmvsf,			// X-Men vs Street Fighter (Euro 961004)
 	&BurnDrvCpsXmvsfh,			// X-Men vs Street Fighter (Hispanic 961004)
 	&BurnDrvCpsXmvsfjr2,		// X-Men vs Street Fighter (Japan 960909)
 	&BurnDrvCpsXmvsfjr1,		// X-Men vs Street Fighter (Japan 960910)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsXmvsfj4p,		// X-Men vs Street Fighter (Japan 961004 / 4 Players)
-#endif
 	&BurnDrvCpsXmvsfj,			// X-Men vs Street Fighter (Japan 961004)
 	&BurnDrvCpsXmvsfur1,		// X-Men vs Street Fighter (USA 961004)
-#ifndef SN_TARGET_PS3
-	&BurnDrvCpsXmvsfu4p,		// X-Men vs Street Fighter (USA 961023 / 4 Players)
-#endif
 	&BurnDrvCpsXmvsfu,			// X-Men vs Street Fighter (USA 961023)
 	&BurnDrvCpsXmvsfu1d,		// X-Men vs. Street Fighter (USA 961004, Phoenix Edition)
 	&BurnDrvCpsXmcotaa,			// X-Men: Children of the Atom (Asia 941217)

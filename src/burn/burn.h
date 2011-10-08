@@ -77,7 +77,7 @@ extern int nTransWidth, nTransHeight;
 
 #define GetCurrentFrame() nCurrentFrame
 
-#define BurnTransferClear() XMemSet((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
+#define BurnTransferClear() memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
 // ---------------------------------------------------------------------------
 // Driver info structures
 

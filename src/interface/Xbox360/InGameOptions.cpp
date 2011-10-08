@@ -16,8 +16,8 @@ HXUIOBJ hDipOptionsScene;
 HXUIOBJ hOtherOptionsScene;
 HXUIOBJ hInputOptionsScene;
 
-#define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x); }
-#define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch.nCode = (unsigned short)(x); }
+#define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x); }
+#define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch = (unsigned short)(x); }
 
 HWND hInpDIPSWDlg = NULL; // Handle to the DIPSW Dialog
 static HWND hInpDIPSWList = NULL;
@@ -81,7 +81,7 @@ void InpDIPSWResetDIPs()
 		if (bdi.nFlags == 0xFF) {
 			pgi = GameInp + bdi.nInput + nDIPOffset;
 			if (pgi) {
-				pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+				pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 			}
 		}
 		i++;
@@ -99,7 +99,7 @@ static bool CheckSetting(int i)
 		return false;
 	}
 
-	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting) {
+	if ((pgi->Input.Constant & bdi.nMask) == bdi.nSetting) {
 		unsigned char nFlags = bdi.nFlags;
 		if ((nFlags & 0x0F) <= 1) {
 			return true;
@@ -108,11 +108,11 @@ static bool CheckSetting(int i)
 				BurnDrvGetDIPInfo(&bdi, i + j);
 				pgi = GameInp + bdi.nInput + nDIPOffset;
 				if (nFlags & 0x80) {
-					if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting) {
+					if ((pgi->Input.Constant & bdi.nMask) == bdi.nSetting) {
 						return false;
 					}
 				} else {
-					if ((pgi->Input.Constant.nConst & bdi.nMask) != bdi.nSetting) {
+					if ((pgi->Input.Constant & bdi.nMask) != bdi.nSetting) {
 						return false;
 					}
 				}
@@ -149,7 +149,7 @@ static void InpDIPSWCancel()
 		if (bdi.nInput >= 0 && bdi.nFlags == 0xFF) {
 			pgi = GameInp + bdi.nInput + nDIPOffset;
 			if (pgi) {
-				pgi->Input.Constant.nConst = nPrevDIPSettings[j];
+				pgi->Input.Constant = nPrevDIPSettings[j];
 				j++;
 			}
 		}
@@ -171,14 +171,10 @@ HRESULT CInGameOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 			
 			_stprintf(romName, _T("GAME:\\savestates\\%S.fs"), BurnDrvGetText(DRV_NAME));
 		   
-			if (StatedSave(0)==0)
-			{			 
+			if (StatedSave(0)==0)	 
 				ShowMessageBoxEx(NULL,NULL,L"FBANext - Save State", L"Saved state successfully.", 1, (LPCWSTR*)&button_text,NULL,  XUI_MB_CENTER_ON_PARENT, NULL); 
-			}
 			else
-			{
 				ShowMessageBoxEx(NULL,NULL,L"FBANext - Save State", L"Error saving savestate file.", 1, (LPCWSTR*)&button_text,NULL,  XUI_MB_CENTER_ON_PARENT, NULL); 
-			}
 			 
 
 			bHandled = TRUE;
@@ -198,13 +194,9 @@ HRESULT CInGameOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 			int nRet = StatedLoad(0);
 
 			if (nRet==0)
-			{			 
 				ShowMessageBoxEx(NULL,NULL,L"FBANext - Load State", L"Loaded state successfully", 1, (LPCWSTR*)&button_text,NULL,  XUI_MB_CENTER_ON_PARENT, NULL); 
-			}
 			else
-			{
-				ShowMessageBoxEx(NULL,NULL,L"FBANext - Load State", L"Error loading savestate file.", 1, (LPCWSTR*)&button_text,NULL,  XUI_MB_CENTER_ON_PARENT, NULL); 
-			}			 
+				ShowMessageBoxEx(NULL,NULL,L"FBANext - Load State", L"Error loading savestate file.", 1, (LPCWSTR*)&button_text,NULL,  XUI_MB_CENTER_ON_PARENT, NULL);  
  			 			 
 
 			bHandled = TRUE;
@@ -567,12 +559,12 @@ HRESULT CDipOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 		}
 
 		struct GameInp* pgi = GameInp + bdi.nInput + nDIPOffset;
-		pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+		pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 		if (bdi.nFlags & 0x40) {
 			while (BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++) == 0) {
 				if (bdi.nFlags == 0) {
 					pgi = GameInp + bdi.nInput + nDIPOffset;
-					pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+					pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 				} else {
 					break;
 				}
@@ -834,55 +826,55 @@ HRESULT CInputOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 			{
 			case 0:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+				pgi->Input.Switch = (unsigned short)FBK_C;
 				break;
 			case 1:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+				pgi->Input.Switch = (unsigned short)FBK_Z;
 				break;
 			case 2:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+				pgi->Input.Switch = (unsigned short)FBK_X;
 				break;
 			case 3:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+				pgi->Input.Switch = (unsigned short)FBK_V;
 				break;
 			case 4:	
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+				pgi->Input.Switch = (unsigned short)FBK_1;
 				break;
 			case 5:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+				pgi->Input.Switch = (unsigned short)FBK_5;
 				break;
 			case 6:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+				pgi->Input.Switch = (unsigned short)FBK_S;
 				break;
 			case 7:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+				pgi->Input.Switch = (unsigned short)FBK_D;
 				break;
 			case 8:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_F1;
+				pgi->Input.Switch = (unsigned short)FBK_F1;
 				break;
 			case 9:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_F2;
+				pgi->Input.Switch = (unsigned short)FBK_F2;
 				break;
 			case 10: 
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)XBOX_LEFT_TRIGGER; 
+				pgi->Input.Switch = (unsigned short)XBOX_LEFT_TRIGGER; 
 				break;
 			case 11:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)XBOX_RIGHT_TRIGGER;			 
+				pgi->Input.Switch = (unsigned short)XBOX_RIGHT_TRIGGER;			 
 				break;			 
 			case 12:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_F1 & FBK_F2;			 
+				pgi->Input.Switch = (unsigned short)FBK_F1 & FBK_F2;			 
 				break;
 			}
 		}
@@ -1437,51 +1429,51 @@ HRESULT CInputOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 			{
 			case 0:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+				pgi->Input.Switch = (unsigned short)FBK_C;
 				break;
 			case 1:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+				pgi->Input.Switch = (unsigned short)FBK_Z;
 				break;
 			case 2:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+				pgi->Input.Switch = (unsigned short)FBK_X;
 				break;
 			case 3:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+				pgi->Input.Switch = (unsigned short)FBK_V;
 				break;
 			case 4:	
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+				pgi->Input.Switch = (unsigned short)FBK_1;
 				break;
 			case 5:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+				pgi->Input.Switch = (unsigned short)FBK_5;
 				break;
 			case 6:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+				pgi->Input.Switch = (unsigned short)FBK_S;
 				break;
 			case 7:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+				pgi->Input.Switch = (unsigned short)FBK_D;
 				break;
 			case 8:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_F1;
+				pgi->Input.Switch = (unsigned short)FBK_F1;
 				break;
 			case 9:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)FBK_F2;
+				pgi->Input.Switch = (unsigned short)FBK_F2;
 				break;
 			case 10: 
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)XBOX_LEFT_TRIGGER; 
+				pgi->Input.Switch = (unsigned short)XBOX_LEFT_TRIGGER; 
 				break;
 			case 11:
 				pgi->nInput = GIT_SWITCH;
-				pgi->Input.Switch.nCode = (unsigned short)XBOX_RIGHT_TRIGGER;			 
+				pgi->Input.Switch = (unsigned short)XBOX_RIGHT_TRIGGER;			 
 				break;			 
 			}
 

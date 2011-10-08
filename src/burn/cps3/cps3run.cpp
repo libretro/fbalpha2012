@@ -2346,7 +2346,11 @@ int cps3Frame_sfiii2()
 			r |= r >> 5;
 			g |= g >> 5;
 			b |= b >> 5;
+#ifdef SN_TARGET_PS3
 			CurPal[i] = RGB15(r, g, b);
+#else
+			CurPal[i] = BurnHighCol(r, g, b, 0);
+#endif
 		}
 		cps3_palette_change = 0;
 	}

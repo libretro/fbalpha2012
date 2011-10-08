@@ -11,34 +11,22 @@
 #include "cellframework2/audio/stream.h"
 #include "../../interface/PS3/audio_driver.h"
 
-int GameStatus = MENU;
+extern bool exitGame;
+extern void doStretch();
+extern void StretchMenu();
 
-int nShowEffect = 0;
-int bRunPause = 0;
-int bAltPause = 0;
-int autoFrameSkip = 0;
-#define NAPP_VIRTUAL_FPS 6000
+int GameStatus = MENU;
 int nAppVirtualFps = 6000;				// App fps * 100
 int is_running = 0;
 bool bShowFPS = false;
 int custom_aspect_ratio_mode = 0;
-
-extern bool exitGame;
-extern void doStretch();
-extern void StretchMenu();
 cell_audio_handle_t audio_handle;
 const struct cell_audio_driver *driver;
 
 // The main message loop
 int RunMessageLoop(int argc, char **argv)
 {
-	int bRestartVideo;
-	int once = 0;
 	extern unsigned int nPrevGame;
-	static int bPrevPause = 0;
-	static int bPrevDraw = 0;
-
-	bRestartVideo = 0;
 
 	audio_play();
 
@@ -133,13 +121,9 @@ int RunMessageLoop(int argc, char **argv)
 						VidFrame_RecalcPalette();
 					}
 					do{
-						// RUN IDLE
 						audio_check();
-
-						// RUN FRAME
 						nCurrentFrame++;
 						VidFrame_Recalc();
-						// GET INPUT
 						InputMake();
 #ifdef CELL_DEBUG_CONSOLE
 						cellConsolePoll();
@@ -149,13 +133,9 @@ int RunMessageLoop(int argc, char **argv)
 				else
 				{
 					do{
-						// RUN IDLE
 						audio_check();
-
-						// RUN FRAME
 						nCurrentFrame++;
 						VidFrame();
-						// GET INPUT
 						InputMake();
 #ifdef CELL_DEBUG_CONSOLE
 						cellConsolePoll();

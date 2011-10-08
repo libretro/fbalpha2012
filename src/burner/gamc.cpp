@@ -12,8 +12,8 @@
 
 static char szPlay[4][4]={"p1 ", "p2 ", "p3 ", "p4 "};
 
-#define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x); }
-#define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch.nCode = (unsigned short)(x); }
+#define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x); }
+#define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch = (unsigned short)(x); }
 
 // Configure the misc game controls
 int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
@@ -264,8 +264,8 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 static void SetSliderKey(struct GameInp* pgi, int k0, int k1, int nSlide)
 {
 	pgi->nInput = GIT_KEYSLIDER;
-	pgi->Input.Slider.SliderAxis.nSlider[0] = (unsigned char)k0;
-	pgi->Input.Slider.SliderAxis.nSlider[1] = (unsigned char)k1;
+	pgi->Input.Slider.SliderAxis[0] = (unsigned char)k0;
+	pgi->Input.Slider.SliderAxis[1] = (unsigned char)k1;
 
 	if (nSlide == 2) {
 		// Sliding
@@ -427,7 +427,7 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 			return 1;
 
 		pgi->nInput = GIT_CONSTANT;			// Constant zero
-		pgi->Input.Constant.nConst = 0;		//
+		pgi->Input.Constant = 0;		//
 
 		return 0;
 	}

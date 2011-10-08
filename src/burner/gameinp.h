@@ -1,4 +1,4 @@
-
+#if 0
 struct giConstant {
 	unsigned char nConst;				// The constant value
 };
@@ -6,9 +6,10 @@ struct giConstant {
 struct giSwitch {
 	unsigned short nCode;				// The input code (for digital)
 };
+#endif
 
 struct giJoyAxis {
-	unsigned char nJoy;					// The joystick number
+	unsigned char nJoy;				// The joystick number
 	unsigned char nAxis;	   			// The joystick axis number
 };
 
@@ -18,30 +19,32 @@ struct giMouseAxis {
 	unsigned short nOffset;				// Used for absolute axes
 };
 
+#if 0
 struct giSliderAxis {
 	unsigned short nSlider[2];			// Keys to use for slider
 };
+#endif
 
 struct giSlider {
 	union {
 		struct giJoyAxis JoyAxis;
-		struct giSliderAxis SliderAxis;
+		unsigned short SliderAxis[2];
 	};
-	short nSliderSpeed;					// speed with which keys move the slider
+	short nSliderSpeed;				// speed with which keys move the slider
 	short nSliderCenter;				// Speed the slider should center itself (high value = slow)
-	int nSliderValue;					// Current position of the slider
+	int nSliderValue;				// Current position of the slider
 };
 
 struct giInput {
-	union {								// Destination for the Input Value
+	union {						// Destination for the Input Value
 		unsigned char* pVal;
 		unsigned short* pShortVal;
 	};
 	unsigned short nVal;				// The Input Value
 
 	union {
-		struct giConstant Constant;
-		struct giSwitch Switch;
+		unsigned char Constant;
+		unsigned short Switch;
 		struct giJoyAxis JoyAxis;
 		struct giMouseAxis MouseAxis;
 		struct giSlider Slider;
@@ -60,13 +63,13 @@ struct giMacro {
 	unsigned char nVal[4];				// The Input Value
 	unsigned char nInput[4];			// Which inputs are mapped
 
-	struct giSwitch Switch;
+	unsigned short Switch;
 
-	char szName[17];					// Maximum name length 16 chars
+	char szName[17];				// Maximum name length 16 chars
 };
 
 #define GIT_CONSTANT		(0x01)
-#define GIT_SWITCH			(0x02)
+#define GIT_SWITCH		(0x02)
 
 #define GIT_GROUP_SLIDER	(0x08)
 #define GIT_KEYSLIDER		(0x08)
@@ -80,7 +83,7 @@ struct giMacro {
 #define GIT_JOYAXIS_NEG		(0x21)
 #define GIT_JOYAXIS_POS		(0x22)
 
-#define GIT_FORCE			(0x40)
+#define GIT_FORCE		(0x40)
 
 #define GIT_GROUP_MACRO		(0x80)
 #define GIT_MACRO_AUTO		(0x80)

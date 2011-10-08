@@ -28,7 +28,7 @@ int VidSAllocVidImage()
 	VidSFreeVidImage();
 
 	// Allocate an extra line above and below the image to accomodate effects
-	nVidImagePitch = nVidImageWidth * ((nVidImageDepth + 7) >> 3);
+	nVidImagePitch = nVidImageWidth * SCREEN_RENDER_TEXTURE_BPP;
 	// for using large skin with D3D7+Preview Blitter, modified by regret
 	nMemLen = (nVidImageHeight + 4) * nVidImagePitch;
 	pVidSFullImage = (unsigned char*)malloc(nMemLen);

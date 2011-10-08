@@ -14,9 +14,9 @@ MKPKG_PSLIGHT           = buildtools/PS3Py/pkg.py
 PKG_FINALIZE	         = package_finalize
 
 SRC_DIR                 = ./src
-ZLIB_DIR                = ./src/lib/zlib
-TICPP_DIR               = ./src/lib/ticpp
-FEX_DIR                 = ./src/lib/File_Extractor
+ZLIB_DIR                = ./src/libs/zlib
+TICPP_DIR               = ./src/libs/ticpp
+FEX_DIR                 = ./src/libs/File_Extractor
 BURN_DIR                = ./src/burn
 BURNER_DIR              = ./src/burner
 CPU_DIR                 = ./src/cpu
@@ -45,7 +45,7 @@ INCLUDE                 =       -Isrc/burn              \
                                         -Isrc/interface \
                                         -Isrc/interface/PS3     \
                                         -Isrc/interface/PS3/cellframework2     \
-                                        -Isrc/lib/zlib  \
+                                        -Isrc/libs/zlib  \
                                         -Isrc/burn/capcom       \
                                         -Isrc/burn/cave \
                                         -Isrc/burn/neogeo       \
@@ -53,7 +53,7 @@ INCLUDE                 =       -Isrc/burn              \
                                         -Isrc/burn/sega \
                                         -Isrc/burn/toaplan
                                         
-DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS
+DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS -DBPP=32
 ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else
@@ -140,9 +140,9 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         $(BURN_DIR)/toaplan/toaplan.cpp $(BURN_DIR)/toaplan/toaplan1.cpp \
                                         \
                                         $(BURNER_DIR)/PS3/audit.cpp $(BURNER_DIR)/PS3/barchive.cpp $(BURNER_DIR)/PS3/config.cpp $(BURNER_DIR)/PS3/drv.cpp $(BURNER_DIR)/PS3/inpd.cpp $(BURNER_DIR)/PS3/main.cpp $(BURNER_DIR)/PS3/media.cpp $(BURNER_DIR)/PS3/menu.cpp $(BURNER_DIR)/PS3/misc_win32.cpp $(BURNER_DIR)/PS3/miscpaths.cpp \
-                                        $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/scrn.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
+                                        $(BURNER_DIR)/PS3/run.cpp $(BURNER_DIR)/PS3/stated.cpp $(BURNER_DIR)/PS3/audit_ps3.cpp\
                                         \
-                                        $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp $(BURNER_DIR)/misc.cpp \
+                                        $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp \
                                         $(BURNER_DIR)/state.cpp $(BURNER_DIR)/statec.cpp $(BURNER_DIR)/tracklst.cpp \
                                         \
                                         $(CPU_DIR)/arm7/arm7.cpp $(CPU_DIR)/arm7/arm7_intf.cpp \

@@ -126,8 +126,8 @@ void createNeedDir();
 bool directoryExists(const char* dirname);
 void pathCheck(char * path);
 int directLoadGame(const char * name);
-void setWindowAspect(bool first_boot = false);
 int findRom(int i, struct ArcEntry* list, int count);
+extern void setWindowAspect(bool first_boot);
 
 // drv.cpp
 extern int bDrvOkay;				// 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
@@ -137,24 +137,13 @@ int BurnerDrvExit();
 
 // run.cpp
 extern int nAppVirtualFps;			// virtual fps
-extern int bRunPause;
-extern int bAltPause;
-extern int autoFrameSkip;
 extern bool bShowFPS;
-extern bool bAppDoFast;
-extern bool bAppDoStep;
-extern unsigned int nFastSpeed;
 
 void RunIdle();
 int RunMessageLoop(int argc, char ** argv);
 int RunExit();
-int RunReset();
 
 // scrn.cpp
-extern bool bShowOnTop;
-extern bool bFullscreenOnStart;
-
-extern int bAutoPause;
 extern int nWindowSize;
 extern int nWindowPosX, nWindowPosY;
 
@@ -168,8 +157,6 @@ extern int nYScale;
 extern void UpdateConsoleXY(char *text, float X, float Y);
 
 void simpleReinitScrn(void);
-void setPauseMode(bool bPause);
-void setPauseModeScreen(bool bPause);
 
 // sel.cpp
 extern int nLoadMenuShowX;

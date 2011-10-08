@@ -187,7 +187,6 @@ int directLoadGame(const char * name)
 		if (i < nBurnDrvCount)
 		{
 			RomOK = BurnerDrvInit(i, true);
-			bAltPause = 0;
 		}
 	}
 

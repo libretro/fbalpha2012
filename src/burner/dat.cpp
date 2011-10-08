@@ -4,7 +4,7 @@
 // updated    2008 by regret -- support clrmamepro xml dat
 
 #include "burner.h"
-#include "../lib/ticpp/ticpp.h"
+#include "../libs/ticpp/ticpp.h"
 
 // ==> write clrmamepro xml dat, added by regret
 #ifndef __LIBSNES__

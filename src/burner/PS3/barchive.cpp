@@ -163,7 +163,7 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 
 	int nWantZip = RomFind[i].nArchive;	// Which archive file it is in
 	if (nCurrentArc != nWantZip)
-	{		// If we haven't got the right archive file currently open
+	{					// If we haven't got the right archive file currently open
 		archiveClose();
 		nCurrentArc = -1;
 

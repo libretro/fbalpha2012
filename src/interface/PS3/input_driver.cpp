@@ -1,4 +1,3 @@
-// Burner Input module
 #include <cell/pad.h>
 #include <sys/cdefs.h>
 
@@ -49,7 +48,6 @@ static int CellinpState(int nCode)
 
 	if (pausemenu_condition)
 	{
-		//setPauseMode(1);
 		audio_stop();
 		GameStatus = PAUSE;
 		is_running = 0;
@@ -245,9 +243,9 @@ void InputMake(void)
 		if (pgi->nInput == GIT_KEYSLIDER)
 		{
 			// Get states of the two keys
-			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[0]))
+			if (CinpState(pgi->Input.Slider.SliderAxis[0]))
 				nAdd -= 0x100;
-			if (CinpState(pgi->Input.Slider.SliderAxis.nSlider[1]))
+			if (CinpState(pgi->Input.Slider.SliderAxis[1]))
 				nAdd += 0x100;
 		}
 
@@ -286,12 +284,12 @@ void InputMake(void)
 				pgi->Input.nVal = 0;
 				break;
 			case GIT_CONSTANT: // Constant value
-				pgi->Input.nVal = pgi->Input.Constant.nConst;
+				pgi->Input.nVal = pgi->Input.Constant;
 				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
 				{ // Digital input
-					int s = CinpState(pgi->Input.Switch.nCode);
+					int s = CinpState(pgi->Input.Switch);
 
 					if (pgi->nType & BIT_GROUP_ANALOG)
 					{

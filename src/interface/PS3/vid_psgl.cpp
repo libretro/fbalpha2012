@@ -17,9 +17,16 @@ static CGcontext CgContext = NULL;
 static CGprogram VertexProgram = NULL;
 static CGprogram FragmentProgram = NULL;
 static CGparameter ModelViewProj_cgParam;
-static CGparameter cg_video_size, cg_texture_size, cg_output_size;
-static CGparameter cg_v_video_size, cg_v_texture_size, cg_v_output_size, cgp_timer, cgp_vertex_timer;
-static GLuint cg_viewport_width, cg_viewport_height;
+static CGparameter cg_video_size;
+static CGparameter cg_texture_size;
+static CGparameter cg_output_size;
+static CGparameter cg_v_video_size;
+static CGparameter cg_v_texture_size;
+static CGparameter cg_v_output_size;
+static CGparameter cgp_timer;
+static CGparameter cgp_vertex_timer;
+static GLuint cg_viewport_width;
+static GLuint cg_viewport_height;
 static GLuint bufferID = 0;
 static uint32_t frame_count;
 static unsigned int* buffer = 0;
@@ -35,6 +42,10 @@ struct dstResType dstRes[8];
 
 int numDstResCount = 0; 
 int curResNo;
+
+// forward declarations
+unsigned int __cdecl HighCol16(int r, int g, int b, int);
+unsigned int __cdecl HighCol24(int r, int g, int b, int);
 
 // normal vertex
 static const GLfloat   verts  [] = {
@@ -72,9 +83,6 @@ static const GLfloat   tvertsVertical[] ={
 	1.0f, 0.0f
 };
 
-#define min(a,b) (((a)<(b))?(a):(b)) 
-#define max(a,b) (((a)>(b))?(a):(b))
-
 #define get_cg_params()  \
       cgGLBindProgram(FragmentProgram); \
       cgGLBindProgram(VertexProgram); \
@@ -99,7 +107,7 @@ static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filenam
 	return id;
 }
 
-void _psglExitCG()
+static void psglExitCG()
 {
 
 	if (VertexProgram)
@@ -128,7 +136,7 @@ void _psglInitCG()
 {
 	char shaderFile[255];
 
-	_psglExitCG();
+	psglExitCG();
 
 	CgContext = cgCreateContext();
 	cgRTCgcInit();
@@ -412,7 +420,7 @@ void psglExitGL(void)
 {
 	cellDbgFontExit();
 
-	_psglExitCG();
+	psglExitCG();
 
 	if (psgl_context)
 	{
@@ -492,10 +500,25 @@ static int _psglTextureInit()
 		nVidImageHeight = nGameHeight;
 	}
 
-	nVidImageDepth = SCREEN_RENDER_TEXTURE_BITDEPTH;
-	nVidImageBPP = (nVidImageDepth + 7) >> 3;
-	nBurnBpp = nVidImageBPP;			// Set Burn library Bytes per pixel
-	SetBurnHighCol(nVidImageDepth);			// Use our callback to get colors:
+	nBurnBpp = SCREEN_RENDER_TEXTURE_BPP;		// Set Burn library Bytes per pixel
+	
+	// Use our callback to get colors:
+	VidRecalcPal();
+
+	switch(nBurnBpp)
+	{
+		case BPP_16_SCREEN_RENDER_TEXTURE_BPP:
+			VidHighCol = HighCol16;
+			break;
+		case BPP_32_SCREEN_RENDER_TEXTURE_BPP:
+			VidHighCol = HighCol24;
+			break;
+	}
+
+	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY))
+		BurnHighCol = VidHighCol;
+	
+	//End of callback
 
 	// Make the normal memory buffer
 	if (VidSAllocVidImage())

@@ -6,12 +6,6 @@
 // Software gamma, brightness and contrast adjust, added by regret
 // ref: bsnes
 
-#if defined (SN_TARGET_PS3) || defined(__LIBSNES__)
-#define min(a,b) (((a)<(b))?(a):(b)) 
-#define max(a,b) (((a)>(b))?(a):(b))
-#endif
-
-#ifndef SN_TARGET_PS3
 int bcolorAdjust = 0;
 int color_gamma = 0;
 int color_brightness = 0;
@@ -74,14 +68,11 @@ void colorAdjust(int& r, int& g, int& b)
 		b ^= 0xff;
     }
 }
-#endif
 
 // Standard callbacks for 16/24/32 bit color:
 static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 {
-#ifndef SN_TARGET_PS3
 	colorAdjust(r, g, b);
-#endif
 
 	unsigned int t;
 	t  = (r << 7) & 0x7c00; // 0rrr rr00 0000 0000
@@ -92,9 +83,7 @@ static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 
 static unsigned int __cdecl HighCol16(int r, int g, int b, int /* i */)
 {
-#ifndef SN_TARGET_PS3
 	colorAdjust(r, g, b);
-#endif
 
 	unsigned int t;
 	t  = (r << 8) & 0xf800; // rrrr r000 0000 0000
@@ -106,9 +95,7 @@ static unsigned int __cdecl HighCol16(int r, int g, int b, int /* i */)
 // 24-bit/32-bit
 static unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
 {
-#ifndef SN_TARGET_PS3
 	colorAdjust(r, g, b);
-#endif
 
 	unsigned int t;
 	t  = (r << 16) & 0xff0000;
@@ -117,7 +104,6 @@ static unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
 	return t;
 }
 
-#ifndef __LIBSNES__
 int SetBurnHighCol(int nDepth)
 {
 	VidRecalcPal();
@@ -134,4 +120,3 @@ int SetBurnHighCol(int nDepth)
 
 	return 0;
 }
-#endif

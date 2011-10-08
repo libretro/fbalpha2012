@@ -4,22 +4,26 @@
 #include "burner.h"
 #include "../../interface/PS3/audio_driver.h"
 
+//forward declarations
+int VidReinit(void);
+
 // Media init / exit
 int mediaInit(void)
 {
 	if (!bInputOkay)
-		InputInit();					// Init Input
+		InputInit();		// Init Input
 
 	nAppVirtualFps = nBurnFPS;
 
 	if (!bAudOkay)
 	{
-		audio_init();					// Init Sound (not critical if it fails)
+		audio_init();		// Init Sound (not critical if it fails)
 
-		if (!bAudOkay)
+		/*
+		if (!bAudOkay)		// Make sure the error will be visible
 		{
-			// Make sure the error will be visible
 		}
+		*/
 	}
 
 	// Assume no sound
@@ -34,9 +38,9 @@ int mediaInit(void)
 
 	if (!bVidOkay)
 	{
-		VidInit(); // Reinit the video plugin
+		VidInit();		// Reinit the video plugin
 
-		if (bVidOkay && ((bRunPause && bAltPause) || !bDrvOkay))
+		if (bVidOkay && (!bDrvOkay))
 			VidFrame();
 	}
 
@@ -45,10 +49,10 @@ int mediaInit(void)
 
 int mediaExit(void)
 {
-	nBurnSoundRate = 0;					// Blank sound
+	nBurnSoundRate = 0;		// Blank sound
 	pBurnSoundOut = NULL;
 
-	audio_exit();						// Exit audio
+	audio_exit();			// Exit audio
 	VidExit();
 	InputExit();
 	return 0;
@@ -59,7 +63,7 @@ int mediaReInitAudio(void)
 	if (bAudPlaying)
 		audio_stop();
 
-	nBurnSoundRate = 0;					// Blank sound
+	nBurnSoundRate = 0;		// Blank sound
 	pBurnSoundOut = NULL;
 
 	if (audio_exit())
@@ -76,8 +80,7 @@ int mediaReInitAudio(void)
 	return 0;
 }
 
-// change FPS
-int mediaChangeFps(int scale)
+int mediaChangeFps(int scale)		// change FPS
 {
 	nAppVirtualFps = nBurnFPS * scale / 100;
 
@@ -92,4 +95,10 @@ int mediaChangeFps(int scale)
 	audio_play();
 
 	return 0;
+}
+
+// simply reinit screen, added by regret
+void simpleReinitScrn(void)
+{
+	VidReinit();
 }

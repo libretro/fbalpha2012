@@ -1,10 +1,9 @@
-// Video Output - (calls all the Vid Out plugins)
 #include "burner.h"
 #include "highcol.h"
+#include "vid_support-ps3.h"
 #include "vid_psgl.h"
 
 bool bVidOkay = false;
-
 int nVidFullscreen = 0;
 int bVidCorrectAspect = 1;			// 1 = stretch to fill the window/screen while maintaining the correct aspect ratio
 int bVidVSync = 0;				// 1 = sync blits/pageflips/presents to the screen
@@ -13,37 +12,50 @@ int nVidRotationAdjust = 0;			// & 1: do not rotate the graphics for vertical ga
 unsigned int vidFilterLinear = 0;		// 1 = linear filter, or point filter
 int nVidOriginalScrnAspectX;
 int nVidOriginalScrnAspectY;
-
-int nVidScrnAspectX = 4, nVidScrnAspectY = 3;	// Aspect ratio of the display screen
+int nVidScrnAspectX = 4;			// Aspect ratio (X-axis)of the display screen
+int nVidScrnAspectY = 3;			// Aspect ratio (Y-axis) of the display screen
 int nVidScrnAspectMode = ASPECT_RATIO_4_3;
-float vidScrnAspect = (float)4 / (float)3;	// Aspect ratio
-extern bool autoVidScrnAspect = true;		// Automatical Aspect ratio
-
+float vidScrnAspect = ASPECT_RATIO_4_3;		// Aspect ratio
 unsigned char* pVidImage = NULL;		// Memory buffer
 int nVidImageWidth = DEFAULT_IMAGE_WIDTH;	// Memory buffer size
 int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
 int nVidImageLeft = 0, nVidImageTop = 0;	// Memory buffer visible area offsets
-int nVidImagePitch = 0, nVidImageBPP = 0;	// Memory buffer pitch and bytes per pixel
-int nVidImageDepth = 0;				// Memory buffer bits per pixel
-
-unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
+int nVidImagePitch = 0;				// Memory buffer pitch
 bool bVidRecalcPalette;
-
 unsigned char* pVidTransImage = NULL;
 static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;
-
 int nXOffset = 0;
 int nYOffset = 0;
 int nXScale = 0;
 int nYScale = 0;
 
-static unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
+unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
+
+unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 {
 	unsigned int t;
 	t  = (r << 7) & 0x7C00;
 	t |= (g << 2) & 0x03E0;
 	t |= (b >> 3) & 0x001F;
+	return t;
+}
+
+unsigned int __cdecl HighCol16(int r, int g, int b, int /* i */)
+{
+	unsigned int t;
+	t  = (r << 8) & 0xf800; // rrrr r000 0000 0000
+	t |= (g << 3) & 0x07e0; // 0000 0ggg ggg0 0000
+	t |= (b >> 3) & 0x001f; // 0000 0000 000b bbbb
+	return t;
+}
+
+unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
+{
+	unsigned int t;
+	t  = (r << 16) & 0xff0000;
+	t |= (g << 8 ) & 0x00ff00;
+	t |= (b      ) & 0x0000ff;
 	return t;
 }
 
@@ -58,15 +70,15 @@ int VidInit()
 	{
 		if (_psglInit() == 0)
 		{
-			nBurnBpp = nVidImageBPP; // Set Burn library Bytes per pixel
+			nBurnBpp = SCREEN_RENDER_TEXTURE_BPP; // Set Burn library Bytes per pixel
 			bVidOkay = true;
 
-			if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nVidImageBPP > 2)
+			if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nBurnBpp > 2)
 			{
-				nBurnBpp = 2;
+				nBurnBpp = BPP_16_SCREEN_RENDER_TEXTURE_BPP;
 
-				pVidTransPalette = (unsigned int*)malloc(transPaletteSize * sizeof(int));
-				pVidTransImage = (unsigned char*)malloc(nVidImageWidth * nVidImageHeight * (nVidImageBPP >> 1) * sizeof(short));
+				pVidTransPalette = (unsigned int*)memalign(128, transPaletteSize * sizeof(int));
+				pVidTransImage = (unsigned char*)memalign(128, nVidImageWidth * nVidImageHeight * (nBurnBpp >> 1) * sizeof(short));
 
 				BurnHighCol = HighCol15;
 
@@ -94,8 +106,6 @@ int VidExit()
 	nVidImageWidth = DEFAULT_IMAGE_WIDTH;
 	nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
 
-	nVidImageBPP = 0;
-	nVidImageDepth = 0;
 	nBurnPitch = 0;
 	nBurnBpp = 0;
 
@@ -202,7 +212,7 @@ int VidReinit()
 {
 	VidInit();
 
-	if (bRunPause || !bDrvOkay)
+	if (!bDrvOkay)
 		VidFrame();
 
 	CalculateViewports();

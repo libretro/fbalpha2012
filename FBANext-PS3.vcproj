@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-g"
-				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\lib\zlib;src\lib\libpng;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN"
+				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
+				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;BPP=32"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>
@@ -111,8 +111,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-O3 -ffast-math -funroll-loops"
-				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\lib\zlib;src\lib\libpng;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;&quot;INLINE=static __inline&quot;"
+				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
+				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;BPP=32;&quot;INLINE=static __inline&quot;"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>
@@ -1825,173 +1825,109 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="lib"
+					Name="libs"
 					>
 					<Filter
 						Name="File_Extractor"
 						>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zAlloc.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zAlloc.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zBuf.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zBuf.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zCrc.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zCrc.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zDecode.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zDecode.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zExtract.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zExtract.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zHeader.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zHeader.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zIn.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zIn.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zItem.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zItem.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\7zStream.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\7zStream.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Bcj2.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Bcj2.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Binary_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Binary_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\blargg_common.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\blargg_common.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\blargg_errors.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\blargg_errors.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Bra86.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Bra86.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Data_Reader.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Data_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\fex.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\fex.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\File_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\File_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Gzip_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Gzip_Reader.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\Lzma2Dec.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\Lzma2Dec.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\7z_C\LzmaDec.c"
+							RelativePath=".\src\libs\File_Extractor\7z_C\LzmaDec.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Rar_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Rar_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zip7_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Zip7_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zip_Extractor.cpp"
+							RelativePath=".\src\libs\File_Extractor\fex\Zip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\File_Extractor\fex\Zlib_Inflater.cpp"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="libpng"
-						>
-						<File
-							RelativePath=".\src\lib\libpng\png.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngerror.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngget.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngmem.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngpread.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngread.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngrio.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngrtran.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngrutil.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngset.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngtrans.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngwio.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngwrite.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngwtran.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\lib\libpng\pngwutil.c"
+							RelativePath=".\src\libs\File_Extractor\fex\Zlib_Inflater.cpp"
 							>
 						</File>
 					</Filter>
@@ -1999,27 +1935,27 @@
 						Name="ticpp"
 						>
 						<File
-							RelativePath=".\src\lib\ticpp\ticpp.cpp"
+							RelativePath=".\src\libs\ticpp\ticpp.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\ticpp_sugar.cpp"
+							RelativePath=".\src\libs\ticpp\ticpp_sugar.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinystr.cpp"
+							RelativePath=".\src\libs\ticpp\tinystr.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxml.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxml.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxmlerror.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxmlerror.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\ticpp\tinyxmlparser.cpp"
+							RelativePath=".\src\libs\ticpp\tinyxmlparser.cpp"
 							>
 						</File>
 					</Filter>
@@ -2027,43 +1963,43 @@
 						Name="zlib"
 						>
 						<File
-							RelativePath=".\src\lib\zlib\adler32.c"
+							RelativePath=".\src\libs\zlib\adler32.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\compress.c"
+							RelativePath=".\src\libs\zlib\compress.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\crc32.c"
+							RelativePath=".\src\libs\zlib\crc32.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\deflate.c"
+							RelativePath=".\src\libs\zlib\deflate.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inffast.c"
+							RelativePath=".\src\libs\zlib\inffast.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inflate.c"
+							RelativePath=".\src\libs\zlib\inflate.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\inftrees.c"
+							RelativePath=".\src\libs\zlib\inftrees.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\trees.c"
+							RelativePath=".\src\libs\zlib\trees.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\uncompr.c"
+							RelativePath=".\src\libs\zlib\uncompr.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\lib\zlib\zutil.c"
+							RelativePath=".\src\libs\zlib\zutil.c"
 							>
 						</File>
 					</Filter>
@@ -2073,14 +2009,6 @@
 					>
 					<File
 						RelativePath=".\src\burner\archive.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\burner\autofire.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\burner\combo.cpp"
 						>
 					</File>
 					<File
@@ -2105,10 +2033,6 @@
 					</File>
 					<File
 						RelativePath=".\src\burner\ips.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\burner\misc.cpp"
 						>
 					</File>
 					<File
@@ -2147,26 +2071,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\src\burner\PS3\inpdipsw.cpp"
-							>
-							<FileConfiguration
-								Name="PS3 Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="PS3 Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
 							RelativePath=".\src\burner\PS3\main.cpp"
 							>
 						</File>
@@ -2191,10 +2095,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\src\burner\PS3\scrn.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\src\burner\PS3\stated.cpp"
 							>
 						</File>
@@ -2212,69 +2112,13 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\interface.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\interface\lowpass2.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\interface\vid_filter.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\src\interface\PS3\vid_interface_ps3.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\src\interface\vid_support.cpp"
+						RelativePath=".\src\interface\PS3\vid_support-ps3.cpp"
 						>
 					</File>
-					<Filter
-						Name="filter"
-						>
-						<File
-							RelativePath=".\src\interface\filter\2xpm.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\2xsai.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\admame.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\epx.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\hq2x.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\hq2xs_16.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\hq3x.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\hq_shared32.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\interpolated_scanline.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\interface\filter\scanline.cpp"
-							>
-						</File>
-					</Filter>
 					<Filter
 						Name="PS3"
 						>
@@ -2296,10 +2140,6 @@
 									RelativePath=".\src\interface\PS3\cellframework2\audio\buffer.c"
 									>
 								</File>
-							</Filter>
-							<Filter
-								Name="threads"
-								>
 							</Filter>
 							<Filter
 								Name="input"

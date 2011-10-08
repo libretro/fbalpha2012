@@ -54,7 +54,7 @@
 	| MASKGALAXIAN | MASKATARI)
 
       
-#define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x);
+#define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x);
 
 /****************************************************/
 /* PNG SECTION                                      */
@@ -194,7 +194,7 @@ void InpDIPSWResetDIPs()
 		{
 			pgi = GameInp + bdi.nInput + nDIPOffset;
 			if (pgi)
-				pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+				pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 		}
 		i++;
 	}
@@ -209,7 +209,7 @@ bool CheckSetting(int i)
 	if (!pgi)
 		return false;
 
-	if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting)
+	if ((pgi->Input.Constant & bdi.nMask) == bdi.nSetting)
 	{
 		unsigned char nFlags = bdi.nFlags;
 		if ((nFlags & 0x0F) <= 1)
@@ -222,12 +222,12 @@ bool CheckSetting(int i)
 				pgi = GameInp + bdi.nInput + nDIPOffset;
 				if (nFlags & 0x80)
 				{
-					if ((pgi->Input.Constant.nConst & bdi.nMask) == bdi.nSetting)
+					if ((pgi->Input.Constant & bdi.nMask) == bdi.nSetting)
 						return false;
 				}
 				else
 				{
-					if ((pgi->Input.Constant.nConst & bdi.nMask) != bdi.nSetting)
+					if ((pgi->Input.Constant & bdi.nMask) != bdi.nSetting)
 						return false;
 				}
 			}
@@ -252,9 +252,6 @@ static int InpDIPSWInit()
 
 static int InpDIPSWExit()
 {
-	if (!bAltPause && bRunPause)
-		bRunPause = 0;
-
 	return 0;
 }
 
@@ -271,7 +268,7 @@ static void InpDIPSWCancel()
 			pgi = GameInp + bdi.nInput + nDIPOffset;
 			if (pgi)
 			{
-				pgi->Input.Constant.nConst = nPrevDIPSettings[j];
+				pgi->Input.Constant = nPrevDIPSettings[j];
 				j++;
 			}
 		}
@@ -752,10 +749,6 @@ void ConfigMenu()
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_AUTO_FRAMESKIP ? COLS : 0xFFFFFFFF, "Auto Frameskip Enabled: %s", autoFrameSkip ? "Yes" : "No");
-	cellDbgFontDraw();
-	number++;
-
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
 	cellDbgFontDraw();	
 	number++;
@@ -807,7 +800,6 @@ void ConfigFrameMove()
 		old_state = new_state;
 		if (bDrvOkay)	// theres a game loaded, return to game
 		{
-			setPauseMode(0);
 			audio_play();
 			GameStatus = EMULATING;
 			return;
@@ -899,7 +891,7 @@ void ConfigFrameMove()
 				if(nVidScrnAspectMode > 0)
 				{
 					nVidScrnAspectMode--;
-					setWindowAspect();
+					setWindowAspect(0);
 				}
 			}
 			else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -907,7 +899,7 @@ void ConfigFrameMove()
 				if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
 				{
 					nVidScrnAspectMode++;
-					setWindowAspect();
+					setWindowAspect(0);
 				}
 			}
 			break;
@@ -921,12 +913,6 @@ void ConfigFrameMove()
 					nVidRotationAdjust = 0;
 				}
 				//apply_rotation_settings();
-			}
-			break;
-		case SETTING_AUTO_FRAMESKIP:
-			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
-			{
-				autoFrameSkip = !autoFrameSkip;
 			}
 			break;
 		case SETTING_CURRENT_SHADER:
@@ -1089,7 +1075,6 @@ void DipFrameMove()
 
 			if (bDrvOkay)	// theres a game loaded, return to game
 			{
-				setPauseMode(0);
 				audio_play();
 				is_running = 1;
 				GameStatus = EMULATING;
@@ -1161,7 +1146,7 @@ void DipFrameMove()
 
 
 			struct GameInp* pgi = GameInp + bdi.nInput + nDIPOffset;
-			pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+			pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 			if (bdi.nFlags & 0x40)
 			{
 				while (BurnDrvGetDIPInfo(&bdi, nDIPGroup + 1 + j++) == 0)
@@ -1169,7 +1154,7 @@ void DipFrameMove()
 					if (bdi.nFlags == 0)
 					{
 						pgi = GameInp + bdi.nInput + nDIPOffset;
-						pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+						pgi->Input.Constant = (pgi->Input.Constant & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
 					}
 					else
 						break;
@@ -1422,7 +1407,6 @@ void InputFrameMove()
 			if (bDrvOkay)	// theres a game loaded, return to game
 			{
 				old_state = new_state;
-				setPauseMode(0);
 				audio_play();
 				is_running = 1;
 				GameStatus = EMULATING;
@@ -1459,51 +1443,51 @@ void InputFrameMove()
 				{
 					case 0:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+						pgi->Input.Switch = (unsigned short)FBK_C;
 						break;
 					case 1:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+						pgi->Input.Switch = (unsigned short)FBK_Z;
 						break;
 					case 2:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+						pgi->Input.Switch = (unsigned short)FBK_X;
 						break;
 					case 3:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+						pgi->Input.Switch = (unsigned short)FBK_V;
 						break;
 					case 4:	
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+						pgi->Input.Switch = (unsigned short)FBK_1;
 						break;
 					case 5:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+						pgi->Input.Switch = (unsigned short)FBK_5;
 						break;
 					case 6:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+						pgi->Input.Switch = (unsigned short)FBK_S;
 						break;
 					case 7:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+						pgi->Input.Switch = (unsigned short)FBK_D;
 						break;
 					case 8:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_F1;
+						pgi->Input.Switch = (unsigned short)FBK_F1;
 						break;
 					case 9:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_F2;
+						pgi->Input.Switch = (unsigned short)FBK_F2;
 						break;
 					case 10: 
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
+						pgi->Input.Switch = (unsigned short)PS3_L2_BUTTON; 
 						break;
 					case 11:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
+						pgi->Input.Switch = (unsigned short)PS3_R2_BUTTON;			 
 						break;
 				}
 			}
@@ -1691,51 +1675,51 @@ void InputFrameMove()
 				{
 					case 0:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_C;
+						pgi->Input.Switch = (unsigned short)FBK_C;
 						break;
 					case 1:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_Z;
+						pgi->Input.Switch = (unsigned short)FBK_Z;
 						break;
 					case 2:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_X;
+						pgi->Input.Switch = (unsigned short)FBK_X;
 						break;
 					case 3:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_V;
+						pgi->Input.Switch = (unsigned short)FBK_V;
 						break;
 					case 4:	
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_1;
+						pgi->Input.Switch = (unsigned short)FBK_1;
 						break;
 					case 5:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_5;
+						pgi->Input.Switch = (unsigned short)FBK_5;
 						break;
 					case 6:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_S;
+						pgi->Input.Switch = (unsigned short)FBK_S;
 						break;
 					case 7:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)FBK_D;
+						pgi->Input.Switch = (unsigned short)FBK_D;
 						break;
 					case 8:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_L3_BUTTON;
+						pgi->Input.Switch = (unsigned short)PS3_L3_BUTTON;
 						break;
 					case 9:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_R3_BUTTON;
+						pgi->Input.Switch = (unsigned short)PS3_R3_BUTTON;
 						break;
 					case 10: 
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_L2_BUTTON; 
+						pgi->Input.Switch = (unsigned short)PS3_L2_BUTTON; 
 						break;
 					case 11:
 						pgi->nInput = GIT_SWITCH;
-						pgi->Input.Switch.nCode = (unsigned short)PS3_R2_BUTTON;			 
+						pgi->Input.Switch = (unsigned short)PS3_R2_BUTTON;			 
 						break;
 				}
 			}
@@ -2013,7 +1997,6 @@ void InGameFrameMove()
 		if (bDrvOkay)	// theres a game loaded, return to game
 		{
 			old_state = new_state;
-			setPauseMode(0);
 			audio_play();
 			is_running = 1;
 			GameStatus = EMULATING;
@@ -2072,7 +2055,6 @@ void InGameFrameMove()
 			if(CTRL_CROSS(old_state & diff_state) || CTRL_R2(new_state))
 			{
 				old_state = new_state;
-				setPauseMode(0);
 				audio_play();
 				is_running = 0;
 				GameStatus = EMULATING;
@@ -2107,7 +2089,7 @@ void InGameFrameMove()
 				if(nVidScrnAspectMode > 0)
 				{
 					nVidScrnAspectMode--;
-					setWindowAspect();
+					setWindowAspect(0);
 					BurnReinitScrn();
 					psglRedraw();
 				}
@@ -2117,7 +2099,7 @@ void InGameFrameMove()
 				if(nVidScrnAspectMode < LAST_ASPECT_RATIO)
 				{
 					nVidScrnAspectMode++;
-					setWindowAspect();
+					setWindowAspect(0);
 					BurnReinitScrn();
 					psglRedraw();
 				}
@@ -2203,7 +2185,6 @@ void InGameFrameMove()
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
 					old_state = new_state;
-					setPauseMode(0);
 					audio_play();
 					GameStatus = EMULATING;				 
 				}		
@@ -2217,7 +2198,6 @@ void InGameFrameMove()
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
 					old_state = new_state;
-					setPauseMode(0);
 					audio_play();
 					is_running = 1;
 					GameStatus = EMULATING;				 
@@ -2265,7 +2245,6 @@ void InGameFrameMove()
 				if (bDrvOkay)	// theres a game loaded, return to game
 				{
 					old_state = new_state;
-					setPauseMode(0);
 					audio_play();
 					is_running = 1;
 					GameStatus = EMULATING;				 
@@ -2385,7 +2364,6 @@ void FrameMove()
 		{
 			// switch back to emulation
 			old_state = new_state;
-			setPauseMode(0);
 			audio_play();
 			is_running = 1;
 			GameStatus = EMULATING;
@@ -2492,7 +2470,6 @@ void FrameMove()
 			{
 				// same game, do nothing
 				old_state = new_state;
-				setPauseMode(0);
 				audio_play();
 				GameStatus = EMULATING;	
 				return;

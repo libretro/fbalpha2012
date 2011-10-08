@@ -159,8 +159,6 @@ int BurnerDrvExit()
 
 	bDrvOkay = 0; // Stop using the BurnDrv functions
 
-	bRunPause = 0; // Don't pause when exitted
-
 	if (bAudOkay)
 	{
 		audio_blank();	// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut

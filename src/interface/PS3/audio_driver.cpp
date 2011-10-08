@@ -1,21 +1,19 @@
-// Audio Output
-
 #include <cell/audio.h>
 #include <cell/sysmodule.h>
 #include "cellframework2/audio/stream.h"
 #include "audio_driver.h"
 #include "burner.h"
 
-int nAudSampleRate = 48010;		// Sample rate
-int nAudSegCount = 6;			// Segments in the pdsbLoop buffer
-int nAudSegLen = 0;			// Segment length in samples (calculated from Rate/Fps)
-int nAudAllocSegLen = 0;		// Allocated segment length in samples
-bool bAudOkay = false;			// True if sound was inited okay
-bool bAudPlaying = false;
-
-int16_t * pAudNextSound = NULL;	// The next sound seg we will add to the sample loop
 extern cell_audio_handle_t audio_handle;
-extern const struct cell_audio_driver *driver;
+extern const struct cell_audio_driver *	driver;
+
+int		nAudSampleRate = 48010;	// Sample rate
+int		nAudSegCount = 6;	// Segments in the pdsbLoop buffer
+int		nAudSegLen = 0;		// Segment length in samples (calculated from Rate/Fps)
+int		nAudAllocSegLen = 0;	// Allocated segment length in samples
+bool		bAudOkay = false;	// True if sound was inited okay
+bool		bAudPlaying = false;
+int16_t *	pAudNextSound = NULL;	// The next sound seg we will add to the sample loop
 
 int audio_new(void)
 {

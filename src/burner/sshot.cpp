@@ -158,9 +158,8 @@ int MakeScreenShot(bool bScrShot, int Type)  // 0 = Title, 1 = Preview
 
 	// do our PNG construct things
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr) {
+	if (!png_ptr)
 		return SSHOT_LIBPNG_ERROR;
-	}
 
 	png_infop info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {

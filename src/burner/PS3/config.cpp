@@ -12,7 +12,7 @@
 //#include "patch.h"
 #endif
 
-#include "../lib/ticpp/ticpp.h"
+#include "../libs/ticpp/ticpp.h"
 #include <locale.h>
 
 int nPatchLang = 0;
@@ -145,20 +145,13 @@ int configAppLoadXml()
 
 	// video others
 	child = findElement(element, "monitor");
-	getAttr(child, "auto-aspect", &autoVidScrnAspect);
 	getAttr(child, "aspect-x", &nVidScrnAspectX);
 	getAttr(child, "aspect-y", &nVidScrnAspectY);
 	getAttr(child, "aspect-mode", &nVidScrnAspectMode);
 
-	child = findElement(element, "frame");
-	getAttr(child, "auto-frameskip", &autoFrameSkip);
-
 	// gui
 	element = findElement(root, "gui");
 	if (element) {
-		child = findElement(element, "language");
-		child = findElement(element, "gamelist");
-
 		child = findElement(element, "gui-misc");
 		getAttr(child, "lastRom", &nLastRom);
 		getAttr(child, "lastFilter", &nLastFilter);
@@ -278,16 +271,11 @@ int configAppSaveXml()
 	// video others
 	ticpp::Element monitor("monitor");
 	video.LinkEndChild(&monitor);
-	setAttr(monitor, "auto-aspect", autoVidScrnAspect);
 	setAttr(monitor, "aspect-x", nVidScrnAspectX);
 	setAttr(monitor, "aspect-y", nVidScrnAspectY);
 #ifdef SN_TARGET_PS3
 	setAttr(monitor, "aspect-mode", nVidScrnAspectMode);
 #endif
-
-	ticpp::Element frame("frame");
-	video.LinkEndChild(&frame);
-	setAttr(frame, "auto-frameskip", autoFrameSkip);
 
 	// gui
 	ticpp::Element gui("gui");

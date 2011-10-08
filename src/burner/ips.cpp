@@ -23,9 +23,8 @@
 void applyIPSpatch(const char* ips_path, long ips_size, unsigned char* base, int base_len)
 {
 	FILE* f = NULL;
-	if ((f = fopen(ips_path, "rb")) == NULL) {
+	if ((f = fopen(ips_path, "rb")) == NULL)
 		return;
-	}
 
 	char buf[6];
 	memset(buf, 0, sizeof buf);

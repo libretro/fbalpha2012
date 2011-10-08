@@ -202,7 +202,6 @@ extern int CpsLayer3XOffs;
 extern int CpsLayer1YOffs;
 extern int CpsLayer2YOffs;
 extern int CpsLayer3YOffs;
-void DrawFnInit();
 int  CpsDraw();
 int  Cps2Draw();
 int  CpsRedraw();

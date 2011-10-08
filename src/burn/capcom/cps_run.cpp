@@ -116,9 +116,6 @@ int Cps2RunInit()
 
 	DrvReset();
 
-	//Init Draw Function
-	DrawFnInit();
-
 	return 0;
 }
 
@@ -164,9 +161,6 @@ int CpsRunInit()
 		EEPROMReset();
 
 	DrvReset();
-
-	//Init Draw Function
-	DrawFnInit();
 
 	return 0;
 }

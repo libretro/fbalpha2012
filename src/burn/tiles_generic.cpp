@@ -72,8 +72,11 @@ void GfxDecode(int num, int numPlanes, int xSize, int ySize, int planeoffsets[],
 				dp = pDest + (c * xSize * ySize) + (y * xSize);
 
 				for (x = 0; x < xSize; x++)
-					if (READBIT(pSrc, yoffs + xoffsets[x]))
+				{
+					int _bitnum = yoffs + xoffsets[x];
+					if (READBIT(pSrc, _bitnum))
 						dp[x] |= planebit;
+				}
 			}
 		}
 	}

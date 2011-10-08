@@ -18,42 +18,7 @@ int CpsLayer1YOffs = 0;
 int CpsLayer2YOffs = 0;
 int CpsLayer3YOffs = 0;
 
-static void Cps1Layers();
-static void Cps2Layers();
-
-typedef int  (*CpsObjDrawDoFn)(int,int);
-typedef int  (*CpsScrXDrawDoFn)(unsigned char *,int,int);
-typedef void (*CpsLayersDoFn)();
-typedef int  (*CpsrRenderDoFn)();
-
-CpsObjDrawDoFn  CpsObjDrawDoX;
-CpsScrXDrawDoFn CpsScr1DrawDoX;
-CpsScrXDrawDoFn CpsScr3DrawDoX;
-CpsLayersDoFn   CpsLayersDoX;
-CpsrRenderDoFn  CpsrRenderDoX;
-
-void DrawFnInit()
-{
-	if(Cps == 2)
-	{
-		CpsLayersDoX   = Cps2Layers;
-		CpsScr1DrawDoX = Cps2Scr1Draw;
-		CpsScr3DrawDoX = Cps2Scr3Draw;
-		CpsObjDrawDoX  = Cps2ObjDraw;
-		CpsrRenderDoX  = Cps2rRender;
-	}
-	else
-	{
-		CpsLayersDoX   = Cps1Layers;
-		CpsScr1DrawDoX = Cps1Scr1Draw;
-		CpsScr3DrawDoX = Cps1Scr3Draw;
-		CpsObjDrawDoX  = Cps1ObjDraw;
-		CpsrRenderDoX  = Cps1rRender;
-	}
-	//CpsrPrepareDoX = CpsrPrepare;
-}
-
-static int DrawScroll1(int i)
+static int Cps1DrawScroll1(int i)
 {
 	// Draw Scroll 1
 	int nOff, nScrX, nScrY;
@@ -84,7 +49,46 @@ static int DrawScroll1(int i)
 	if (Find == NULL)
 		return 1;
 
-	CpsScr1DrawDoX(Find, nScrX, nScrY);
+	Cps1Scr1Draw(Find, nScrX, nScrY);
+	return 0;
+}
+
+static int Cps2DrawScroll1(int i)
+{
+	// Draw Scroll 1
+	int nOff, nScrX, nScrY;
+	unsigned char *Find;
+
+	nOff = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x02)));
+
+	// Get scroll coordinates
+	nScrX = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x0c))); // Scroll 1 X
+	nScrY = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x0e))); // Scroll 1 Y
+
+	nScrX += 0x40;
+
+	//bprintf(PRINT_NORMAL, _T("1 %x, %x, %x\n"), nOff, nScrX, nScrY);
+
+	#if 0
+	if (kludge == 10 || kludge == 21) nScrX -= 0x0c;
+	if (kludge == 6 || kludge == 11) nScrX += 0xFFC0;
+	if (kludge == 14) nScrX -= 0x08;
+	if (kludge == 20) nScrX -= 0x10;
+	if (Dinopic) nScrX += CpsLayer1XOffs;
+	#endif
+	nScrY += 0x10;
+	#if 0
+	if (Dinopic) nScrY += CpsLayer1YOffs;
+	#endif
+
+	nOff <<= 8;
+	nOff &= 0xffc000;
+	Find = CpsFindGfxRam(nOff, 0x4000);
+
+	if (Find == NULL)
+		return 1;
+
+	Cps2Scr1Draw(Find, nScrX, nScrY);
 	return 0;
 }
 
@@ -165,7 +169,7 @@ static int DrawScroll2Init(int i)
 	if (CpsrBase != NULL) \
 		Cps2rRender();
 
-static int DrawScroll3(int i)
+static int Cps1DrawScroll3(int i)
 {
 	// Draw Scroll 3
 	int nOff, nScrX, nScrY;
@@ -202,7 +206,52 @@ static int DrawScroll3(int i)
 	if (Find == NULL)
 		return 1;
 
-	CpsScr3DrawDoX(Find, nScrX, nScrY);
+	Cps1Scr3Draw(Find, nScrX, nScrY);
+	return 0;
+}
+
+static int Cps2DrawScroll3(int i)
+{
+	// Draw Scroll 3
+	int nOff, nScrX, nScrY;
+	unsigned char *Find;
+
+	nOff =   swapWord(((*((unsigned short *)(CpsSaveReg[i] + 0x06)))));
+
+	// Get scroll coordinates
+	nScrX =   swapWord(((*((unsigned short *)(CpsSaveReg[i] + 0x14))))); // Scroll 3 X
+	nScrY =   swapWord(((*((unsigned short *)(CpsSaveReg[i] + 0x16))))); // Scroll 3 Y
+
+	nScrX += 0x40;
+
+	//	bprintf(PRINT_NORMAL, _T("3 %x, %x, %x\n"), nOff, nScrX, nScrY);
+
+	#if 0
+	int32_t kludge_10_mask = ((kludge - 10) | -(kludge - 10)) >> 31;
+	int32_t kludge_11_mask = ((kludge - 11) | -(kludge - 11)) >> 31;
+	int32_t kludge_14_mask = ((kludge - 14) | -(kludge - 14)) >> 31;
+	int32_t kludge_20_mask = ((kludge - 20) | -(kludge - 20)) >> 31;
+	int32_t kludge_21_mask = ((kludge - 21) | -(kludge - 21)) >> 31;
+	nScrX = ((nScrX - 0x10) & ~(kludge_10_mask | kludge_21_mask)) | (nScrX & (kludge_10_mask | kludge_21_mask));
+	nScrX = ((nScrX + 0xFFC0) & ~kludge_11_mask) | (nScrX & kludge_11_mask); 
+	nScrX = ((nScrX - 0x0C) & ~kludge_14_mask) | (nScrX & kludge_14_mask); 
+	nScrX = ((nScrX - 0x10) & ~kludge_20_mask) | (nScrX & kludge_20_mask);
+	int32_t dinopic_mask = ((Dinopic) | -(Dinopic)) >> 31;
+	nScrX = ((nScrX + CpsLayer3XOffs) & dinopic_mask) | (nScrX & ~dinopic_mask);
+	#endif
+	nScrY += 0x10;
+	#if 0
+	nScrY = ((nScrY + CpsLayer3YOffs) & dinopic_mask) | (nScrY & ~dinopic_mask);
+	#endif
+
+	nOff <<= 8;
+	nOff &= 0xffc000;
+	Find=CpsFindGfxRam(nOff, 0x4000);
+
+	if (Find == NULL)
+		return 1;
+
+	Cps2Scr3Draw(Find, nScrX, nScrY);
 	return 0;
 }
 
@@ -291,7 +340,7 @@ static void Cps1Layers()
 				switch (Draw[i+1]) {
 					case 1:
 						if (nDrawMask & 2)
-							DrawScroll1(0);
+							Cps1DrawScroll1(0);
 						break;
 					case 2:
 						if (nDrawMask & 4)
@@ -299,7 +348,7 @@ static void Cps1Layers()
 						break;
 					case 3:
 						if (nDrawMask & 8)
-							DrawScroll3(0);
+							Cps1DrawScroll3(0);
 						break;
 				}
 				nBgHi=0;
@@ -310,7 +359,7 @@ static void Cps1Layers()
 		switch (n) {
 			case 1:
 				if (nDrawMask & 2)
-					DrawScroll1(0);
+					Cps1DrawScroll1(0);
 				break;
 			case 2:
 				if (nDrawMask & 4)
@@ -318,7 +367,7 @@ static void Cps1Layers()
 				break;
 			case 3:
 				if (nDrawMask & 8)
-					DrawScroll3(0);
+					Cps1DrawScroll3(0);
 				break;
 		}
 	}
@@ -435,7 +484,7 @@ static void Cps2Layers()
 					{
 						case 1:
 							if (nDrawMask[nSlice] & 2)
-								DrawScroll1(nSlice);
+								Cps2DrawScroll1(nSlice);
 							break;
 						case 2:
 							if (nDrawMask[nSlice] & 4) {
@@ -446,7 +495,7 @@ static void Cps2Layers()
 							break;
 						case 3:
 							if (nDrawMask[nSlice] & 8)
-								DrawScroll3(nSlice);
+								Cps2DrawScroll3(nSlice);
 							break;
 					}
 				}

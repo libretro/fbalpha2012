@@ -55,22 +55,20 @@ static unsigned char CpsReadPort(const unsigned int ia)
 	if (ia == 0x000) {
 		d = (unsigned char)~Inp000;
 		if (Pzloop2) {
-			if (ReadPaddle) {
+			if (ReadPaddle)
 				d -= CpsPaddle2Value;
-			} else {
+			else
 				d = CpsPaddle2;
-			}
 		}
 		return d;
 	}
 	if (ia == 0x001) {
 		d = (unsigned char)~Inp001;
 		if (Pzloop2) {
-			if (ReadPaddle) {
+			if (ReadPaddle)
 				d -= CpsPaddle1Value;
-			} else {
+			else
 				d = CpsPaddle1;
-			}
 		}
 		return d;
 	}
@@ -171,15 +169,13 @@ static unsigned char CpsReadPort(const unsigned int ia)
 		}
 
 		// CPS1 EEPROM read
-		if (ia == 0xC007) {
+		if (ia == 0xC007)
 			return EEPROMRead();
-		}
 
 		if (kludge == 5) {
 			// Pang3 EEPROM
-			if (ia == 0x17B) {
+			if (ia == 0x17B)
 				return EEPROMRead();
-			}
 		}
 
 		// Extra Input ports (move from game-to-game)
@@ -245,18 +241,14 @@ static unsigned char CpsReadPort(const unsigned int ia)
 		}
 
 		if (kludge == 7) {
-			if (ia == 0x053) {
+			if (ia == 0x053)
 				return (nDial055 >>  8) & 0xFF;
-			}
-			if (ia == 0x055) {
+			if (ia == 0x055)
 				return (nDial055 >> 16) & 0xFF;
-			}
-			if (ia == 0x05B) {
+			if (ia == 0x05B)
 				return (nDial05d >>  8) & 0xFF;
-			}
-			if (ia == 0x05D) {
+			if (ia == 0x05D)
 				return (nDial05d >> 16) & 0xFF;
-			}
 		}
 	}
 
@@ -285,19 +277,17 @@ static void CpsWritePort(const unsigned int ia, unsigned char d)
 			return;
 		}
 
-		if (ia == 0x041) {
+		if (ia == 0x041)
 			nDial055 = 0;
-		}
-		if (ia == 0x049) {
+
+		if (ia == 0x049)
 			nDial05d = 0;
-		}
 	}
 
-	if (Cps == 1 && Cps1QsHack == 1) {
-		if (ia == 0x181) {
-			// Pass the Sound Code to the Q-Sound Shared Ram
-			CpsZRamC0[0x001] = d;
-		}
+	if (Cps == 1 && Cps1QsHack == 1)
+	{
+		if (ia == 0x181)
+			CpsZRamC0[0x001] = d;	// Pass the Sound Code to the Q-Sound Shared Ram
 	}
 
 	// CPS registers
@@ -355,24 +345,23 @@ unsigned char __fastcall CpsReadByte(unsigned int a)
 	}
 
 	if (Cps == 2) {
-		if ((a & 0xFF8000) == 0x660000) {
-			if (a == 0x664001) {
+		if ((a & 0xFF8000) == 0x660000)
+		{
+			if (a == 0x664001)
 				return n664001;
-			}
 		}
 
 		return 0x00;
 	}
 
-	if (kludge == 6 || kludge == 11) {
-		if ((a & 0xFF8000) == 0x880000) {
+	if (kludge == 6 || kludge == 11)
+	{
+		if ((a & 0xFF8000) == 0x880000)
 			return CpsReadPort(a & 0x1FF);
-		}
 	}
 
-	if (a >= 0xF1C000 && a <= 0xF1C007) {
+	if (a >= 0xF1C000 && a <= 0xF1C007)
 		return CpsReadPort(a & 0xC00F);
-	}
 
 //	bprintf(PRINT_NORMAL, _T("Read Byte %x\n"), a);
 
@@ -393,11 +382,10 @@ void __fastcall CpsWriteByte(unsigned int a,unsigned char d)
 			CpsFrg[a & 0x0F] = d;
 			return;
 		}
-		if ((a & 0xFF8000) == 0x660000) {
-			if (a == 0x664001) {
-				// bit 1 toggled on/off each frame
-				n664001 = d;
-			}
+		if ((a & 0xFF8000) == 0x660000)
+		{
+			if (a == 0x664001)
+				n664001 = d;	// bit 1 toggled on/off each frame
 			return;
 		}
 		return;
@@ -425,14 +413,12 @@ void __fastcall CpsWriteByte(unsigned int a,unsigned char d)
 
 unsigned short __fastcall CpsReadWord(unsigned int a)
 {
-	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[3]) {
+	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[3])
 		return (unsigned short)((nCalc[0] * nCalc[1]) >> 16);
-	}
 
 	// ports mirrored between 0x800000 and 0x807fff
-	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[2]) {
+	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[2])
 		return (unsigned short)((nCalc[0] * nCalc[1]));
-	}
 
 //	bprintf(PRINT_NORMAL, _T("Read Word %x\n"), a);
 
@@ -448,10 +434,10 @@ void __fastcall CpsWriteWord(unsigned int a, unsigned short d)
 	if ((a & 0xFF8FFF) == 0x800100 + CpsMProt[1])
 		nCalc[1] = d;
 
-	if (a == 0x804040) {
-		if ((d & 0x0008) == 0) {
+	if (a == 0x804040)
+	{
+		if ((d & 0x0008) == 0)
 			ZetReset();
-		}
 	}
 
 	if (Dinopic && a == 0x800222) {
@@ -493,6 +479,59 @@ int CpsRwExit()
 	return 0;
 }
 
+int Cps2RwGetInp()
+{
+	// Compile separate buttons into Inpxxx
+#define INP(nnn) \
+  { int i = 0; Inp##nnn = 0; \
+    for (i = 0; i < 8; i++) { Inp##nnn |= (CpsInp##nnn[i] & 1) << i; }  }
+	CPSINPSET
+#undef INP
+
+#define INP(nnnn) \
+  { int i = 0; Inp##nnnn = 0; \
+    for (i = 0; i < 8; i++) { Inp##nnnn |= (CpsInp##nnnn[i] & 1) << i; }  }
+	CPSINPEX
+#undef INP
+
+	if (Pzloop2) {
+		if (ReadPaddle) {
+			CpsPaddle1Value = 0;
+			CpsPaddle2Value = 0;
+			if (CpsInpPaddle1) {
+				if (CpsInpPaddle1 > 0x8000)
+					CpsPaddle1Value = 2;
+
+				if (CpsInpPaddle1 < 0x7fff)
+					CpsPaddle1Value = 1;
+			}
+
+			if (CpsInpPaddle2) {
+				if (CpsInpPaddle2 > 0x8000)
+					CpsPaddle2Value = 2;
+
+				if (CpsInpPaddle2 < 0x7fff)
+					CpsPaddle2Value = 1;
+			}
+		}
+
+		CpsPaddle1 += (CpsInpPaddle1 >> 8) & 0xff;
+		CpsPaddle2 += (CpsInpPaddle2 >> 8) & 0xff;
+	}
+
+	DrvClearOpposites(&Inp000);
+	DrvClearOpposites(&Inp001);
+
+	if (nMaxPlayers > 2)
+	{
+			DrvClearOpposites(&Inp011);
+			if (nMaxPlayers == 4)
+				DrvClearOpposites(&Inp010);
+	}
+
+	return 0;
+}
+
 int CpsRwGetInp()
 {
 	// Compile separate buttons into Inpxxx
@@ -520,23 +559,19 @@ int CpsRwGetInp()
 			CpsPaddle1Value = 0;
 			CpsPaddle2Value = 0;
 			if (CpsInpPaddle1) {
-				if (CpsInpPaddle1 > 0x8000) {
+				if (CpsInpPaddle1 > 0x8000)
 					CpsPaddle1Value = 2;
-				}
 
-				if (CpsInpPaddle1 < 0x7fff) {
+				if (CpsInpPaddle1 < 0x7fff)
 					CpsPaddle1Value = 1;
-				}
 			}
 
 			if (CpsInpPaddle2) {
-				if (CpsInpPaddle2 > 0x8000) {
+				if (CpsInpPaddle2 > 0x8000)
 					CpsPaddle2Value = 2;
-				}
 
-				if (CpsInpPaddle2 < 0x7fff) {
+				if (CpsInpPaddle2 < 0x7fff)
 					CpsPaddle2Value = 1;
-				}
 			}
 		}
 
@@ -551,47 +586,34 @@ int CpsRwGetInp()
 	if (kludge == 1) {
 		static unsigned char nPrevInp000, nPrevInp001;
 
-		if ((Inp000 & 0x03) && (Inp000 & 0x0C)) {
+		if ((Inp000 & 0x03) && (Inp000 & 0x0C))
 			Inp000 ^= (nPrevInp000 & 0x0F);
-		} else {
+		else
 			nPrevInp000 = Inp000;
-		}
 
-		if ((Inp001 & 0x03) && (Inp001 & 0x0C)) {
+		if ((Inp001 & 0x03) && (Inp001 & 0x0C))
 			Inp001 ^= (nPrevInp001 & 0x0F);
-		} else {
+		else
 			nPrevInp001 = Inp001;
-		}
 	}
 
 	if (nMaxPlayers > 2) {
-		if (Cps == 2) {
-         #ifndef SN_TARGET_PS3
-			if (!bInputSwap) { // FBA Combo - extra players input hack ( additional check for bInputSwap)
-				DrvClearOpposites(&Inp011);
-			}
-         #else
-				DrvClearOpposites(&Inp011);
-         #endif
-         #ifndef SN_TARGET_PS3
-			if (nMaxPlayers == 4 && !bInputSwap) { // FBA Combo - extra players input hack (additional check for bInputSwap)
+		if (Cps == 2)
+		{
+			DrvClearOpposites(&Inp011);
+			if (nMaxPlayers == 4)
 				DrvClearOpposites(&Inp010);
-			}
-         #else
-			if (nMaxPlayers == 4) { // FBA Combo - extra players input hack (additional check for bInputSwap)
-				DrvClearOpposites(&Inp010);
-         }
-         #endif
-		} else {
+		}
+		else
+		{
 			DrvClearOpposites(&Inp177);
-			if (nMaxPlayers == 4) {
+			if (nMaxPlayers == 4)
 				DrvClearOpposites(&Inp179);
-			}
-			if (Cps1Qs) {
+			if (Cps1Qs)
+			{
 				DrvClearOpposites(&Inpc001);
-				if (nMaxPlayers == 4) {
+				if (nMaxPlayers == 4)
 					DrvClearOpposites(&Inpc003);
-				}
 			}
 		}
 	}

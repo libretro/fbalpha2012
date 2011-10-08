@@ -7,10 +7,10 @@ unsigned char Cpi01A = 0, Cpi01C = 0, Cpi01E = 0;
 
 static int nInterrupt;
 static int nIrqLine, nIrqCycles;
-static bool bEnableAutoIrq50, bEnableAutoIrq52;				// Trigger an interrupt every 32 scanlines
+static bool bEnableAutoIrq50, bEnableAutoIrq52;			// Trigger an interrupt every 32 scanlines
 
-static const int nFirstLine = 0x0C;							// The first scanline of the display
-static const int nVBlank = 0x0106 - 0x0C;					// The scanline at which the vblank interrupt is triggered
+static const int nFirstLine = 0x0C;				// The first scanline of the display
+static const int nVBlank = 0x0106 - 0x0C;			// The scanline at which the vblank interrupt is triggered
 
 static int nCpsCyclesExtra;
 
@@ -216,7 +216,6 @@ static void DoIRQ()
 
 	// Trigger IRQ and copy registers.
 	if (nIrqLine >= nFirstLine) {
-
 		nInterrupt++;
 		nRasterline[nInterrupt] = nIrqLine - nFirstLine;
 	}
@@ -241,9 +240,10 @@ static void DoIRQ()
 		if (bEnableAutoIrq50 && nIrqLine == nIrqLine50)
 			nIrqLine50 += 32;
 	}
-	if (!bEnableAutoIrq52 && nIrqLine >= nIrqLine52) {
+	if (!bEnableAutoIrq52 && nIrqLine >= nIrqLine52)
 		nIrqLine52 = 0x0106;
-	} else {
+	else
+	{
 		if (bEnableAutoIrq52 && nIrqLine == nIrqLine52)
 			nIrqLine52 += 32;
 	}
@@ -262,9 +262,10 @@ int Cps1Frame()
 		DrvReset();
 
 	SekNewFrame();
-	if (Cps1Qs == 1) {
+	if (Cps1Qs == 1)
 		QsndNewFrame();
-	} else {
+	else
+	{
 		if (!Cps1Pic) {
 			ZetOpen(0);
 			PsndNewFrame();
@@ -273,128 +274,45 @@ int Cps1Frame()
 
 	nCpsCycles = (int)((long long)nCPS68KClockspeed * nBurnCPUSpeedAdjust >> 8);
 
-	CpsRwGetInp();												// Update the input port values
+	CpsRwGetInp();							// Update the input port values
 
 	nDisplayEnd = (nCpsCycles * (nFirstLine + 224)) / 0x0106;	// Account for VBlank
 
 	SekOpen(0);
 	SekIdle(nCpsCyclesExtra);
 
-	SekRun(nCpsCycles * nFirstLine / 0x0106);					// run 68K for the first few lines
+	SekRun(nCpsCycles * nFirstLine / 0x0106);			// run 68K for the first few lines
 
-	if (kludge != 10 && kludge != 21) {
-		CpsObjGet();											// Get objects
-	}
+	if (kludge != 10 && kludge != 21)
+		CpsObjGet();						// Get objects
 
-#ifdef SN_TARGET_PS3
-	//0
-	nNext = nCpsCycles >> 2;					// find out next cycle count to run to
-
-	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
-
-		SekRun(nNext - nDisplayEnd);						// run 68K
-
-		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
-
-		GetPalette(0, 6);									// Get palette
-		if (CpsStar) {
-			GetStarPalette();
-		}
-
-		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
-	}
-
-	SekRun(nNext - SekTotalCycles());						// run 68K
-
-	//1
-	nNext = ((1 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
-
-	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
-
-		SekRun(nNext - nDisplayEnd);						// run 68K
-
-		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
-
-		GetPalette(0, 6);									// Get palette
-		if (CpsStar) {
-			GetStarPalette();
-		}
-
-		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
-	}
-
-	SekRun(nNext - SekTotalCycles());						// run 68K
-
-	//2
-	nNext = ((2 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
-
-	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
-
-		SekRun(nNext - nDisplayEnd);						// run 68K
-
-		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
-
-		GetPalette(0, 6);									// Get palette
-		if (CpsStar) {
-			GetStarPalette();
-		}
-
-		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
-	}
-
-	SekRun(nNext - SekTotalCycles());						// run 68K
-
-	//3
-	nNext = ((3 + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
-
-	if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
-
-		SekRun(nNext - nDisplayEnd);						// run 68K
-
-		memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
-
-		GetPalette(0, 6);									// Get palette
-		if (CpsStar) {
-			GetStarPalette();
-		}
-
-		if (kludge == 10 || kludge == 21) {
-			CpsObjGet();   						// Get objects
-		}
-
-		SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
-	}
-
-	SekRun(nNext - SekTotalCycles());						// run 68K
-#else
 	for (i = 0; i < 4; i++) {
-		nNext = ((i + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
+		nNext = ((i + 1) * nCpsCycles) >> 2;			// find out next cycle count to run to
 
 		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
 
-			SekRun(nNext - nDisplayEnd);						// run 68K
+			SekRun(nNext - nDisplayEnd);			// run 68K
 
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+			memcpy(CpsSaveReg[0], CpsReg, 0x100);		// Registers correct now
 
-			GetPalette(0, 6);									// Get palette
+			GetPalette(0, 6);				// Get palette
 			if (CpsStar) {
 				GetStarPalette();
 			}
 
 			if (kludge == 10 || kludge == 21) {
-				if (i == 3) CpsObjGet();   						// Get objects
+				if (i == 3)
+					CpsObjGet();   		// Get objects
 			}
 
-			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
+			SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);		// Trigger VBlank interrupt
 		}
 
-		SekRun(nNext - SekTotalCycles());						// run 68K
+		SekRun(nNext - SekTotalCycles());			// run 68K
 	}
-#endif
 
-	if (pBurnDraw) {
-		CpsDraw();												// Draw frame
-	}
+	if (pBurnDraw)
+		CpsDraw();						// Draw frame
 
 	if (Cps1Qs == 1)
 		QsndEndFrame();
@@ -431,7 +349,7 @@ int Cps2Frame()
 	nCpsCycles = (int)(((long long)nCPS68KClockspeed * nBurnCPUSpeedAdjust) >> 8);
 	SekSetCyclesScanline(nCpsCycles / 262);
 
-	CpsRwGetInp();											// Update the input port values
+	Cps2RwGetInp();	// Update the input port values
 
 	nDisplayEnd = nCpsCycles * (nFirstLine + 224) / 0x0106;	// Account for VBlank
 
@@ -466,12 +384,11 @@ int Cps2Frame()
 		DoIRQ();
 	}
 	nNext = nCpsCycles * nFirstLine / 0x0106;
-	if (SekTotalCycles() < nNext) {
+	if (SekTotalCycles() < nNext)
 		SekRun(nNext - SekTotalCycles());
-	}
 
-	CopyCpsReg(0);										// Get inititial copy of registers
-	CopyCpsFrg(0);										//
+	CopyCpsReg(0);		// Get initial copy of registers
+	CopyCpsFrg(0);
 
 	if (nIrqLine >= 0x0106 && (*((unsigned short*)(CpsReg + 0x4E)) & 0x0200) == 0) {
 		nIrqLine50 = *((unsigned short*)(CpsReg + 0x50)) & 0x01FF;
@@ -479,52 +396,25 @@ int Cps2Frame()
 		ScheduleIRQ();
 	}
 
-	GetPalette(0, 4);									// Get palettes
-	Cps2ObjGet();										// Get objects
+	GetPalette(0, 4);	// Get palettes
+	Cps2ObjGet();		// Get objects
 
-#ifdef SN_TARGET_PS3
-	//0
-	nNext = (1 * nDisplayEnd) / 3;			// find out next cycle count to run to
+	for (i = 0; i < 3; i++)
+	{
+		nNext = ((i + 1) * nDisplayEnd) / 3;	// find out next cycle count to run to
 
-	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-		SekRun(nIrqCycles - SekTotalCycles());
-		DoIRQ();
-	}
-	SekRun(nNext - SekTotalCycles());				// run cpu
-
-	//1
-	nNext = (2 * nDisplayEnd) / 3;			// find out next cycle count to run to
-
-	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-		SekRun(nIrqCycles - SekTotalCycles());
-		DoIRQ();
-	}
-	SekRun(nNext - SekTotalCycles());				// run cpu
-
-	//2
-	nNext = (3 * nDisplayEnd) / 3;			// find out next cycle count to run to
-
-	while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
-		SekRun(nIrqCycles - SekTotalCycles());
-		DoIRQ();
-	}
-	SekRun(nNext - SekTotalCycles());				// run cpu
-#else
-	for (i = 0; i < 3; i++) {
-		nNext = ((i + 1) * nDisplayEnd) / 3;			// find out next cycle count to run to
-
-		while (nNext > nIrqCycles && nInterrupt < MAX_RASTER) {
+		while (nNext > nIrqCycles && nInterrupt < MAX_RASTER)
+		{
 			SekRun(nIrqCycles - SekTotalCycles());
 			DoIRQ();
 		}
-		SekRun(nNext - SekTotalCycles());				// run cpu
+		SekRun(nNext - SekTotalCycles());	// run cpu
 	}
-#endif
 
 	//	nCpsCyclesSegment[0] = (nCpsCycles * nVBlank) / 0x0106;
 	//	nDone += SekRun(nCpsCyclesSegment[0] - nDone);
 
-	SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// VBlank
+	SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);	// VBlank
 	SekRun(nCpsCycles - SekTotalCycles());
 
 	if (pBurnDraw)

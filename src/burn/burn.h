@@ -73,12 +73,11 @@ extern void (__cdecl *BurnProcessCombo)();
 // ---------------------------------------------------------------------------
 
 extern unsigned int nCurrentFrame;
+extern int nTransWidth, nTransHeight;
 
-static inline int GetCurrentFrame()
-{
-	return nCurrentFrame;
-}
+#define GetCurrentFrame() nCurrentFrame
 
+#define BurnTransferClear() XMemSet((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
 // ---------------------------------------------------------------------------
 // Driver info structures
 

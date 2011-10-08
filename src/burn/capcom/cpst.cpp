@@ -33,23 +33,26 @@ static int CpstOne()
 		if ((nCpstType&CTT_ROWS)==0)
 		{
 			// Return if not visible at all
-			if (nCpstX <= -nSize) return 0;
-			if (nCpstX >= 384) return 0;
-			if (nCpstY <= -nSize) return 0;
-			if (nCpstY >= 224) return 0;
+			if (nCpstX <= -nSize || nCpstX >= 384 || nCpstY <= -nSize || nCpstY >= 224)
+				return 0;
 		}
 		nCtvRollX=0x4000017f + nCpstX * 0x7fff;
 		nCtvRollY=0x400000df + nCpstY * 0x7fff;
 	}
 
 	// Clip to loaded graphics data (we have a gap of 0x200 at the end)
-	nCpstTile&=nCpsGfxMask; if (nCpstTile>=nCpsGfxLen) return 1;
+	nCpstTile&=nCpsGfxMask;
+	if(nCpstTile>=nCpsGfxLen)
+		return 1;
 	pCtvTile=CpsGfx+nCpstTile;
 
 	// Find pLine (pointer to first pixel)
 	pCtvLine=pBurnDraw + nCpstY*nBurnPitch + nCpstX*nBurnBpp;
 
-	if (nSize==32) nCtvTileAdd=16; else nCtvTileAdd=8;
+	if (nSize==32)
+		nCtvTileAdd=16;
+	else
+		nCtvTileAdd=8;
 
 	if (nCpstFlip&2)
 	{
@@ -74,10 +77,8 @@ static int CpstOneBgHi()
 		if ((nCpstType&CTT_ROWS)==0)
 		{
 			// Return if not visible at all
-			if (nCpstX<=-nSize) return 0;
-			if (nCpstX>=384)   return 0;
-			if (nCpstY<=-nSize) return 0;
-			if (nCpstY>=224)   return 0;
+			if (nCpstX<=-nSize || nCpstX>=384 || nCpstY<=-nSize || nCpstY>=224)
+				return 0;
 		}
 		nCtvRollX=0x4000017f + nCpstX * 0x7fff;
 		nCtvRollY=0x400000df + nCpstY * 0x7fff;
@@ -85,13 +86,17 @@ static int CpstOneBgHi()
 
 	// Clip to loaded graphics data (we have a gap of 0x200 at the end)
 	nCpstTile&=nCpsGfxMask;
-	if (nCpstTile>=nCpsGfxLen) return 1;
+	if (nCpstTile>=nCpsGfxLen)
+		return 1;
 	pCtvTile=CpsGfx+nCpstTile;
 
 	// Find pLine (pointer to first pixel)
 	pCtvLine=pBurnDraw + nCpstY*nBurnPitch + nCpstX*nBurnBpp;
 
-	if (nSize==32) nCtvTileAdd=16; else nCtvTileAdd=8;
+	if (nSize == 32)
+		nCtvTileAdd=16;
+	else
+		nCtvTileAdd=8;
 
 	if (nCpstFlip&2)
 	{
@@ -116,17 +121,17 @@ static int Cps2tOne()
 		if ((nCpstType&CTT_ROWS)==0)
 		{
 			// Return if not visible at all
-			if (nCpstX <= -nSize) return 0;
-			if (nCpstX >= 384)    return 0;
-			if (nCpstY <= -nStartline - nSize) return 0;
-			if (nCpstY >= nEndline)    return 0;
+			if (nCpstX <= -nSize || nCpstX >= 384 || nCpstY <= -nStartline - nSize || nCpstY >= nEndline)
+				return 0;
 		}
 		nCtvRollX=0x4000017f + nCpstX * 0x7fff;
 		nCtvRollY=0x40000000 + nEndline - nStartline - 1 + (nCpstY - nStartline) * 0x7fff;
 	}
 
 	// Clip to loaded graphics data (we have a gap of 0x200 at the end)
-	nCpstTile&=nCpsGfxMask; if (nCpstTile>=nCpsGfxLen) return 0;
+	nCpstTile&=nCpsGfxMask;
+	if (nCpstTile>=nCpsGfxLen)
+		return 0;
 	pCtvTile=CpsGfx+nCpstTile;
 
 	// Find pLine (pointer to first pixel)
@@ -158,10 +163,8 @@ static int CpstOneObjZ()
 		if ((nCpstType&CTT_ROWS)==0)
 		{
 			// Return if not visible at all
-			if (nCpstX <= -nSize) return 0;
-			if (nCpstX >= 384)    return 0;
-			if (nCpstY <= -nSize) return 0;
-			if (nCpstY >= 224)    return 0;
+			if (nCpstX <= -nSize || nCpstX >= 384 || nCpstY <= -nSize || nCpstY >= 224)
+				return 0;
 		}
 		nCtvRollX=0x4000017f + nCpstX * 0x7fff;
 		nCtvRollY=0x400000df + nCpstY * 0x7fff;

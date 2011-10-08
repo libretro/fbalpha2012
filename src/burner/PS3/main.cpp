@@ -139,25 +139,25 @@ int  main(int argc, char **argv)
 	exit(0);
 }
 
-int ProgressUpdateBurner(double dProgress, const char * pszText, bool bAbs)
+int ProgressUpdateBurner(const char * pszText)
 { 	 
 #ifdef CELL_DEBUG_MEMORY
-	 sys_memory_info_t mem_info;
-	 sys_memory_get_user_memory_size(&mem_info);
+	sys_memory_info_t mem_info;
+	sys_memory_get_user_memory_size(&mem_info);
 #endif
 
-	 psglClearUI();
+	psglClearUI();
 
-	 cellDbgFontPrintf(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, "%s",  pszText);	 
-	 cellDbgFontDraw();
+	cellDbgFontPrintf(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, "%s",  pszText);	 
+	cellDbgFontDraw();
 #ifdef CELL_DEBUG_MEMORY
-	 cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, 0xFFFF7F7f ,"%ld free memory",mem_info.available_user_memory );  
-	 cellDbgFontDraw();
-	 cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, 0xFFFF7F7f ,"%ld total memory",mem_info.total_user_memory );     
-	 cellDbgFontDraw();
+	cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, 0xFFFF7F7f ,"%ld free memory",mem_info.available_user_memory );  
+	cellDbgFontDraw();
+	cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, 0xFFFF7F7f ,"%ld total memory",mem_info.total_user_memory );     
+	cellDbgFontDraw();
 #endif
-	 
-	 psglRenderUI();
+
+	psglRenderUI();
 
 	return 0;
 }

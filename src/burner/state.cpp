@@ -164,7 +164,7 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 // State load
 int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)())
 {
-	const char szHeader[] = "FB1 ";						// File identifier
+	const char szHeader[] = "FB1 ";		// File identifier
 	char szReadHeader[4] = "";
 	int nRet = 0;
 
@@ -172,7 +172,7 @@ int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)())
 	if (fp == NULL)
 		return 1;
 
-	fread(szReadHeader, 1, 4, fp); // Read identifier
+	fread(szReadHeader, 1, 4, fp);		// Read identifier
 	if (memcmp(szReadHeader, szHeader, 4) == 0) // Check filetype
 		nRet = BurnStateLoadEmbed(fp, -1, bAll, pLoadGame);
 	fclose(fp);
@@ -278,7 +278,7 @@ int BurnStateSave(char* szName, int bAll)
 	else
 		StateInfo(&nLen, &nVer, 0);
 	if (nLen <= 0)						// No data, so exit without creating a savestate
-		return 0; // Don't return an error code
+		return 0;					// Don't return an error code
 
 	FILE* fp = fopen(szName, "wb");
 

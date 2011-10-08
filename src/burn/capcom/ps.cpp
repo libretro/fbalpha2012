@@ -14,12 +14,13 @@ static int nCyclesDone;
 
 static void drvYM2151IRQHandler(int nStatus)
 {
-	if (nStatus) {
+	if (nStatus)
+	{
 		ZetSetIRQLine(0xFF, ZET_IRQSTATUS_ACK);
 		ZetRun(0x0800);
-	} else {
-		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
+	else
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 }
 
 int PsndInit()

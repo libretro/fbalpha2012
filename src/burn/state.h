@@ -1,5 +1,6 @@
 #if !defined(_STATE_H)
 
+
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -29,6 +30,9 @@ struct BurnArea { void *Data; unsigned int nLen; int nAddress; char *szName; };
 
 /* Application-defined callback for processing the area */
 extern int (*BurnAcb) (struct BurnArea* pba);
+
+//forward declaration of memset here
+void *memset(void *s, int c, size_t n);
 
 /* Scan a small variable or structure */
 static __inline void ScanVar(void* pv, int nSize, char* szName)

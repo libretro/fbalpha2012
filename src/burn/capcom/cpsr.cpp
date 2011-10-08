@@ -73,9 +73,7 @@ static int PrepareRows()
 			nMaxLeft = nMaxRight = v;
 
 			for (ty = 0, pr = pli->Rows; ty < 16; ty++, pr++)
-			{
 				*pr=(short)v;
-			}
 		}
 		else
 		{

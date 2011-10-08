@@ -32,18 +32,16 @@ int QsndInit()
 		BurnTimerAttachZet(8000000);
 //	}
 
-	if (nBurnSoundRate >= 0) {
+	if (nBurnSoundRate >= 0)
 		nRate = nBurnSoundRate;
-	} else {
+	else
 		nRate = 11025;
-	}
 
 	nVolumeShift = 0;
 
 	// These games are too soft at normal volumes
-	if (strncmp(BurnDrvGetTextA(DRV_NAME), "csclub", 6) == 0) {
+	if (strncmp(BurnDrvGetTextA(DRV_NAME), "csclub", 6) == 0)
 		nVolumeShift = -1;
-	}
 #if 0
 	// These games are loud at normal volumes (no clipping)
 	if (strncmp(BurnDrvGetTextA(DRV_NAME), "1944",	  4) == 0 ||
@@ -64,11 +62,8 @@ int QsndInit()
 		nVolumeShift = 1;
 	}
 	// These games are too loud at normal volumes (clipping)
-	if (strncmp(BurnDrvGetTextA(DRV_NAME), "19xx",   4) == 0 ||
-		strncmp(BurnDrvGetTextA(DRV_NAME), "ddtod",  5) == 0)
-	{
+	if (strncmp(BurnDrvGetTextA(DRV_NAME), "19xx",   4) == 0 || strncmp(BurnDrvGetTextA(DRV_NAME), "ddtod",  5) == 0)
 		nVolumeShift = 2;
-	}
 
 	QscInit(nRate, nVolumeShift);		// Init QSound chip
 
@@ -127,9 +122,8 @@ void QsndSyncZ80()
 {
 	int nCycles = (long long)SekTotalCycles() * nCpsZ80Cycles / nCpsCycles;
 
-	if (nCycles <= ZetTotalCycles()) {
+	if (nCycles <= ZetTotalCycles())
 		return;
-	}
 
 	BurnTimerUpdate(nCycles);
 }
@@ -201,13 +195,15 @@ static void UpdateEndBuffer(struct QChan* pc)
 			pc->nEndBuffer[3] = pc->PlayBank[(pc->nEnd >> 12) - 7];
 
 			if (pc->nLoop) {
-				for (int i = 0, j = 0; i < 4; i++, j++) {
-					if (j >= (pc->nLoop >> 12)) {
+				for (int i = 0, j = 0; i < 4; i++, j++)
+				{
+					if (j >= (pc->nLoop >> 12))
 						j = 0;
-					}
 					pc->nEndBuffer[i + 4] = pc->PlayBank[((pc->nEnd - pc->nLoop) >> 12) + j];
 				}
-			} else {
+			}
+			else
+			{
 					pc->nEndBuffer[4] = pc->nEndBuffer[3];
 					pc->nEndBuffer[5] = pc->nEndBuffer[3];
 					pc->nEndBuffer[6] = pc->nEndBuffer[3];
@@ -230,9 +226,8 @@ static void UpdateEndBuffer(struct QChan* pc)
 #define QscReset() \
 	memset(QChan, 0, sizeof(QChan)); \
 	/* Point all to bank 0 */ \
-	for (int i = 0; i < 16; i++) { \
-		QChan[i].PlayBank = (char*)CpsQSam; \
-	}
+	for (int i = 0; i < 16; i++) \
+		QChan[i].PlayBank = (char*)CpsQSam;
 
 void QscExit()
 {
@@ -299,9 +294,8 @@ void QscWrite(int a, int d)
 
 		pc = QChan + nChanNum;		// Find channel
 		nPan = (d - 0x10) & 0x3F;	// nPan = 0x00 to 0x20 now
-		if (nPan > 0x20) {
+		if (nPan > 0x20)
 			nPan = 0x20;
-		}
 
 //		bprintf(PRINT_NORMAL, "QSound: ch#%i pan -> 0x%04X\n", nChanNum, d);
 
@@ -594,18 +588,9 @@ static int QsndZBankMap()
 	}
 	else
 	{
-#ifdef SN_TARGET_PS3
-		if (nOff + 0x4000 > (nCpsZRomLen >> 1)) {
-#else
-		if (nOff + 0x4000 > (nCpsZRomLen / 2)) {
-#endif
+		if (nOff + 0x4000 > (nCpsZRomLen / 2))
 			nOff = 0;
-		}
-#ifdef SN_TARGET_PS3
-		Bank = CpsZRom - (nCpsZRomLen >> 1) + nOff;
-#else
 		Bank = CpsZRom - (nCpsZRomLen / 2) + nOff;
-#endif
 	}
 
 	// Read and fetch the bank

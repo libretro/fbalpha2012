@@ -261,11 +261,10 @@ int Cps2PalUpdate(unsigned char* pNewPal, int bRecalcAll)
 
 			for (i = 0x0000; i < 0x0800; i++, ps++, pn++) {
 				unsigned short n = *pn;
-				if (*ps == n) {
-					continue;								// Colour hasn't changed - great!
-				}
+				if (*ps == n)
+					continue;	// Colour hasn't changed - great!
 
-				*ps = n;									// Update our copy of the palette
+				*ps = n;		// Update our copy of the palette
 
 				CpsPal[i ^ 15] = CalcCol(n);
 			}
@@ -292,11 +291,10 @@ int CpsStarPalUpdate(unsigned char* pNewPal, int nLayer, int bRecalcAll)
 		// Star layer 0
 		for (i = 0x0800; i < 0x0880; i++, ps++, pn++) {
 			unsigned short n = *pn;
-			if (*ps == n) {
-				   continue;					// Colour hasn't changed - great!
-			}
+			if (*ps == n)
+				   continue;			// Colour hasn't changed - great!
 
-			*ps = n;							// Update our copy of the palette
+			*ps = n;				// Update our copy of the palette
 
 			CpsPal[i ^ 15] = CalcCol(n);
 		}
@@ -313,11 +311,10 @@ int CpsStarPalUpdate(unsigned char* pNewPal, int nLayer, int bRecalcAll)
 		// Star layer 1
 		for (i = 0x0A00; i < 0x0A80; i++, ps++, pn++) {
 			unsigned short n = *pn;
-			if (*ps == n) {
-				   continue;					// Colour hasn't changed - great!
-			}
+			if (*ps == n)
+				   continue;			// Colour hasn't changed - great!
 
-			*ps = n;							// Update our copy of the palette
+			*ps = n;				// Update our copy of the palette
 
 			CpsPal[i ^ 15] = CalcCol(n);
 		}

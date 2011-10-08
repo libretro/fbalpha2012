@@ -1,3 +1,4 @@
+#include "burn.h"
 #include "tiles_generic.h" 
  #include "m6502.h" 
  #include "burn_ym2151.h" 

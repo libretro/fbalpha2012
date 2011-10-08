@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-g"
 				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;BPP=32"
+				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;USE_BPP_RENDERING=32"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>
@@ -112,7 +112,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-O3 -ffast-math -funroll-loops"
 				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;BPP=32;&quot;INLINE=static __inline&quot;"
+				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;TIXML_USE_TICPP;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;USE_BPP_RENDERING=32;&quot;INLINE=static __inline&quot;"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>

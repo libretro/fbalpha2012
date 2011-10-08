@@ -47,7 +47,8 @@ static void Cps1TileLine(int y, int sx)
 		if (Scroll2TileMask) t &= Scroll2TileMask;
 
 		t = GfxRomBankMapper(GFXTYPE_SCROLL2, t);
-		if (t == -1) continue;
+		if (t == -1)
+			continue;
 
 		t = (t << 7) + nCpsGfxScroll[2]; // Get real tile address and add offset to scroll tiles
 
@@ -60,13 +61,11 @@ static void Cps1TileLine(int y, int sx)
 		nCpstTile = t;
 		nCpstFlip = (a >> 5) & 3;
 
-		if(nBgHi) {
+		if(nBgHi)
 			CpstPmsk=swapWord(*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]));
-		}
 
-		if(CpstOneDoX[nBgHi]()) {
+		if(CpstOneDoX[nBgHi]())
 			nKnowBlank=t;
-		}
 	}
 }
 

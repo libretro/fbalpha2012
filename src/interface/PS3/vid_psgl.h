@@ -5,6 +5,7 @@
 #include <PSGL/psgl.h>
 #include <PSGL/psglu.h>
 #include <cell/dbgfont.h>
+#include "vid_support-ps3.h"
 
 extern void psglSetVSync(uint32_t enable);
 extern void psglInitGL(void);
@@ -34,8 +35,8 @@ extern void psglRender(void);
 #define psglClearUI() glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 #define psglRenderUI() \
-	cellSysutilCheckCallback(); \
-	psglSwap();
+	psglSwap(); \
+	cellSysutilCheckCallback();
 
 #define resize(width, height) \
 if (buffer) \
@@ -64,7 +65,7 @@ glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight)
 #define refresh(inwidth, inheight) \
    frame_count += 1; \
    glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer); \
-   glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, GL_ARGB_SCE, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0); \
+   glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0); \
    set_cg_params(); \
    glDrawArrays(GL_QUADS, 0, 4); \
    glFlush();

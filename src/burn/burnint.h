@@ -52,11 +52,7 @@
 static inline uint16_t _byteswap_ushort(uint16_t x)
 {
         uint16_t t;
-#ifdef SN_TARGET_PS3
-        __sthbrx(&t, x);
-#else
-asm("sthbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
-#endif
+	asm("sthbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
         return t;
 }
 #else
@@ -69,13 +65,9 @@ asm("sthbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
 #define swapLong(i) _byteswap_ulong(i)
 static inline uint32_t _byteswap_ulong(uint32_t x)
 {
-		uint32_t t;
-#ifdef SN_TARGET_PS3
-      __stwbrx(&t, x);
-#else
-asm("stwbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
-#endif
-		return t;
+	uint32_t t;
+	asm("stwbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
+	return t;
 }
 #else
 #define swapLong(i)		((((i) & 0xFF000000) >> 24) | \
@@ -165,7 +157,7 @@ struct BurnDriver
 int BurnSetRefreshRate(double dRefreshRate);
 
 // Byteswaps an area of memory
-static inline uint32_t BurnByteswap(uint8_t* pMem, int nLen)
+static inline void BurnByteswap(uint8_t *pMem, int nLen)
 {
 	nLen >>= 1;
 	for (int32_t i = 0; i < nLen; i++, pMem += 2)
@@ -174,11 +166,7 @@ static inline uint32_t BurnByteswap(uint8_t* pMem, int nLen)
 		pMem[0] = pMem[1];
 		pMem[1] = t;
 	}
-
-	return 0;
 }
-
-
 
 int BurnClearScreen();
 
@@ -192,7 +180,6 @@ int BurnLoadBitField(uint8_t* pDest, uint8_t* pSrc, int nField, int nSrcLen);
 
 extern unsigned short* pTransDraw;
 
-void BurnTransferClear();
 int BurnTransferCopy(unsigned int* pPalette);
 void BurnTransferExit();
 int BurnTransferInit();
@@ -202,43 +189,29 @@ int BurnTransferInit();
 
 static inline void PutPix(uint8_t* pPix, uint32_t c)
 {
-   #ifndef __CELLOS_LV2__
-	if (nBurnBpp >= 4) {
-   #endif
+	if (nBurnBpp >= 4)
 		*((uint32_t*)pPix) = c;
-   #ifndef __CELLOS_LV2__
-	} else {
-		if (nBurnBpp == 2) {
+	else
+	{
+		if (nBurnBpp == 2)
 			*((uint16_t*)pPix) = (uint16_t)c;
-		} else {
+		else
+		{
 			pPix[0] = (uint8_t)(c >>  0);
 			pPix[1] = (uint8_t)(c >>  8);
 			pPix[2] = (uint8_t)(c >> 16);
 		}
 	}
-   #endif
 }
 
 // ------------------------------------------------------------------
 // Clear opposites
 
-static inline void DrvClearOpposites(unsigned char* joystickInputs)
-{
-	if ((*joystickInputs & 0x03) == 0x03)
-		*joystickInputs &= ~0x03;
-
-	if ((*joystickInputs & 0x0c) == 0x0c)
+#define DrvClearOpposites(joystickInputs) \
+	if ((*joystickInputs & 0x03) == 0x03) \
+		*joystickInputs &= ~0x03; \
+	if ((*joystickInputs & 0x0c) == 0x0c) \
 		*joystickInputs &= ~0x0c;
-}
-
-static inline void DrvClearOpposites(unsigned short* joystickInputs)
-{
-	if ((*joystickInputs & 0x03) == 0x03)
-		*joystickInputs &= ~0x03;
-
-	if ((*joystickInputs & 0x0c) == 0x0c)
-		*joystickInputs &= ~0x0c;
-}
 
 // ------------------------------------------------------------------
 #ifndef NO_CHEATS

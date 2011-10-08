@@ -8,13 +8,10 @@
 #endif
 
 #if defined (SN_TARGET_PS3)
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/timer.h>
 #include <sys/return_code.h>
-#include <cell/gcm.h>
 #include <stddef.h>
 #include <math.h>
 #include <sysutil/sysutil_sysparam.h>
@@ -86,7 +83,7 @@ extern void DebugMsg(const char* fmt, ...);
  clock_t starttime = 0;
 #endif
 
-unsigned int nCurrentFrame;			// Framecount for emulated game
+unsigned int nCurrentFrame;		// Framecount for emulated game
 unsigned int nFramesEmulated;		// Counters for FPS display
 unsigned int nFramesRendered;		// Counters for rendered frames
 bool bForce60Hz = false;
@@ -95,15 +92,15 @@ int nBurnCPUSpeedAdjust = 0x0100;	// CPU speed adjustment (clock * nBurnCPUSpeed
 
 // Burn Draw:
 unsigned char* pBurnDraw = NULL;	// Pointer to correctly sized bitmap
-int nBurnPitch = 0;					// Pitch between each line
-int nBurnBpp;						// Bytes per pixel (2, 3, or 4)
+int nBurnPitch = 0;			// Pitch between each line
+int nBurnBpp;				// Bytes per pixel (2, 3, or 4)
 
-int nBurnSoundRate = 0;				// sample rate of sound or zero for no sound
-int nBurnSoundLen = 0;				// length in samples per frame
+int nBurnSoundRate = 0;			// sample rate of sound or zero for no sound
+int nBurnSoundLen = 0;			// length in samples per frame
 short* pBurnSoundOut = NULL;		// pointer to output buffer
 
-int nInterpolation = 1;				// Desired interpolation level for ADPCM/PCM sound
-int nFMInterpolation = 3;			// Desired interpolation level for FM sound
+int nInterpolation = 1;			// Desired interpolation level for ADPCM/PCM sound
+int nFMInterpolation = 3;		// Desired interpolation level for FM sound
 
 unsigned char nBurnLayer = 0xFF;	// Can be used externally to select which layers to show
 unsigned char nSpriteEnable = 0xFF;	// Can be used externally to select which layers to show
@@ -663,16 +660,18 @@ extern "C" int BurnDrvRedraw()
 	if (pDriver[nBurnDrvSelect]->Redraw)
 		return pDriver[nBurnDrvSelect]->Redraw();	// Forward to drivers function
 
-	return 1;						// No function provide, so simply return
+	return 1;						// No function provided, so simply return
 }
 
 // Refresh Palette
 extern "C" int BurnRecalcPal()
 {
-	if (nBurnDrvSelect < nBurnDrvCount) {
+	if (nBurnDrvSelect < nBurnDrvCount)
+	{
 		unsigned char* pr = pDriver[nBurnDrvSelect]->pRecalcPal;
-		if (pr == NULL) return 1;
-		*pr = 1;									// Signal for the driver to refresh it's palette
+		if (pr == NULL)
+			return 1;
+		*pr = 1;	// Signal for the driver to refresh its palette
 	}
 
 	return 0;
@@ -706,7 +705,8 @@ int BurnUpdateProgress(double fProgress, const char* pszText, bool bAbs)
 
 int BurnAfterReset()
 {
-	if (BurnDoAfterReset) {
+	if (BurnDoAfterReset)
+	{
 		BurnDoAfterReset();
 		return 0;
 	}
@@ -723,28 +723,23 @@ int BurnSetRefreshRate(double dFrameRate)
 	return 0;
 }
 
-static inline int BurnClearSize(int w, int h)
+int BurnClearScreen()
 {
+	const struct BurnDriver* pbd = pDriver[nBurnDrvSelect];
+	int w, h;
+	int condition = pbd->flags & BDF_ORIENTATION_VERTICAL;
+
 	unsigned char* pl;
 	int y;
+
+	w = condition ? pbd->nHeight : pbd->nWidth;
+	h = condition ? pbd->nWidth : pbd->nHeight;
 
 	w *= nBurnBpp;
 
 	// clear the screen to zero
 	for (pl = pBurnDraw, y = 0; y < h; pl += nBurnPitch, y++)
 		XMemSet(pl, 0x00, w);
-
-	return 0;
-}
-
-int BurnClearScreen()
-{
-	const struct BurnDriver* pbd = pDriver[nBurnDrvSelect];
-
-	if (pbd->flags & BDF_ORIENTATION_VERTICAL)
-		BurnClearSize(pbd->nHeight, pbd->nWidth);
-	else
-		BurnClearSize(pbd->nWidth, pbd->nHeight);
 
 	return 0;
 }
@@ -760,11 +755,10 @@ void BurnSwitch68kCore(bool useAsmCore, bool restore)
 	}
 
 #ifdef FBA_DEBUG
-	if (bBurnUseASM68K) {
+	if (bBurnUseASM68K)
 		bprintf(PRINT_NORMAL, _T("Switching to A68K core\n"));
-	} else {
+	else
 		bprintf(PRINT_NORMAL, _T("Switching to Musashi 68000 core\n"));
-	}
 #endif
 }
 
@@ -780,19 +774,15 @@ unsigned int (__cdecl *BurnHighCol) (int r, int g, int b, int i) = BurnHighColFi
 // Colour-depth independant image transfer
 
 unsigned short* pTransDraw = NULL;
-static int nTransWidth, nTransHeight;
-
-void BurnTransferClear()
-{
-	XMemSet((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
-}
+int nTransWidth, nTransHeight;
 
 static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restrict pDest, UINT32* __restrict pPalette)
 {
-#ifndef SN_TARGET_PS3
-	switch (nBurnBpp) {
+	switch (nBurnBpp)
+	{
 		case 2: {
-				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
+				{
 					for (int x = 0; x < (nTransWidth); x +=8 ) {
 						((UINT16*)pDest)[x] = pPalette[pSrc[x]];
 						((UINT16*)pDest)[x+1] = pPalette[pSrc[x+1]];
@@ -819,7 +809,6 @@ static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restric
 				break;
 			}
 		case 4: {
-#endif
 				for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
 					for (int x = 0; x < nTransWidth; x+=8) {
 						((UINT32*)pDest)[x] = pPalette[pSrc[x]];                           
@@ -832,11 +821,9 @@ static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restric
 						((UINT32*)pDest)[x+7] = pPalette[pSrc[x+7]];
 					}
 				}
-#ifndef SN_TARGET_PS3
 				break;
 			}
 	}
-#endif
 }
 
 int BurnTransferCopy(UINT32* pPalette)

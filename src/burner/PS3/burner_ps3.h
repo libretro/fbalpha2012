@@ -263,7 +263,7 @@ int MemCardEject();
 int MemCardToggle();
 
 // progress.cpp
-int ProgressUpdateBurner(double dProgress, const char* pszText, bool bAbs);
+int ProgressUpdateBurner(const char* pszText);
 int ProgressCreate();
 int ProgressDestroy();
 

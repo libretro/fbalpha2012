@@ -34,7 +34,7 @@ int CpsObjInit()
 		nMax = 0x400;
 
 	nFrameCount = 2;			// CPS2 sprites lagged by 1 frame and double buffered
-								// CPS1 sprites lagged by 1 frame
+						// CPS1 sprites lagged by 1 frame
 
 	ObjMem = (unsigned char*)malloc((nMax << 3) * nFrameCount);
 	if (ObjMem == NULL)
@@ -91,43 +91,47 @@ int CpsObjGet()
 	pof->nShiftX = -0x40;
 	pof->nShiftY = -0x10;
 
-		int nOff = swapWord((*((unsigned short*)(CpsReg + 0x00)))) << 8;
-		nOff &= 0xfff800;
-		Get = CpsFindGfxRam(nOff, 0x800);
+	int nOff = swapWord((*((unsigned short*)(CpsReg + 0x00)))) << 8;
+	nOff &= 0xfff800;
+	Get = CpsFindGfxRam(nOff, 0x800);
 
-		if (kludge == 10 || kludge == 21) {
-			Get = CpsFindGfxRam(0x910000, 0x800);
-		} else {
-			if (Dinopic) {
-				Get = BootlegSpriteRam + 0x1000;
-			}
-		}
+	if (kludge == 10 || kludge == 21)
+		Get = CpsFindGfxRam(0x910000, 0x800);
+	else
+	{
+		if (Dinopic)
+			Get = BootlegSpriteRam + 0x1000;
+	}
 
 	if (Get == NULL) return 1;
 
 	// Make a copy of all active sprites in the list
-	for (pg = Get, i = 0; i < nMax; pg += 8, i++) {
+	for (pg = Get, i = 0; i < nMax; pg += 8, i++)
+	{
 		unsigned short* ps = (unsigned short*)pg;
 
-			if (Dinopic) {
-				if (ps[1] == 0x8000) {													// end of sprite list
-					break;
-				}
-			} else {
-				if ((swapWord(ps[3]) & 0xff00) == 0xff00) {											// end of sprite list
-//				if (ps[3] == 0xff00) {													// end of sprite list
-					break;
-				}
+		if (Dinopic)
+		{
+			if (ps[1] == 0x8000) // end of sprite list
+				break;
+		}
+		else
+		{
+			if ((swapWord(ps[3]) & 0xff00) == 0xff00)
+			{ // end of sprite list
+				break;
 			}
+		}
 
-		if (Dinopic) {
-			if ((( swapWord(ps[2]) - 461) |  swapWord(ps[1])) == 0) {												// sprite blank
+		if (Dinopic)
+		{
+			if ((( swapWord(ps[2]) - 461) |  swapWord(ps[1])) == 0)		// sprite blank
 				continue;
-			}
-		} else {
-			if (( swapWord(ps[0]) |  swapWord(ps[3])) == 0) {													// sprite blank
+		}
+		else
+		{
+			if (( swapWord(ps[0]) |  swapWord(ps[3])) == 0)			// sprite blank
 				continue;
-			}
 		}
 
 		// Okay - this sprite is active:
@@ -159,10 +163,10 @@ int Cps2ObjGet()
 	pof->nShiftX = -0x40;
 	pof->nShiftY = -0x10;
 
-		Get = CpsRam708 + ((nCpsObjectBank ^ 1) << 15);		// Select CPS2 sprite buffer
+	Get = CpsRam708 + ((nCpsObjectBank ^ 1) << 15);		// Select CPS2 sprite buffer
 
-		pof->nShiftX = -CpsSaveFrg[0][0x9];
-		pof->nShiftY = -CpsSaveFrg[0][0xB];
+	pof->nShiftX = -CpsSaveFrg[0][0x9];
+	pof->nShiftY = -CpsSaveFrg[0][0xB];
 
 	if (Get == NULL) return 1;
 
@@ -171,21 +175,21 @@ int Cps2ObjGet()
 	{
 		unsigned short* ps = (unsigned short*)pg;
 
-		if ( swapWord(ps[1]) & 0x8000)	{													// end of sprite list?
+		if ( swapWord(ps[1]) & 0x8000)// end of sprite list?
 			break;
-		}
-		if ( swapWord(ps[0]) == 0 &&  swapWord(ps[1]) == 0x0100 &&  swapWord(ps[2]) == 0 &&  swapWord(ps[3]) == 0xff00) {	// Slammasters end of sprite list?
-			break;
-		}
 
-		if (Dinopic) {
-			if ((( swapWord(ps[2]) - 461) |  swapWord(ps[1])) == 0) {												// sprite blank
+		if ( swapWord(ps[0]) == 0 &&  swapWord(ps[1]) == 0x0100 &&  swapWord(ps[2]) == 0 &&  swapWord(ps[3]) == 0xff00)		// Slammasters end of sprite list?
+			break;
+
+		if (Dinopic)
+		{
+			if ((( swapWord(ps[2]) - 461) |  swapWord(ps[1])) == 0) // sprite blank
 				continue;
-			}
-		} else {
-			if (( swapWord(ps[0]) |  swapWord(ps[3])) == 0) {													// sprite blank
+		}
+		else
+		{
+			if (( swapWord(ps[0]) |  swapWord(ps[3])) == 0)		// sprite blank
 				continue;
-			}
 		}
 
 		// Okay - this sprite is active:
@@ -196,9 +200,8 @@ int Cps2ObjGet()
 	}
 
 	nGetNext++;
-	if (nGetNext >= nFrameCount) {
+	if (nGetNext >= nFrameCount)
 		nGetNext = 0;
-	}
 
 	return 0;
 }
@@ -326,9 +329,10 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 		int nFlip;
 		int v = swapWord(ps[0]) >> 13;
 
-		if ((nSpriteEnable & (1 << v)) == 0) {
+		#ifndef NO_SPRITE_ENABLE_TOGGLE
+		if ((nSpriteEnable & (1 << v)) == 0)
 			continue;
-		}
+		#endif
 
 		// Check if sprite is between these levels
 		if (v > nLevelTo) {
@@ -355,9 +359,8 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 		n = swapWord(ps[2]);
 		a = swapWord(ps[3]);
 
-		if (a & 0x80) {														// marvel vs. capcom ending sprite off-set
+		if (a & 0x80)	// marvel vs. capcom ending sprite off-set
 			x += CpsSaveFrg[0][0x9];
-		}
 
 		// CPS2 coords are 10 bit signed (-512 to 511)
 		x &= 0x03FF; x ^= 0x200; x -= 0x200;
@@ -397,11 +400,10 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 		by = ((a >> 12) & 15) + 1;
 
 		// Take care with tiles if the sprite goes off the screen
-		if (x < 0 || y < 0 || x + (bx << 4) > 383 || y + (by << 4) > 223) {
+		if (x < 0 || y < 0 || x + (bx << 4) > 383 || y + (by << 4) > 223)
 			nCpstType = CTT_16X16 | CTT_CARE;
-		} else {
+		else
 			nCpstType = CTT_16X16;
-		}
 
 		//		if (v == 0) {
 		//			bprintf(PRINT_IMPORTANT, _T("  - %4i: 0x%04X 0x%04X 0x%04X 0x%04X\n"), ZValue - (unsigned short)nMaxZValue, ps[0], ps[1], ps[2], ps[3]);
@@ -412,17 +414,15 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 			for (dx = 0; dx < bx; dx++) {
 				int ex, ey;
 
-				if (nFlip & 1) {
+				if (nFlip & 1)
 					ex = (bx - dx - 1);
-				} else {
+				else
 					ex = dx;
-				}
 
-				if (nFlip & 2) {
+				if (nFlip & 2)
 					ey = (by - dy - 1);
-				} else {
+				else
 					ey = dy;
-				}
 
 				nCpstX = x + (ex << 4);
 				nCpstY = y + (ey << 4);

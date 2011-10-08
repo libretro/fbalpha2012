@@ -34,9 +34,7 @@ static bool method2 = false; // another autofire clear timer
 // only if [player][button] clicked, return true
 static inline bool checkButtonState(const int& player, const int& fire)
 {
-#if 1
-	if (player < P_1 || player > P_4
-		|| fire < F_1 || fire > F_6)
+	if (player < P_1 || player > P_4 || fire < F_1 || fire > F_6)
 		return false;
 
 	static struct GameInp* gi = GameInp;
@@ -47,15 +45,14 @@ static inline bool checkButtonState(const int& player, const int& fire)
 			&& autofires[P_1 + player][F_1 + j].value && autofires[P_1 + player][F_1 + j].inpIndex >= 0) {
 			val = 0;
 			gi = GameInp + autofires[P_1 + player][F_1 + j].inpIndex;
-			if (gi->Input.pVal) {
+
+			if (gi->Input.pVal)
 				val = *gi->Input.pVal;
-			}
 
 			if (val == 1)
 				return false;
 		}
 	}
-#endif
 
 	return true;
 }
@@ -92,17 +89,16 @@ void __cdecl initAutofire()
 		return;
 
 	// check delay value
-	if (autofireDelay < 1 || autofireDelay > 99) {
+	if (autofireDelay < 1 || autofireDelay > 99)
 		autofireDelay = autofireDefaultDelay;
-	}
+
 	delayCounter = autofireDelay;
 
 	// choose autofire method
 	method2 = false;
 	int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
-	if (flag == HARDWARE_IGS_PGM) {
+	if (flag == HARDWARE_IGS_PGM)
 		method2 = true;
-	}
 
 	// reset values
 	resetAutofire();
@@ -117,9 +113,8 @@ void __cdecl initAutofire()
 		memset(&bii, 0, sizeof(bii));
 		BurnDrvGetInputInfo(&bii, i);
 
-		if (!bii.szName || !bii.pVal) {
+		if (!bii.szName || !bii.pVal)
 			continue;
-		}
 
 		if ((bii.szName[0] == 'P' || bii.szName[0] == 'p')
 			&& bii.szName[1] >= '1' && bii.szName[1] <= '4') {
@@ -151,17 +146,15 @@ void __cdecl doAutofire()
 	if (delayCounter > 0) {
 		delayCounter--;
 
-		if (method2) {
+		if (method2)
 			clearAutofire();
-		}
 
 		return;
 	}
 	delayCounter = autofireDelay;
 
-	if (!method2) {
+	if (!method2)
 		clearAutofire();
-	}
 }
 
 // enable/disable autofire buttons
@@ -170,10 +163,8 @@ int setAutofire(const int& player, const int& fire, bool state)
 	if (!nAutofireEnabled)
 		return 0;
 
-	if (player < P_1 || player > P_4
-		|| fire < F_1 || fire > F_6) {
+	if (player < P_1 || player > P_4 || fire < F_1 || fire > F_6)
 		return 1;
-	}
 
 	autofireOn[player][fire] = state;
 
@@ -194,10 +185,9 @@ bool getAutofire(const int& player, const int& fire)
 	if (!nAutofireEnabled)
 		return false;
 
-	if (player < P_1 || player > P_4
-		|| fire < F_1 || fire > F_6) {
+	if (player < P_1 || player > P_4 || fire < F_1 || fire > F_6)
 		return false;
-	}
+
 	return autofireOn[player][fire];
 }
 #endif

@@ -8,18 +8,17 @@
 #include "eeprom.h"
 #include "timer.h"
 
-// Maximum number of beam-synchronized interrupts to check
-#define MAX_RASTER 10
+#define MAX_RASTER 10							// Maximum number of beam-synchronized interrupts to check
 
-extern unsigned int CpsMProt[4];									// Mprot changes
-extern unsigned int CpsBID[3];										// Board ID changes
+extern unsigned int CpsMProt[4];					// Mprot changes
+extern unsigned int CpsBID[3];						// Board ID changes
 
 // cps.cpp
-extern int Cps;														// 1 = CPS1, 2 = CPS2, 3 = CPS CHanger
+extern int Cps;								// 1 = CPS1, 2 = CPS2, 3 = CPS CHanger
 extern int Cps1Qs;
 extern int Cps1Pic;
 extern int nCPS68KClockspeed;
-extern int nCpsCycles;												// Cycles per frame
+extern int nCpsCycles;							// Cycles per frame
 extern int nCpsZ80Cycles;
 extern unsigned char *CpsGfx;  extern unsigned int nCpsGfxLen;		// All the graphics
 extern unsigned char *CpsRom;  extern unsigned int nCpsRomLen;		// Program Rom (as in rom)
@@ -27,8 +26,8 @@ extern unsigned char *CpsCode; extern unsigned int nCpsCodeLen;		// Program Rom 
 extern unsigned char *CpsZRom; extern unsigned int nCpsZRomLen;		// Z80 Roms
 extern          char *CpsQSam; extern unsigned int nCpsQSamLen;		// QSound Sample Roms
 extern unsigned char *CpsAd;   extern unsigned int nCpsAdLen;		// ADPCM Data
-extern unsigned int nCpsGfxScroll[4];								// Offset to Scroll tiles
-extern unsigned int nCpsGfxMask;									// Address mask
+extern unsigned int nCpsGfxScroll[4];					// Offset to Scroll tiles
+extern unsigned int nCpsGfxMask;					// Address mask
 extern unsigned char* CpsStar;
 
 int CpsInit();
@@ -178,17 +177,18 @@ extern unsigned char* CpsEncZRom;
 int CpsRwInit();
 int CpsRwExit();
 int CpsRwGetInp();
+int Cps2RwGetInp();
 unsigned char __fastcall CpsReadByte(unsigned int a);
 void __fastcall CpsWriteByte(unsigned int a, unsigned char d);
 unsigned short __fastcall CpsReadWord(unsigned int a);
 void __fastcall CpsWriteWord(unsigned int a, unsigned short d);
 
 // cps_draw.cpp
-extern unsigned char CpsRecalcPal;				// Flag - If it is 1, recalc the whole palette
-extern int nCpsLcReg;							// Address of layer controller register
-extern int CpsLayEn[6];							// bits for layer enable
-extern int nStartline, nEndline;				// specify the vertical slice of the screen to render
-extern int nRasterline[MAX_RASTER + 2];			// The lines at which an interrupt occurs
+extern unsigned char CpsRecalcPal;		// Flag - If it is 1, recalc the whole palette
+extern int nCpsLcReg;				// Address of layer controller register
+extern int CpsLayEn[6];				// bits for layer enable
+extern int nStartline, nEndline;		// specify the vertical slice of the screen to render
+extern int nRasterline[MAX_RASTER + 2];		// The lines at which an interrupt occurs
 extern int MaskAddr[4];
 extern int CpsLayer1XOffs;
 extern int CpsLayer2XOffs;
@@ -294,17 +294,17 @@ int Cps2Scr3Draw(unsigned char *Base,int sx,int sy);
 extern unsigned char *CpsrBase;						// Tile data base
 extern int nCpsrScrX,nCpsrScrY;						// Basic scroll info
 extern unsigned short *CpsrRows;					// Row scroll table, 0x400 words long
-extern int nCpsrRowStart;							// Start of row scroll (can wrap?)
+extern int nCpsrRowStart;						// Start of row scroll (can wrap?)
 
 // Information needed to draw a line
 struct CpsrLineInfo {
-	int nStart;										// 0-0x3ff - where to start drawing tiles from
-	int nWidth;										// 0-0x400 - width of scroll shifts
-													// e.g. for no rowscroll at all, nWidth=0
-	int nTileStart;									// Range of tiles which are visible onscreen
-	int nTileEnd;									// (e.g. 0x20 -> 0x50 , wraps around to 0x10)
-	short Rows[16];									// 16 row scroll values for this line
-	int nMaxLeft, nMaxRight;						// Maximum row shifts left and right
+	int nStart;							//0-0x3ff - where to start drawing tiles from
+	int nWidth;							// 0-0x400 - width of scroll shifts
+									// e.g. for no rowscroll at all, nWidth=0
+	int nTileStart;							// Range of tiles which are visible onscreen
+	int nTileEnd;							// (e.g. 0x20 -> 0x50 , wraps around to 0x10)
+	short Rows[16];							// 16 row scroll values for this line
+	int nMaxLeft, nMaxRight;					// Maximum row shifts left and right
 };
 extern struct CpsrLineInfo CpsrLineInfo[15];
 int CpsrPrepare();

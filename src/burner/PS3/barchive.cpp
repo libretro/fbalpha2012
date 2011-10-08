@@ -150,7 +150,7 @@ static int __cdecl BArchiveBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	else
 		sprintf(szText + strlen(szText), " %hs...", pszRomName);
 
-	ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
+	ProgressUpdateBurner(szText);
 
 #ifndef LOAD_OPT_ROM
 	// skip loading optional rom

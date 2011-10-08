@@ -329,7 +329,7 @@ void LoadDIPS()
 		}
 	}
 
-	iNumDips =	m_DipListData.size();
+	iNumDips = m_DipListData.size();
 
 	if (iNumDips <	GAMESEL_MaxWindowList)
 	{
@@ -1096,8 +1096,8 @@ void DipFrameMove()
 
 			m_DipListValues.clear();
 
-			if (nSel >= 0) {
-
+			if (nSel >= 0)
+			{
 				if (m_DipListOffsets.size() > 0)
 				{
 					nDIPGroup = m_DipListOffsets[iDipSelect	+ iDipCursorPos];
@@ -1277,7 +1277,7 @@ void DipMenu()
 	// draw	input list entries
 
 	iDipSelect		= fDipSelect;
-	iDipCursorPos	= fDipCursorPos;
+	iDipCursorPos		= fDipCursorPos;
 	iTempDipSel		= iDipSelect;
 
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - DIP Switch Menu");             
@@ -1312,7 +1312,7 @@ void DipMenu()
 
 	if (dipList)
 	{
-		for	(i=0; i<m_DipListValues.size();	i++)
+		for(i=0; i < m_DipListValues.size(); i++)
 		{ 		
 			if (i==dipListSel)
 				cellDbgFontPuts(0.5f, 0.08f + 0.025f * ((float)i ), 0.75f, COLS, m_DipListValues[i].c_str());

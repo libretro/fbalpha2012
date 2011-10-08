@@ -68,9 +68,8 @@ static int AllocateMemory()
 	CpsMemIndex();
 	nLen = CpsMemEnd - (unsigned char*)0;
 
-	if ((CpsMem = (unsigned char*)malloc(nLen)) == NULL) {
+	if ((CpsMem = (unsigned char*)malloc(nLen)) == NULL)
 		return 1;
-	}
 
 	memset(CpsMem, 0, nLen);										// blank all memory
 	CpsMemIndex();													// Index the allocated memory

@@ -42,7 +42,7 @@ extern int		nVidImageHeight;
 extern int		nVidImageLeft;
 extern int		nVidImageTop;
 extern int		nVidImagePitch;
-extern int		shaderindex;
+extern uint32_t		shaderindex;
 
 int VidInit();
 int VidExit();

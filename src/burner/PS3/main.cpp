@@ -36,6 +36,7 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 		case CELL_SYSUTIL_REQUEST_EXITGAME:  
 			is_running = 0;
 			exitGame = 1;
+			configAppSaveXml();
 			sys_process_exit(0);
 			break;
 		case CELL_SYSUTIL_DRAWING_BEGIN:

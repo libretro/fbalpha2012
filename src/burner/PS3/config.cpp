@@ -127,8 +127,8 @@ int configAppLoadXml()
 	parent = findElement(element, "render");
 	child = findElement(parent, "filter");
 	getAttr(child, "linear", &vidFilterLinear);
-	child = findElement(parent, "option");
-	getAttr(child, "currentshader", &shaderindex);
+	child = findElement(parent, "currentshader");
+	child->GetText(&selectedShader.filename);
 
 	getAttr(child, "x-offset", &nXOffset);
 	getAttr(child, "y-offset", &nYOffset);
@@ -238,13 +238,16 @@ int configAppSaveXml()
 	// video render
 	ticpp::Element render("render");
 	video.LinkEndChild(&render);
+	addTextNode(render, "currentshader", selectedShader.filename);
+
+	if(strlen(selectedShader.filename) == 0)
+		strcpy(selectedShader.filename,"stock.cg");
 
 	ticpp::Element filter("filter");
 	render.LinkEndChild(&filter);
 	setAttr(filter, "linear", vidFilterLinear);
 	ticpp::Element option("option");
 	render.LinkEndChild(&option);
-	setAttr(option, "currentshader", shaderindex);
 
 	setAttr(option, "x-offset", nXOffset);
 	setAttr(option, "y-offset", nYOffset);
@@ -256,9 +259,7 @@ int configAppSaveXml()
 	video.LinkEndChild(&monitor);
 	setAttr(monitor, "aspect-x", nVidScrnAspectX);
 	setAttr(monitor, "aspect-y", nVidScrnAspectY);
-#ifdef SN_TARGET_PS3
 	setAttr(monitor, "aspect-mode", nVidScrnAspectMode);
-#endif
 
 	// gui
 	ticpp::Element gui("gui");

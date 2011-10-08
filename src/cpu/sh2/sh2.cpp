@@ -122,10 +122,7 @@ typedef struct
 
 static SH2 * sh2;
 
-static uint32_t sh2_GetTotalCycles()
-{
-	return sh2->cycle_counts + sh2->sh2_cycles_to_run - sh2->sh2_icount;
-}
+#define sh2_GetTotalCycles() (sh2->cycle_counts + sh2->sh2_cycles_to_run - sh2->sh2_icount)
 
 static const int div_tab[4] = { 3, 5, 3, 0 };
 
@@ -2612,19 +2609,16 @@ static void sh2_timer_callback()
 //	cpuintrf_pop_context();
 }
 
-static void sh2_dmac_callback(int dma)
-{
-//	cpuintrf_push_context(cpunum);
-
-//	LOG(("SH2.%d: DMA %d complete\n", cpunum, dma));
-//	bprintf(0, _T("SH2: DMA %d complete at %d\n"), dma, sh2_GetTotalCycles());
-
-	sh2->m[0x63+4*dma] |= 2;
-	sh2->dma_timer_active[dma] = 0;
-	sh2_recalc_irq();
-	
-//	cpuintrf_pop_context();
-}
+#define sh2_dmac_callback(dma) \
+/* cpuintrf_push_context(cpunum); */ \
+/* LOG(("SH2.%d: DMA %d complete\n", cpunum, dma)); */ \
+/* bprintf(0, _T("SH2: DMA %d complete at %d\n"), dma, sh2_GetTotalCycles()); */ \
+\
+sh2->m[0x63+4*dma] |= 2; \
+sh2->dma_timer_active[dma] = 0; \
+sh2_recalc_irq(); \
+\
+/* cpuintrf_pop_context(); */
 
 
 static void sh2_dmac_check(int dma)
@@ -2789,22 +2783,13 @@ static void sh2_internal_w(uint32_t offset, uint32_t data, uint32_t mem_mask)
 
 		// DMA
 	case 0x1c: // DRCR0, DRCR1
-		break;
-
 		// Watchdog
 	case 0x20: // WTCNT, RSTCSR
-		break;
-
 		// Standby and cache
 	case 0x24: // SBYCR, CCR
-		break;
-
 		// Interrupt vectors cont.
 	case 0x38: // ICR, IRPA
-		break;
 	case 0x39: // VCRWDT
-		break;
-
 		// Division box
 	case 0x40: // DVSR
 		break;
@@ -2999,11 +2984,15 @@ int Sh2Run(int cycles)
 
 			if (sh2->dma_timer_active[0])
 				if ((cy - sh2->dma_timer_base[0]) >= sh2->dma_timer_cycles[0])
+				{
 					sh2_dmac_callback(0);
+				}
 
 			if (sh2->dma_timer_active[1])
 				if ((cy - sh2->dma_timer_base[1]) >= sh2->dma_timer_cycles[1])
+				{
 					sh2_dmac_callback(1);
+				}
 	
 			if ( sh2->timer_active )
 				if ((cy - sh2->timer_base) >= sh2->timer_cycles)
@@ -3088,11 +3077,15 @@ int Sh2Run(int cycles)
 
 			if (sh2->dma_timer_active[0])
 				if ((cy - sh2->dma_timer_base[0]) >= sh2->dma_timer_cycles[0])
+				{
 					sh2_dmac_callback(0);
+				}
 
 			if (sh2->dma_timer_active[1])
 				if ((cy - sh2->dma_timer_base[1]) >= sh2->dma_timer_cycles[1])
+				{
 					sh2_dmac_callback(1);
+				}
 	
 			if ( sh2->timer_active )
 				if ((cy - sh2->timer_base) >= sh2->timer_cycles)

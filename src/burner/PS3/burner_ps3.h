@@ -64,6 +64,7 @@ enum
 extern int custom_aspect_ratio_mode;
 
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
+#define DEFAULT_SHADER "/dev_hdd0/game/FBAN00000/USRDIR/shaders/stock.cg"
 
 typedef std::basic_string<char> tstring;
 
@@ -94,6 +95,14 @@ extern int is_running;
 extern int nVidScrnAspectMode;
 extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
+
+typedef struct {
+int index;
+char filename[512];
+char fullpath[1024];
+} selected_shader_t;
+
+extern selected_shader_t selectedShader;
 
 extern char szAppBurnVer[16];
 extern char szSVNVer[16];

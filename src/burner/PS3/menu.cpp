@@ -109,7 +109,9 @@ int iNumGames;
 int m_iMaxWindowList;
 int m_iWindowMiddle;
 
-int shaderindex;
+selected_shader_t selectedShader;
+uint32_t shaderindex = 0;
+
 int currentConfigIndex = 0;
 int inGameIndex = 0;
 int inputListSel = 0;
@@ -595,8 +597,32 @@ void BuildRomList()
 
 	if (m_ListShaderData.empty())
 	{
-		iterate_directory(SHADER_DIRECTORY, m_ListShaderData);
+		if (cellFsOpendir(SHADER_DIRECTORY, &_fd) == CELL_FS_SUCCEEDED)
+		{
+			CellFsDirent dirent;
+			uint64_t nread = 0;
+			while (cellFsReaddir(_fd, &dirent, &nread) == CELL_FS_SUCCEEDED)
+			{
+				if (nread == 0)
+					break;
+				if (dirent.d_type == CELL_FS_TYPE_REGULAR)
+				{
+					if(strstr(dirent.d_name,".cg") || strstr(dirent.d_name,".CG"))
+						m_ListShaderData.push_back(dirent.d_name);
+				}
+			}
+			cellFsClosedir(_fd);
+		}
 		std::sort(m_ListShaderData.begin(), m_ListShaderData.end());
+		for (unsigned int x = 0; x < m_ListShaderData.size(); x++)
+		{
+			if(strcmp(selectedShader.filename,m_ListShaderData[x].c_str()) == 0)
+			{
+				shaderindex = selectedShader.index = x;
+				sprintf(selectedShader.fullpath, "%s%s", SHADER_DIRECTORY, m_ListShaderData[x].c_str());
+				break;
+			}
+		}
 	}
 
 	// Now build a vector of Burn Roms
@@ -929,11 +955,10 @@ void ConfigFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				char shaderFile[255];
-
-				strcpy(shaderFile,SHADER_DIRECTORY);
-				strcat(shaderFile,m_ListShaderData[shaderindex].c_str());
-				psglInitShader(shaderFile);
+				selectedShader.index = shaderindex;
+				strcpy(selectedShader.filename, m_ListShaderData[shaderindex].c_str());
+				sprintf(selectedShader.fullpath, "%s%s", SHADER_DIRECTORY,m_ListShaderData[shaderindex].c_str());
+				psglInitShader(selectedShader.fullpath);
 			}
 			break;
 		case SETTING_BILINEAR_FILTER:
@@ -2074,11 +2099,10 @@ void InGameFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				char shaderFile[255];
-
-				strcpy(shaderFile,SHADER_DIRECTORY);
-				strcat(shaderFile,m_ListShaderData[shaderindex].c_str());
-				psglInitShader(shaderFile);
+				selectedShader.index = shaderindex;
+				strcpy(selectedShader.filename, m_ListShaderData[shaderindex].c_str());
+				sprintf(selectedShader.fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex].c_str());
+				psglInitShader(selectedShader.fullpath);
 				BurnReinitScrn();
 				psglRedraw();
 			}

@@ -4,9 +4,8 @@
 #include "vid_psgl.h"
 
 bool bVidOkay = false;
-int nVidFullscreen = 0;
-int bVidVSync = 0;				// 1 = sync blits/pageflips/presents to the screen
-int bVidTripleBuffer = 0;			// 1 = use triple buffering
+int bVidVSync = 1;				// 1 = sync blits/pageflips/presents to the screen
+int bVidTripleBuffer = 1;			// 1 = use triple buffering
 int nVidRotationAdjust = 0;			// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
 unsigned int vidFilterLinear = 0;		// 1 = linear filter, or point filter
 int nVidOriginalScrnAspectX;

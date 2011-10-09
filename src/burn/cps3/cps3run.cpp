@@ -677,7 +677,8 @@ void __fastcall cps3WriteWord(uint32_t addr, uint16_t data)
 						 uint32_t r = (coldata & 0x001F) >>  0;
 						 uint32_t g = (coldata & 0x03E0) >>  5;
 						 uint32_t b = (coldata & 0x7C00) >> 10;
-						 if (paldma_fade!=0) {
+						 if (paldma_fade!=0)
+						 {
 							 int fade;
 							 fade = (paldma_fade & 0x3f000000)>>24; r = (r*fade)>>5; if (r>0x1f) r = 0x1f;
 							 fade = (paldma_fade & 0x003f0000)>>16; g = (g*fade)>>5; if (g>0x1f) g = 0x1f;
@@ -1101,7 +1102,7 @@ int cps3Init()
 	int nLen = (intptr_t)MemEnd;
 	if ((Mem = (uint8_t *)malloc(nLen)) == NULL)
 		return 1;
-	memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);	// blank all memory
 	MemIndex();
 
 	// load and decode bios roms
@@ -1152,91 +1153,89 @@ int cps3Init()
 		ii++;
 	}
 
-	{
-		Sh2Init(1);
-		Sh2Open(0);
+	Sh2Init(1);
+	Sh2Open(0);
 
-		// Map 68000 memory:
-		Sh2MapMemory(RomBios, 0x00000000, 0x0007ffff, SM_ROM);				// BIOS
-		Sh2MapMemory(RamMain, 0x02000000, 0x0207ffff, SM_RAM);				// Main RAM
-		Sh2MapMemory((uint8_t *) RamSpr, 0x04000000, 0x0407ffff, SM_RAM);
-		//Sh2MapMemory(RamCRam,		0x04100000, 0x041fffff, SM_RAM);		// map this while reset
-		//Sh2MapMemory(RamGfx,		0x04200000, 0x043fffff, SM_WRITE);
-		Sh2MapMemory((uint8_t *) RamSS, 0x05040000, 0x0504ffff, SM_RAM);		// 'SS' RAM (Score Screen) (text tilemap + toles)
+	// Map 68000 memory:
+	Sh2MapMemory(RomBios, 0x00000000, 0x0007ffff, SM_ROM);				// BIOS
+	Sh2MapMemory(RamMain, 0x02000000, 0x0207ffff, SM_RAM);				// Main RAM
+	Sh2MapMemory((uint8_t *) RamSpr, 0x04000000, 0x0407ffff, SM_RAM);
+	//Sh2MapMemory(RamCRam,		0x04100000, 0x041fffff, SM_RAM);		// map this while reset
+	//Sh2MapMemory(RamGfx,		0x04200000, 0x043fffff, SM_WRITE);
+	Sh2MapMemory((uint8_t *) RamSS, 0x05040000, 0x0504ffff, SM_RAM);		// 'SS' RAM (Score Screen) (text tilemap + toles)
 
-		Sh2SetReadByteHandler (0, cps3ReadByte);
-		Sh2SetReadWordHandler (0, cps3ReadWord);
-		Sh2SetReadLongHandler (0, cps3ReadLong);
-		Sh2SetWriteByteHandler(0, cps3WriteByte);
-		Sh2SetWriteWordHandler(0, cps3WriteWord);
-		Sh2SetWriteLongHandler(0, cps3WriteLong);
+	Sh2SetReadByteHandler (0, cps3ReadByte);
+	Sh2SetReadWordHandler (0, cps3ReadWord);
+	Sh2SetReadLongHandler (0, cps3ReadLong);
+	Sh2SetWriteByteHandler(0, cps3WriteByte);
+	Sh2SetWriteWordHandler(0, cps3WriteWord);
+	Sh2SetWriteLongHandler(0, cps3WriteLong);
 
-		Sh2MapMemory(RamC000_D,	0xc0000000, 0xc00003ff, SM_FETCH);			// Executes code from here
-		Sh2MapMemory(RamC000, 0xc0000000, 0xc00003ff, SM_READ);
-		Sh2MapHandler(1, 0xc0000000, 0xc00003ff, SM_WRITE);
+	Sh2MapMemory(RamC000_D,	0xc0000000, 0xc00003ff, SM_FETCH);			// Executes code from here
+	Sh2MapMemory(RamC000, 0xc0000000, 0xc00003ff, SM_READ);
+	Sh2MapHandler(1, 0xc0000000, 0xc00003ff, SM_WRITE);
 
-		Sh2SetWriteByteHandler(1, cps3C0WriteByte);
-		Sh2SetWriteWordHandler(1, cps3C0WriteWord);
-		Sh2SetWriteLongHandler(1, cps3C0WriteLong);
+	Sh2SetWriteByteHandler(1, cps3C0WriteByte);
+	Sh2SetWriteWordHandler(1, cps3C0WriteWord);
+	Sh2SetWriteLongHandler(1, cps3C0WriteLong);
 
-		if (!(BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS3_NO_CD)) {
-			if (cps3_isSpecial) {
-				Sh2MapMemory(RomGame,	0x06000000, 0x06ffffff, SM_READ);	// Decrypted SH2 Code
-				Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_FETCH);	// Decrypted SH2 Code
-			} else {
-				Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_READ | SM_FETCH);	// Decrypted SH2 Code
-			}
+	if (!(BurnDrvGetHardwareCode() & HARDWARE_CAPCOM_CPS3_NO_CD)) {
+		if (cps3_isSpecial) {
+			Sh2MapMemory(RomGame,	0x06000000, 0x06ffffff, SM_READ);	// Decrypted SH2 Code
+			Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_FETCH);	// Decrypted SH2 Code
 		} else {
-			Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_FETCH);		// Decrypted SH2 Code
-			Sh2MapHandler(2, 0x06000000, 0x06ffffff, SM_READ | SM_WRITE);
-
-			if (cps3_isSpecial) {
-				Sh2SetReadByteHandler (2, cps3RomReadByteSpe);
-				Sh2SetReadWordHandler (2, cps3RomReadWordSpe);
-				Sh2SetReadLongHandler (2, cps3RomReadLongSpe);
-				Sh2SetWriteByteHandler(2, cps3RomWriteByte);
-				Sh2SetWriteWordHandler(2, cps3RomWriteWord);
-				Sh2SetWriteLongHandler(2, cps3RomWriteLong);
-			} else {
-				Sh2SetReadByteHandler (2, cps3RomReadByte);
-				Sh2SetReadWordHandler (2, cps3RomReadWord);
-				Sh2SetReadLongHandler (2, cps3RomReadLong);
-				Sh2SetWriteByteHandler(2, cps3RomWriteByte);
-				Sh2SetWriteWordHandler(2, cps3RomWriteWord);
-				Sh2SetWriteLongHandler(2, cps3RomWriteLong);
-			}
+			Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_READ | SM_FETCH);	// Decrypted SH2 Code
 		}
+	} else {
+		Sh2MapMemory(RomGame_D,	0x06000000, 0x06ffffff, SM_FETCH);		// Decrypted SH2 Code
+		Sh2MapHandler(2, 0x06000000, 0x06ffffff, SM_READ | SM_WRITE);
 
-		Sh2MapHandler(3, 0x040e0000, 0x040e02ff, SM_RAM);
-		Sh2SetReadByteHandler (3, cps3SndReadByte);
-		Sh2SetReadWordHandler (3, cps3SndReadWord);
-		Sh2SetReadLongHandler (3, cps3SndReadLong);
-		Sh2SetWriteByteHandler(3, cps3SndWriteByte);
-		Sh2SetWriteWordHandler(3, cps3SndWriteWord);
-		Sh2SetWriteLongHandler(3, cps3SndWriteLong);
-
-		Sh2MapMemory((uint8_t *)RamPal, 0x04080000, 0x040bffff, SM_READ);		// 16bit BE Colors
-		Sh2MapHandler(4, 0x04080000, 0x040bffff, SM_WRITE);
-
-		Sh2SetReadByteHandler (4, cps3VidReadByte);
-		Sh2SetReadWordHandler (4, cps3VidReadWord);
-		Sh2SetReadLongHandler (4, cps3VidReadLong);
-		Sh2SetWriteByteHandler(4, cps3VidWriteByte);
-		Sh2SetWriteWordHandler(4, cps3VidWriteWord);
-		Sh2SetWriteLongHandler(4, cps3VidWriteLong);
-
-#ifdef SPEED_HACK
-		// install speedup read handler
-		Sh2MapHandler(5, 0x02000000 | (cps3_speedup_ram_address & 0x030000),
-				0x0200ffff | (cps3_speedup_ram_address & 0x030000), SM_READ);
-		Sh2SetReadByteHandler (5, cps3RamReadByte);
-		Sh2SetReadWordHandler (5, cps3RamReadWord);
-		Sh2SetReadLongHandler (5, cps3RamReadLong);
-#endif
+		if (cps3_isSpecial) {
+			Sh2SetReadByteHandler (2, cps3RomReadByteSpe);
+			Sh2SetReadWordHandler (2, cps3RomReadWordSpe);
+			Sh2SetReadLongHandler (2, cps3RomReadLongSpe);
+			Sh2SetWriteByteHandler(2, cps3RomWriteByte);
+			Sh2SetWriteWordHandler(2, cps3RomWriteWord);
+			Sh2SetWriteLongHandler(2, cps3RomWriteLong);
+		} else {
+			Sh2SetReadByteHandler (2, cps3RomReadByte);
+			Sh2SetReadWordHandler (2, cps3RomReadWord);
+			Sh2SetReadLongHandler (2, cps3RomReadLong);
+			Sh2SetWriteByteHandler(2, cps3RomWriteByte);
+			Sh2SetWriteWordHandler(2, cps3RomWriteWord);
+			Sh2SetWriteLongHandler(2, cps3RomWriteLong);
+		}
 	}
 
+	Sh2MapHandler(3, 0x040e0000, 0x040e02ff, SM_RAM);
+	Sh2SetReadByteHandler (3, cps3SndReadByte);
+	Sh2SetReadWordHandler (3, cps3SndReadWord);
+	Sh2SetReadLongHandler (3, cps3SndReadLong);
+	Sh2SetWriteByteHandler(3, cps3SndWriteByte);
+	Sh2SetWriteWordHandler(3, cps3SndWriteWord);
+	Sh2SetWriteLongHandler(3, cps3SndWriteLong);
+
+	Sh2MapMemory((uint8_t *)RamPal, 0x04080000, 0x040bffff, SM_READ);		// 16bit BE Colors
+	Sh2MapHandler(4, 0x04080000, 0x040bffff, SM_WRITE);
+
+	Sh2SetReadByteHandler (4, cps3VidReadByte);
+	Sh2SetReadWordHandler (4, cps3VidReadWord);
+	Sh2SetReadLongHandler (4, cps3VidReadLong);
+	Sh2SetWriteByteHandler(4, cps3VidWriteByte);
+	Sh2SetWriteWordHandler(4, cps3VidWriteWord);
+	Sh2SetWriteLongHandler(4, cps3VidWriteLong);
+
+#ifdef SPEED_HACK
+	// install speedup read handler
+	Sh2MapHandler(5, 0x02000000 | (cps3_speedup_ram_address & 0x030000),
+			0x0200ffff | (cps3_speedup_ram_address & 0x030000), SM_READ);
+	Sh2SetReadByteHandler (5, cps3RamReadByte);
+	Sh2SetReadWordHandler (5, cps3RamReadWord);
+	Sh2SetReadLongHandler (5, cps3RamReadLong);
+#endif
+
 	BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
-	RamScreen	+= (512 * 2) * 16 + 16; // safe draw
+	RamScreen += (512 * 2) * 16 + 16; // safe draw
 	cps3SndInit(RomUser);
 	Cps3Reset();
 	return 0;
@@ -1265,67 +1264,46 @@ int cps3Exit()
 
 static void cps3_drawgfxzoom_0(uint32_t code, uint32_t pal, int flipx, int flipy, int x, int y)
 {
-	if ((x > (cps3_gfx_width - 8)) || (y > (cps3_gfx_height - 8))) return;
+	if ((x > (cps3_gfx_width - 8)) || (y > (cps3_gfx_height - 8)))
+		return;
+
 	uint16_t * dst = (uint16_t *) pBurnDraw;
 	uint8_t * src = (uint8_t *)RamSS;
 	uint16_t * color = CurPal + (pal << 4);
 	dst += (y * cps3_gfx_width + x);
 	src += code * 64;
 
-	if ( flipy )
+	int add_width = cps3_gfx_width;
+	if (flipy)
 	{
+		add_width = -cps3_gfx_width;
 		dst += cps3_gfx_width * 7;
-		if ( flipx )
-			for(int i=0; i<8; i++, dst-= cps3_gfx_width, src += 8)
-			{
-				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
-			}
-		else
-			for(int i=0; i<8; i++, dst-= cps3_gfx_width, src += 8)
-			{
-				if ( src[ 1] & 0xf ) dst[0] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[1] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[2] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[3] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[4] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[5] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[6] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[7] = color [ src[ 7] >>  4 ];
-			}
+	}
 
-	}
+	if (flipx)
+		for(int i = 0; i < 8; i++, dst += cps3_gfx_width, src += 8)
+		{
+			if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
+			if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
+			if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
+			if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
+			if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
+			if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
+			if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
+			if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
+		}
 	else
-	{
-		if ( flipx )
-			for(int i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
-				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
-			}
-		else
-			for(int i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
-				if ( src[ 1 ] & 0xf ) dst[0] = color [ src[ 1 ] & 0xf ];
-				if ( src[ 1 ] >>  4 ) dst[1] = color [ src[ 1 ] >>  4 ];
-				if ( src[ 3 ] & 0xf ) dst[2] = color [ src[ 3 ] & 0xf ];
-				if ( src[ 3 ] >>  4 ) dst[3] = color [ src[ 3 ] >>  4 ];
-				if ( src[ 5 ] & 0xf ) dst[4] = color [ src[ 5 ] & 0xf ];
-				if ( src[ 5 ] >>  4 ) dst[5] = color [ src[ 5 ] >>  4 ];
-				if ( src[ 7 ] & 0xf ) dst[6] = color [ src[ 7 ] & 0xf ];
-				if ( src[ 7 ] >>  4 ) dst[7] = color [ src[ 7 ] >>  4 ];
-			}
-	}
+		for(int i = 0; i < 8; i++, dst += cps3_gfx_width, src += 8)
+		{
+			if ( src[ 1] & 0xf ) dst[0] = color [ src[ 1] & 0xf ];
+			if ( src[ 1] >>  4 ) dst[1] = color [ src[ 1] >>  4 ];
+			if ( src[ 3] & 0xf ) dst[2] = color [ src[ 3] & 0xf ];
+			if ( src[ 3] >>  4 ) dst[3] = color [ src[ 3] >>  4 ];
+			if ( src[ 5] & 0xf ) dst[4] = color [ src[ 5] & 0xf ];
+			if ( src[ 5] >>  4 ) dst[5] = color [ src[ 5] >>  4 ];
+			if ( src[ 7] & 0xf ) dst[6] = color [ src[ 7] & 0xf ];
+			if ( src[ 7] >>  4 ) dst[7] = color [ src[ 7] >>  4 ];
+		}
 
 }
 
@@ -1338,177 +1316,93 @@ static void cps3_drawgfxzoom_1(uint32_t code, uint32_t pal, int flipx, int flipy
 #if BE_GFX
 
 	if (flipy)
-	{
 		src += code * 256 + 16 * (15 - (drawline - y));
-		if ( flipx )
-		{
-			if ( src[ 0] ) dst[15] = src[ 0] | pal;
-			if ( src[ 1] ) dst[14] = src[ 1] | pal;
-			if ( src[ 2] ) dst[13] = src[ 2] | pal;
-			if ( src[ 3] ) dst[12] = src[ 3] | pal;
-			if ( src[ 4] ) dst[11] = src[ 4] | pal;
-			if ( src[ 5] ) dst[10] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 9] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 8] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 7] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 6] = src[ 9] | pal;
-			if ( src[10] ) dst[ 5] = src[10] | pal;
-			if ( src[11] ) dst[ 4] = src[11] | pal;
-			if ( src[12] ) dst[ 3] = src[12] | pal;
-			if ( src[13] ) dst[ 2] = src[13] | pal;
-			if ( src[14] ) dst[ 1] = src[14] | pal;
-			if ( src[15] ) dst[ 0] = src[15] | pal;
-		}
-		else
-		{
-			if ( src[ 0] ) dst[ 0] = src[ 0] | pal;
-			if ( src[ 1] ) dst[ 1] = src[ 1] | pal;
-			if ( src[ 2] ) dst[ 2] = src[ 2] | pal;
-			if ( src[ 3] ) dst[ 3] = src[ 3] | pal;
-			if ( src[ 4] ) dst[ 4] = src[ 4] | pal;
-			if ( src[ 5] ) dst[ 5] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 6] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 7] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 8] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 9] = src[ 9] | pal;
-			if ( src[10] ) dst[10] = src[10] | pal;
-			if ( src[11] ) dst[11] = src[11] | pal;
-			if ( src[12] ) dst[12] = src[12] | pal;
-			if ( src[13] ) dst[13] = src[13] | pal;
-			if ( src[14] ) dst[14] = src[14] | pal;
-			if ( src[15] ) dst[15] = src[15] | pal;
-		}
+	else
+		src += code * 256 + 16 * (drawline - y);
+
+	if ( flipx )
+	{
+		if ( src[ 0] ) dst[15] = src[ 0] | pal;
+		if ( src[ 1] ) dst[14] = src[ 1] | pal;
+		if ( src[ 2] ) dst[13] = src[ 2] | pal;
+		if ( src[ 3] ) dst[12] = src[ 3] | pal;
+		if ( src[ 4] ) dst[11] = src[ 4] | pal;
+		if ( src[ 5] ) dst[10] = src[ 5] | pal;
+		if ( src[ 6] ) dst[ 9] = src[ 6] | pal;
+		if ( src[ 7] ) dst[ 8] = src[ 7] | pal;
+		if ( src[ 8] ) dst[ 7] = src[ 8] | pal;
+		if ( src[ 9] ) dst[ 6] = src[ 9] | pal;
+		if ( src[10] ) dst[ 5] = src[10] | pal;
+		if ( src[11] ) dst[ 4] = src[11] | pal;
+		if ( src[12] ) dst[ 3] = src[12] | pal;
+		if ( src[13] ) dst[ 2] = src[13] | pal;
+		if ( src[14] ) dst[ 1] = src[14] | pal;
+		if ( src[15] ) dst[ 0] = src[15] | pal;
 	}
 	else
 	{
-		src += code * 256 + 16 * (drawline - y);
-		if(flipx)
-		{
-			if ( src[ 0] ) dst[15] = src[ 0] | pal;
-			if ( src[ 1] ) dst[14] = src[ 1] | pal;
-			if ( src[ 2] ) dst[13] = src[ 2] | pal;
-			if ( src[ 3] ) dst[12] = src[ 3] | pal;
-			if ( src[ 4] ) dst[11] = src[ 4] | pal;
-			if ( src[ 5] ) dst[10] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 9] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 8] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 7] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 6] = src[ 9] | pal;
-			if ( src[10] ) dst[ 5] = src[10] | pal;
-			if ( src[11] ) dst[ 4] = src[11] | pal;
-			if ( src[12] ) dst[ 3] = src[12] | pal;
-			if ( src[13] ) dst[ 2] = src[13] | pal;
-			if ( src[14] ) dst[ 1] = src[14] | pal;
-			if ( src[15] ) dst[ 0] = src[15] | pal;
-		}
-		else
-		{
-			if ( src[ 0] ) dst[ 0] = src[ 0] | pal;
-			if ( src[ 1] ) dst[ 1] = src[ 1] | pal;
-			if ( src[ 2] ) dst[ 2] = src[ 2] | pal;
-			if ( src[ 3] ) dst[ 3] = src[ 3] | pal;
-			if ( src[ 4] ) dst[ 4] = src[ 4] | pal;
-			if ( src[ 5] ) dst[ 5] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 6] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 7] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 8] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 9] = src[ 9] | pal;
-			if ( src[10] ) dst[10] = src[10] | pal;
-			if ( src[11] ) dst[11] = src[11] | pal;
-			if ( src[12] ) dst[12] = src[12] | pal;
-			if ( src[13] ) dst[13] = src[13] | pal;
-			if ( src[14] ) dst[14] = src[14] | pal;
-			if ( src[15] ) dst[15] = src[15] | pal;
-		}
+		if ( src[ 0] ) dst[ 0] = src[ 0] | pal;
+		if ( src[ 1] ) dst[ 1] = src[ 1] | pal;
+		if ( src[ 2] ) dst[ 2] = src[ 2] | pal;
+		if ( src[ 3] ) dst[ 3] = src[ 3] | pal;
+		if ( src[ 4] ) dst[ 4] = src[ 4] | pal;
+		if ( src[ 5] ) dst[ 5] = src[ 5] | pal;
+		if ( src[ 6] ) dst[ 6] = src[ 6] | pal;
+		if ( src[ 7] ) dst[ 7] = src[ 7] | pal;
+		if ( src[ 8] ) dst[ 8] = src[ 8] | pal;
+		if ( src[ 9] ) dst[ 9] = src[ 9] | pal;
+		if ( src[10] ) dst[10] = src[10] | pal;
+		if ( src[11] ) dst[11] = src[11] | pal;
+		if ( src[12] ) dst[12] = src[12] | pal;
+		if ( src[13] ) dst[13] = src[13] | pal;
+		if ( src[14] ) dst[14] = src[14] | pal;
+		if ( src[15] ) dst[15] = src[15] | pal;
 	}
-
 #else
 
 	if (flipy)
-	{
 		src += code * 256 + 16 * (15 - (drawline - y));
-		if (flipx)
-		{
-			if ( src[ 3] ) dst[15] = src[ 3] | pal;
-			if ( src[ 2] ) dst[14] = src[ 2] | pal;
-			if ( src[ 1] ) dst[13] = src[ 1] | pal;
-			if ( src[ 0] ) dst[12] = src[ 0] | pal;
-			if ( src[ 7] ) dst[11] = src[ 7] | pal;
-			if ( src[ 6] ) dst[10] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 9] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 8] = src[ 4] | pal;
-			if ( src[11] ) dst[ 7] = src[11] | pal;
-			if ( src[10] ) dst[ 6] = src[10] | pal;
-			if ( src[ 9] ) dst[ 5] = src[ 9] | pal;
-			if ( src[ 8] ) dst[ 4] = src[ 8] | pal;
-			if ( src[15] ) dst[ 3] = src[15] | pal;
-			if ( src[14] ) dst[ 2] = src[14] | pal;
-			if ( src[13] ) dst[ 1] = src[13] | pal;
-			if ( src[12] ) dst[ 0] = src[12] | pal;
-		}
-		else
-		{
-			if ( src[ 3] ) dst[ 0] = src[ 3] | pal;
-			if ( src[ 2] ) dst[ 1] = src[ 2] | pal;
-			if ( src[ 1] ) dst[ 2] = src[ 1] | pal;
-			if ( src[ 0] ) dst[ 3] = src[ 0] | pal;
-			if ( src[ 7] ) dst[ 4] = src[ 7] | pal;
-			if ( src[ 6] ) dst[ 5] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 6] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 7] = src[ 4] | pal;
-			if ( src[11] ) dst[ 8] = src[11] | pal;
-			if ( src[10] ) dst[ 9] = src[10] | pal;
-			if ( src[ 9] ) dst[10] = src[ 9] | pal;
-			if ( src[ 8] ) dst[11] = src[ 8] | pal;
-			if ( src[15] ) dst[12] = src[15] | pal;
-			if ( src[14] ) dst[13] = src[14] | pal;
-			if ( src[13] ) dst[14] = src[13] | pal;
-			if ( src[12] ) dst[15] = src[12] | pal;
-		}
+	else
+		src += code * 256 + 16 * (drawline - y);
+
+	if (flipx)
+	{
+		if ( src[ 3] ) dst[15] = src[ 3] | pal;
+		if ( src[ 2] ) dst[14] = src[ 2] | pal;
+		if ( src[ 1] ) dst[13] = src[ 1] | pal;
+		if ( src[ 0] ) dst[12] = src[ 0] | pal;
+		if ( src[ 7] ) dst[11] = src[ 7] | pal;
+		if ( src[ 6] ) dst[10] = src[ 6] | pal;
+		if ( src[ 5] ) dst[ 9] = src[ 5] | pal;
+		if ( src[ 4] ) dst[ 8] = src[ 4] | pal;
+		if ( src[11] ) dst[ 7] = src[11] | pal;
+		if ( src[10] ) dst[ 6] = src[10] | pal;
+		if ( src[ 9] ) dst[ 5] = src[ 9] | pal;
+		if ( src[ 8] ) dst[ 4] = src[ 8] | pal;
+		if ( src[15] ) dst[ 3] = src[15] | pal;
+		if ( src[14] ) dst[ 2] = src[14] | pal;
+		if ( src[13] ) dst[ 1] = src[13] | pal;
+		if ( src[12] ) dst[ 0] = src[12] | pal;
 	}
 	else
 	{
-		src += code * 256 + 16 * (drawline - y);
-		if(flipx)
-		{
-			if ( src[ 3] ) dst[15] = src[ 3] | pal;
-			if ( src[ 2] ) dst[14] = src[ 2] | pal;
-			if ( src[ 1] ) dst[13] = src[ 1] | pal;
-			if ( src[ 0] ) dst[12] = src[ 0] | pal;
-			if ( src[ 7] ) dst[11] = src[ 7] | pal;
-			if ( src[ 6] ) dst[10] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 9] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 8] = src[ 4] | pal;
-			if ( src[11] ) dst[ 7] = src[11] | pal;
-			if ( src[10] ) dst[ 6] = src[10] | pal;
-			if ( src[ 9] ) dst[ 5] = src[ 9] | pal;
-			if ( src[ 8] ) dst[ 4] = src[ 8] | pal;
-			if ( src[15] ) dst[ 3] = src[15] | pal;
-			if ( src[14] ) dst[ 2] = src[14] | pal;
-			if ( src[13] ) dst[ 1] = src[13] | pal;
-			if ( src[12] ) dst[ 0] = src[12] | pal;
-		}
-		else
-		{
-			if ( src[ 3] ) dst[ 0] = src[ 3] | pal;
-			if ( src[ 2] ) dst[ 1] = src[ 2] | pal;
-			if ( src[ 1] ) dst[ 2] = src[ 1] | pal;
-			if ( src[ 0] ) dst[ 3] = src[ 0] | pal;
-			if ( src[ 7] ) dst[ 4] = src[ 7] | pal;
-			if ( src[ 6] ) dst[ 5] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 6] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 7] = src[ 4] | pal;
-			if ( src[11] ) dst[ 8] = src[11] | pal;
-			if ( src[10] ) dst[ 9] = src[10] | pal;
-			if ( src[ 9] ) dst[10] = src[ 9] | pal;
-			if ( src[ 8] ) dst[11] = src[ 8] | pal;
-			if ( src[15] ) dst[12] = src[15] | pal;
-			if ( src[14] ) dst[13] = src[14] | pal;
-			if ( src[13] ) dst[14] = src[13] | pal;
-			if ( src[12] ) dst[15] = src[12] | pal;
-		}
+		if ( src[ 3] ) dst[ 0] = src[ 3] | pal;
+		if ( src[ 2] ) dst[ 1] = src[ 2] | pal;
+		if ( src[ 1] ) dst[ 2] = src[ 1] | pal;
+		if ( src[ 0] ) dst[ 3] = src[ 0] | pal;
+		if ( src[ 7] ) dst[ 4] = src[ 7] | pal;
+		if ( src[ 6] ) dst[ 5] = src[ 6] | pal;
+		if ( src[ 5] ) dst[ 6] = src[ 5] | pal;
+		if ( src[ 4] ) dst[ 7] = src[ 4] | pal;
+		if ( src[11] ) dst[ 8] = src[11] | pal;
+		if ( src[10] ) dst[ 9] = src[10] | pal;
+		if ( src[ 9] ) dst[10] = src[ 9] | pal;
+		if ( src[ 8] ) dst[11] = src[ 8] | pal;
+		if ( src[15] ) dst[12] = src[15] | pal;
+		if ( src[14] ) dst[13] = src[14] | pal;
+		if ( src[13] ) dst[14] = src[13] | pal;
+		if ( src[12] ) dst[15] = src[12] | pal;
 	}
-
 #endif
 }
 
@@ -1523,8 +1417,8 @@ static void cps3_drawgfxzoom_2(uint32_t code, uint32_t pal, int flipx, int flipy
 	if (sprite_screen_width && sprite_screen_height)
 	{
 		// compute sprite increment per screen pixel
-		int dx = (16 << 16) / sprite_screen_width;
-		int dy = (16 << 16) / sprite_screen_height;
+		int dx = 1048576 / sprite_screen_width;
+		int dy = 1048576 / sprite_screen_height;
 
 		int ex = sx + sprite_screen_width;
 		int ey = sy + sprite_screen_height;
@@ -1677,7 +1571,8 @@ static void cps3_draw_tilemapsprite_line(int drawline, uint32_t * regs )
 	int line = drawline + scrolly;
 	line &= 0x3ff;
 
-	if (!(regs[1]&0x00008000)) return;
+	if (!(regs[1]&0x00008000))
+		return;
 
 	uint32_t mapbase =  (regs[2]&0x007f0000)>>16;
 	uint32_t linebase=  (regs[2]&0x7f000000)>>24;
@@ -1692,15 +1587,13 @@ static void cps3_draw_tilemapsprite_line(int drawline, uint32_t * regs )
 	mapbase = mapbase << 10;
 	linebase = linebase << 10;
 
-	if (!linescroll_enable)
-		scrollx =  (regs[0]&0xffff0000)>>16;
-	else
-	{
-		scrollx =  (regs[0]&0xffff0000)>>16;
-		scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
-	}
+	scrollx =  (regs[0]&0xffff0000)>>16;
 
-	if (drawline>cps3_gfx_max_y+4) return;
+	if (linescroll_enable)
+		scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
+
+	if (drawline>cps3_gfx_max_y+4)
+		return;
 
 	//clip.min_x = cliprect->min_x;
 	//clip.max_x = cliprect->max_x;
@@ -1722,8 +1615,10 @@ static void cps3_draw_tilemapsprite_line(int drawline, uint32_t * regs )
 		yflip  = (dat & 0x00000800)>>11;
 		xflip  = (dat & 0x00001000)>>12;
 
-		if (!bpp) colour <<= 8;
-		else colour <<= 6;
+		if (!bpp)
+			colour <<= 8;
+		else
+			colour <<= 6;
 
 		cps3_drawgfxzoom_1(tileno,colour,xflip,yflip,(x*16)-scrollx%16,drawline-tilesubline, drawline);
 	}
@@ -1769,7 +1664,7 @@ static void DrvDraw_sfiii2()
 #endif
 
 	// Draw Sprites
-	for (int i=0x00000/4;i<0x2000/4;i+=4)
+	for (int i= 0; i < 2048; i += 4)
 	{
 		int xpos =		(RamSpr[i+1]&0x03ff0000)>>16;
 		int ypos =		(RamSpr[i+1]&0x000003ff)>>0;
@@ -1791,7 +1686,8 @@ static void DrvDraw_sfiii2()
 
 		start = (start * 0x100) >> 2;
 
-		if ((RamSpr[i+0]&0xf0000000) == 0x80000000) break;
+		if ((RamSpr[i+0]&0xf0000000) == 0x80000000)
+			break;
 
 		for (int j=0; j<length; j+=4)
 		{
@@ -2053,7 +1949,9 @@ static void DrvDraw()
 	//			0x20 for half size
 	uint32_t fullscreenzoom = RamVReg[ 6 * 4 + 3 ] & 0xff;	// cps3_fullscreenzoom[3]
 
-	if (fullscreenzoom > 0x80) fullscreenzoom = 0x80;
+	if (fullscreenzoom > 0x80)
+		fullscreenzoom = 0x80;
+
 	uint32_t fsz = (fullscreenzoom << (16 - 6));
 
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
@@ -2074,7 +1972,7 @@ static void DrvDraw()
 #endif
 
 	// Draw Sprites
-	for (int i=0;i<2048;i+=4)
+	for (int i = 0; i < 2048; i += 4)
 	{
 		int xpos =		(RamSpr[i+1]&0x03ff0000)>>16;
 		int ypos =		(RamSpr[i+1]&0x000003ff)>>0;

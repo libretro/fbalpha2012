@@ -1654,11 +1654,7 @@ static void DrvDraw_sfiii2()
 	{
 #endif
 		// Clear Screen Buffer
-		//memset(RamScreen, 0, 512 * 448 * sizeof(int));
-		uint32_t * pscr = RamScreen;
-		int clrsz = (cps3_gfx_max_x + 1) * sizeof(int);
-		for(int yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
-			memset(pscr, 0, clrsz);
+		memset(RamScreen, 0, 512 * 448 * sizeof(int));
 #ifndef NO_LAYER_ENABLE_TOGGLE
 	}
 #endif

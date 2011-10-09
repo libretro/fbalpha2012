@@ -39,9 +39,9 @@ typedef struct dstResType
 	uint32_t resId;
 }; 
 
-struct dstResType dstRes[8]; 
+struct dstResType availableResolutions[8]; 
 
-static const dstResType checkAvailableResolutions[] = 
+static const dstResType allResolutions[] = 
 {
 	{720,480, CELL_VIDEO_OUT_RESOLUTION_480},
 	{720,576, CELL_VIDEO_OUT_RESOLUTION_576}, 
@@ -53,8 +53,8 @@ static const dstResType checkAvailableResolutions[] =
 	{1920,1080, CELL_VIDEO_OUT_RESOLUTION_1080}
 };
 
-static int numDstResCount = 0; 
-static int curResNo;
+static int availableResolutionsCount = 0; 
+static int currentAvailableResolutionNo;
 
 // forward declarations
 unsigned int __cdecl HighCol16(int r, int g, int b, int);
@@ -233,14 +233,14 @@ void psglInitGL_with_resolution(uint32_t resolutionId)
 	psglInit(&initOpts);
 
 	int resolutionpicked;  
-	for (int iDst=numDstResCount-1; iDst>=0; iDst--) 
+	for (int i=availableResolutionsCount-1; i>=0; i--) 
 	{ 
 
-		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, dstRes[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0) && (dstRes[iDst].resId == resolutionId)) 
+		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, availableResolutions[i].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0) && (availableResolutions[i].resId == resolutionId)) 
 		{
 			// Get the highest res possible
-			resolutionpicked = iDst;
-			if (dstRes[iDst].resId == CELL_VIDEO_OUT_RESOLUTION_576)
+			resolutionpicked = i;
+			if (availableResolutions[i].resId == CELL_VIDEO_OUT_RESOLUTION_576)
 			{
 				params.enable |= PSGL_DEVICE_PARAMETERS_RESC_PAL_TEMPORAL_MODE;
 				params.rescPalTemporalMode = RESC_PAL_TEMPORAL_MODE_60_INTERPOLATE;
@@ -249,11 +249,11 @@ void psglInitGL_with_resolution(uint32_t resolutionId)
 			}
 		}
 	}
-	curResNo = resolutionpicked;
+	currentAvailableResolutionNo = resolutionpicked;
 	CellVideoOutResolution resolution;
 	cellVideoOutGetResolution(resolutionId, &resolution);
-	params.width = dstRes[curResNo].w; 
-	params.height = dstRes[curResNo].h; 
+	params.width = availableResolutions[currentAvailableResolutionNo].w; 
+	params.height = availableResolutions[currentAvailableResolutionNo].h; 
 
 	if (bVidTripleBuffer)
 	{
@@ -318,27 +318,26 @@ void psglInitGL()
 
 	psglInit(&initOpts);
 	
-	for(int iDst = 0; iDst < 8; iDst++)
+	for(int i = 0; i < 8; i++)
 	{ 
-		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, checkAvailableResolutions[iDst].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0)) 
+		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, allResolutions[i].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0)) 
 		{
-			//set dstRes same as checkAvailableResolutions entry since resolution
+			//set availableResolutions same as allResolutions entry since resolution
 			//is available
-			dstRes[numDstResCount].w = checkAvailableResolutions[iDst].w; 	
-			dstRes[numDstResCount].h = checkAvailableResolutions[iDst].h; 	
-			dstRes[numDstResCount].h = checkAvailableResolutions[iDst].h; 	
-			dstRes[numDstResCount].resId = checkAvailableResolutions[iDst].resId;
+			availableResolutions[availableResolutionsCount].w = allResolutions[i].w; 	
+			availableResolutions[availableResolutionsCount].h = allResolutions[i].h; 	
+			availableResolutions[availableResolutionsCount].resId = allResolutions[i].resId;
 
 			//set the current resolution to this one
-			curResNo = numDstResCount; 
+			currentAvailableResolutionNo = availableResolutionsCount; 
 
 			//increment resolution count by one
-			numDstResCount += 1;
+			availableResolutionsCount += 1;
 
 		}
 	}
 
-	if(dstRes[curResNo].resId == CELL_VIDEO_OUT_RESOLUTION_576)
+	if(availableResolutions[currentAvailableResolutionNo].resId == CELL_VIDEO_OUT_RESOLUTION_576)
 	{
                 params.enable |= PSGL_DEVICE_PARAMETERS_RESC_PAL_TEMPORAL_MODE;
                 params.rescPalTemporalMode = RESC_PAL_TEMPORAL_MODE_60_INTERPOLATE;
@@ -347,8 +346,8 @@ void psglInitGL()
 	}
 	else
 	{
-		params.width = dstRes[curResNo].w; 
-		params.height = dstRes[curResNo].h; 
+		params.width = availableResolutions[currentAvailableResolutionNo].w; 
+		params.height = availableResolutions[currentAvailableResolutionNo].h; 
 		params.enable |= PSGL_DEVICE_PARAMETERS_WIDTH_HEIGHT; 
 	}
 	
@@ -377,19 +376,19 @@ void psglInitGL()
 
 uint32_t psglGetCurrentResolutionId()
 {
-	return dstRes[curResNo].resId;
+	return availableResolutions[currentAvailableResolutionNo].resId;
 }
 
 void psglResolutionPrevious()
 {
-	if(curResNo > 0)
-		curResNo -= 1;	
+	if(currentAvailableResolutionNo > 0)
+		currentAvailableResolutionNo -= 1;	
 }
 
 void psglResolutionNext()
 {
-	if(curResNo < numDstResCount-1)
-		curResNo += 1;	
+	if(currentAvailableResolutionNo < availableResolutionsCount-1)
+		currentAvailableResolutionNo += 1;	
 }
 
 void dbgFontInit(void)
@@ -417,7 +416,7 @@ void psglResolutionSwitch(void)
 		psgl_device = NULL;
 	}
 
-	psglInitGL_with_resolution(dstRes[curResNo].resId);
+	psglInitGL_with_resolution(availableResolutions[currentAvailableResolutionNo].resId);
 	dbgFontInit();
 }
 

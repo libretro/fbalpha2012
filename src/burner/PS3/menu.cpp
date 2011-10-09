@@ -11,7 +11,7 @@
 #include "vid_psgl.h"
 #include "inp_keys.h"
 
-#define FILEBROWSER_DELAY	180000
+#define FILEBROWSER_DELAY	90000
  
 #define ALL 0
 #define CPS1 1
@@ -101,9 +101,6 @@ int _fd = 0;
 
 // Rom List	Movement 
 
-float fGameSelect;
-float fCursorPos;
-
 int iGameSelect;
 int iCursorPos;
 int iNumGames;
@@ -121,10 +118,6 @@ int dipListSel = 0;
  
 // Input Movement
 
-float fInputSelect;
-float fInputCursorPos;
-float fInputMaxCount;
- 
 int iInputSelect;
 int iInputCursorPos;
 int iNumInput;
@@ -135,10 +128,6 @@ int inputList = 0;
 
 // DIP Movement
 
-float fDipSelect;
-float fDipCursorPos;
-float fDipMaxCount;
- 
 int  iDipSelect;
 int  iDipCursorPos;
 int  iNumDips;
@@ -425,11 +414,8 @@ void LoadInputs()
 
 int InitDipList()
 {
-	fDipSelect = 0.0f;
 	iDipSelect = 0;
-	fDipCursorPos = 0.0f;
 	iDipCursorPos = 0;
-	fDipMaxCount = 0.0f;
 
 	m_DipList.clear();
 	m_DipListData.clear();
@@ -440,11 +426,8 @@ int InitDipList()
 
 int InitInputList()
 {
-	fInputSelect	= 0.0f;
 	iInputSelect	= 0;
-	fInputCursorPos = 0.0f;
 	iInputCursorPos = 0;
-	fInputMaxCount	= 0.0f;
 
 	m_InputSettingsList.clear();
 	m_InputSettingsData.clear();
@@ -485,9 +468,7 @@ int InitRomList()
 	m_vecAvailRomIndex.clear();
 	m_vecAvailRomBurnDrvIndex.clear();
 
-	fGameSelect	= 0.0f;
-	iGameSelect	= 0;
-	fCursorPos = 0.0f;
+	iGameSelect = 0;
 	iCursorPos = 0;
 
 	// build the hardware filter map
@@ -526,16 +507,6 @@ int InitRomList()
 
 	return 0;
 } 
-
-#define ResetMenuVars() \
-	fGameSelect = 0.0f; \
-	iGameSelect = 0; \
-	fCursorPos = 0.0f; \
-	iCursorPos = 0; \
-	\
-	m_vecAvailRomList.clear(); \
-	m_vecAvailRomIndex.clear(); \
-	m_vecAvailRomBurnDrvIndex.clear();
 
 static int AvRoms()
 {
@@ -583,8 +554,11 @@ void BuildRomList()
 	m_vecAvailRomInfo.clear();
 	m_vecAvailRomParent.clear();
 	m_vecAvailRomManufacturer.clear();
+	m_vecAvailRomIndex.clear();
+	m_vecAvailRomBurnDrvIndex.clear();
 
-	ResetMenuVars();
+	iGameSelect = 0;
+	iCursorPos = 0;
 
 	if (m_ListData.empty())
 	{
@@ -923,7 +897,7 @@ void ConfigFrameMove()
 	}
 	else if(CTRL_DOWN(new_state & diff_state) | CTRL_R2(new_state) | CTRL_LSTICK_DOWN(new_state))
 	{
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		currentConfigIndex++;
 
 		if (currentConfigIndex >= MAX_NO_OF_SETTINGS)
@@ -931,7 +905,7 @@ void ConfigFrameMove()
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_L2(new_state) | CTRL_LSTICK_UP(new_state))
 	{		
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		currentConfigIndex--;
 
 		if (currentConfigIndex < 0)
@@ -950,12 +924,12 @@ void ConfigFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
 			{
 				psglResolutionPrevious();
-				sys_timer_usleep(FILEBROWSER_DELAY/2);
+				sys_timer_usleep(FILEBROWSER_DELAY);
 			}
 			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state)) 
 			{
 				psglResolutionNext();	
-				sys_timer_usleep(FILEBROWSER_DELAY/2);
+				sys_timer_usleep(FILEBROWSER_DELAY);
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
@@ -1111,8 +1085,6 @@ void RomMenu()
 
 	// draw	game list entries
 
-	iGameSelect	= fGameSelect;
-	iCursorPos = fCursorPos;
 	iTempGameSel = iGameSelect;
 
 #ifdef CELL_DEBUG_MEMORY
@@ -1304,36 +1276,36 @@ void DipFrameMove()
 			// default don`t clamp cursor
 			bool bClampCursor =	FALSE;
 
-			fDipCursorPos ++;
+			iDipCursorPos ++;
 
-			if(	fDipCursorPos > m_iWindowMiddleDip )
+			if(	iDipCursorPos > m_iWindowMiddleDip )
 			{
 				// clamp cursor	position
 				bClampCursor = TRUE;
 
 				// advance gameselect
-				if(fDipSelect == 0) fDipSelect += (fDipCursorPos - m_iWindowMiddleDip);
-				else fDipSelect ++;
+				if(iDipSelect == 0) iDipSelect += (iDipCursorPos - m_iWindowMiddleDip);
+				else iDipSelect ++;
 
 				// clamp game window range (high)
-				if((fDipSelect	+ m_iMaxWindowListDip)	> iNumDips)
+				if((iDipSelect	+ m_iMaxWindowListDip)	> iNumDips)
 				{
 
 					// clamp to	end
-					fDipSelect = iNumDips - m_iMaxWindowListDip;
+					iDipSelect = iNumDips - m_iMaxWindowListDip;
 
 					// advance cursor pos after	all!
 					bClampCursor = FALSE;
 
 					// clamp cursor	to end
-					if((fDipSelect	+ fDipCursorPos) >= iNumDips)
-						fDipCursorPos = m_iMaxWindowListDip-1;
+					if((iDipSelect	+ iDipCursorPos) >= iNumDips)
+						iDipCursorPos = m_iMaxWindowListDip-1;
 				}
 			}
 
 			// check for cursor	clamp
 			if(bClampCursor)
-				fDipCursorPos = m_iWindowMiddleDip;	
+				iDipCursorPos = m_iWindowMiddleDip;	
 		}
 		else
 		{
@@ -1351,33 +1323,33 @@ void DipFrameMove()
 			// default don`t clamp cursor
 			bool bClampCursor =	FALSE;
 
-			fDipCursorPos --;
-			if(	fDipCursorPos < m_iWindowMiddleDip )
+			iDipCursorPos --;
+			if(	iDipCursorPos < m_iWindowMiddleDip )
 			{
 				// clamp cursor	position
 				bClampCursor = TRUE;
 
 				// backup window pos
-				fDipSelect	--;
+				iDipSelect	--;
 
 				// clamp game window range (low)
-				if(fDipSelect < 0)
+				if(iDipSelect < 0)
 				{
 					// clamp to	start
-					fDipSelect	= 0;
+					iDipSelect	= 0;
 
 					// backup cursor pos after all!
 					bClampCursor = FALSE;
 
 					// clamp cursor	to end
-					if(	fDipCursorPos < 0 )
-						fDipCursorPos = 0;
+					if(	iDipCursorPos < 0 )
+						iDipCursorPos = 0;
 				}
 			}
 
 			// check for cursor	clamp
 			if(	bClampCursor )
-				fDipCursorPos = m_iWindowMiddleDip;
+				iDipCursorPos = m_iWindowMiddleDip;
 		}
 		else
 		{
@@ -1406,8 +1378,6 @@ void DipMenu()
 
 	// draw	input list entries
 
-	iDipSelect		= fDipSelect;
-	iDipCursorPos		= fDipCursorPos;
 	iTempDipSel		= iDipSelect;
 
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - DIP Switch Menu");             
@@ -1466,8 +1436,6 @@ void InputMenu()
 
 	// draw	input list entries
 
-	iInputSelect		= fInputSelect;
-	iInputCursorPos		= fInputCursorPos;
 	iTempInputSel		= iInputSelect;
 
 	cellDbgFontPuts(0.05f, 0.04f , 0.75f, 0xFFE0EEFF, "FBANext PS3 - Input Mapping Menu");             
@@ -1861,39 +1829,39 @@ void InputFrameMove()
 	}				 
 	else if(CTRL_DOWN(new_state & diff_state) | CTRL_R2(new_state) | CTRL_LSTICK_DOWN(new_state))
 	{
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		if (!inputList)
 		{
 			bool bClampCursor = FALSE;		// default don`t clamp cursor
 
-			fInputCursorPos ++;
+			iInputCursorPos ++;
 
-			if(fInputCursorPos > m_iWindowMiddleInput)
+			if(iInputCursorPos > m_iWindowMiddleInput)
 			{
 				bClampCursor = TRUE;		// clamp cursor position
 
 				// advance gameselect
-				if(fInputSelect == 0)
-					fInputSelect += (fInputCursorPos - m_iWindowMiddleInput);
+				if(iInputSelect == 0)
+					iInputSelect += (iInputCursorPos - m_iWindowMiddleInput);
 				else
-					fInputSelect ++;
+					iInputSelect ++;
 
 				// clamp game window range (high)
-				if((fInputSelect + m_iMaxWindowListInput) > iNumInput)
+				if((iInputSelect + m_iMaxWindowListInput) > iNumInput)
 				{
-					fInputSelect = iNumInput - m_iMaxWindowListInput;	// clamp to end
+					iInputSelect = iNumInput - m_iMaxWindowListInput;	// clamp to end
 
 					bClampCursor = FALSE;					// advance cursor pos after all!
 
 					// clamp cursor	to end
-					if((fInputSelect + fInputCursorPos) >= iNumInput)
-						fInputCursorPos = m_iMaxWindowListInput-1;
+					if((iInputSelect + iInputCursorPos) >= iNumInput)
+						iInputCursorPos = m_iMaxWindowListInput-1;
 				}
 			}
 
 			// check for cursor	clamp
 			if(bClampCursor)
-				fInputCursorPos = m_iWindowMiddleInput;	
+				iInputCursorPos = m_iWindowMiddleInput;	
 		}
 		else
 		{
@@ -1907,39 +1875,39 @@ void InputFrameMove()
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_L2(new_state) | CTRL_LSTICK_UP(new_state)) 
 	{
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		if (!inputList)
 		{
 			// default don`t clamp cursor
 			bool bClampCursor =	FALSE;
 
-			fInputCursorPos --;
-			if(fInputCursorPos < m_iWindowMiddleInput)
+			iInputCursorPos --;
+			if(iInputCursorPos < m_iWindowMiddleInput)
 			{
 				// clamp cursor	position
 				bClampCursor = TRUE;
 
 				// backup window pos
-				fInputSelect	--;
+				iInputSelect	--;
 
 				// clamp game window range (low)
-				if(fInputSelect < 0)
+				if(iInputSelect < 0)
 				{
 					// clamp to	start
-					fInputSelect	= 0;
+					iInputSelect	= 0;
 
 					// backup cursor pos after all!
 					bClampCursor = FALSE;
 
 					// clamp cursor	to end
-					if(fInputCursorPos < 0)
-						fInputCursorPos = 0;
+					if(iInputCursorPos < 0)
+						iInputCursorPos = 0;
 				}
 			}
 
 			// check for cursor	clamp
 			if(bClampCursor)
-				fInputCursorPos = m_iWindowMiddleInput;
+				iInputCursorPos = m_iWindowMiddleInput;
 		}
 		else
 		{
@@ -2154,7 +2122,7 @@ void InGameFrameMove()
 		if(inGameIndex < LAST_INGAME_SETTING)
 		{
 			inGameIndex++;
-			sys_timer_usleep(FILEBROWSER_DELAY/2);
+			sys_timer_usleep(FILEBROWSER_DELAY);
 		}
 	}
 	else if(CTRL_UP(new_state & diff_state) | CTRL_LSTICK_UP(new_state))
@@ -2162,7 +2130,7 @@ void InGameFrameMove()
 		if(inGameIndex > 0)
 		{
 			inGameIndex--;
-			sys_timer_usleep(FILEBROWSER_DELAY/2);
+			sys_timer_usleep(FILEBROWSER_DELAY);
 		}
 	}
 
@@ -2473,73 +2441,73 @@ void FrameMove()
 		// default don`t clamp cursor
 		bool bClampCursor =	FALSE;
 
-		fCursorPos ++;
+		iCursorPos ++;
 
-		if(fCursorPos > m_iWindowMiddle)
+		if(iCursorPos > m_iWindowMiddle)
 		{
 			bClampCursor = TRUE;					// clamp cursor	position
 
 			// advance gameselect
-			if(fGameSelect == 0)
-				fGameSelect += (fCursorPos	- m_iWindowMiddle);
+			if(iGameSelect == 0)
+				iGameSelect += (iCursorPos	- m_iWindowMiddle);
 			else
-				fGameSelect ++;
+				iGameSelect ++;
 
 			// clamp game window range (high)
-			if((fGameSelect	+ m_iMaxWindowList) > iNumGames)
+			if((iGameSelect	+ m_iMaxWindowList) > iNumGames)
 			{
 
-				fGameSelect = iNumGames - m_iMaxWindowList;	// clamp to end
+				iGameSelect = iNumGames - m_iMaxWindowList;	// clamp to end
 				bClampCursor = FALSE;				// advance cursor pos after all!
 
 				// clamp cursor	to end
-				if((fGameSelect	+ fCursorPos) >= iNumGames)
-					fCursorPos = m_iMaxWindowList-1;
+				if((iGameSelect	+ iCursorPos) >= iNumGames)
+					iCursorPos = m_iMaxWindowList-1;
 			}
 		}
 
 		// check for cursor clamp
 		if(	bClampCursor )
-			fCursorPos = m_iWindowMiddle;	
+			iCursorPos = m_iWindowMiddle;	
 	}
 
 	if( CTRL_DOWN(new_state & diff_state) || CTRL_LSTICK_DOWN(new_state))
 	{
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		// default don`t clamp cursor
 		bool bClampCursor =	FALSE;
 
-		fCursorPos ++;
+		iCursorPos ++;
 
-		if(fCursorPos > m_iWindowMiddle)
+		if(iCursorPos > m_iWindowMiddle)
 		{
 			// clamp cursor	position
 			bClampCursor = TRUE;
 
 			// advance gameselect
-			if(fGameSelect == 0)
-				fGameSelect +=	(fCursorPos - m_iWindowMiddle);
+			if(iGameSelect == 0)
+				iGameSelect +=	(iCursorPos - m_iWindowMiddle);
 			else
-				fGameSelect ++;
+				iGameSelect ++;
 
 			// clamp game window range (high)
-			if((fGameSelect	+ m_iMaxWindowList) > iNumGames)
+			if((iGameSelect	+ m_iMaxWindowList) > iNumGames)
 			{
 				// clamp to	end
-				fGameSelect = iNumGames	- m_iMaxWindowList;
+				iGameSelect = iNumGames	- m_iMaxWindowList;
 
 				// advance cursor pos after	all!
 				bClampCursor = FALSE;
 
 				// clamp cursor	to end
-				if((fGameSelect	+ fCursorPos) >= iNumGames)
-					fCursorPos = m_iMaxWindowList-1;
+				if((iGameSelect	+ iCursorPos) >= iNumGames)
+					iCursorPos = m_iMaxWindowList-1;
 			}
 		}
 
 		// check for cursor	clamp
 		if(	bClampCursor )
-			fCursorPos = m_iWindowMiddle;	
+			iCursorPos = m_iWindowMiddle;	
 
 	}
 	else if (CTRL_L1(old_state & diff_state))
@@ -2611,55 +2579,55 @@ void FrameMove()
 	else if( CTRL_UP(new_state & diff_state) | CTRL_LSTICK_UP(new_state))  
 	{
 		// default don`t clamp cursor
-		sys_timer_usleep(FILEBROWSER_DELAY/2);
+		sys_timer_usleep(FILEBROWSER_DELAY);
 		bool bClampCursor =	FALSE;
 
-		fCursorPos --;
-		if(fCursorPos < m_iWindowMiddle)
+		iCursorPos --;
+		if(iCursorPos < m_iWindowMiddle)
 		{
 			bClampCursor = TRUE;		// clamp cursor	position
-			fGameSelect	--;		// backup window pos
-			if(fGameSelect < 0)		// clamp game window range (low)
+			iGameSelect	--;		// backup window pos
+			if(iGameSelect < 0)		// clamp game window range (low)
 			{
-				fGameSelect	= 0;		// clamp to	start
+				iGameSelect	= 0;		// clamp to	start
 				bClampCursor = FALSE;		// backup cursor pos after all!
 
 				// clamp cursor	to end
-				if(	fCursorPos < 0 )
-					fCursorPos = 0;
+				if(	iCursorPos < 0 )
+					iCursorPos = 0;
 			}
 		}
 
 		// check for cursor	clamp
 		if(	bClampCursor )
-			fCursorPos = m_iWindowMiddle;
+			iCursorPos = m_iWindowMiddle;
 	}			 			 			 
 	else if(CTRL_L2(new_state)) 
 	{
 		// default don`t clamp cursor
 		bool bClampCursor =	FALSE;
 
-		fCursorPos --;
-		if(fCursorPos < m_iWindowMiddle)
+		iCursorPos --;
+		if(iCursorPos < m_iWindowMiddle)
 		{
 			bClampCursor = TRUE;		// clamp cursor	position
-			fGameSelect	--;		// backup window pos
+			iGameSelect	--;		// backup window pos
 
 			// clamp game window range (low)
-			if(fGameSelect < 0)
+			if(iGameSelect < 0)
 			{
-				fGameSelect	= 0;			// clamp to	start
+				iGameSelect	= 0;			// clamp to	start
 				bClampCursor = FALSE;			// backup cursor pos after all!
 
 				// clamp cursor	to end
-				if(	fCursorPos < 0 )
-					fCursorPos = 0;
+				if(	iCursorPos < 0 )
+					iCursorPos = 0;
 			}
 		}
 
 		// check for cursor clamp
 		if(bClampCursor)
-			fCursorPos = m_iWindowMiddle;
+			iCursorPos = m_iWindowMiddle;
 	}			 			 			 
 	else if(CTRL_CROSS(new_state))
 	{
@@ -2692,8 +2660,8 @@ void FrameMove()
 				}
 			}
 
-			nBurnFPS = 6000;
-			nFMInterpolation = 0;
+			nBurnFPS = 6000;			// Hardcoded FPS
+			nFMInterpolation = 0;			// FM Interpolation hardcoded to 0
 
 			if (directLoadGame(m_vecAvailRomIndex[entryselected].c_str()) == 0)
 			{

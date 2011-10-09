@@ -2330,8 +2330,6 @@ static void DrvDraw()
 #endif
 }
 
-static int cps_int10_cnt = 0;
-
 int cps3Frame_sfiii2()
 {
 	if (cps3_reset)
@@ -2374,11 +2372,8 @@ int cps3Frame_sfiii2()
 	DrvClearOpposites(&Cps3Input[0]);
 	DrvClearOpposites(&Cps3Input[1]);
 
-	Sh2Run(104166);
-
-	Sh2Run(104166);
-
-	Sh2Run(104166);
+	//Combine three calls to Sh2Run into one call (3 * 104166 = 312498)
+	Sh2Run(312498);
 
 	Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 
@@ -2438,18 +2433,12 @@ int cps3Frame()
 	DrvClearOpposites(&Cps3Input[0]);
 	DrvClearOpposites(&Cps3Input[1]);
 
-	for (int i=0; i < 4; i++) {
+	//Combine three calls to Sh2Run into one call (3 * 104166 = 312498)
+	Sh2Run(312498);
 
-		Sh2Run(6250000 * 4 / 60 / 4);
+	Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 
-		if (cps_int10_cnt >= 2)
-		{
-			cps_int10_cnt = 0;
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
-		}
-		else
-			cps_int10_cnt++;
-	}
+	Sh2Run(104166);
 
 	Sh2SetIRQLine(12, SH2_IRQSTATUS_AUTO);
 
@@ -2559,8 +2548,6 @@ int cps3Scan(int nAction, int *pnMin)
 		//SCAN_VAR(last_normal_byte);
 		//SCAN_VAR(lastb);
 		//SCAN_VAR(lastb2);
-
-		SCAN_VAR(cps_int10_cnt);
 
 		if (nAction & ACB_WRITE)
 		{

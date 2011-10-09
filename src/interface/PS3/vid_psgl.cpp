@@ -4,15 +4,15 @@
 #include "vid_support-ps3.h"
 #include "vid_psgl.h"
 
-PSGLdevice* psgl_device = NULL;
-PSGLcontext* psgl_context = NULL;
+extern std::vector<std::string> m_ListShaderData;
+extern std::vector<std::string> m_ListShader2Data;
+
+static PSGLdevice* psgl_device = NULL;
+static PSGLcontext* psgl_context = NULL;
 
 static GLuint gl_width = 0;
 static GLuint gl_height = 0;
 static int nImageWidth, nImageHeight;
- 
-extern std::vector<std::string> m_ListShaderData;
-extern std::vector<std::string> m_ListShader2Data;
 
 static CGcontext CgContext = NULL;
 static CGprogram VertexProgram = NULL;
@@ -41,8 +41,20 @@ typedef struct dstResType
 
 struct dstResType dstRes[8]; 
 
-int numDstResCount = 0; 
-int curResNo;
+static const dstResType checkAvailableResolutions[] = 
+{
+	{720,480, CELL_VIDEO_OUT_RESOLUTION_480},
+	{720,576, CELL_VIDEO_OUT_RESOLUTION_576}, 
+	{1280,720, CELL_VIDEO_OUT_RESOLUTION_720},
+	{960,1080,CELL_VIDEO_OUT_RESOLUTION_960x1080},
+	{1280,1080,CELL_VIDEO_OUT_RESOLUTION_1280x1080},
+	{1440,1080,CELL_VIDEO_OUT_RESOLUTION_1440x1080},
+	{1600,1080,CELL_VIDEO_OUT_RESOLUTION_1600x1080},
+	{1920,1080, CELL_VIDEO_OUT_RESOLUTION_1080}
+};
+
+static int numDstResCount = 0; 
+static int curResNo;
 
 // forward declarations
 unsigned int __cdecl HighCol16(int r, int g, int b, int);
@@ -84,21 +96,26 @@ static const GLfloat   tvertsVertical[] ={
 	1.0f, 0.0f
 };
 
-#define get_cg_params()  \
-      cgGLBindProgram(FragmentProgram); \
-      cgGLBindProgram(VertexProgram); \
-      /* fragment params */ \
-      cg_video_size = cgGetNamedParameter(FragmentProgram, "IN.video_size"); \
-      cg_texture_size = cgGetNamedParameter(FragmentProgram, "IN.texture_size"); \
-      cg_output_size = cgGetNamedParameter(FragmentProgram, "IN.output_size"); \
-      cgp_timer = cgGetNamedParameter(FragmentProgram, "IN.frame_count"); \
-      /* vertex params */ \
-      cg_v_video_size = cgGetNamedParameter(VertexProgram, "IN.video_size"); \
-      cg_v_texture_size = cgGetNamedParameter(VertexProgram, "IN.texture_size"); \
-      cg_v_output_size = cgGetNamedParameter(VertexProgram, "IN.output_size"); \
-      cgp_vertex_timer = cgGetNamedParameter(VertexProgram, "IN.frame_count"); \
-      ModelViewProj_cgParam = cgGetNamedParameter(VertexProgram, "modelViewProj"); \
+static void get_cg_params(void)
+{
+      cgGLBindProgram(FragmentProgram);
+      cgGLBindProgram(VertexProgram);
+
+      /* fragment params */
+      cg_video_size = cgGetNamedParameter(FragmentProgram, "IN.video_size");
+      cg_texture_size = cgGetNamedParameter(FragmentProgram, "IN.texture_size");
+      cg_output_size = cgGetNamedParameter(FragmentProgram, "IN.output_size");
+      cgp_timer = cgGetNamedParameter(FragmentProgram, "IN.frame_count");
+
+      /* vertex params */
+      cg_v_video_size = cgGetNamedParameter(VertexProgram, "IN.video_size");
+      cg_v_texture_size = cgGetNamedParameter(VertexProgram, "IN.texture_size");
+      cg_v_output_size = cgGetNamedParameter(VertexProgram, "IN.output_size");
+      cgp_vertex_timer = cgGetNamedParameter(VertexProgram, "IN.frame_count");
+      ModelViewProj_cgParam = cgGetNamedParameter(VertexProgram, "modelViewProj");
+
       cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
+}
 
 static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filename, const char *entry)
 {
@@ -155,34 +172,6 @@ void _psglInitCG()
 	get_cg_params();
 }
 
-#define _apply_rotation_settings() \
-	if (nRotateGame & 1) \
-{	\
-	if (nRotateGame & 2) \
-	{ \
-		glVertexPointer(3, GL_FLOAT, 0, verts); \
-		glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated); \
-	} \
-	else \
-	{ \
-		glVertexPointer(3, GL_FLOAT, 0, verts); \
-		glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical); \
-	} \
-} \
-else \
-{ \
-	if (nRotateGame & 2) \
-	{ \
-		glVertexPointer(3, GL_FLOAT, 0, verts); \
-		glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped); \
-	} \
-	else \
-	{ \
-		glVertexPointer(3, GL_FLOAT, 0, verts); \
-		glTexCoordPointer(2, GL_FLOAT, 0, tverts); \
-	} \
-}
-
 void reset_frame_counter()
 {
 	frame_count = 0;
@@ -190,7 +179,32 @@ void reset_frame_counter()
 
 void apply_rotation_settings(void)
 {
-	_apply_rotation_settings();
+	if (nRotateGame & 1)		// do not rotate the graphics for vertical games
+	{
+		if (nRotateGame & 2)	// reverse flipping for vertical games
+		{
+			glVertexPointer(3, GL_FLOAT, 0, verts);
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated);
+		}
+		else
+		{
+			glVertexPointer(3, GL_FLOAT, 0, verts);
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical);
+		}
+	}
+	else				// rotate the graphics for vertical games
+	{
+		if (nRotateGame & 2)	// reverse flipping for vertical games
+		{
+			glVertexPointer(3, GL_FLOAT, 0, verts);
+			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped);
+		}
+		else
+		{
+			glVertexPointer(3, GL_FLOAT, 0, verts);
+			glTexCoordPointer(2, GL_FLOAT, 0, tverts);
+		}
+	}
 }
 
 void psglInitGL_with_resolution(uint32_t resolutionId)
@@ -271,19 +285,9 @@ void psglInitGL_with_resolution(uint32_t resolutionId)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
+
 void psglInitGL()
 {
-	const dstResType checkAvailableResolutions[] = 
-	{ 
-		{720,480, CELL_VIDEO_OUT_RESOLUTION_480},
-		{720,576, CELL_VIDEO_OUT_RESOLUTION_576}, 
-		{1280,720, CELL_VIDEO_OUT_RESOLUTION_720},
-		{960,1080,CELL_VIDEO_OUT_RESOLUTION_960x1080},
-		{1280,1080,CELL_VIDEO_OUT_RESOLUTION_1280x1080},
-		{1440,1080,CELL_VIDEO_OUT_RESOLUTION_1440x1080},
-		{1600,1080,CELL_VIDEO_OUT_RESOLUTION_1600x1080},
-		{1920,1080, CELL_VIDEO_OUT_RESOLUTION_1080}
-	}; 
 	
 	PSGLdeviceParameters params;
 	params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
@@ -502,7 +506,7 @@ static int _psglTextureInit()
 	}
 
 	nBurnBpp = SCREEN_RENDER_TEXTURE_BPP;		// Set Burn library Bytes per pixel
-	
+
 	// Use our callback to get colors:
 	VidRecalcPal();
 
@@ -518,7 +522,7 @@ static int _psglTextureInit()
 
 	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY))
 		BurnHighCol = VidHighCol;
-	
+
 	//End of callback
 
 	// Make the normal memory buffer
@@ -528,7 +532,14 @@ static int _psglTextureInit()
 		return 1;
 	}
 
-	resize(nVidImageWidth, nVidImageHeight);
+	if (buffer)
+	{
+		delete[] buffer;
+		buffer = NULL;
+	}
+	buffer = new unsigned int[nVidImageWidth * nVidImageHeight];
+	memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int));
+	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE);
 
 	return 0;
 }
@@ -575,7 +586,7 @@ int _psglInit(void)
 		return 1;
 	}
 
-	_apply_rotation_settings();
+	apply_rotation_settings();
 
 	setlinear(vidFilterLinear);
 
@@ -591,44 +602,44 @@ int _psglInit(void)
 #define DEST_LEFT   0
 #define DEST_TOP    0
 
-#define common_video_copy_function() \
-	unsigned int * pd; \
-	unsigned int pitch; \
-	lock(pd, pitch); \
-	VidSCopyImage(pd);
-
-#define common_render_function_body() \
-   \
-	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31; \
-	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask); \
-	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask); \
-   \
-	if (nImageWidth != nNewImageWidth || nImageHeight != nNewImageHeight) \
-   { \
-		nImageWidth  = nNewImageWidth; \
-		nImageHeight = nNewImageHeight; \
-		/* Set the size of the image on the PC screen */ \
-      \
-		int vpx, vpy, vpw, vph; \
-		vpx = DEST_LEFT; \
-		vpy = DEST_TOP; \
-		vpw = DEST_RIGHT; \
-		vph = DEST_BOTTOM; \
-		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight); \
-	} \
-   \
-   common_video_copy_function();
-
 void CalculateViewports(void)
 {
-	common_render_function_body();
+	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
+	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
+	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
+
+	if (nImageWidth != nNewImageWidth || nImageHeight != nNewImageHeight)
+	{
+		nImageWidth  = nNewImageWidth;
+		nImageHeight = nNewImageHeight;
+		/* Set the size of the image on the PC screen */
+		int vpx, vpy, vpw, vph;
+		vpx = DEST_LEFT;
+		vpy = DEST_TOP;
+		vpw = DEST_RIGHT;
+		vph = DEST_BOTTOM;
+		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight);
+	}
+	unsigned int * pd = buffer;
+	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
+	VidSCopyImage(pd);
 }
 
 void psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	common_video_copy_function();
-	refresh(nVidImageWidth, nVidImageHeight);
+
+	unsigned int * pd = buffer;
+	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
+	VidSCopyImage(pd);
+
+	frame_count += 1;
+	glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer);
+	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
+	set_cg_params();
+
+	glDrawArrays(GL_QUADS, 0, 4);
+	glFlush();
 
 	if (bShowFPS)
 	{
@@ -639,10 +650,12 @@ void psglRender(void)
 	cellSysutilCheckCallback();
 }
 
+#define ALPHA 0xA0
+
 void psglRenderPaused()			 
 {
-	common_render_function_body();
-	refreshwithalpha(nVidImageWidth, GameImageHeight, 0xA0);
+	CalculateViewports();
+	psglRenderAlpha();
 }
 
 void psglRenderStretch()			 
@@ -670,12 +683,36 @@ void psglRenderStretch()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	common_video_copy_function();
+	unsigned int * pd = buffer;
+	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
+	VidSCopyImage(pd);
 }
+
 
 void psglRenderAlpha(void)
 {
-	refreshwithalpha(nVidImageWidth, nVidImageHeight, 0xA0);
+	frame_count += 1;
+	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE);
+	uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
+	for(int i = 0; i != nVidImageHeight; i++)
+	{
+		for(int j = 0; j != nVidImageWidth; j++)
+		{
+			unsigned char r = (buffer[(i) * nVidImageWidth + (j)] >> 16);
+			unsigned char g = (buffer[(i) * nVidImageWidth + (j)] >> 8 );
+			unsigned char b = (buffer[(i) * nVidImageWidth + (j)] & 0xFF);
+			r/=2;
+			g/=2;
+			b/=2;
+			uint32_t pix = (r << 16) | (g << 8 )|  b | (ALPHA << 24);
+			texture[i * nVidImageWidth + j] = pix;
+		}
+	}
+	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nVidImageWidth, nVidImageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 0);
+	set_cg_params();
+	glDrawArrays(GL_QUADS, 0, 4);
+	glFlush();
 }
 
 int32_t psglInitShader(const char* filename)

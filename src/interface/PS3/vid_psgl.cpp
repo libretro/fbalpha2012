@@ -620,18 +620,14 @@ void CalculateViewports(void)
 		vph = DEST_BOTTOM;
 		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight);
 	}
-	unsigned int * pd = buffer;
-	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
-	VidSCopyImage(pd);
+	VidSCopyImage();
 }
 
 void psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	unsigned int * pd = buffer;
-	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
-	VidSCopyImage(pd);
+	VidSCopyImage();
 
 	frame_count += 1;
 	glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer);
@@ -683,9 +679,7 @@ void psglRenderStretch()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	unsigned int * pd = buffer;
-	unsigned int pitch = nVidImageWidth * sizeof(unsigned int);
-	VidSCopyImage(pd);
+	VidSCopyImage();
 }
 
 

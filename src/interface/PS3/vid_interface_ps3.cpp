@@ -7,7 +7,8 @@ bool bVidOkay = false;
 int bVidVSync = 1;				// 1 = sync blits/pageflips/presents to the screen
 int bVidTripleBuffer = 1;			// 1 = use triple buffering
 int nVidRotationAdjust = 0;			// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
-unsigned int vidFilterLinear = 0;		// 1 = linear filter, or point filter
+unsigned int vidFilterLinear = 0;		// for shader #1 - 1 = linear filter, 0 = point filter
+unsigned int vidFilterLinear2 = 0;		// for shader #2 - 1 = linear filter, 0 = point filter
 int nVidOriginalScrnAspectX;
 int nVidOriginalScrnAspectY;
 int nVidScrnAspectX = 4;			// Aspect ratio (X-axis)of the display screen
@@ -20,6 +21,8 @@ int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
 int nVidImageLeft = 0, nVidImageTop = 0;	// Memory buffer visible area offsets
 int nVidImagePitch = 0;				// Memory buffer pitch
 bool bVidRecalcPalette;
+bool bVidFBOEnabled;				// FBO/Dual shader mode
+unsigned int bVidScalingFactor = 1;		// Scaling factor for use with FBO mode
 unsigned char* pVidTransImage = NULL;
 static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;

@@ -127,13 +127,19 @@ int configAppLoadXml()
 	parent = findElement(element, "render");
 	child = findElement(parent, "filter");
 	getAttr(child, "linear", &vidFilterLinear);
+	getAttr(child, "linear2", &vidFilterLinear2);
 	child = findElement(parent, "currentshader");
-	child->GetText(&selectedShader.filename);
+	child->GetText(&selectedShader[0].filename);
+	child = findElement(parent, "currentshader2");
+	child->GetText(&selectedShader[1].filename);
 
 	getAttr(child, "x-offset", &nXOffset);
 	getAttr(child, "y-offset", &nYOffset);
 	getAttr(child, "x-scale", &nXScale);
 	getAttr(child, "y-scale", &nYScale);
+	getAttr(child, "y-scale", &nYScale);
+	getAttr(child, "scaling-factor", &bVidScalingFactor);
+	getAttr(child, "fbo-enable", &bVidFBOEnabled);
 
 
 	// video others
@@ -238,14 +244,19 @@ int configAppSaveXml()
 	// video render
 	ticpp::Element render("render");
 	video.LinkEndChild(&render);
-	addTextNode(render, "currentshader", selectedShader.filename);
+	addTextNode(render, "currentshader", selectedShader[0].filename);
+	addTextNode(render, "currentshader2", selectedShader[1].filename);
 
-	if(strlen(selectedShader.filename) == 0)
-		strcpy(selectedShader.filename,"stock.cg");
+	if(strlen(selectedShader[0].filename) == 0)
+		strcpy(selectedShader[0].filename,"stock.cg");
+
+	if(strlen(selectedShader[1].filename) == 0)
+		strcpy(selectedShader[1].filename,"stock.cg");
 
 	ticpp::Element filter("filter");
 	render.LinkEndChild(&filter);
 	setAttr(filter, "linear", vidFilterLinear);
+	setAttr(filter, "linear2", vidFilterLinear2);
 	ticpp::Element option("option");
 	render.LinkEndChild(&option);
 
@@ -253,6 +264,8 @@ int configAppSaveXml()
 	setAttr(option, "y-offset", nYOffset);
 	setAttr(option, "x-scale",  nXScale);
 	setAttr(option, "y-scale",  nYScale);
+	setAttr(option, "scaling-factor",  bVidScalingFactor);
+	setAttr(option, "fbo-enable",  bVidFBOEnabled);
 
 	// video others
 	ticpp::Element monitor("monitor");

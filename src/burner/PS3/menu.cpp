@@ -53,7 +53,8 @@
 	| MASKTAITO | MASKPSIKYO | MASKKANEKO16 | MASKKONAMI | MASKPACMAN \
 	| MASKGALAXIAN | MASKATARI)
 
-      
+#define SCALING_FACTOR_LIMIT 5
+
 #define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x);
 
 /****************************************************/
@@ -109,8 +110,9 @@ int iNumGames;
 int m_iMaxWindowList;
 int m_iWindowMiddle;
 
-selected_shader_t selectedShader;
+selected_shader_t selectedShader[2];
 uint32_t shaderindex = 0;
+uint32_t shaderindex2 = 0;
 
 int currentConfigIndex = 0;
 int inGameIndex = 0;
@@ -152,6 +154,7 @@ int dipList = 0;
 
 std::vector<std::string> m_ListData;
 std::vector<std::string> m_ListShaderData;
+std::vector<std::string> m_ListShader2Data;
 std::vector<std::string> m_vecAvailRomIndex;
 std::vector<std::string> m_vecAvailRomReleasedBy;
 std::vector<std::string> m_vecAvailRomManufacturer;
@@ -595,6 +598,7 @@ void BuildRomList()
 		std::sort(m_ListData.begin(), m_ListData.end());
 	}
 
+	//shader #1
 	if (m_ListShaderData.empty())
 	{
 		if (cellFsOpendir(SHADER_DIRECTORY, &_fd) == CELL_FS_SUCCEEDED)
@@ -616,10 +620,41 @@ void BuildRomList()
 		std::sort(m_ListShaderData.begin(), m_ListShaderData.end());
 		for (unsigned int x = 0; x < m_ListShaderData.size(); x++)
 		{
-			if(strcmp(selectedShader.filename,m_ListShaderData[x].c_str()) == 0)
+			if(strcmp(selectedShader[0].filename,m_ListShaderData[x].c_str()) == 0)
 			{
-				shaderindex = selectedShader.index = x;
-				sprintf(selectedShader.fullpath, "%s%s", SHADER_DIRECTORY, m_ListShaderData[x].c_str());
+				shaderindex = selectedShader[0].index = x;
+				sprintf(selectedShader[0].fullpath, "%s%s", SHADER_DIRECTORY, m_ListShaderData[x].c_str());
+				break;
+			}
+		}
+	}
+
+	//shader #2
+	if (m_ListShader2Data.empty())
+	{
+		if (cellFsOpendir(SHADER_DIRECTORY, &_fd) == CELL_FS_SUCCEEDED)
+		{
+			CellFsDirent dirent;
+			uint64_t nread = 0;
+			while (cellFsReaddir(_fd, &dirent, &nread) == CELL_FS_SUCCEEDED)
+			{
+				if (nread == 0)
+					break;
+				if (dirent.d_type == CELL_FS_TYPE_REGULAR)
+				{
+					if(strstr(dirent.d_name,".cg") || strstr(dirent.d_name,".CG"))
+						m_ListShader2Data.push_back(dirent.d_name);
+				}
+			}
+			cellFsClosedir(_fd);
+		}
+		std::sort(m_ListShader2Data.begin(), m_ListShader2Data.end());
+		for (unsigned int x = 0; x < m_ListShader2Data.size(); x++)
+		{
+			if(strcmp(selectedShader[1].filename,m_ListShader2Data[x].c_str()) == 0)
+			{
+				shaderindex2 = selectedShader[1].index = x;
+				sprintf(selectedShader[1].fullpath, "%s%s", SHADER_DIRECTORY, m_ListShader2Data[x].c_str());
 				break;
 			}
 		}
@@ -775,11 +810,27 @@ void ConfigMenu()
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_FBO_ENABLED ? COLS : 0xFFFFFFFF, "Custom Scaling/Dual Shaders: %s", bVidFBOEnabled ? "Yes" : "No");
 	cellDbgFontDraw();	
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader #1: %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontDraw();	
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER2 ? COLS : 0xFFFFFFFF, "Current Shader #2: %s", m_ListShader2Data[shaderindex2].c_str());
+	cellDbgFontDraw();	
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter Shader #1: %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontDraw();
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER2 ? COLS : 0xFFFFFFFF, "Hardware Filter Shader #2: %s", vidFilterLinear2 ? "Linear" : "Point");
+	cellDbgFontDraw();
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_SCALING_FACTOR ? COLS : 0xFFFFFFFF, "Scaling Factor: %dx", bVidScalingFactor);
 	cellDbgFontDraw();
 	number++;
 
@@ -941,6 +992,15 @@ void ConfigFrameMove()
 				//apply_rotation_settings();
 			}
 			break;
+		case SETTING_FBO_ENABLED:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+				bVidFBOEnabled = !bVidFBOEnabled;
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				//FBO mode needs to be applied here
+				//Screen reinited
+			}
+			break;
 		case SETTING_CURRENT_SHADER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
 			{
@@ -955,15 +1015,60 @@ void ConfigFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				selectedShader.index = shaderindex;
-				strcpy(selectedShader.filename, m_ListShaderData[shaderindex].c_str());
-				sprintf(selectedShader.fullpath, "%s%s", SHADER_DIRECTORY,m_ListShaderData[shaderindex].c_str());
-				psglInitShader(selectedShader.fullpath);
+				selectedShader[0].index = shaderindex;
+				strcpy(selectedShader[0].filename, m_ListShaderData[shaderindex].c_str());
+				sprintf(selectedShader[0].fullpath, "%s%s", SHADER_DIRECTORY,m_ListShaderData[shaderindex].c_str());
+				psglInitShader(selectedShader[0].fullpath);
+			}
+			break;
+		case SETTING_CURRENT_SHADER2:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(shaderindex2 > 0)
+					shaderindex2--;
+			}
+
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(shaderindex2 < m_ListShader2Data.size()-1)
+					shaderindex2++;
+			}
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				selectedShader[1].index = shaderindex2;
+				strcpy(selectedShader[1].filename, m_ListShader2Data[shaderindex2].c_str());
+				sprintf(selectedShader[1].fullpath, "%s%s", SHADER_DIRECTORY,m_ListShader2Data[shaderindex2].c_str());
+				psglInitShader(selectedShader[1].fullpath);
 			}
 			break;
 		case SETTING_BILINEAR_FILTER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 				vidFilterLinear = !vidFilterLinear;
+			break;
+		case SETTING_BILINEAR_FILTER2:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+				vidFilterLinear2 = !vidFilterLinear2;
+			break;
+		case SETTING_SCALING_FACTOR:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(bVidScalingFactor > 1)
+					bVidScalingFactor--;
+			}
+
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(bVidScalingFactor < SCALING_FACTOR_LIMIT)
+					bVidScalingFactor++;
+			}
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				//apply scale here, and reapply FBO if activated
+
+				//reapply screen here
+				BurnReinitScrn();
+				psglRedraw();
+			}
 			break;
 		case SETTING_VSYNC:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -1930,7 +2035,15 @@ void InGameMenu()
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader : %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_FBO_ENABLED ? COLS : 0xFFFFFFFF, "Custom Scaling/Dual Shaders: %s", bVidFBOEnabled ? "Yes" : "No");
+	cellDbgFontDraw();	
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER ? COLS : 0xFFFFFFFF, "Current Shader #1: %s", m_ListShaderData[shaderindex].c_str());
+	cellDbgFontDraw();	
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_CURRENT_SHADER2 ? COLS : 0xFFFFFFFF, "Current Shader #2: %s", m_ListShader2Data[shaderindex2].c_str());
 	cellDbgFontDraw();	
 	number++;
 
@@ -1954,7 +2067,15 @@ void InGameMenu()
 	cellDbgFontDraw();
 	number++;
 
-	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter : %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter Shader #1: %s", vidFilterLinear ? "Linear" : "Point");
+	cellDbgFontDraw();
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_BILINEAR_FILTER2 ? COLS : 0xFFFFFFFF, "Hardware Filter Shader #2: %s", vidFilterLinear2 ? "Linear" : "Point");
+	cellDbgFontDraw();
+	number++;
+
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_SCALING_FACTOR ? COLS : 0xFFFFFFFF, "Scaling Factor: %dx", bVidScalingFactor);
 	cellDbgFontDraw();
 	number++;
 
@@ -2085,6 +2206,15 @@ void InGameFrameMove()
 				GameStatus = EMULATING;
 			}
 			break;
+		case INGAME_FBO_ENABLED:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+				bVidFBOEnabled = !bVidFBOEnabled;
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				//FBO mode needs to be applied here
+				//Screen reinited
+			}
+			break;
 		case INGAME_CURRENT_SHADER:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
 			{
@@ -2099,10 +2229,32 @@ void InGameFrameMove()
 			}
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				selectedShader.index = shaderindex;
-				strcpy(selectedShader.filename, m_ListShaderData[shaderindex].c_str());
-				sprintf(selectedShader.fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex].c_str());
-				psglInitShader(selectedShader.fullpath);
+				selectedShader[0].index = shaderindex;
+				strcpy(selectedShader[0].filename, m_ListShaderData[shaderindex].c_str());
+				sprintf(selectedShader[0].fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex].c_str());
+				psglInitShader(selectedShader[0].fullpath);
+				BurnReinitScrn();
+				psglRedraw();
+			}
+			break;
+		case INGAME_CURRENT_SHADER2:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(shaderindex2 > 0)
+					shaderindex2--;
+			}
+
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(shaderindex2 < m_ListShader2Data.size()-1)
+					shaderindex2++;
+			}
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				selectedShader[1].index = shaderindex2;
+				strcpy(selectedShader[1].filename, m_ListShader2Data[shaderindex2].c_str());
+				sprintf(selectedShader[1].fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex2].c_str());
+				psglInitShader(selectedShader[1].fullpath);
 				BurnReinitScrn();
 				psglRedraw();
 			}
@@ -2133,6 +2285,34 @@ void InGameFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
 				vidFilterLinear = !vidFilterLinear;
+				BurnReinitScrn();
+				psglRedraw();
+			}
+			break;
+		case INGAME_BILINEAR_FILTER2:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
+			{
+				vidFilterLinear2 = !vidFilterLinear2;
+				BurnReinitScrn();
+				psglRedraw();
+			}
+			break;
+		case INGAME_SCALING_FACTOR:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(bVidScalingFactor > 1)
+					bVidScalingFactor--;
+			}
+
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(bVidScalingFactor < SCALING_FACTOR_LIMIT)
+					bVidScalingFactor++;
+			}
+			if(CTRL_CROSS(old_state & diff_state))
+			{
+				//apply scale here, and reapply FBO if activated
+				//reapply screen here
 				BurnReinitScrn();
 				psglRedraw();
 			}

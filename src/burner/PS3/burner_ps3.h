@@ -102,7 +102,7 @@ char filename[512];
 char fullpath[1024];
 } selected_shader_t;
 
-extern selected_shader_t selectedShader;
+extern selected_shader_t selectedShader[2];
 
 extern char szAppBurnVer[16];
 extern char szSVNVer[16];

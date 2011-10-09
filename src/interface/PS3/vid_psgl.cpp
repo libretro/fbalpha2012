@@ -12,6 +12,7 @@ static GLuint gl_height = 0;
 static int nImageWidth, nImageHeight;
  
 extern std::vector<std::string> m_ListShaderData;
+extern std::vector<std::string> m_ListShader2Data;
 
 static CGcontext CgContext = NULL;
 static CGprogram VertexProgram = NULL;

@@ -35,15 +35,18 @@ void VidInitInfo();
 
 #define VidSCopyImage(dst_ori) \
 	uint8_t * ps = pVidImage + (nVidImageLeft << SCREEN_RENDER_TEXTURE_BPP_SHIFT); \
-	int s = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \
-	register uint16_t lineSize = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \
+	int linesize = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \
 	uint16_t height = nVidImageHeight; \
 	uint8_t * dst = (uint8_t *)dst_ori; \
 	do{ \
-		height--; \
-		memcpy(dst, ps, lineSize); \
-		ps += s; \
+		memcpy(dst, ps, linesize); \
+		ps += linesize; \
 		dst += pitch; \
+		\
+		memcpy(dst, ps, linesize); \
+		ps += linesize; \
+		dst += pitch; \
+		height -= 2; \
 	}while(height);
 
 #endif

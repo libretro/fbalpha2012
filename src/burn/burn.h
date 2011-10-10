@@ -42,8 +42,8 @@ extern int (__cdecl *BurnExtLoadRom)(unsigned char* Dest, int* pnWrote, int i);
 extern int (__cdecl *BurnExtLoadOneRom)(const char* arcName, const char* fileName, void** Dest, int* pnWrote);
 
 // Application-defined progress indicator functions
-extern int (__cdecl *BurnExtProgressRangeCallback)(double dProgressRange);
-extern int (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const char* pszText, bool bAbs);
+extern int (__cdecl *BurnExtProgressRangeCallback)(float dProgressRange);
+extern int (__cdecl *BurnExtProgressUpdateCallback)(float dProgress, const char* pszText, bool bAbs);
 
 // Application-defined colour conversion function
 extern unsigned int (__cdecl *BurnHighCol)(int r, int g, int b, int i);
@@ -195,8 +195,8 @@ int BurnDrvFrame();
 int BurnDrvRedraw();
 int BurnRecalcPal();
 
-int BurnSetProgressRange(double dProgressRange);
-int BurnUpdateProgress(double dProgressStep, const char* pszText, bool bAbs);
+int BurnSetProgressRange(float dProgressRange);
+int BurnUpdateProgress(float dProgressStep, const char* pszText, bool bAbs);
 
 int BurnAfterReset(); // call after reset
 

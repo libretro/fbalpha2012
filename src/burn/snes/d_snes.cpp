@@ -6,19 +6,19 @@ unsigned char DoSnesReset = 0;
 unsigned char SnesJoy1[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static struct BurnInputInfo SnesInputList[] =
 {
-	{"P1 Start",	  BIT_DIGITAL,   SnesJoy1 +  7, "p1 start"  },
-	{"P1 Up",	  	  BIT_DIGITAL,   SnesJoy1 +  0, "p1 up"     },
-	{"P1 Down",	  	  BIT_DIGITAL,   SnesJoy1 +  1, "p1 down"   },
-	{"P1 Left",		  BIT_DIGITAL,   SnesJoy1 +  2, "p1 left"   },
-	{"P1 Right",	  BIT_DIGITAL,   SnesJoy1 +  3, "p1 right"  },
-	{"P1 Button A",	  BIT_DIGITAL,   SnesJoy1 +  6, "p1 fire 1" },
-	{"P1 Button B",	  BIT_DIGITAL,   SnesJoy1 +  4, "p1 fire 2" },
-	{"P1 Button C",	  BIT_DIGITAL,   SnesJoy1 +  5, "p1 fire 3" },
-	{"P1 Button X",	  BIT_DIGITAL,   SnesJoy1 + 10, "p1 fire 4" },
-	{"P1 Button Y",	  BIT_DIGITAL,   SnesJoy1 +  9, "p1 fire 5" },
-	{"P1 Button Z",	  BIT_DIGITAL,   SnesJoy1 +  8, "p1 fire 6" },
-	{"P1 Mode",	 	  BIT_DIGITAL,   SnesJoy1 + 11, "p1 select" },
-	{"Reset"             , BIT_DIGITAL  , &DoSnesReset        , "reset"     },
+	{"P1 Start",	BIT_DIGITAL,   {SnesJoy1 +  7}, "p1 start"  },
+	{"P1 Up",	BIT_DIGITAL,   {SnesJoy1 +  0}, "p1 up"     },
+	{"P1 Down",	BIT_DIGITAL,   {SnesJoy1 +  1}, "p1 down"   },
+	{"P1 Left",	BIT_DIGITAL,   {SnesJoy1 +  2}, "p1 left"   },
+	{"P1 Right",	BIT_DIGITAL,   {SnesJoy1 +  3}, "p1 right"  },
+	{"P1 Button A",	BIT_DIGITAL,   {SnesJoy1 +  6}, "p1 fire 1" },
+	{"P1 Button B",	BIT_DIGITAL,   {SnesJoy1 +  4}, "p1 fire 2" },
+	{"P1 Button C",	BIT_DIGITAL,   {SnesJoy1 +  5}, "p1 fire 3" },
+	{"P1 Button X",	BIT_DIGITAL,   {SnesJoy1 + 10}, "p1 fire 4" },
+	{"P1 Button Y",	BIT_DIGITAL,   {SnesJoy1 +  9}, "p1 fire 5" },
+	{"P1 Button Z",	BIT_DIGITAL,   {SnesJoy1 +  8}, "p1 fire 6" },
+	{"P1 Mode",	BIT_DIGITAL,   {SnesJoy1 + 11}, "p1 select" },
+	{"Reset",	BIT_DIGITAL  , {&DoSnesReset}, "reset"     },
 };
 
 STDINPUTINFO(Snes)

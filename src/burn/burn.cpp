@@ -679,17 +679,17 @@ extern "C" int BurnRecalcPal()
 
 // ---------------------------------------------------------------------------
 
-int (__cdecl *BurnExtProgressRangeCallback)(double fProgressRange) = NULL;
-int (__cdecl *BurnExtProgressUpdateCallback)(double fProgress, const char* pszText, bool bAbs) = NULL;
+int (__cdecl *BurnExtProgressRangeCallback)(float fProgressRange) = NULL;
+int (__cdecl *BurnExtProgressUpdateCallback)(float fProgress, const char* pszText, bool bAbs) = NULL;
 
-int BurnSetProgressRange(double fProgressRange)
+int BurnSetProgressRange(float fProgressRange)
 {
 	if (BurnExtProgressRangeCallback)
 		return BurnExtProgressRangeCallback(fProgressRange);
 	return 1;
 }
 
-int BurnUpdateProgress(double fProgress, const char* pszText, bool bAbs)
+int BurnUpdateProgress(float fProgress, const char* pszText, bool bAbs)
 {
 
 #if defined (_XBOX) || defined (SN_TARGET_PS3)

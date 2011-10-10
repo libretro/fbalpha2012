@@ -1828,26 +1828,26 @@ STDINPUTINFO(Warofbug)
 
 static struct BurnInputInfo ZigzagInputList[] =
 {
-	{"Coin 1"            , BIT_DIGITAL   , GalInputPort0 + 0, "p1 coin"   },
-	{"Start 1"           , BIT_DIGITAL   , GalInputPort1 + 0, "p1 start"  },
-	{"Start 2"           , BIT_DIGITAL   , GalInputPort1 + 1, "p2 start"  },
+	{"Coin 1"            , BIT_DIGITAL   , {GalInputPort0 + 0}, "p1 coin"   },
+	{"Start 1"           , BIT_DIGITAL   , {GalInputPort1 + 0}, "p1 start"  },
+	{"Start 2"           , BIT_DIGITAL   , {GalInputPort1 + 1}, "p2 start"  },
 
-	{"Up"                , BIT_DIGITAL   , GalInputPort0 + 5, "p1 up"     },
-	{"Down"              , BIT_DIGITAL   , GalInputPort0 + 6, "p1 down"   },
-	{"Left"              , BIT_DIGITAL   , GalInputPort0 + 2, "p1 left"   },
-	{"Right"             , BIT_DIGITAL   , GalInputPort0 + 3, "p1 right"  },
-	{"Fire 1"            , BIT_DIGITAL   , GalInputPort0 + 4, "p1 fire 1" },
+	{"Up"                , BIT_DIGITAL   , {GalInputPort0 + 5}, "p1 up"     },
+	{"Down"              , BIT_DIGITAL   , {GalInputPort0 + 6}, "p1 down"   },
+	{"Left"              , BIT_DIGITAL   , {GalInputPort0 + 2}, "p1 left"   },
+	{"Right"             , BIT_DIGITAL   , {GalInputPort0 + 3}, "p1 right"  },
+	{"Fire 1"            , BIT_DIGITAL   , {GalInputPort0 + 4}, "p1 fire 1" },
 
-	{"Up (Cocktail)"     , BIT_DIGITAL   , GalInputPort1 + 5, "p2 up"     },
-	{"Down (Cocktail)"   , BIT_DIGITAL   , GalInputPort0 + 7, "p2 down"   },
-	{"Left (Cocktail)"   , BIT_DIGITAL   , GalInputPort1 + 2, "p2 left"   },
-	{"Right (Cocktail)"  , BIT_DIGITAL   , GalInputPort1 + 3, "p2 right"  },
-	{"Fire 1 (Cocktail)" , BIT_DIGITAL   , GalInputPort1 + 4, "p2 fire 1" },
+	{"Up (Cocktail)"     , BIT_DIGITAL   , {GalInputPort1 + 5}, "p2 up"     },
+	{"Down (Cocktail)"   , BIT_DIGITAL   , {GalInputPort0 + 7}, "p2 down"   },
+	{"Left (Cocktail)"   , BIT_DIGITAL   , {GalInputPort1 + 2}, "p2 left"   },
+	{"Right (Cocktail)"  , BIT_DIGITAL   , {GalInputPort1 + 3}, "p2 right"  },
+	{"Fire 1 (Cocktail)" , BIT_DIGITAL   , {GalInputPort1 + 4}, "p2 fire 1" },
 
-	{"Reset"             , BIT_DIGITAL   , &GalReset        , "reset"     },
-	{"Dip 1"             , BIT_DIPSWITCH , GalDip + 0       , "dip"       },
-	{"Dip 2"             , BIT_DIPSWITCH , GalDip + 1       , "dip"       },
-	{"Dip 3"             , BIT_DIPSWITCH , GalDip + 2       , "dip"       },
+	{"Reset"             , BIT_DIGITAL   , {&GalReset}        , "reset"     },
+	{"Dip 1"             , BIT_DIPSWITCH , {GalDip + 0}       , "dip"       },
+	{"Dip 2"             , BIT_DIPSWITCH , {GalDip + 1}       , "dip"       },
+	{"Dip 3"             , BIT_DIPSWITCH , {GalDip + 2}       , "dip"       },
 };
 
 STDINPUTINFO(Zigzag)

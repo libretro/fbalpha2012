@@ -73,7 +73,7 @@ void (*BurnDrvInputSwap)() = NULL;
 
 bool bBurnUseASM68K = false;
 static bool bBurnOldUseASM68K = false;
-extern void UpdateConsole(char *text);
+extern void UpdateConsole(const char *text);
 
 #if defined (SN_TARGET_PS3)
 extern void DebugMsg(const char* fmt, ...);
@@ -253,20 +253,20 @@ extern "C" char* BurnDrvGetText(unsigned int i)
 						pszCurrentNameW += wcslen(pszCurrentNameW) + 1;
 						if (!pszCurrentNameW[0])
 							return NULL;
-						pszStringW = pszCurrentNameW;
+						pszStringW = (wchar_t*)pszCurrentNameW;
 					}
 				}
 				else
-					pszStringW = pszCurrentNameW = pDriver[nBurnDrvSelect]->szFullNameW;
+					pszStringW = pszCurrentNameW = (wchar_t*)pDriver[nBurnDrvSelect]->szFullNameW;
 				break;
 			case DRV_COMMENT:
-				pszStringW = pDriver[nBurnDrvSelect]->szCommentW;
+				pszStringW = (wchar_t*)pDriver[nBurnDrvSelect]->szCommentW;
 				break;
 			case DRV_MANUFACTURER:
-				pszStringW = pDriver[nBurnDrvSelect]->szManufacturerW;
+				pszStringW = (wchar_t*)pDriver[nBurnDrvSelect]->szManufacturerW;
 				break;
 			case DRV_SYSTEM:
-				pszStringW = pDriver[nBurnDrvSelect]->szSystemW;
+				pszStringW = (wchar_t*)pDriver[nBurnDrvSelect]->szSystemW;
 		}
 
 		if (pszStringW && pszStringW[0])
@@ -693,7 +693,7 @@ int BurnUpdateProgress(double fProgress, const char* pszText, bool bAbs)
 {
 
 #if defined (_XBOX) || defined (SN_TARGET_PS3)
-	UpdateConsole((char *)pszText);	 
+	UpdateConsole(pszText);	 
 #else
  
 	if (BurnExtProgressUpdateCallback)

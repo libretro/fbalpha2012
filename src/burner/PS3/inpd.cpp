@@ -65,7 +65,7 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 		if (bii.szInfo == NULL)
 			bii.szInfo = "";
 
-		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, bii.szInfo);
+		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, (char*)bii.szInfo);
 	}
 
 	return 0;
@@ -95,13 +95,13 @@ int UsePreset(bool bMakeDefault)
 }
 
 // ==> default input mapping, added by regret
-char* defaultInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini";
-char* defaultNeoInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini";
-char* defaultCpsInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini";
+const char* defaultInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini";
+const char* defaultNeoInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini";
+const char* defaultCpsInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini";
 
 static const char * GetDefaultInputFilename()
 {
-	char* fileName = defaultInpFilename;
+	const char* fileName = defaultInpFilename;
 
 	int flag = (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK);
 

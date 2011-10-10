@@ -127,10 +127,10 @@ struct BurnDriver
 	const char*    szCommentA;
 	const char*    szManufacturerA;
 	const char*    szSystemA;
-	wchar_t* szFullNameW;
-	wchar_t* szCommentW;
-	wchar_t* szManufacturerW;
-	wchar_t* szSystemW;
+	const wchar_t* szFullNameW;
+	const wchar_t* szCommentW;
+	const wchar_t* szManufacturerW;
+	const wchar_t* szSystemW;
 
 	int flags;	// See burn.h
 	int players;	// Max number of players a game supports (so we can remove single player games from netplay)

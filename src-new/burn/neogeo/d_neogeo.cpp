@@ -12,45 +12,43 @@ static struct BurnRomInfo emptyRomDesc[] = {
 // Common data
 
 static struct BurnInputInfo neogeoInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//  0
-//	{"P1 Coin 2",	BIT_DIGITAL,	NeoButton2 + 3,	"p1 coin 2"},
-	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},		//	1
-	{"P1 Select",	BIT_DIGITAL,	NeoButton1 + 1,	"p1 select"},		//  2
+	{"P1 Coin",	BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//0
+	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},			//1
+	{"P1 Select",	BIT_DIGITAL,	NeoButton1 + 1,	"p1 select"},			//2
 
-	{"P1 Up",		BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//  3
-	{"P1 Down",		BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//  4
-	{"P1 Left",		BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//	5
-	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},		//	6
-	{"P1 Button A",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},		//	7
-	{"P1 Button B",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},		//	8
-	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},		//	9
-	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"},		//	A
+	{"P1 Up",	BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//3
+	{"P1 Down",	BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//4
+	{"P1 Left",	BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//5
+	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},			//6
+	{"P1 Button A",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},			//7
+	{"P1 Button B",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},			//8
+	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},			//9
+	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"},			//A
 
-	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			//	B
-//	{"P2 Coin 2",	BIT_DIGITAL,	NeoButton2 + 4,	"p2 coin 2"},
-	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},		//	C
-	{"P2 Select",	BIT_DIGITAL,	NeoButton1 + 3,	"p2 select"},		//	D
+	{"P2 Coin",	BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			//B
+	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},			//C
+	{"P2 Select",	BIT_DIGITAL,	NeoButton1 + 3,	"p2 select"},			//D
 
-	{"P2 Up",		BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			//	E
-	{"P2 Down",		BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			//  F
-	{"P2 Left",		BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			// 10
-	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},		// 11
-	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},		// 12
-	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},		// 13
-	{"P2 Button C",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 3"},		// 14
-	{"P2 Button D",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 4"},		// 15
+	{"P2 Up",	BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			//E
+	{"P2 Down",	BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			//F
+	{"P2 Left",	BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			//10
+	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},			//11
+	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},			//12
+	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},			//13
+	{"P2 Button C",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 3"},			//14
+	{"P2 Button D",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 4"},			//15
 
-	{"Reset",		BIT_DIGITAL,	&NeoReset,		"reset"},			// 16
-	{"Test",		BIT_DIGITAL,	NeoDiag + 0,	"diag"},			// 17
-	{"Service",		BIT_DIGITAL,	NeoButton2 + 2,	"service"},			// 18
-	{"Dip 1",		BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				// 19
-	{"Dip 2",		BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				// 1A
+	{"Reset",	BIT_DIGITAL,	&NeoReset,	"reset"},			//16
+	{"Test",	BIT_DIGITAL,	NeoDiag + 0,	"diag"},			//17
+	{"Service",	BIT_DIGITAL,	NeoButton2 + 2,	"service"},			//18
+	{"Dip 1",	BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				//19
+	{"Dip 2",	BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				//1A
 
-	{"System",		BIT_DIPSWITCH,	&NeoSystem,		"dip"},				// 1B
-	{"Slots",		BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 1C
+	{"System",	BIT_DIPSWITCH,	&NeoSystem,	"dip"},				//1B
+	{"Slots",	BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				//1C
 
-	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"},				// 1D
-	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"},				// 1E
+	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"},				//1D
+	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"},				//1E
 };
 
 STDINPUTINFO(neogeo)
@@ -58,42 +56,42 @@ STDINPUTINFO(neogeo)
 #define A(a, b, c, d) { a, b, (unsigned char*)(c), d }
 
 static struct BurnInputInfo neopaddleInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//  0
-	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},		//	1
-	{"P1 Select",	BIT_DIGITAL,	NeoButton1 + 1,	"p1 select"},		//  2
+	{"P1 Coin",	BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//0
+	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},			//1
+	{"P1 Select",	BIT_DIGITAL,	NeoButton1 + 1,	"p1 select"},			//2
 
-	{"P1 Up",		BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//  3
-	{"P1 Down",		BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//  4
-	{"P1 Left",		BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//	5
-	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},		//	6
-	{"P1 Button A",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},		//	7
-	{"P1 Button B",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},		//	8
-	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},		//	9
-	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"mouse button 1"},	//	A
-   A("P1 Paddle",	BIT_ANALOG_REL, NeoAxis + 0,	"mouse x-axis"),	//	B
+	{"P1 Up",	BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//3
+	{"P1 Down",	BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//4
+	{"P1 Left",	BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//5
+	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},			//6
+	{"P1 Button A",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},			//7
+	{"P1 Button B",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},			//8
+	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},			//9
+	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"mouse button 1"},		//A
+   	("P1 Paddle",	BIT_ANALOG_REL, (unsigned char*)(NeoAxis + 0),	"mouse x-axis"),//B
 
-	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			//	C
-	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},		//	D
-	{"P2 Select",	BIT_DIGITAL,	NeoButton1 + 3,	"p2 select"},		//	E
+	{"P2 Coin",	BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			//C
+	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},			//D
+	{"P2 Select",	BIT_DIGITAL,	NeoButton1 + 3,	"p2 select"},			//E
 
-	{"P2 Up",		BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			//	F
-	{"P2 Down",		BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			// 10
-	{"P2 Left",		BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			// 11
-	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},		// 12
-	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},		// 13
-	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},		// 14
-	{"P2 Button C",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 3"},		// 15
-	{"P2 Button D",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 4"},		// 16
-   A("P2 Paddle",	BIT_ANALOG_REL, NeoAxis + 1,	"p2 x-axis"),		// 17
+	{"P2 Up",	BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			//F
+	{"P2 Down",	BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			// 10
+	{"P2 Left",	BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			// 11
+	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},			// 12
+	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},			// 13
+	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},			// 14
+	{"P2 Button C",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 3"},			// 15
+	{"P2 Button D",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 4"},			// 16
+   	("P2 Paddle",	BIT_ANALOG_REL, (unsigned char*)(NeoAxis + 1),	"p2 x-axis"),	// 17
 
-	{"Reset",		BIT_DIGITAL,	&NeoReset,		"reset"},			// 18
-	{"Test",		BIT_DIGITAL,	NeoDiag + 0,	"diag"},			// 19
-	{"Service",		BIT_DIGITAL,	NeoButton2 + 2,	"service"},			// 1A
-	{"Dip 1",		BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				// 1B
-	{"Dip 2",		BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				// 1C
+	{"Reset",	BIT_DIGITAL,	&NeoReset,	"reset"},			// 18
+	{"Test",	BIT_DIGITAL,	NeoDiag + 0,	"diag"},			// 19
+	{"Service",	BIT_DIGITAL,	NeoButton2 + 2,	"service"},			// 1A
+	{"Dip 1",	BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				// 1B
+	{"Dip 2",	BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				// 1C
 
-	{"System",		BIT_DIPSWITCH,	&NeoSystem,		"dip"},				// 1D
-	{"Slots",		BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 1E
+	{"System",	BIT_DIPSWITCH,	&NeoSystem,	"dip"},				// 1D
+	{"Slots",	BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 1E
 
 	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"},				// 1F
 	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"},				// 1G
@@ -207,60 +205,60 @@ static struct BurnInputInfo neodualInputList[] = {
 STDINPUTINFO(neodual)
 
 static struct BurnInputInfo neomahjongInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//  0
+	{"P1 Coin",	BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//  0
 	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},		//	1
 	{"P1 Select",	BIT_DIGITAL,	NeoButton1 + 1,	"p1 select"},		//  2
 
-	{"P1 Up",		BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//  3
-	{"P1 Down",		BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//  4
-	{"P1 Left",		BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//	5
+	{"P1 Up",	BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},			//  3
+	{"P1 Down",	BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},			//  4
+	{"P1 Left",	BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},			//	5
 	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},		//	6
 	{"P1 Button A",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},		//	7
 	{"P1 Button B",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},		//	8
 	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},		//	9
 	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"},		//	A
 
-	{"A",			BIT_DIGITAL,	NeoButton1 +  8,	"mah a"},		//  B
-	{"B",			BIT_DIGITAL,	NeoButton1 +  9,	"mah b"},		//  C
-	{"C",			BIT_DIGITAL,	NeoButton1 + 10,	"mah c"},		//  D
-	{"D",			BIT_DIGITAL,	NeoButton1 + 11,	"mah d"},		//  E
-	{"E",			BIT_DIGITAL,	NeoButton1 + 12,	"mah e"},		//  F
-	{"F",			BIT_DIGITAL,	NeoButton1 + 13,	"mah f"},		// 10
-	{"G",			BIT_DIGITAL,	NeoButton1 + 14,	"mah g"},		// 11
-	{"H",			BIT_DIGITAL,	NeoButton1 + 16,	"mah h"},		// 12
-	{"I",			BIT_DIGITAL,	NeoButton1 + 17,	"mah i"},		// 13
-	{"J",			BIT_DIGITAL,	NeoButton1 + 18,	"mah j"},		// 14
-	{"K",			BIT_DIGITAL,	NeoButton1 + 19,	"mah k"},		// 15
-	{"L",			BIT_DIGITAL,	NeoButton1 + 20,	"mah l"},		// 16
-	{"M",			BIT_DIGITAL,	NeoButton1 + 21,	"mah m"},		// 17
-	{"N",			BIT_DIGITAL,	NeoButton1 + 22,	"mah n"},		// 18
-	{"Pon",			BIT_DIGITAL,	NeoButton1 + 24,	"mah pon"},		// 19
-	{"Chi",			BIT_DIGITAL,	NeoButton1 + 25,	"mah chi"},		// 1A
-	{"Kan",			BIT_DIGITAL,	NeoButton1 + 26,	"mah kan"},		// 1B
-	{"Ron",			BIT_DIGITAL,	NeoButton1 + 27,	"mah ron"},		// 1C
-	{"Reach",		BIT_DIGITAL,	NeoButton1 + 28,	"mah reach"},		// 1D
+	{"A",		BIT_DIGITAL,	NeoButton1 +  8,	"mah a"},		//  B
+	{"B",		BIT_DIGITAL,	NeoButton1 +  9,	"mah b"},		//  C
+	{"C",		BIT_DIGITAL,	NeoButton1 + 10,	"mah c"},		//  D
+	{"D",		BIT_DIGITAL,	NeoButton1 + 11,	"mah d"},		//  E
+	{"E",		BIT_DIGITAL,	NeoButton1 + 12,	"mah e"},		//  F
+	{"F",		BIT_DIGITAL,	NeoButton1 + 13,	"mah f"},		// 10
+	{"G",		BIT_DIGITAL,	NeoButton1 + 14,	"mah g"},		// 11
+	{"H",		BIT_DIGITAL,	NeoButton1 + 16,	"mah h"},		// 12
+	{"I",		BIT_DIGITAL,	NeoButton1 + 17,	"mah i"},		// 13
+	{"J",		BIT_DIGITAL,	NeoButton1 + 18,	"mah j"},		// 14
+	{"K",		BIT_DIGITAL,	NeoButton1 + 19,	"mah k"},		// 15
+	{"L",		BIT_DIGITAL,	NeoButton1 + 20,	"mah l"},		// 16
+	{"M",		BIT_DIGITAL,	NeoButton1 + 21,	"mah m"},		// 17
+	{"N",		BIT_DIGITAL,	NeoButton1 + 22,	"mah n"},		// 18
+	{"Pon",		BIT_DIGITAL,	NeoButton1 + 24,	"mah pon"},		// 19
+	{"Chi",		BIT_DIGITAL,	NeoButton1 + 25,	"mah chi"},		// 1A
+	{"Kan",		BIT_DIGITAL,	NeoButton1 + 26,	"mah kan"},		// 1B
+	{"Ron",		BIT_DIGITAL,	NeoButton1 + 27,	"mah ron"},		// 1C
+	{"Reach",	BIT_DIGITAL,	NeoButton1 + 28,	"mah reach"},		// 1D
 
-	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			// 1E
+	{"P2 Coin",	BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			// 1E
 	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},		// 1F
 	{"P2 Select",	BIT_DIGITAL,	NeoButton1 + 3,	"p2 select"},		// 20
 
-	{"P2 Up",		BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			// 21
-	{"P2 Down",		BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			// 22
-	{"P2 Left",		BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			// 23
+	{"P2 Up",	BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},			// 21
+	{"P2 Down",	BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},			// 22
+	{"P2 Left",	BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},			// 23
 	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},		// 24
 	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},		// 25
 	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},		// 26
 	{"P2 Button C",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 3"},		// 27
 	{"P2 Button D",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 4"},		// 28
 
-	{"Reset",		BIT_DIGITAL,	&NeoReset,		"reset"},			// 29
-	{"Test",		BIT_DIGITAL,	NeoDiag + 0,	"diag"},			// 2A
-	{"Service",		BIT_DIGITAL,	NeoButton2 + 2,	"service"},			// 2B
-	{"Dip 1",		BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				// 2C
-	{"Dip 2",		BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				// 2D
+	{"Reset",	BIT_DIGITAL,	&NeoReset,		"reset"},			// 29
+	{"Test",	BIT_DIGITAL,	NeoDiag + 0,	"diag"},			// 2A
+	{"Service",	BIT_DIGITAL,	NeoButton2 + 2,	"service"},			// 2B
+	{"Dip 1",	BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				// 2C
+	{"Dip 2",	BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				// 2D
 
-	{"System",		BIT_DIPSWITCH,	&NeoSystem,		"dip"},				// 2E
-	{"Slots",		BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 2F
+	{"System",	BIT_DIPSWITCH,	&NeoSystem,		"dip"},				// 2E
+	{"Slots",	BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 2F
 
 	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"},				// 30
 	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"},				// 31
@@ -269,24 +267,24 @@ static struct BurnInputInfo neomahjongInputList[] = {
 STDINPUTINFO(neomahjong)
 
 static struct BurnInputInfo vlinerInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},
+	{"P1 Coin",	BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},
 	{"P1 Payout",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},
 
-	{"P1 Up",		BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},
-	{"P1 Down",		BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},
-	{"P1 Left",		BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},
+	{"P1 Up",	BIT_DIGITAL,	NeoJoy1 + 0,	"p1 up"},
+	{"P1 Down",	BIT_DIGITAL,	NeoJoy1 + 1,	"p1 down"},
+	{"P1 Left",	BIT_DIGITAL,	NeoJoy1 + 2,	"p1 left"},
 	{"P1 Right",	BIT_DIGITAL,	NeoJoy1 + 3,	"p1 right"},
 	{"P1 Big",	BIT_DIGITAL,	NeoJoy1 + 4,	"p1 fire 1"},
 	{"P1 Small",	BIT_DIGITAL,	NeoJoy1 + 5,	"p1 fire 2"},
 	{"P1 Double Up",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},
 	{"P1 Start/Collect",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"},
 
-	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},
+	{"P2 Coin",	BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},
 	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},
 
-	{"P2 Up",		BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},
-	{"P2 Down",		BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},
-	{"P2 Left",		BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},
+	{"P2 Up",	BIT_DIGITAL,	NeoJoy2 + 0,	"p2 up"},
+	{"P2 Down",	BIT_DIGITAL,	NeoJoy2 + 1,	"p2 down"},
+	{"P2 Left",	BIT_DIGITAL,	NeoJoy2 + 2,	"p2 left"},
 	{"P2 Right",	BIT_DIGITAL,	NeoJoy2 + 3,	"p2 right"},
 	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"p2 fire 1"},
 	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"p2 fire 2"},

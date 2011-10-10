@@ -82,7 +82,7 @@ extern bool bLeftAltkeyMapped;
 int GameInpInit();
 int GameInpExit();
 char * InputCodeDesc(int c);
-char * InpToDesc(struct GameInp* pgi);
+const char * InpToDesc(struct GameInp* pgi);
 char * InpMacroToDesc(struct GameInp* pgi);
 void GameInpCheckLeftAlt();
 void GameInpCheckMouse();
@@ -128,7 +128,7 @@ char* decorateGameName(unsigned int nBurnDrv);
 extern int nAutofireEnabled;
 extern unsigned int autofireDelay;
 extern unsigned int autofireDefaultDelay;
-extern void UpdateConsole(char *text);
+extern void UpdateConsole(const char *text);
 
 // dat.cpp
 int write_xmlfile(const char * szFilename, FILE* file);

@@ -17,26 +17,6 @@ int nIniVersion = 0;
 static string str = "";
 const float configVersion = 0.03f;
 
-#define init_setting_uint(charstring, setting, defaultvalue) \
-	if(!(config_get_uint(currentconfig, charstring, &setting))) \
-		setting = defaultvalue; 
-
-#define init_setting_int(charstring, setting, defaultvalue) \
-	if(!(config_get_int(currentconfig, charstring, &setting))) \
-		setting = defaultvalue; 
-
-#define init_setting_bool(charstring, setting, defaultvalue) \
-	if(!(config_get_bool(currentconfig, charstring, &setting))) \
-		setting = defaultvalue; 
-
-#define init_setting_bool(charstring, setting, defaultvalue) \
-	if(!(config_get_bool(currentconfig, charstring, &setting))) \
-		setting =	defaultvalue;
-
-#define init_setting_char(charstring, setting, defaultvalue) \
-	if(!(config_get_char_array(currentconfig, charstring, setting, sizeof(setting)))) \
-		strncpy(setting,defaultvalue, sizeof(setting));
-
 // Read in the config file for the whole application (NOTE: Not actually XML - and we like it that way)
 int configAppLoadXml()
 {

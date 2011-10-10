@@ -32,6 +32,26 @@ extern "C" {
 
 typedef struct config_file config_file_t;
 
+#define init_setting_uint(charstring, setting, defaultvalue) \
+	if(!(config_get_uint(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
+
+#define init_setting_int(charstring, setting, defaultvalue) \
+	if(!(config_get_int(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
+
+#define init_setting_bool(charstring, setting, defaultvalue) \
+	if(!(config_get_bool(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
+
+#define init_setting_bool(charstring, setting, defaultvalue) \
+	if(!(config_get_bool(currentconfig, charstring, &setting))) \
+		setting =	defaultvalue;
+
+#define init_setting_char(charstring, setting, defaultvalue) \
+	if(!(config_get_char_array(currentconfig, charstring, setting, sizeof(setting)))) \
+		strncpy(setting,defaultvalue, sizeof(setting));
+
 /////
 // Config file format
 // - # are treated as comments. Rest of the line is ignored.

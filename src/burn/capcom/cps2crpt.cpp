@@ -747,7 +747,7 @@ static void cps2_decrypt(const UINT32 *master_key, UINT32 upper_limit)
 
 struct game_keys
 {
-	char *name;             /* game driver name */
+	const char *name;             /* game driver name */
 	UINT32 keys[2];
 	UINT32 upper_limit;
 };

@@ -26,16 +26,13 @@ int BurnAreaScan(int nAction, int* pnMin);
 #define ACB_VOLATILE    (ACB_MEMORY_RAM | ACB_DRIVER_DATA)
 
 /* Structure used for area scanning */
-struct BurnArea { void *Data; unsigned int nLen; int nAddress; char *szName; };
+struct BurnArea { void *Data; unsigned int nLen; int nAddress; const char *szName; };
 
 /* Application-defined callback for processing the area */
 extern int (*BurnAcb) (struct BurnArea* pba);
 
-//forward declaration of memset here
-void *memset(void *s, int c, size_t n);
-
 /* Scan a small variable or structure */
-static __inline void ScanVar(void* pv, int nSize, char* szName)
+static __inline void ScanVar(void* pv, int nSize, const char* szName)
 {
 	struct BurnArea ba;
 	memset(&ba, 0, sizeof(ba));

@@ -302,7 +302,7 @@ void LoadDIPS()
 		{
 		   	if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD)
 			{
-				pDIPGroup = bdi.szText;
+				pDIPGroup = (char*)bdi.szText;
 				k = i;
 			}
 			i++;
@@ -389,7 +389,7 @@ void LoadInputs()
 			bii.szName = "";
 
 
-		char* pszVal = InpToDesc(pgi);
+		const char* pszVal = InpToDesc(pgi);
 
 		m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
 
@@ -1969,8 +1969,8 @@ void InputFrameMove()
 				continue;
 			if (bii.szInfo == NULL)
 				bii.szInfo = "";
-			GamcPlayer(pgi, bii.szInfo, 0, -1);	// Keyboard
-			GamcMisc(pgi, bii.szInfo, 0);
+			GamcPlayer(pgi, (char*)bii.szInfo, 0, -1);	// Keyboard
+			GamcMisc(pgi, (char*)bii.szInfo, 0);
 		}	
 
 		old_state = new_state;

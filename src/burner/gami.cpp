@@ -862,7 +862,7 @@ static char* InpMacroToString(struct GameInp* pgi)
 // ---------------------------------------------------------------------------
 // Generate a user-friendly name for a control (PC-side)
 
-static struct { int nCode; char* szName; } KeyNames[] = {
+static struct { int nCode; const char* szName; } KeyNames[] = {
 
 #define FBK_DEFNAME(k) k, _T(#k)
 
@@ -1207,7 +1207,7 @@ char* InputCodeDesc(int c)
 		if (c == KeyNames[i].nCode)
 		{
 			if (KeyNames[i].szName)
-				szName = KeyNames[i].szName;
+				szName = (char*)KeyNames[i].szName;
 			break;
 		}
 	}
@@ -1220,7 +1220,7 @@ char* InputCodeDesc(int c)
 	return szString;
 }
 
-char* InpToDesc(struct GameInp* pgi)
+const char * InpToDesc(struct GameInp* pgi)
 {
 	static char szInputName[64] = "";
 
@@ -1672,7 +1672,7 @@ int GameInpDefault()
 			continue;
 		}
 
-		GameInpAutoOne(pgi, bii.szInfo);
+		GameInpAutoOne(pgi, (char*)bii.szInfo);
 	}
 
 	// Fill in macros still undefined

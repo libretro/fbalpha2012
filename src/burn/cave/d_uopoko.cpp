@@ -29,31 +29,31 @@ static int nCyclesTotal[2];
 static int nCyclesSegment;
 
 static struct BurnInputInfo uopokoInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	DrvJoy1 + 8,	"p1 coin"},
-	{"P1 Start",	BIT_DIGITAL,	DrvJoy1 + 7,	"p1 start"},
+	{"P1 Coin",	BIT_DIGITAL,	{DrvJoy1 + 8},	"p1 coin"},
+	{"P1 Start",	BIT_DIGITAL,	{DrvJoy1 + 7},	"p1 start"},
 
-	{"P1 Up",		BIT_DIGITAL,	DrvJoy1 + 0, 	"p1 up"},
-	{"P1 Down",		BIT_DIGITAL,	DrvJoy1 + 1, 	"p1 down"},
-	{"P1 Left",		BIT_DIGITAL,	DrvJoy1 + 2, 	"p1 left"},
-	{"P1 Right",	BIT_DIGITAL,	DrvJoy1 + 3, 	"p1 right"},
-	{"P1 Button 1",	BIT_DIGITAL,	DrvJoy1 + 4,	"p1 fire 1"},
-	{"P1 Button 2",	BIT_DIGITAL,	DrvJoy1 + 5,	"p1 fire 2"},
-	{"P1 Button 3",	BIT_DIGITAL,	DrvJoy1 + 6,	"p1 fire 3"},
+	{"P1 Up",	BIT_DIGITAL,	{DrvJoy1 + 0}, 	"p1 up"},
+	{"P1 Down",	BIT_DIGITAL,	{DrvJoy1 + 1}, 	"p1 down"},
+	{"P1 Left",	BIT_DIGITAL,	{DrvJoy1 + 2}, 	"p1 left"},
+	{"P1 Right",	BIT_DIGITAL,	{DrvJoy1 + 3}, 	"p1 right"},
+	{"P1 Button 1",	BIT_DIGITAL,	{DrvJoy1 + 4},	"p1 fire 1"},
+	{"P1 Button 2",	BIT_DIGITAL,	{DrvJoy1 + 5},	"p1 fire 2"},
+	{"P1 Button 3",	BIT_DIGITAL,	{DrvJoy1 + 6},	"p1 fire 3"},
 
-	{"P2 Coin",		BIT_DIGITAL,	DrvJoy2 + 8,	"p2 coin"},
-	{"P2 Start",	BIT_DIGITAL,	DrvJoy2 + 7,	"p2 start"},
+	{"P2 Coin",	BIT_DIGITAL,	{DrvJoy2 + 8},	"p2 coin"},
+	{"P2 Start",	BIT_DIGITAL,	{DrvJoy2 + 7},	"p2 start"},
 
-	{"P2 Up",		BIT_DIGITAL,	DrvJoy2 + 0, 	"p2 up"},
-	{"P2 Down",		BIT_DIGITAL,	DrvJoy2 + 1, 	"p2 down"},
-	{"P2 Left",		BIT_DIGITAL,	DrvJoy2 + 2, 	"p2 left"},
-	{"P2 Right",	BIT_DIGITAL,	DrvJoy2 + 3, 	"p2 right"},
-	{"P2 Button 1",	BIT_DIGITAL,	DrvJoy2 + 4,	"p2 fire 1"},
-	{"P2 Button 2",	BIT_DIGITAL,	DrvJoy2 + 5,	"p2 fire 2"},
-	{"P2 Button 3",	BIT_DIGITAL,	DrvJoy2 + 6,	"p2 fire 3"},
+	{"P2 Up",	BIT_DIGITAL,	{DrvJoy2 + 0}, 	"p2 up"},
+	{"P2 Down",	BIT_DIGITAL,	{DrvJoy2 + 1}, 	"p2 down"},
+	{"P2 Left",	BIT_DIGITAL,	{DrvJoy2 + 2}, 	"p2 left"},
+	{"P2 Right",	BIT_DIGITAL,	{DrvJoy2 + 3}, 	"p2 right"},
+	{"P2 Button 1",	BIT_DIGITAL,	{DrvJoy2 + 4},	"p2 fire 1"},
+	{"P2 Button 2",	BIT_DIGITAL,	{DrvJoy2 + 5},	"p2 fire 2"},
+	{"P2 Button 3",	BIT_DIGITAL,	{DrvJoy2 + 6},	"p2 fire 3"},
 
-	{"Reset",		BIT_DIGITAL,	&DrvReset,		"reset"},
-	{"Diagnostics",	BIT_DIGITAL,	DrvJoy1 + 9,	"diag"},
-	{"Service",		BIT_DIGITAL,	DrvJoy2 + 9,	"service"},
+	{"Reset",	BIT_DIGITAL,	{&DrvReset},	"reset"},
+	{"Diagnostics",	BIT_DIGITAL,	{DrvJoy1 + 9},	"diag"},
+	{"Service",	BIT_DIGITAL,	{DrvJoy2 + 9},	"service"},
 };
 
 STDINPUTINFO(uopoko)
@@ -101,10 +101,11 @@ unsigned char __fastcall uopokoReadByte(unsigned int sekAddress)
 			return ((DrvInput[1] >> 8) ^ 0xF7) | (EEPROMRead() << 3);
 		case 0x900003:
 			return (DrvInput[1] & 0xFF) ^ 0xFF;
-
+		#if 0
 		default: {
 //			bprintf(PRINT_NORMAL, "Attempt to read byte value of location %x\n", sekAddress);
 		}
+		#endif
 	}
 	return 0;
 }
@@ -138,10 +139,11 @@ unsigned short __fastcall uopokoReadWord(unsigned int sekAddress)
 			return DrvInput[0] ^ 0xFFFF;
 		case 0x900002:
 			return (DrvInput[1] ^ 0xF7FF) | (EEPROMRead() << 11);
-
+		#if 0
 		default: {
 // 			bprintf(PRINT_NORMAL, "Attempt to read word value of location %x\n", sekAddress);
 		}
+		#endif
 	}
 	return 0;
 }
@@ -159,10 +161,11 @@ void __fastcall uopokoWriteByte(unsigned int sekAddress, unsigned char byteValue
 		case 0xA00000:
 			EEPROMWrite(byteValue & 0x04, byteValue & 0x02, byteValue & 0x08);
 			break;
-
+		#if 0
 		default: {
 //			bprintf(PRINT_NORMAL, "Attempt to write byte value %x to location %x\n", byteValue, sekAddress);
 		}
+		#endif
 	}
 }
 
@@ -202,11 +205,12 @@ void __fastcall uopokoWriteWord(unsigned int sekAddress, unsigned short wordValu
 			EEPROMWrite(wordValue & 0x04, wordValue & 0x02, wordValue & 0x08);
 			break;
 		}
-
+		#if 0
 		default: {
 //			bprintf(PRINT_NORMAL, "Attempt to write word value %x to location %x\n", wordValue, sekAddress);
 
 		}
+		#endif
 	}
 }
 

@@ -94,7 +94,7 @@ extern int nTransWidth, nTransHeight;
 #define BRF_NODUMP			(1 << 28)
 
 struct BurnRomInfo {
-	char * szName;
+	const char * szName;
 	unsigned int nLen;
 	unsigned int nCrc;
 	unsigned int nType;
@@ -113,13 +113,13 @@ struct BurnRomInfo {
 #define BIT_DIPSWITCH		(9)
 
 struct BurnInputInfo {
-	char* szName;
+	const char* szName;
 	unsigned char nType;
 	union {
 		unsigned char* pVal;			// Most inputs use a char*
 		unsigned short* pShortVal;		// All analog inputs use a short*
 	};
-	char* szInfo;
+	const char* szInfo;
 };
 
 // DIPs
@@ -129,7 +129,7 @@ struct BurnDIPInfo {
 	unsigned char nFlags;
 	unsigned char nMask;
 	unsigned char nSetting;
-	char* szText;
+	const char* szText;
 };
 
 // ---------------------------------------------------------------------------

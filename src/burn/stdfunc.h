@@ -50,7 +50,7 @@ static inline int Name##RomName(char** pszName, unsigned int i, int nAka) \
 		return 1; \
 	if(nAka) \
 		return 1; \
-	*pszName = por->szName; \
+	*pszName = (char*)por->szName; \
 	return 0; \
 }
 

@@ -90,7 +90,6 @@ extern int nLastFilter;
 extern int HideChildren;
 extern int ThreeOrFourPlayerOnly;
 extern int CurrentFilter;
-extern int CurrentFitlerType;
 extern int is_running;
 extern int nVidScrnAspectMode;
 extern int nVidOriginalScrnAspectX;
@@ -168,7 +167,7 @@ extern int nYOffset;
 extern int nXScale;
 extern int nYScale;
 
-extern void UpdateConsoleXY(char *text, float X, float Y);
+extern void UpdateConsoleXY(const char *text, float X, float Y);
 
 void simpleReinitScrn(void);
 
@@ -186,13 +185,6 @@ int loadGamelist();
 int createGamelist();
 char* mangleGamename(const char* pszOldName, bool bRemoveArticle = true);
 char* transGameName(const char* pszOldName, bool bRemoveArticle = true);
-
-// favorites.cpp
-int initFavorites();
-int saveFavorites();
-void addFavorite(unsigned int index);
-void removeFavorite(unsigned int index);
-bool filterFavorite(const unsigned int& index);
 
 // config.cpp
 extern int nIniVersion;
@@ -233,11 +225,6 @@ extern int bDrvSaveAll;
 int StatedAuto(int bSave);
 int StatedLoad(int nSlot);
 int StatedSave(int nSlot);
-
-// sfactd.cpp
-int SFactdCreate();
-void ToggleLayer(unsigned char thisLayer);
-void ToggleSprite(unsigned char PriNum);
 
 // roms.cpp
 extern bool avOk;

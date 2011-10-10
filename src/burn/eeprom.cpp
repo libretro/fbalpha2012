@@ -295,10 +295,12 @@ void EEPROMInit(const eeprom_interface* interface)
 	intf = interface;
 
 	unsigned int intfSize = (1 << intf->address_bits) * intf->data_bits / 8;
+	#if 0
 	if (intfSize > MEMORY_SIZE)
 	{
 		bprintf(0, "EEPROM larger than eeprom allows");
 	}
+	#endif
 
 	memset(eeprom_data, 0xff, intfSize);
 	serial_count = 0;
@@ -353,8 +355,9 @@ void EEPROMExit()
 
 static void eeprom_write(int bit)
 {
-	if (serial_count >= SERIAL_BUFFER_LENGTH - 1) {
-		bprintf(0, "error: EEPROM serial buffer overflow\n");
+	if (serial_count >= SERIAL_BUFFER_LENGTH - 1)
+	{
+		//bprintf(0, "error: EEPROM serial buffer overflow\n");
 		return;
 	}
 

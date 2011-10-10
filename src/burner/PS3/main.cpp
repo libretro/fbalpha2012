@@ -9,6 +9,7 @@
 #include "menu.h"
 #include "vid_psgl.h"
 #include "cellframework2/input/pad_input.h"
+#include "cellframework2/audio/stream.h"
 #include "audio_driver.h"
 #include "string.h"
 #ifdef CELL_DEBUG_CONSOLE
@@ -16,17 +17,20 @@
 #endif
 #include "config_file.h"
 
-#define init_setting_uint(charstring, setting, defaultvalue) \
-	if(!(config_get_uint(currentconfig, charstring, &setting))) \
-		setting = defaultvalue; 
-
-char	szAppBurnVer[16] = "";
-char	szSVNVer[16] = "";
-char	szSVNDate[30] = "";
-bool	DoReset = false;
-int	ArcadeJoystick = 0;
-int	exitGame = 0;
-uint32_t bBurnFirstStartup;
+char		szAppBurnVer[16] = "";
+char		szSVNVer[16] = "";
+char		szSVNDate[30] = "";
+bool		DoReset = false;
+int		ArcadeJoystick = 0;
+int		exitGame = 0;
+uint32_t	bBurnFirstStartup;
+int		GameStatus = MENU;
+int		nAppVirtualFps = 6000;
+int		is_running = 0;
+bool		bShowFPS = false;
+int		custom_aspect_ratio_mode = 0;
+cell_audio_handle_t audio_handle;
+const struct cell_audio_driver *driver;
 
 extern void reset_frame_counter();
  
@@ -42,8 +46,6 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 		case CELL_SYSUTIL_REQUEST_EXITGAME:  
 			is_running = 0;
 			exitGame = 1;
-			configAppSaveXml();
-			sys_process_exit(0);
 			break;
 		case CELL_SYSUTIL_DRAWING_BEGIN:
 		case CELL_SYSUTIL_DRAWING_END:
@@ -63,7 +65,6 @@ static int AppInit()
 	config_file_t * currentconfig = config_file_new(SYS_CONFIG_FILE);
 
 	init_setting_uint("firststartup", bBurnFirstStartup, 1);
-	printf("AppInit: bBurnFirstStartup is: %d\n", bBurnFirstStartup);
 
 	if (bBurnFirstStartup)
 		configAppSaveXml();	// Create initial config file
@@ -78,23 +79,18 @@ static int AppInit()
 	InitRomList();
 	InitInputList();
 	InitDipList();
+
+	// get the last filter
+	CurrentFilter = nLastFilter;
+
 	BuildRomList();	
 	audio_new();
 	return 0;
 }
 
-static int AppExit()
-{
-	BurnerDrvExit();				// Make sure any game driver is exited
-	mediaExit();					// Exit media
-	BurnLibExit();					// Exit the Burn library
-
-	freeAuditState();				// Free audit state 
-	auditCleanup();					// Free audit info
- 
-
-	return 0;
-}
+extern unsigned int nPrevGame;
+extern void doStretch();
+extern void StretchMenu();
 
 // Main program entry point
 int  main(int argc, char **argv)
@@ -137,15 +133,132 @@ int  main(int argc, char **argv)
 
 	AppInit();
 
-
 	psglInitGL();
 	dbgFontInit();
 	reset_frame_counter();
 
 	mediaInit();
-	RunMessageLoop(argc, argv); 
 
-	AppExit();			// Exit the application
+	audio_play();
+
+#ifdef MULTIMAN_SUPPORT
+	if(argc > 1)
+	{
+		const char * current_game = strrchr(strdup(argv[1]), '/');
+		directLoadGame(strdup(current_game));
+		mediaInit();
+		GameStatus = EMULATING;	
+		nPrevGame = 0;
+	}
+#endif
+
+	do{
+		switch (GameStatus)
+		{
+			case MENU:	
+				psglClearUI();
+				RomMenu();
+				FrameMove();
+#ifdef CELL_DEBUG_CONSOLE
+				cellConsolePoll();
+#endif
+				psglRenderUI();
+				break;
+			case CONFIG_MENU:
+				psglClearUI();
+				ConfigMenu();
+				ConfigFrameMove();
+#ifdef CELL_DEBUG_CONSOLE
+				cellConsolePoll();
+#endif
+				psglRenderUI();
+				break;
+			case PAUSE:
+				psglClearUI();
+				psglRenderPaused();
+				InGameMenu();
+				InGameFrameMove();		
+#ifdef CELL_DEBUG_CONSOLE
+				cellConsolePoll();
+#endif
+				psglRenderUI();
+				break;
+			case INPUT_MENU:						
+				psglClearUI();
+				psglRenderPaused();
+				InputMenu();
+				InputFrameMove();			
+#ifdef CELL_DEBUG_CONSOLE
+				cellConsolePoll();
+#endif
+				psglRenderUI();
+				break;
+			case DIP_MENU:						
+				psglClearUI();
+				psglRenderPaused();
+				DipMenu();
+				DipFrameMove();			
+				psglRenderUI();
+				break;
+			case SCREEN_RESIZE:
+				psglClearUI();			
+				psglRenderStretch();
+				psglRenderAlpha();
+				doStretch();
+				StretchMenu();
+#ifdef CELL_DEBUG_CONSOLE
+				cellConsolePoll();
+#endif
+				psglRenderUI();
+				custom_aspect_ratio_mode = 1;
+				nVidScrnAspectMode = ASPECT_RATIO_CUSTOM;
+				break;
+			case EMULATING:
+				if(!is_running)
+					GameStatus = PAUSE;
+				CalculateViewports();
+				if(pVidTransImage)
+				{
+					if(bVidRecalcPalette)
+					{
+						audio_check();
+						nCurrentFrame++;
+						VidFrame_RecalcPalette();
+					}
+					do{
+						audio_check();
+						nCurrentFrame++;
+						VidFrame_Recalc();
+						InputMake();
+#ifdef CELL_DEBUG_CONSOLE
+						cellConsolePoll();
+#endif
+					}while(is_running);
+				}
+				else
+				{
+					do{
+						audio_check();
+						nCurrentFrame++;
+						VidFrame();
+						InputMake();
+#ifdef CELL_DEBUG_CONSOLE
+						cellConsolePoll();
+#endif
+					}while(is_running);
+				}
+				break;
+		}
+	}while(!exitGame);
+
+	audio_stop();			// Stop sound if it was playing
+	BurnerDrvExit();		// Make sure any game driver is exited
+	mediaExit();			// Exit media
+
+	BurnLibExit();			// Exit the Burn library
+
+	freeAuditState();		// Free audit state 
+	auditCleanup();			// Free audit info
 
 	cell_pad_input_deinit();
 
@@ -156,7 +269,7 @@ int  main(int argc, char **argv)
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_RTC);
 	cellSysutilUnregisterCallback(0);
 
-	exit(0);
+	sys_process_exit(0);
 }
 
 int ProgressUpdateBurner(const char * pszText)
@@ -182,7 +295,7 @@ int ProgressUpdateBurner(const char * pszText)
 	return 0;
 }
 
-void UpdateConsole(char *text)
+void UpdateConsole(const char * text)
 {  	
 	 psglClearUI();
 	 cellDbgFontPuts(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, text);
@@ -190,7 +303,7 @@ void UpdateConsole(char *text)
 	 psglRenderUI();
 }
 
-void UpdateConsoleXY(char *text, float X, float Y)
+void UpdateConsoleXY(const char * text, float X, float Y)
 {  	
 	 psglClearUI();
 	 cellDbgFontPuts(X, Y, 0.75f, 0xFFFFFFFF, text);

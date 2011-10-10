@@ -141,25 +141,6 @@ int VidFrame_RecalcPalette()
 	}while(r < 256);
 	bVidRecalcPalette = false;
 
-	pBurnDraw = pVidTransImage;
-	nBurnPitch = nVidImageWidth << 1;
-	BurnDrvFrame();
-	psglRender();
-
-	int y = 0;
-	do{
-		int x = 0;
-
-		do{
-			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
-			x++;
-		}while(x < nVidImageWidth);
-
-		y++;
-		pSrc += nVidImageWidth;
-		pDest += nVidImagePitch;
-	}while(y < nVidImageHeight);
-
 	return 0;
 }
 

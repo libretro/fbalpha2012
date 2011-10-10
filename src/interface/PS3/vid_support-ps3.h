@@ -33,8 +33,7 @@ void VidInitInfo();
 #define SCREEN_RENDER_TEXTURE_PIXEL_FORMAT	BPP_16_SCREEN_RENDER_TEXTURE_PIXEL_FORMAT
 #endif
 
-#define VidSCopyImage() \
-	uint8_t * dst = (uint8_t *)buffer; \
+#define VidSCopyImage(dst) \
 	unsigned int pitch = nVidImageWidth * sizeof(unsigned int); \
 	uint8_t * ps = pVidImage + (nVidImageLeft << SCREEN_RENDER_TEXTURE_BPP_SHIFT); \
 	int linesize = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \

@@ -221,8 +221,6 @@ int  main(int argc, char **argv)
 				{
 					if(bVidRecalcPalette)
 					{
-						audio_check();
-						nCurrentFrame++;
 						VidFrame_RecalcPalette();
 					}
 					do{

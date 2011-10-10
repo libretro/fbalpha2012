@@ -30,7 +30,6 @@ static GLuint cg_viewport_width;
 static GLuint cg_viewport_height;
 static GLuint bufferID = 0;
 static uint32_t frame_count;
-static unsigned int* buffer = 0;
 
 typedef struct dstResType
 {
@@ -414,11 +413,6 @@ void psglSetVSync(uint32_t enable)
 
 int _psglExit(void)
 {
-	if (buffer)
-	{
-		delete[] buffer;
-		buffer = 0;
-	}
 	glDeleteBuffers(1, &bufferID); 
 	VidSFreeVidImage();
 	nRotateGame = 0;
@@ -465,14 +459,7 @@ static int _psglTextureInit()
 		return 1;
 	}
 
-	if (buffer)
-	{
-		delete[] buffer;
-		buffer = NULL;
-	}
-	buffer = new unsigned int[nVidImageWidth * nVidImageHeight];
-	memset(buffer, 0, nVidImageWidth * nVidImageHeight * sizeof(unsigned int));
-	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE);
+	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, NULL, GL_SYSTEM_DRAW_SCE);
 
 	return 0;
 }
@@ -553,22 +540,24 @@ void CalculateViewports(void)
 		vph = DEST_BOTTOM;
 		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight);
 	}
-	VidSCopyImage();
+	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
+	VidSCopyImage(texture);
+	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 }
 
 void psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	VidSCopyImage();
+	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
+	VidSCopyImage(texture);
+	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 
 	frame_count += 1;
-	glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer);
 	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
 	set_cg_params();
 
 	glDrawArrays(GL_QUADS, 0, 4);
-	glFlush();
 
 	if (bShowFPS)
 	{
@@ -612,22 +601,25 @@ void psglRenderStretch()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	VidSCopyImage();
+	uint8_t* texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
+	VidSCopyImage(texture);
+	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
+
 }
 
 
 void psglRenderAlpha(void)
 {
 	frame_count += 1;
-	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, buffer, GL_SYSTEM_DRAW_SCE);
-	uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
+
+	uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_READ_WRITE);
 	for(int i = 0; i != nVidImageHeight; i++)
 	{
 		for(int j = 0; j != nVidImageWidth; j++)
 		{
-			unsigned char r = (buffer[(i) * nVidImageWidth + (j)] >> 16);
-			unsigned char g = (buffer[(i) * nVidImageWidth + (j)] >> 8 );
-			unsigned char b = (buffer[(i) * nVidImageWidth + (j)] & 0xFF);
+			unsigned char r = (texture[(i) * nVidImageWidth + (j)] >> 16);
+			unsigned char g = (texture[(i) * nVidImageWidth + (j)] >> 8 );
+			unsigned char b = (texture[(i) * nVidImageWidth + (j)] & 0xFF);
 			r/=2;
 			g/=2;
 			b/=2;
@@ -639,7 +631,6 @@ void psglRenderAlpha(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nVidImageWidth, nVidImageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 0);
 	set_cg_params();
 	glDrawArrays(GL_QUADS, 0, 4);
-	glFlush();
 }
 
 int32_t psglInitShader(const char* filename)

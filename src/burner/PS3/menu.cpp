@@ -864,7 +864,7 @@ void ConfigFrameMove()
 
 		UpdateConsoleXY("Generating clrmame.dat. Please wait...", 0.35f, 0.5f );
 
-		if (create_datfile("/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat",1) == 0)
+		if (create_datfile("/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat",0) == 0)
 		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_DIALOG_TYPE_NORMAL| \
@@ -2221,7 +2221,7 @@ void InGameFrameMove()
 			{
 				selectedShader[1].index = shaderindex2;
 				strcpy(selectedShader[1].filename, m_ListShader2Data[shaderindex2].c_str());
-				sprintf(selectedShader[1].fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex2].c_str());
+				sprintf(selectedShader[1].fullpath, SHADER_DIRECTORY, m_ListShader2Data[shaderindex2].c_str());
 				psglInitShader(selectedShader[1].fullpath);
 				BurnReinitScrn();
 				psglRedraw();

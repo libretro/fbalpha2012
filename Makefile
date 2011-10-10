@@ -53,7 +53,7 @@ INCLUDE                 =       -Isrc/burn              \
                                         -Isrc/burn/sega \
                                         -Isrc/burn/toaplan
                                         
-DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DTIXML_USE_TICPP -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS -DUSE_BPP_RENDERING=32 -DNO_SPRITE_ENABLE_TOGGLE -DNO_LAYER_ENABLE_TOGGLE
+DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS -DUSE_BPP_RENDERING=32 -DNO_SPRITE_ENABLE_TOGGLE -DNO_LAYER_ENABLE_TOGGLE
 ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else
@@ -176,7 +176,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         \
                                         $(FEX_DIR)/fex/Binary_Extractor.cpp $(FEX_DIR)/fex/blargg_common.cpp $(FEX_DIR)/fex/blargg_errors.cpp $(FEX_DIR)/fex/Data_Reader.cpp $(FEX_DIR)/fex/File_Extractor.cpp $(FEX_DIR)/fex/Gzip_Extractor.cpp $(FEX_DIR)/fex/Gzip_Reader.cpp $(FEX_DIR)/fex/Rar_Extractor.cpp $(FEX_DIR)/fex/Zip7_Extractor.cpp $(FEX_DIR)/fex/Zip_Extractor.cpp \
                                         $(FEX_DIR)/fex/Zlib_Inflater.cpp $(FEX_DIR)/fex/fex.cpp \
-                                        $(TICPP_DIR)/ticpp.cpp $(TICPP_DIR)/ticpp_sugar.cpp $(TICPP_DIR)/tinystr.cpp $(TICPP_DIR)/tinyxml.cpp $(TICPP_DIR)/tinyxmlerror.cpp $(TICPP_DIR)/tinyxmlparser.cpp\
+                                        $(BURNER_DIR)/PS3/config_file.c \
                                         \
                                         $(ZLIB_DIR)/adler32.c $(ZLIB_DIR)/compress.c $(ZLIB_DIR)/crc32.c $(ZLIB_DIR)/deflate.c $(ZLIB_DIR)/inffast.c $(ZLIB_DIR)/inflate.c $(ZLIB_DIR)/inftrees.c $(ZLIB_DIR)/trees.c $(ZLIB_DIR)/uncompr.c $(ZLIB_DIR)/zutil.c
 

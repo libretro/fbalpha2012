@@ -54,7 +54,8 @@ static const dstResType allResolutions[] =
 };
 
 static int availableResolutionsCount = 0; 
-static int currentAvailableResolutionNo;
+uint32_t currentAvailableResolutionNo;
+uint32_t currentAvailableResolutionId;
 
 // forward declarations
 unsigned int __cdecl HighCol16(int r, int g, int b, int);
@@ -207,86 +208,7 @@ void apply_rotation_settings(void)
 	}
 }
 
-void psglInitGL_with_resolution(uint32_t resolutionId)
-{
-	PSGLdeviceParameters params;
-	params.enable = PSGL_DEVICE_PARAMETERS_COLOR_FORMAT | PSGL_DEVICE_PARAMETERS_DEPTH_FORMAT | PSGL_DEVICE_PARAMETERS_MULTISAMPLING_MODE;
-	params.colorFormat = GL_ARGB_SCE;
-	params.depthFormat = GL_NONE;
-	params.multisamplingMode = GL_MULTISAMPLING_NONE_SCE;
-
-	PSGLinitOptions initOpts; 
-	initOpts.enable = PSGL_INIT_MAX_SPUS | PSGL_INIT_INITIALIZE_SPUS;
-#if CELL_SDK_VERSION > 0x192001
-	initOpts.enable |= PSGL_INIT_TRANSIENT_MEMORY_SIZE;
-#else
-	initOpts.enable |= PSGL_INIT_HOST_MEMORY_SIZE;
-#endif
-	initOpts.maxSPUs = 1;
-	initOpts.initializeSPUs = GL_FALSE;
-	initOpts.persistentMemorySize = 0;
-	initOpts.transientMemorySize = 0;
-	initOpts.errorConsole = 0;
-	initOpts.fifoSize = 0;
-	initOpts.hostMemorySize = 0;
-
-	psglInit(&initOpts);
-
-	int resolutionpicked;  
-	for (int i=availableResolutionsCount-1; i>=0; i--) 
-	{ 
-
-		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, availableResolutions[i].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0) && (availableResolutions[i].resId == resolutionId)) 
-		{
-			// Get the highest res possible
-			resolutionpicked = i;
-			if (availableResolutions[i].resId == CELL_VIDEO_OUT_RESOLUTION_576)
-			{
-				params.enable |= PSGL_DEVICE_PARAMETERS_RESC_PAL_TEMPORAL_MODE;
-				params.rescPalTemporalMode = RESC_PAL_TEMPORAL_MODE_60_INTERPOLATE;
-				params.enable |= PSGL_DEVICE_PARAMETERS_RESC_RATIO_MODE;
-				params.rescRatioMode = RESC_RATIO_MODE_FULLSCREEN;
-			}
-		}
-	}
-	currentAvailableResolutionNo = resolutionpicked;
-	CellVideoOutResolution resolution;
-	cellVideoOutGetResolution(resolutionId, &resolution);
-	params.width = availableResolutions[currentAvailableResolutionNo].w; 
-	params.height = availableResolutions[currentAvailableResolutionNo].h; 
-
-	if (bVidTripleBuffer)
-	{
-		params.enable |= PSGL_DEVICE_PARAMETERS_BUFFERING_MODE;
-		params.bufferingMode = PSGL_BUFFERING_MODE_TRIPLE;
-	}
-
-	params.enable |= PSGL_DEVICE_PARAMETERS_WIDTH_HEIGHT; 
-
-	psgl_device = psglCreateDeviceExtended(&params); 
-	psgl_context = psglCreateContext();
-	psglMakeCurrent(psgl_context, psgl_device);
-
-	psglResetCurrentContext();
-
-	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-	glEnable(GL_TEXTURE_2D);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, vidFilterLinear ? GL_LINEAR : GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, vidFilterLinear ? GL_LINEAR : GL_NEAREST);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
- 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-}
-
-
-void psglInitGL()
+void psglInitGL(void)
 {
 	
 	PSGLdeviceParameters params;
@@ -318,24 +240,35 @@ void psglInitGL()
 
 	psglInit(&initOpts);
 	
+	availableResolutionsCount = 0;
 	for(int i = 0; i < 8; i++)
 	{ 
 		if (cellVideoOutGetResolutionAvailability(CELL_VIDEO_OUT_PRIMARY, allResolutions[i].resId,CELL_VIDEO_OUT_ASPECT_AUTO,0)) 
 		{
-			//set availableResolutions same as allResolutions entry since resolution
-			//is available
+			//set availableResolutions same as allResolutions entry since resolution //is available
+
 			availableResolutions[availableResolutionsCount].w = allResolutions[i].w; 	
 			availableResolutions[availableResolutionsCount].h = allResolutions[i].h; 	
 			availableResolutions[availableResolutionsCount].resId = allResolutions[i].resId;
 
-			//set the current resolution to this one
-			currentAvailableResolutionNo = availableResolutionsCount; 
+			if(bBurnFirstStartup)							// on initial boot, set the highest res possible
+				currentAvailableResolutionNo = availableResolutionsCount; 	//set the current resolution to this one
+			else									// on subsequent boots, obtain the resolution from the config file
+			{
+				if(allResolutions[i].resId == currentAvailableResolutionId)	// if we've found the resolution, set the index number for it
+					currentAvailableResolutionNo = availableResolutionsCount;
+			}
 
 			//increment resolution count by one
 			availableResolutionsCount += 1;
 
 		}
 	}
+
+	currentAvailableResolutionId = availableResolutions[currentAvailableResolutionNo].resId;
+
+	if(bBurnFirstStartup)
+		bBurnFirstStartup = 0;
 
 	if(availableResolutions[currentAvailableResolutionNo].resId == CELL_VIDEO_OUT_RESOLUTION_576)
 	{
@@ -416,7 +349,8 @@ void psglResolutionSwitch(void)
 		psgl_device = NULL;
 	}
 
-	psglInitGL_with_resolution(availableResolutions[currentAvailableResolutionNo].resId);
+	currentAvailableResolutionId = availableResolutions[currentAvailableResolutionNo].resId;
+	psglInitGL();
 	dbgFontInit();
 }
 

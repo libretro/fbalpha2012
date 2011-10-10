@@ -1,19 +1,12 @@
 // Burner xml config file module, added by regret
 
-/* changelog:
- update 4: change format, improve compatibility
- update 3: improve xml loading
- update 1: create
-*/
-
 #include "burner.h"
 
 #ifndef NO_IPS
 //#include "patch.h"
 #endif
 
-#include "../libs/ticpp/ticpp.h"
-#include <locale.h>
+#include "config_file.h"
 
 int nPatchLang = 0;
 int bEnforceDep = 0;
@@ -24,314 +17,162 @@ int nIniVersion = 0;
 static string str = "";
 const float configVersion = 0.03f;
 
-static void addTextNode(ticpp::Element& parent, const char* title, const char* value)
-{
-	if (!value)
-		return;
+#define init_setting_uint(charstring, setting, defaultvalue) \
+	if(!(config_get_uint(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
 
-	ticpp::Text myText(value);
-	if (!title)
-		parent.SetText(myText);
-	else
-	{
-		ticpp::Element myTitle(title);
-		myTitle.LinkEndChild(&myText);
-		parent.LinkEndChild(&myTitle);
-	}
-}
+#define init_setting_int(charstring, setting, defaultvalue) \
+	if(!(config_get_int(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
 
-template <typename T>
-static void setAttr(ticpp::Element& element, const char* attr, const T& value)
-{
-	if (!attr)
-		return;
+#define init_setting_bool(charstring, setting, defaultvalue) \
+	if(!(config_get_bool(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
 
-	element.SetAttribute(attr, value);
-}
+#define init_setting_bool(charstring, setting, defaultvalue) \
+	if(!(config_get_bool(currentconfig, charstring, &setting))) \
+		setting =	defaultvalue;
 
-static ticpp::Element* findElement(ticpp::Element* element, const char* attr)
-{
-	if (!element || !attr)
-		return NULL;
+#define init_setting_char(charstring, setting, defaultvalue) \
+	if(!(config_get_char_array(currentconfig, charstring, setting, sizeof(setting)))) \
+		strncpy(setting,defaultvalue, sizeof(setting));
 
-	return element->FirstChildElement(attr, false);
-}
-
-template <typename T>
-static void getAttr(ticpp::Element* element, const char* attr, T* value)
-{
-	if (!element || !attr || !value)
-		return;
-
-	element->GetAttribute(attr, value, false);
-}
-
-static void getTextStr(ticpp::Element* element, TCHAR* name)
-{
-	if (!element || !name)
-		return;
-
-	str = "";
-	element->GetText(&str, false);
-
-	if (str != "")
-		strcpy(name, str.c_str());
-}
-
-// get config filename
-static void createConfigName(char* config)
-{
-	sprintf(config, "/dev_hdd0/game/FBAN00000/USRDIR/fbanext-ps3.xml");
-}
-
-// Read in the config file for the whole application
+// Read in the config file for the whole application (NOTE: Not actually XML - and we like it that way)
 int configAppLoadXml()
 {
-	setlocale(LC_ALL, "");
-
-	char configName[MAX_PATH];
-	createConfigName(configName);
-
-	if (!fileExists(configName))
-		return 1;
-
-	ticpp::Document doc(configName);
-	doc.LoadFile();
-
-	ticpp::Element* root = doc.FirstChildElement();
-	float xmlVersion;
-	root->GetAttribute("version", &xmlVersion, false);
-	if (xmlVersion < configVersion)
-	{
-		// TODO: don't read config ?
-	}
-
-	ticpp::Element* element, *parent, *child;
-
-	element = findElement(root, "version");
-	element->GetText(&str);
-	nIniVersion = strtol(str.c_str(), NULL, 0);
+	config_file_t * currentconfig = config_file_new(SYS_CONFIG_FILE);
 
 	// video
-	element = findElement(root, "video");
-
-	child = findElement(element, "adjust");
-	getAttr(child, "rotate-vertical", &nVidRotationAdjust);
-
-	child = findElement(element, "vsync");
-	getAttr(child, "enable", &bVidVSync);
-	child = findElement(element, "triple-buffer");
-	getAttr(child, "enable", &bVidTripleBuffer);
+	init_setting_int("rotate-vertical", nVidRotationAdjust, 0);
+	init_setting_int("vsync", bVidVSync, 1);
+	init_setting_int("triple-buffer", bVidTripleBuffer, 1);
 
 	// render
-	parent = findElement(element, "render");
-	child = findElement(parent, "filter");
-	getAttr(child, "linear", &vidFilterLinear);
-	getAttr(child, "linear2", &vidFilterLinear2);
-	child = findElement(parent, "currentshader");
-	child->GetText(&selectedShader[0].filename);
-	child = findElement(parent, "currentshader2");
-	child->GetText(&selectedShader[1].filename);
+	init_setting_uint("linear", vidFilterLinear, 1);
+	init_setting_uint("linear2", vidFilterLinear2, 1);
+	init_setting_char("currentshader", selectedShader[0].filename, "stock.cg");
+	init_setting_char("currentshader2", selectedShader[1].filename, "stock.cg");
 
-	getAttr(child, "x-offset", &nXOffset);
-	getAttr(child, "y-offset", &nYOffset);
-	getAttr(child, "x-scale", &nXScale);
-	getAttr(child, "y-scale", &nYScale);
-	getAttr(child, "y-scale", &nYScale);
-	getAttr(child, "scaling-factor", &bVidScalingFactor);
-	getAttr(child, "fbo-enable", &bVidFBOEnabled);
+	init_setting_int("xoffset", nXOffset, 0);
+	init_setting_int("yoffset", nYOffset, 0);
+	init_setting_int("xscale", nXScale, 0);
+	init_setting_int("yscale", nYScale, 0);
+	init_setting_uint("scalingfactor", bVidScalingFactor, 1);
+	init_setting_bool("fbomode", bVidFBOEnabled, false);
 
+	init_setting_uint("resolutionid", currentAvailableResolutionId, 0);
+
+	init_setting_uint("firststartup", bBurnFirstStartup, 1);
 
 	// video others
-	child = findElement(element, "monitor");
-	getAttr(child, "aspect-x", &nVidScrnAspectX);
-	getAttr(child, "aspect-y", &nVidScrnAspectY);
-	getAttr(child, "aspect-mode", &nVidScrnAspectMode);
+	init_setting_int("aspectx", nVidScrnAspectX, 4);
+	init_setting_int("aspecty", nVidScrnAspectY, 3);
+	init_setting_int("aspectmode", nVidScrnAspectMode, 0);
 
 	// gui
-	element = findElement(root, "gui");
-	if (element) {
-		child = findElement(element, "gui-misc");
-		getAttr(child, "lastRom", &nLastRom);
-		getAttr(child, "lastFilter", &nLastFilter);
-		getAttr(child, "hideChildren", &HideChildren);
-		getAttr(child, "showThreeFourPlayerOnly", &ThreeOrFourPlayerOnly);
+	init_setting_int("lastrom", nLastRom, 0);
+	init_setting_int("lastfilter", nLastFilter, 0);
+	init_setting_int("hidechildren", HideChildren, 0);
+	init_setting_int("showthreefourplayeronly", ThreeOrFourPlayerOnly, 0);
 
-		child = findElement(element, "gamelist-dlg");
-		getAttr(child, "options", &nLoadMenuShowX);
+	init_setting_int("nloadmenushowx", nLoadMenuShowX, 0);
+	init_setting_int("language", nPatchLang, 0);
+	init_setting_int("dependancy", bEnforceDep, 0)
 
-		child = findElement(element, "ips");
-		getAttr(child, "language", &nPatchLang);
-		getAttr(child, "dependancy", &bEnforceDep);
+	char tempStr[64] = "";
 
-	}
-
-	// preferences
-	element = findElement(root, "preferences");
-	if (element)
+	for (int i = 0; i < 4; i++)
 	{
-		child = findElement(element, "controls");
-		if (child)
-		{
-			child = child->FirstChildElement();
-			for (int i = 0; i < 4, child; i++, child = child->NextSiblingElement(false))
-				getTextStr(child, szPlayerDefaultIni[i]);
-		}
+		sprintf(tempStr, "controlsdefault%d", i);
+		init_setting_char(tempStr, szPlayerDefaultIni[i], "");
 	}
 
-	// paths
-	element = findElement(root, "paths");
-	if (element) {
-		child = findElement(element, "rom");
-		if (child)
-		{
-			child = child->FirstChildElement();
-			for (int i = 0; i < DIRS_MAX, child; i++, child = child->NextSiblingElement(false))
-				getTextStr(child, szAppRomPaths[i]);
-		}
+	init_setting_char("rompath", szAppRomPaths[0], "/dev_hdd0/game/FBAN00000/USRDIR/roms/");
 
-		child = findElement(element, "misc");
-		if (child)
-		{
-			child = child->FirstChildElement();
-			for (int i = PATH_PREVIEW; i < PATH_SUM, child; i++, child = child->NextSiblingElement(false))
-				getTextStr(child, szMiscPaths[i]);
-		}
+	//paths
+	for (int i = PATH_PREVIEW; i < PATH_SUM; i++)
+	{
+		sprintf(tempStr, "path%d", i);
+		init_setting_char(tempStr, szMiscPaths[i], szMiscPaths[i]);
 	}
+
 	return 0;
 }
 
 // Write out the config file for the whole application
 int configAppSaveXml()
 {
-	char configName[MAX_PATH];
-	createConfigName(configName);
+	config_file_t * currentconfig = config_file_new(SYS_CONFIG_FILE);
 
 	char tempStr[64] = "";
 
-	// root
-	ticpp::Document doc;
-	ticpp::Declaration decl("1.0", "UTF-8", "");
-	doc.LinkEndChild(&decl);
-
-	ticpp::Element root("configuration");
-	setAttr(root, "version", configVersion);
-	ticpp::Comment comment("Don't edit this file manually unless you know what you're doing\n" \
-			APP_TITLE " will restore default settings when this file is deleted");
-	doc.LinkEndChild(&comment);
-	doc.LinkEndChild(&root);
-
 	// title
 	sprintf(tempStr, "0x%06X", nBurnVer);
-	addTextNode(root, "version", tempStr);
+	config_set_string(currentconfig,  "version", tempStr);
 
 	// video
-	ticpp::Element video("video");
-	root.LinkEndChild(&video);
-
-	ticpp::Element adjust("adjust");
-	video.LinkEndChild(&adjust);
-	setAttr(adjust, "rotate-vertical", nVidRotationAdjust);
-
-	ticpp::Element vsync("vsync");
-	video.LinkEndChild(&vsync);
-	setAttr(vsync, "enable", bVidVSync);
-
-	ticpp::Element triple_buffer("triple-buffer");
-	video.LinkEndChild(&triple_buffer);
-	setAttr(triple_buffer, "enable", bVidTripleBuffer);
+	config_set_int(currentconfig, "rotate-vertical", nVidRotationAdjust);
+	config_set_int(currentconfig, "vsync", bVidVSync);
+	config_set_int(currentconfig, "triple-buffer", bVidTripleBuffer);
 
 	// video render
-	ticpp::Element render("render");
-	video.LinkEndChild(&render);
-	addTextNode(render, "currentshader", selectedShader[0].filename);
-	addTextNode(render, "currentshader2", selectedShader[1].filename);
+	config_set_string(currentconfig, "currentshader", selectedShader[0].filename);
+	config_set_string(currentconfig, "currentshader2", selectedShader[1].filename);
 
-	if(strlen(selectedShader[0].filename) == 0)
-		strcpy(selectedShader[0].filename,"stock.cg");
+	config_set_uint(currentconfig, "linear", vidFilterLinear);
+	config_set_uint(currentconfig, "linear2", vidFilterLinear2);
 
-	if(strlen(selectedShader[1].filename) == 0)
-		strcpy(selectedShader[1].filename,"stock.cg");
+	config_set_int(currentconfig, "xoffset", nXOffset);
+	config_set_int(currentconfig, "yoffset", nYOffset);
+	config_set_int(currentconfig, "xscale", nXScale);
+	config_set_int(currentconfig, "yscale", nYScale);
+	config_set_int(currentconfig, "scalingfactor", bVidScalingFactor);
+	config_set_bool(currentconfig, "fbomode", bVidFBOEnabled);
 
-	ticpp::Element filter("filter");
-	render.LinkEndChild(&filter);
-	setAttr(filter, "linear", vidFilterLinear);
-	setAttr(filter, "linear2", vidFilterLinear2);
-	ticpp::Element option("option");
-	render.LinkEndChild(&option);
-
-	setAttr(option, "x-offset", nXOffset);
-	setAttr(option, "y-offset", nYOffset);
-	setAttr(option, "x-scale",  nXScale);
-	setAttr(option, "y-scale",  nYScale);
-	setAttr(option, "scaling-factor",  bVidScalingFactor);
-	setAttr(option, "fbo-enable",  bVidFBOEnabled);
+	config_set_uint(currentconfig, "resolutionid", currentAvailableResolutionId);
+	config_set_uint(currentconfig, "firststartup", bBurnFirstStartup);
 
 	// video others
-	ticpp::Element monitor("monitor");
-	video.LinkEndChild(&monitor);
-	setAttr(monitor, "aspect-x", nVidScrnAspectX);
-	setAttr(monitor, "aspect-y", nVidScrnAspectY);
-	setAttr(monitor, "aspect-mode", nVidScrnAspectMode);
+	config_set_int(currentconfig, "aspectx", nVidScrnAspectX);
+	config_set_int(currentconfig, "aspecty", nVidScrnAspectY);
+	config_set_int(currentconfig, "aspectmode", nVidScrnAspectMode);
 
 	// gui
-	ticpp::Element gui("gui");
-	root.LinkEndChild(&gui);
-	//addTextNode(gui, "gamelist", szTransGamelistFile);
+	config_set_int(currentconfig, "lastrom", nLastRom);
+	config_set_int(currentconfig, "lastfilter", nLastFilter);
 
-	ticpp::Element gui_misc("gui-misc");
-	gui.LinkEndChild(&gui_misc);
-	setAttr(gui_misc, "lastRom", nLastRom);
-	setAttr(gui_misc, "lastFilter", nLastFilter);
-
-	setAttr(gui_misc, "hideChildren", HideChildren);
-	setAttr(gui_misc, "showThreeFourPlayerOnly", ThreeOrFourPlayerOnly);
+	config_set_int(currentconfig, "hidechildren", HideChildren);
+	config_set_int(currentconfig, "showthreefourplayeronly", ThreeOrFourPlayerOnly);
 
 	// gui load game dialog
-	ticpp::Element gamelist("gamelist-dlg");
-	gui.LinkEndChild(&gamelist);
-	setAttr(gamelist, "options", nLoadMenuShowX);
+	config_set_int(currentconfig, "nloadmenushowx", nLoadMenuShowX);
 
 	// gui ips
-	ticpp::Element ips("ips");
-	gui.LinkEndChild(&ips);
-	setAttr(ips, "language", nPatchLang);
-	setAttr(ips, "dependancy", bEnforceDep);
+	config_set_int(currentconfig, "language", nPatchLang);
+	config_set_int(currentconfig, "dependancy", bEnforceDep);
 
 	// preferences
-	ticpp::Element preference("preferences");
-	root.LinkEndChild(&preference);
-
-	ticpp::Element controls("controls");
-	preference.LinkEndChild(&controls);
 
 	for (int i = 0; i < 4; i++)
 	{
-		sprintf(tempStr, "default%d", i);
-		addTextNode(controls, tempStr, szPlayerDefaultIni[i]);
+		sprintf(tempStr, "controlsdefault%d", i);
+		config_set_string(currentconfig, tempStr, szPlayerDefaultIni[i]);
 	}
 
 	// paths
-	ticpp::Element paths("paths");
-	root.LinkEndChild(&paths);
 
-	ticpp::Element rom_path("rom");
-	paths.LinkEndChild(&rom_path);
-
-	for (int i = 0; i < DIRS_MAX; i++)
-		addTextNode(rom_path, "path", szAppRomPaths[i]);
-
-	ticpp::Element misc_path("misc");
-	paths.LinkEndChild(&misc_path);
+	//for (int i = 0; i < DIRS_MAX; i++)
+	//addTextNode(rom_path, "path", szAppRomPaths[i]);
+	config_set_string(currentconfig, "rompath", szAppRomPaths[0]);
 
 	for (int i = PATH_PREVIEW; i < PATH_SUM; i++)
 	{
 		sprintf(tempStr, "path%d", i);
-		addTextNode(misc_path, tempStr, szMiscPaths[i]);
+		config_set_string(currentconfig, tempStr, szMiscPaths[i]);
 	}
 
 	// save file
-	doc.SaveFile(configName, TIXML_ENCODING_UTF8);
+	config_file_write(currentconfig, SYS_CONFIG_FILE);
 
 	return 0;
 }

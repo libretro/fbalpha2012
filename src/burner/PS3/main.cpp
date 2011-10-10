@@ -14,6 +14,11 @@
 #ifdef CELL_DEBUG_CONSOLE
 #include <cell/control_console.h>
 #endif
+#include "config_file.h"
+
+#define init_setting_uint(charstring, setting, defaultvalue) \
+	if(!(config_get_uint(currentconfig, charstring, &setting))) \
+		setting = defaultvalue; 
 
 char	szAppBurnVer[16] = "";
 char	szSVNVer[16] = "";
@@ -21,6 +26,7 @@ char	szSVNDate[30] = "";
 bool	DoReset = false;
 int	ArcadeJoystick = 0;
 int	exitGame = 0;
+uint32_t bBurnFirstStartup;
 
 extern void reset_frame_counter();
  
@@ -47,8 +53,22 @@ void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 
 static int AppInit()
 {
-	if (nIniVersion < nBurnVer)
+	if(!fileExists(SYS_CONFIG_FILE))
+	{
+		FILE * f;
+		f = fopen(SYS_CONFIG_FILE, "w");
+		fclose(f);
+	}
+
+	config_file_t * currentconfig = config_file_new(SYS_CONFIG_FILE);
+
+	init_setting_uint("firststartup", bBurnFirstStartup, 1);
+	printf("AppInit: bBurnFirstStartup is: %d\n", bBurnFirstStartup);
+
+	if (bBurnFirstStartup)
 		configAppSaveXml();	// Create initial config file
+
+	configAppLoadXml();		// Load config for the application
 
 	BurnLibInit();			// Init the Burn library
 
@@ -111,13 +131,12 @@ int  main(int argc, char **argv)
 		sprintf(szSVNDate, "%s", SVN_DATE);
 	}
 
-	configAppLoadXml();		// Load config for the application
-
 	cell_pad_input_init();
 
 	createNeedDir();		// Make sure there are roms and cfg subdirectories
 
 	AppInit();
+
 
 	psglInitGL();
 	dbgFontInit();

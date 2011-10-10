@@ -7,7 +7,7 @@
 #include "../libs/ticpp/ticpp.h"
 
 // ==> write clrmamepro xml dat, added by regret
-#ifndef __LIBSNES__
+#ifdef TIXML_USE_TICPP
 int write_xmlfile(const char* szFilename, FILE* file)
 {
 		char str[128];
@@ -324,7 +324,6 @@ int write_xmlfile(const char* szFilename, FILE* file)
 
 // <== write clrmamepro xml dat
 
-#ifndef __LIBSNES__
 int write_datfile(FILE* file)
 {
 	int nRet = 0;
@@ -578,13 +577,13 @@ int write_datfile(FILE* file)
 
 	return 0;
 }
-#endif
 
-#ifndef __LIBSNES__
 int create_datfile(char* szFilename, int type)
 {
+	#ifdef TIXML_USE_TICPP
 	if (type == 1)
 		return write_xmlfile(szFilename, NULL);	// write clrmamepro xml dat
+	#endif
 
 	FILE* file = fopen(szFilename, "w");
 	if (!file)
@@ -610,4 +609,3 @@ int create_datfile(char* szFilename, int type)
 
 	return ret;
 }
-#endif

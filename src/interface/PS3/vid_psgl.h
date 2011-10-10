@@ -9,7 +9,6 @@
 
 extern void psglSetVSync(uint32_t enable);
 extern void psglInitGL(void);
-extern void psglInitGL_with_resolution(uint32_t resolutionId);
 extern void dbgFontInit(void);
 extern void psglResolutionPrevious(void);
 extern void psglResolutionNext(void);

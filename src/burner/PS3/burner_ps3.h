@@ -65,7 +65,7 @@ extern int custom_aspect_ratio_mode;
 
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
 #define DEFAULT_SHADER "/dev_hdd0/game/FBAN00000/USRDIR/shaders/stock.cg"
-
+#define SYS_CONFIG_FILE "/dev_hdd0/game/FBAN00000/USRDIR/fbanext-ps3.cfg"
 typedef std::basic_string<char> tstring;
 
 #ifndef MAX_PATH
@@ -95,6 +95,10 @@ extern int is_running;
 extern int nVidScrnAspectMode;
 extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
+
+// vid_psgl.cpp
+extern uint32_t currentAvailableResolutionId;
+extern uint32_t currentAvailableResolutionNo;
 
 typedef struct {
 int index;
@@ -147,6 +151,7 @@ int BurnerDrvExit();
 // run.cpp
 extern int nAppVirtualFps;			// virtual fps
 extern bool bShowFPS;
+extern uint32_t bBurnFirstStartup;
 
 void RunIdle();
 int RunMessageLoop(int argc, char ** argv);

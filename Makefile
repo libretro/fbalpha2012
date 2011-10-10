@@ -8,7 +8,7 @@ MKPKG_NPDRM             = $(CELL_HOST_PATH)/bin/make_package_npdrm
 STRIP                   = $(CELL_HOST_PATH)/ppu/bin/ppu-lv2-strip
 
 #Python binary - only useful for PSL1ght scripts
-PYTHONBIN		         = python2.7
+PYTHONBIN		= python2.7
 MKSELF                  = make_self_npdrm
 MKPKG_PSLIGHT           = buildtools/PS3Py/pkg.py
 PKG_FINALIZE	         = package_finalize
@@ -167,7 +167,7 @@ PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3sn
                                         \
                                         $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
                                         \
-                                        $(INTERFACE_DIR)/PS3/audio_driver.cpp $(INTERFACE_DIR)/PS3/input_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/PS3/vid_interface_ps3.cpp $(INTERFACE_DIR)/PS3/vid_support-ps3.cpp \
+                                        $(INTERFACE_DIR)/PS3/audio_driver.cpp $(INTERFACE_DIR)/PS3/input_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp $(INTERFACE_DIR)/PS3/vid_interface_ps3.cpp \
                                         \
                                         $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
                                         $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \

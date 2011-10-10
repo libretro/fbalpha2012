@@ -143,7 +143,7 @@ void createNeedDir()
 
 }
 
-bool directoryExists(const TCHAR* dirname)
+bool directoryExists(const char * dirname)
 {
 	return 1;
 }

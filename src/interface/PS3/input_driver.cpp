@@ -9,21 +9,6 @@
 
 bool bInputOkay = false;
 
-#define CinpState(nCode) CellinpState(nCode)
-
-int InputInit()
-{
-	bInputOkay = true;
-	return bInputOkay;
-}
-
-int InputExit()
-{
-	bInputOkay = false;
-
-	return bInputOkay;
-}
-
 static int CellinpState(int nCode)
 {
 	uint32_t numPadsConnected = 0;

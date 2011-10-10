@@ -1,14 +1,6 @@
 #ifndef VID_SUPPORT_H
 #define VID_SUPPORT_H
 
-extern int nGameWidth, nGameHeight;		// screen size
-extern int nRotateGame;
-
-void VidSFreeVidImage();
-int VidSAllocVidImage();
-
-void VidInitInfo();
-
 //for 16-bit 
 #define BPP_16_SCREEN_RENDER_TEXTURE_BITDEPTH 16
 #define BPP_16_SCREEN_RENDER_TEXTURE_BPP_SHIFT 1
@@ -35,7 +27,7 @@ void VidInitInfo();
 
 #define VidSCopyImage(dst) \
 	unsigned int pitch = nVidImageWidth * sizeof(unsigned int); \
-	uint8_t * ps = pVidImage + (nVidImageLeft << SCREEN_RENDER_TEXTURE_BPP_SHIFT); \
+	uint8_t * ps = pVidImage; \
 	int linesize = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \
 	uint16_t height = nVidImageHeight; \
 	do{ \

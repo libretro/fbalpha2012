@@ -67,4 +67,9 @@ extern int ArcadeJoystick;
 extern bool DoReset;
 extern int GameStatus;
 
+#define InputInit() (bInputOkay = true)
+#define InputExit() (bInputOkay = false)
+
+#define CinpState(nCode) CellinpState(nCode)
+
 #endif

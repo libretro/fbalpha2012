@@ -15,14 +15,12 @@ int nVidScrnAspectX = 4;			// Aspect ratio (X-axis)of the display screen
 int nVidScrnAspectY = 3;			// Aspect ratio (Y-axis) of the display screen
 int nVidScrnAspectMode = ASPECT_RATIO_4_3;
 float vidScrnAspect = ASPECT_RATIO_4_3;		// Aspect ratio
-unsigned char* pVidImage = NULL;		// Memory buffer
 int nVidImageWidth = DEFAULT_IMAGE_WIDTH;	// Memory buffer size
 int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
-int nVidImageLeft = 0, nVidImageTop = 0;	// Memory buffer visible area offsets
-int nVidImagePitch = 0;				// Memory buffer pitch
 bool bVidRecalcPalette;
 bool bVidFBOEnabled;				// FBO/Dual shader mode
 unsigned int bVidScalingFactor = 1;		// Scaling factor for use with FBO mode
+unsigned char* pVidImage = NULL;		// Memory buffer
 unsigned char* pVidTransImage = NULL;
 static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;
@@ -150,7 +148,7 @@ int VidFrame_Recalc()
 	unsigned char* pDest = pVidImage;
 
 	pBurnDraw = pVidTransImage;
-	nBurnPitch = nVidImageWidth << 1;
+	nBurnPitch = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT;
 	BurnDrvFrame();
 	psglRender();
 
@@ -165,7 +163,7 @@ int VidFrame_Recalc()
 
 		y++;
 		pSrc += nVidImageWidth;
-		pDest += nVidImagePitch;
+		pDest += nBurnPitch;
 	}while(y < nVidImageHeight);
 
 	return 0;
@@ -174,7 +172,7 @@ int VidFrame_Recalc()
 int VidFrame()
 {
 	pBurnDraw = pVidImage;
-	nBurnPitch = nVidImagePitch;
+	nBurnPitch = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT;
 	BurnDrvFrame();
 	psglRender();
 

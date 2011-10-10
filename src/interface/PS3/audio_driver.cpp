@@ -17,7 +17,6 @@ int16_t *	pAudNextSound = NULL;	// The next sound seg we will add to the sample 
 
 int audio_new(void)
 {
-	pAudNextSound = (int16_t*)memalign(128, AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS * sizeof(int16_t));
 	driver = &cell_audio_audioport;
 	audio_handle = NULL;
 
@@ -71,28 +70,4 @@ int audio_init(void)
 	bAudOkay = true;
 
 	return 0;
-}
-
-// Write silence into the buffer
-
-int audio_blank(void)
-{
-	if (pAudNextSound)
-	{
-		memset(pAudNextSound, 0, nAudAllocSegLen);
-		return 0;
-	}
-	else
-		return 1;
-}
-
-void audio_play(void)
-{
-	bAudPlaying = true;
-}
-
-int audio_stop(void)
-{
-	bAudPlaying = false;
-	return bAudOkay ? 0 : 1;
 }

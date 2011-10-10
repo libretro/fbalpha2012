@@ -12,7 +12,11 @@ static PSGLcontext* psgl_context = NULL;
 
 static GLuint gl_width = 0;
 static GLuint gl_height = 0;
-static int nImageWidth, nImageHeight;
+static int nImageWidth;
+static int nImageHeight;
+static int nGameWidth = 0;
+static int nGameHeight = 0;
+static int nRotateGame = 0;
 
 static CGcontext CgContext = NULL;
 static CGprogram VertexProgram = NULL;
@@ -95,6 +99,67 @@ static const GLfloat   tvertsVertical[] ={
 	1.0f, 1.0f, 
 	1.0f, 0.0f
 };
+
+static void VidSFreeVidImage()
+{
+	if (pVidImage)
+	{
+		free(pVidImage);
+		pVidImage = NULL;
+	}
+}
+
+static int VidSAllocVidImage()
+{
+	unsigned int pitch = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT;
+	unsigned int nMemLen = (nVidImageHeight + 4) * pitch;
+
+	VidSFreeVidImage();
+
+	pVidImage = (uint8_t*)memalign(128, nMemLen);
+
+	if (pVidImage)
+	{
+		memset(pVidImage, 0, nMemLen);
+		pVidImage += pitch;
+		return 0;
+	}
+	else
+	{
+		pVidImage = NULL;
+		return 1;
+	}
+}
+
+// init game info, added by regret
+void VidInitInfo()
+{
+	nGameWidth = nVidImageWidth;
+	nGameHeight = nVidImageHeight;
+	nRotateGame = 0;
+
+	if (bDrvOkay)
+	{
+		// Get the game screen size
+		BurnDrvGetVisibleSize(&nGameWidth, &nGameHeight);
+
+		if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+		{
+			if (nVidRotationAdjust & 1)
+			{
+				int n = nGameWidth;
+				nGameWidth = nGameHeight;
+				nGameHeight = n;
+				nRotateGame |= (nVidRotationAdjust & 2);
+			}
+			else
+				nRotateGame |= 1;
+		}
+
+		if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
+			nRotateGame ^= 2;
+	}
+}
 
 static void get_cg_params(void)
 {
@@ -414,7 +479,7 @@ void psglSetVSync(uint32_t enable)
 int _psglExit(void)
 {
 	glDeleteBuffers(1, &bufferID); 
-	VidSFreeVidImage();
+	pVidImage = NULL;
 	nRotateGame = 0;
 	return 0;
 }
@@ -628,7 +693,7 @@ void psglRenderAlpha(void)
 		}
 	}
 	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nVidImageWidth, nVidImageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 0);
+	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 1, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
 	set_cg_params();
 	glDrawArrays(GL_QUADS, 0, 4);
 }

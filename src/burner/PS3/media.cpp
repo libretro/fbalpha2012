@@ -3,6 +3,7 @@
 
 #include "burner.h"
 #include "../../interface/PS3/audio_driver.h"
+#include "../../interface/PS3/input_driver.h"
 
 //forward declarations
 int VidReinit(void);
@@ -18,12 +19,6 @@ int mediaInit(void)
 	if (!bAudOkay)
 	{
 		audio_init();		// Init Sound (not critical if it fails)
-
-		/*
-		if (!bAudOkay)		// Make sure the error will be visible
-		{
-		}
-		*/
 	}
 
 	// Assume no sound

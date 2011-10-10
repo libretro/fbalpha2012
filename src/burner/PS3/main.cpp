@@ -3,7 +3,11 @@
 
 // Main module
 
-#include "main.h"
+#include <string.h>
+#include <cell/sysmodule.h>
+#include <sysutil/sysutil_sysparam.h>
+#include <sysutil/sysutil_msgdialog.h>
+#include <sys/paths.h>
 #include "burner.h"
 #include "version.h"
 #include "menu.h"

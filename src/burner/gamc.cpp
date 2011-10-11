@@ -249,7 +249,7 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 		}
 		if (strncmp(szi, "mouse button", 12) == 0)
 		{
-			char* szb = szi + 13;
+			const char* szb = szi + 13;
 			int nButton = strtol(szb, NULL, 0);
 
 			if (nButton >= 1)
@@ -558,7 +558,7 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 
 	if (strncmp(szi, "fire ", 5) == 0)
 	{
-		char *szb = szi + 5;
+		const char *szb = szi + 5;
 		int nButton = strtol(szb, NULL, 0);
 
 		if (nButton >= 1)

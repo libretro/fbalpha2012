@@ -627,7 +627,7 @@ int ProgressUpdateBurner(double dProgress, const TCHAR* pszText, bool bAbs)
 
 }
 
-void UpdateConsole(char *text)
+void UpdateConsole(const char *text)
 {
 	wchar_t OutputText[255];
 

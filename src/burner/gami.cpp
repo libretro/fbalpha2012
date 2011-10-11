@@ -531,7 +531,7 @@ static void GameInpInitMacros()
 		}
 	}
 
-	if ((nPunchx3[0] == 7) && (nKickx3[0] == 7)) || (nFireButtons >= 5 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS2)
+	if (((nPunchx3[0] == 7) && (nKickx3[0] == 7)) || (nFireButtons >= 5 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS2))
 		bStreetFighterLayout = true;
 }
 #endif

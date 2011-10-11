@@ -119,7 +119,7 @@ struct BurnInputInfo {
 		unsigned char* pVal;			// Most inputs use a char*
 		unsigned short* pShortVal;		// All analog inputs use a short*
 	};
-	const char* szInfo;
+	char* szInfo;
 };
 
 // DIPs

@@ -64,13 +64,6 @@ unsigned int nComCount = 0;			// how many combos are built
 struct BurnInputInfo* DrvCombo = NULL;
 #endif
 
-// FBA Combo - extra players input hack
-#ifndef SN_TARGET_PS3
-bool bInputSwap = false;
-unsigned char kDropped = 0xFF;
-void (*BurnDrvInputSwap)() = NULL;
-#endif
-
 bool bBurnUseASM68K = false;
 static bool bBurnOldUseASM68K = false;
 extern void UpdateConsole(const char *text);

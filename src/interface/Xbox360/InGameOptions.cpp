@@ -662,7 +662,7 @@ HRESULT CDipList::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 	while (BurnDrvGetDIPInfo(&bdi, i) == 0) {
 		if ((bdi.nFlags & 0xF0) == 0xF0) {
 		   	if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD) {
-				pDIPGroup = bdi.szText;
+				pDIPGroup = (char*)bdi.szText;
 				k = i;
 			}
 			i++;
@@ -1671,7 +1671,7 @@ HRESULT CInputList::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 			bii.szName = "";
 		}
  
-		TCHAR* pszVal = InpToDesc(pgi);
+		const char * pszVal = InpToDesc(pgi);
 
 		m_InputList[m_InputListData[z].c_str()] = std::string(pszVal);
 

@@ -726,9 +726,11 @@ void ConfigMenu()
 	cellDbgFontDraw();
 
 	int number = 0;
+	#ifdef CELL_DEBUG_FPS
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_DISPLAY_FRAMERATE ? COLS : 0xFFFFFFFF, "Show Framerate : %s", bShowFPS ? "Yes" : "No" );     
 	cellDbgFontDraw();
 	number++;
+	#endif
 
 	switch(psglGetCurrentResolutionId())
 	{
@@ -915,12 +917,14 @@ void ConfigFrameMove()
 
 	switch(currentConfigIndex)
 	{
+		#ifdef CELL_DEBUG_FPS
 		case SETTING_DISPLAY_FRAMERATE:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
 				bShowFPS = !bShowFPS;
 			}
 			break;
+		#endif
 		case SETTING_RESOLUTION:
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
 			{
@@ -2390,9 +2394,8 @@ void InGameFrameMove()
 						is_running = 0;
 
 						nPrevGame = ~0U;			 
-						audio_stop();
-						BurnerDrvExit();				// Make sure any game driver is exited
-						mediaExit();					// Exit media
+						startup_rom(NULL);	// we don't need a return value back, it
+									// just needs to deinit stuff
 
 						GameStatus = MENU;	
 					}
@@ -2403,12 +2406,7 @@ void InGameFrameMove()
 		case INGAME_RETURN_TO_MULTIMAN:	
 			if(CTRL_CROSS(old_state & diff_state))
 			{
-				configAppSaveXml();
-				sys_spu_initialize(6, 0);
-				char multiMAN[512];
-				sprintf(multiMAN, "%s", MULTIMAN_SELF);
-				sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);		
-				sys_process_exit(0);
+				return_to_multiman();
 			}
 			break;
 #endif
@@ -2560,9 +2558,8 @@ void FrameMove()
 				nBurnDrvSelect = nPrevGame;
 
 				nPrevGame = ~0U;			 
-				audio_stop();
-				BurnerDrvExit();		// Make sure any game driver is exited
-				mediaExit();			// Exit media
+				startup_rom(NULL);		// we don't need a return value back, it
+								// just needs to deinit stuff
 			}
 		}
 	}
@@ -2655,21 +2652,19 @@ void FrameMove()
 					nBurnDrvSelect = nPrevGame;
 
 					nPrevGame = ~0U;			 
-					audio_stop();
-					BurnerDrvExit();	// Make sure any game driver is exited
-					mediaExit();		// Exit media
+					startup_rom(NULL);	// we don't need a return value back, it
+								// just needs to deinit stuff
 				}
 			}
 
 			nBurnFPS = 6000;			// Hardcoded FPS
 			nFMInterpolation = 0;			// FM Interpolation hardcoded to 0
 
-			if (directLoadGame(m_vecAvailRomIndex[entryselected].c_str()) == 0)
+			const char * rom = m_vecAvailRomIndex[entryselected].c_str();
+			int ret = startup_rom(rom);
+			if (ret == 0)
 			{
 				nPrevGame = m_vecAvailRomBurnDrvIndex[entryselected];
-
-				mediaInit();
-				audio_play();
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
 				nLastFilter = CurrentFilter;
@@ -2680,11 +2675,7 @@ void FrameMove()
 			else
 			{
 				nBurnDrvSelect = nPrevGame;
-
 				nPrevGame = ~0U;			 
-				audio_stop();
-				BurnerDrvExit();				// Make sure any game driver is exited
-				mediaExit();					// Exit media
 			}
 
 			nPrevGame = nBurnDrvSelect;

@@ -1,5 +1,6 @@
+#ifdef CELL_DEBUG_FPS
 #include <sys/sys_time.h>
-
+#endif
 #include "burner.h"
 #include "vid_support-ps3.h"
 #include "vid_psgl.h"
@@ -12,8 +13,6 @@ static PSGLcontext* psgl_context = NULL;
 
 static GLuint gl_width = 0;
 static GLuint gl_height = 0;
-static int nImageWidth;
-static int nImageHeight;
 static int nGameWidth = 0;
 static int nGameHeight = 0;
 static int nRotateGame = 0;
@@ -42,7 +41,7 @@ typedef struct dstResType
 	uint32_t resId;
 }; 
 
-struct dstResType availableResolutions[8]; 
+static struct dstResType availableResolutions[8]; 
 
 static const dstResType allResolutions[] = 
 {
@@ -57,7 +56,7 @@ static const dstResType allResolutions[] =
 };
 
 static int availableResolutionsCount = 0; 
-uint32_t currentAvailableResolutionNo;
+static uint32_t currentAvailableResolutionNo;
 uint32_t currentAvailableResolutionId;
 
 // forward declarations
@@ -438,6 +437,7 @@ void psglExitGL(void)
 
 }
 
+#ifdef CELL_DEBUG_FPS
 static void dbgFontPrintf(float x,float y, float scale,char* fmt,...)
 {
 	//build the output string
@@ -467,6 +467,7 @@ static void dbgFontPrintf(float x,float y, float scale,char* fmt,...)
    } \
 	dbgFontPrintf(40,40,0.75f,"%s %.5f FPS", "", fps );  \
    cellDbgFontDraw();
+#endif
 
 void psglSetVSync(uint32_t enable)
 {
@@ -577,8 +578,6 @@ int _psglInit(void)
 
 	psglSetVSync(bVidVSync);
 
-	nImageWidth = nImageHeight = 0;
-
 	return 0;
 }
 
@@ -593,17 +592,15 @@ void CalculateViewports(void)
 	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
 	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
 
-	if (nImageWidth != nNewImageWidth || nImageHeight != nNewImageHeight)
+	if (nVidImageWidth != nNewImageWidth || nVidImageHeight != nNewImageHeight)
 	{
-		nImageWidth  = nNewImageWidth;
-		nImageHeight = nNewImageHeight;
 		/* Set the size of the image on the PC screen */
 		int vpx, vpy, vpw, vph;
 		vpx = DEST_LEFT;
 		vpy = DEST_TOP;
 		vpw = DEST_RIGHT;
 		vph = DEST_BOTTOM;
-		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight);
+		setview(vpx, vpy, vpw, vph, nNewImageWidth, nNewImageHeight);
 	}
 	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
 	VidSCopyImage(texture);
@@ -624,10 +621,12 @@ void psglRender(void)
 
 	glDrawArrays(GL_QUADS, 0, 4);
 
+	#ifdef CELL_DEBUG_FPS
 	if (bShowFPS)
 	{
 		ShowFPS();
 	}
+	#endif
 
 	psglSwap();
 	cellSysutilCheckCallback();
@@ -643,10 +642,6 @@ void psglRenderPaused()
 
 void psglRenderStretch()			 
 {
-	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
-	nImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
-	nImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
-
 	// Set the size of the image on the PC screen
 	int vpx, vpy, vpw, vph;
 	vpx = DEST_LEFT;

@@ -206,7 +206,35 @@ static void* event_loop(void *data)
 	cellAudioCreateNotifyEventQueue(&id, &key);
 	cellAudioSetNotifyEventQueue(key);
 
-	if (port->re)
+	if (!port->re)
+	{
+		sys_event_t event;
+
+		int16_t *in_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t));
+		float *conv_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(float));
+		do
+		{
+			uint32_t has_read = CELL_AUDIO_BLOCK_SAMPLES_X2;
+			pthread_mutex_lock(&port->lock);
+			uint32_t avail = fifo_read_avail(port->buffer);
+			if (avail < CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t))
+				has_read = avail / sizeof(int16_t);
+
+			fifo_read(port->buffer, in_buf, has_read * sizeof(int16_t));
+			pthread_mutex_unlock(&port->lock);
+
+			if (has_read < CELL_AUDIO_BLOCK_SAMPLES_X2)
+				memset(in_buf + has_read, 0, (CELL_AUDIO_BLOCK_SAMPLES_X2 - has_read) * sizeof(int16_t));
+
+			resampler_s16_to_float(conv_buf, in_buf, CELL_AUDIO_BLOCK_SAMPLES_X2);
+			sys_event_queue_receive(id, &event, SYS_NO_TIMEOUT);
+			cellAudioAddData(port->audio_port, conv_buf, CELL_AUDIO_BLOCK_SAMPLES, 1.0);
+
+			pthread_cond_signal(&port->cond);
+		}while (!port->quit_thread);
+		free(conv_buf);
+	}
+	else
 	{
 		sys_event_t event;
 		port->re_buffer = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(float));
@@ -214,51 +242,17 @@ static void* event_loop(void *data)
 
 		float *res_buffer = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(float));
 
-		while (!port->quit_thread)
+		do
 		{
 			resampler_cb_read(port->re, CELL_AUDIO_BLOCK_SAMPLES, res_buffer);
 			sys_event_queue_receive(id, &event, SYS_NO_TIMEOUT);
 			cellAudioAddData(port->audio_port, res_buffer, CELL_AUDIO_BLOCK_SAMPLES, 1.0);
-		}
+		}while (!port->quit_thread);
 		free(res_buffer);
 		free(port->re_buffer);
 		free(port->re_pull_buffer);
 		port->re_buffer = NULL;
 		port->re_pull_buffer = NULL;
-	}
-	else
-	{
-		sys_event_t event;
-
-		int16_t *in_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t));
-		float *conv_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(float));
-		while (!port->quit_thread)
-		{
-			uint32_t has_read = 0;
-			if (port->sample_cb)
-				has_read = port->sample_cb(in_buf, CELL_AUDIO_BLOCK_SAMPLES_X2, port->userdata);
-			else
-			{
-				has_read = CELL_AUDIO_BLOCK_SAMPLES_X2;
-				pthread_mutex_lock(&port->lock);
-				uint32_t avail = fifo_read_avail(port->buffer);
-				if (avail < CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t))
-					has_read = avail / sizeof(int16_t);
-
-				fifo_read(port->buffer, in_buf, has_read * sizeof(int16_t));
-				pthread_mutex_unlock(&port->lock);
-			}
-
-			if (has_read < CELL_AUDIO_BLOCK_SAMPLES * port->channels)
-				memset(in_buf + has_read, 0, (CELL_AUDIO_BLOCK_SAMPLES * port->channels - has_read) * sizeof(int16_t));
-
-			resampler_s16_to_float(conv_buf, in_buf, CELL_AUDIO_BLOCK_SAMPLES * port->channels);
-			sys_event_queue_receive(id, &event, SYS_NO_TIMEOUT);
-			cellAudioAddData(port->audio_port, conv_buf, CELL_AUDIO_BLOCK_SAMPLES, 1.0);
-
-			pthread_cond_signal(&port->cond);
-		}
-		free(conv_buf);
 	}
 
 	cellAudioRemoveNotifyEventQueue(key);

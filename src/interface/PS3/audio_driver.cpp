@@ -8,8 +8,8 @@ extern cell_audio_handle_t audio_handle;
 extern const struct cell_audio_driver *	driver;
 
 int		nAudSampleRate = 48010;	// Sample rate
-int		nAudSegCount = 6;	// Segments in the pdsbLoop buffer
 int		nAudSegLen = 0;		// Segment length in samples (calculated from Rate/Fps)
+int		nAudSize = 0;		
 int		nAudAllocSegLen = 0;	// Allocated segment length in samples
 bool		bAudOkay = false;	// True if sound was inited okay
 bool		bAudPlaying = false;
@@ -38,8 +38,9 @@ int audio_exit()
 
 int audio_init(void)
 {
-	nAudSegLen = AUDIO_SEGMENT_LENGTH;
-	nAudAllocSegLen = 12800;
+	nAudSegLen = (nAudSampleRate * 100 + (nAppVirtualFps >> 1)) / nAppVirtualFps;
+	nAudAllocSegLen = nAudSegLen << 2;
+	nAudSize = nAudSegLen << 1;  
 
 	cell_audio_params params;
 	memset(&params, 0, sizeof(params));

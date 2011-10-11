@@ -53,6 +53,7 @@ int mediaExit(void)
 	return 0;
 }
 
+#if 0
 int mediaReInitAudio(void)
 {
 	if (bAudPlaying)
@@ -74,6 +75,7 @@ int mediaReInitAudio(void)
 
 	return 0;
 }
+#endif
 
 int mediaChangeFps(int scale)		// change FPS
 {

@@ -1,3 +1,4 @@
+#include "burnint.h"
 #include "burner.h"
 #include "highcol.h"
 #include "vid_support-ps3.h"
@@ -29,6 +30,8 @@ int nXOffset = 0;
 int nYOffset = 0;
 int nXScale = 0;
 int nYScale = 0;
+
+extern struct BurnDriver * pDriver[];
 
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 
@@ -150,7 +153,7 @@ int VidFrame_Recalc()
 
 	pBurnDraw = pVidTransImage;
 	nBurnPitch = nVidImageWidth << 1;
-	BurnDrvFrame();
+	pDriver[nBurnDrvSelect]->Frame();
 	psglRender();
 
 	int y = 0;
@@ -174,7 +177,7 @@ int VidFrame()
 {
 	pBurnDraw = pVidImage;
 	nBurnPitch = nVidImagePitch;
-	BurnDrvFrame();
+	pDriver[nBurnDrvSelect]->Frame();
 	psglRender();
 
 	return 0;

@@ -5799,7 +5799,11 @@ DRV		BurnDrvzzyzzyxx2;
 
 // Structure containing addresses of all drivers
 // Needs to be kept sorted (using the full game name as the key) to prevent problems with the gamelist in Kaillera
+#ifdef SN_TARGET_PS3
+struct BurnDriver* pDriver[] = {
+#else
 static struct BurnDriver* pDriver[] = {
+#endif
 #if defined FBA_DEBUG
 	&BurnDrvEightballact,		// "8ballact" [Seatongrove Ltd (Magic Eletronics USA licence), NOT WORKING]
 #endif

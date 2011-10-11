@@ -15,8 +15,11 @@ char szPlayerDefaultIni[4][MAX_PATH] = { "", "", "", ""};
 // Mapping of PC inputs to game inputs
 struct GameInp* GameInp = NULL;
 unsigned int nGameInpCount = 0;
+#ifndef NO_MACROS
 unsigned int nMacroCount = 0;
 unsigned int nMaxMacro = 0;
+const int nMaxMacroPerPlayer = 10;
+#endif
 
 int nAnalogSpeed;
 
@@ -24,8 +27,6 @@ int nFireButtons = 0;
 
 bool bStreetFighterLayout = false;
 bool bLeftAltkeyMapped = false;
-
-const int nMaxMacroPerPlayer = 10;
 
 extern int ArcadeJoystick;
 
@@ -150,18 +151,21 @@ int GameInpBlank(int bDipSwitch)
 		}
 	}
 
+	#ifndef NO_MACROS
 	for (i = 0; i < nMacroCount; i++, pgi++)
 	{
 		pgi->Macro.nMode = 0;
 		if (pgi->nInput == GIT_MACRO_CUSTOM)
 			pgi->nInput = 0;
 	}
+	#endif
 
 	bLeftAltkeyMapped = false;
 
 	return 0;
 }
 
+#ifndef NO_MACROS
 static void GameInpInitMacros()
 {
 	struct GameInp* pgi;
@@ -527,30 +531,34 @@ static void GameInpInitMacros()
 		}
 	}
 
-	if ((nPunchx3[0] == 7) && (nKickx3[0] == 7)) {
+	if ((nPunchx3[0] == 7) && (nKickx3[0] == 7)) || (nFireButtons >= 5 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS2)
 		bStreetFighterLayout = true;
-	}
-	if (nFireButtons >= 5 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS2) {
-		bStreetFighterLayout = true;
-	}
 }
+#endif
 
 int GameInpInit()
 {
 	// Count the number of inputs
 	nGameInpCount = 0;
+	#ifndef NO_MACROS
 	nMacroCount = 0;
 	nMaxMacro = nMaxPlayers * nMaxMacroPerPlayer;
+	#endif
 
-	for (unsigned int i = 0; i < 0x1000; i++) {
-		if (BurnDrvGetInputInfo(NULL, i)) {			// end of input list
+	for (unsigned int i = 0; i < 0x1000; i++)
+	{
+		if (BurnDrvGetInputInfo(NULL, i)){			// end of input list
 			nGameInpCount = i;
 			break;
 		}
 	}
 
 	// Allocate space for all the inputs
+	#ifndef NO_MACROS
 	int nSize = (nGameInpCount + nMaxMacro) * sizeof(struct GameInp);
+	#else
+	int nSize = (nGameInpCount) * sizeof(struct GameInp);
+	#endif
 	GameInp = (struct GameInp*)malloc(nSize);
 	if (GameInp == NULL)
 		return 1;
@@ -561,7 +569,9 @@ int GameInpInit()
 
 	InpDIPSWResetDIPs();
 
+	#ifndef NO_MACROS
 	GameInpInitMacros();
+	#endif
 
 	nAnalogSpeed = 0x0100;
 
@@ -574,7 +584,9 @@ int GameInpExit()
 	GameInp = NULL;
 
 	nGameInpCount = 0;
+	#ifndef NO_MACROS
 	nMacroCount = 0;
+	#endif
 
 	nFireButtons = 0;
 
@@ -649,6 +661,7 @@ static int StringToMouseAxis(struct GameInp* pgi, char* s)
 	return 0;
 }
 
+#ifndef NO_MACROS
 static int StringToMacro(struct GameInp* pgi, char* s)
 {
 	char* szRet = labelCheck(s, "switch");
@@ -663,10 +676,11 @@ static int StringToMacro(struct GameInp* pgi, char* s)
 
 	return 1;
 }
+#endif
 
 static int StringToInp(struct GameInp* pgi, char* s)
 {
-	SKIP_WS(s);											// skip whitespace
+	SKIP_WS(s);	// skip whitespace
 	char* szRet = labelCheck(s, "undefined");
 	if (szRet) {
 		pgi->nInput = 0;
@@ -748,8 +762,8 @@ static int StringToInp(struct GameInp* pgi, char* s)
 	{
 		s = szRet;
 		pgi->nInput = GIT_JOYSLIDER;
-		pgi->Input.Slider.JoyAxis.nJoy = 0;				// defaults
-		pgi->Input.Slider.JoyAxis.nAxis = 0;			//
+		pgi->Input.Slider.JoyAxis.nJoy = 0;	// defaults
+		pgi->Input.Slider.JoyAxis.nAxis = 0;
 
 		pgi->Input.Slider.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
 		s = szRet;
@@ -763,7 +777,7 @@ static int StringToInp(struct GameInp* pgi, char* s)
 		if (s == NULL)
 			return 1;
 
-		szRet = SliderInfo(pgi, s);						// Get remaining slider info
+		szRet = SliderInfo(pgi, s); // Get remaining slider info
 		s = szRet;
 
 		if (s == NULL)
@@ -782,46 +796,44 @@ static char* InpToString(struct GameInp* pgi)
 {
 	static char szString[80];
 
-	if (pgi->nInput == 0)
-		return "undefined";
-
-	if (pgi->nInput == GIT_CONSTANT)
+	switch(pgi->nInput)
 	{
-		sprintf(szString, "constant 0x%.2X", pgi->Input.Constant);
-		return szString;
-	}
-	if (pgi->nInput == GIT_SWITCH) {
-		sprintf(szString, "switch 0x%.2X", pgi->Input.Switch);
-		return szString;
-	}
-	if (pgi->nInput == GIT_KEYSLIDER) {
-		sprintf(szString, "slider 0x%.2x 0x%.2x speed 0x%x center %d", pgi->Input.Slider.SliderAxis[0], pgi->Input.Slider.SliderAxis[1], pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
-		return szString;
-	}
-	if (pgi->nInput == GIT_JOYSLIDER) {
-		sprintf(szString, "joyslider %d %d speed 0x%x center %d", pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis, pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
-		return szString;
-	}
-	if (pgi->nInput == GIT_MOUSEAXIS) {
-		sprintf(szString, "mouseaxis %d", pgi->Input.MouseAxis.nAxis);
-		return szString;
-	}
-	if (pgi->nInput == GIT_JOYAXIS_FULL) {
-		sprintf(szString, "joyaxis %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
-		return szString;
-	}
-	if (pgi->nInput == GIT_JOYAXIS_NEG) {
-		sprintf(szString, "joyaxis-neg %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
-		return szString;
-	}
-	if (pgi->nInput == GIT_JOYAXIS_POS) {
-		sprintf(szString, "joyaxis-pos %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
-		return szString;
+		case 0:
+			sprintf(szString, "undefined");
+			break;
+		case GIT_CONSTANT:
+			sprintf(szString, "constant 0x%.2X", pgi->Input.Constant);
+			break;
+		case GIT_SWITCH:
+			sprintf(szString, "switch 0x%.2X", pgi->Input.Switch);
+			break;
+		case GIT_KEYSLIDER:
+			sprintf(szString, "slider 0x%.2x 0x%.2x speed 0x%x center %d", pgi->Input.Slider.SliderAxis[0], pgi->Input.Slider.SliderAxis[1], pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
+			break;
+		case GIT_JOYSLIDER:
+			sprintf(szString, "joyslider %d %d speed 0x%x center %d", pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis, pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
+			break;
+		case GIT_MOUSEAXIS:
+			sprintf(szString, "mouseaxis %d", pgi->Input.MouseAxis.nAxis);
+			break;
+		case GIT_JOYAXIS_FULL:
+			sprintf(szString, "joyaxis %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+			break;
+		case GIT_JOYAXIS_NEG:
+			sprintf(szString, "joyaxis-neg %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+			break;
+		case GIT_JOYAXIS_POS:
+			sprintf(szString, "joyaxis-pos %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
+			break;
+		default:
+			sprintf(szString, "unknown");
+			break;
 	}
 
-	return "unknown";
+	return szString;
 }
 
+#ifndef NO_MACROS
 static char* InpMacroToString(struct GameInp* pgi)
 {
 	static char szString[MAX_PATH];
@@ -858,150 +870,154 @@ static char* InpMacroToString(struct GameInp* pgi)
 
 	return "undefined";
 }
+#endif
 
 // ---------------------------------------------------------------------------
 // Generate a user-friendly name for a control (PC-side)
 
-static struct { int nCode; const char* szName; } KeyNames[] = {
-
 #define FBK_DEFNAME(k) k, _T(#k)
 
-	{ FBK_ESCAPE,				_T("ESCAPE") },
-	{ FBK_1,					_T("Start Button") },
-	{ FBK_2,					_T("Start Button") },
-	{ FBK_3,					_T("Start Button") },
-	{ FBK_4,					_T("Start Button") },
+static struct
+{
+	int nCode;
+	const char* szName;
+} KeyNames[] = {
+	{ FBK_ESCAPE,				"ESCAPE" },
+	{ FBK_1,				"Start Button" },
+	{ FBK_2,				"Start Button" },
+	{ FBK_3,				"Start Button" },
+	{ FBK_4,				"Start Button" },
 #if defined (_XBOX)
-	{ FBK_5,					_T("Back Button") },
-	{ FBK_6,					_T("Back Button") },
-	{ FBK_7,					_T("Back Button") },
-	{ FBK_8,					_T("Back Button") },
+	{ FBK_5,				"Back Button" },
+	{ FBK_6,				"Back Button" },
+	{ FBK_7,				"Back Button" },
+	{ FBK_8,				"Back Button" },
 #else
-	{ FBK_5,					_T("Select Button") },
-	{ FBK_6,					_T("Select Button") },
-	{ FBK_7,					_T("Select Button") },
-	{ FBK_8,					_T("Select Button") },
+	{ FBK_5,				"Select Button" },
+	{ FBK_6,				"Select Button" },
+	{ FBK_7,				"Select Button" },
+	{ FBK_8,				"Select Button" },
 #endif
 #if defined (_XBOX)
-	{ FBK_9,					_T("Left Thumb") },
+	{ FBK_9,				"Left Thumb" },
 #else
-	{ FBK_9,					_T("L3 Button") },
+	{ FBK_9,				"L3 Button" },
 #endif
-	{ FBK_0,					_T("0") },
-	{ FBK_MINUS,				_T("MINUS") },
-	{ FBK_EQUALS,				_T("EQUALS") },
-	{ FBK_BACK,					_T("BACKSPACE") },
-	{ FBK_TAB,					_T("TAB") },
-	{ FBK_Q,					_T("Q") },
-	{ FBK_W,					_T("W") },
-	{ FBK_E,					_T("E") },
-	{ FBK_R,					_T("R") },
-	{ FBK_T,					_T("T") },
-	{ FBK_Y,					_T("Y") },
-	{ FBK_U,					_T("U") },
-	{ FBK_I,					_T("I") },
-	{ FBK_O,					_T("O") },
-	{ FBK_P,					_T("P") },
-	{ FBK_LBRACKET,				_T("OPENING BRACKET") },
-	{ FBK_RBRACKET,				_T("CLOSING BRACKET") },
-	{ FBK_RETURN,				_T("ENTER") },
-	{ FBK_LCONTROL,				_T("LEFT CONTROL") },
-	{ FBK_A,					_T("Y Button") },
+	{ FBK_0,				"0" },
+	{ FBK_MINUS,				"MINUS" },
+	{ FBK_EQUALS,				"EQUALS" },
+	{ FBK_BACK,				"BACKSPACE" },
+	{ FBK_TAB,				"TAB" },
+	{ FBK_Q,				"Q" },
+	{ FBK_W,				"W" },
+	{ FBK_E,				"E" },
+	{ FBK_R,				"R" },
+	{ FBK_T,				"T" },
+	{ FBK_Y,				"Y" },
+	{ FBK_U,				"U" },
+	{ FBK_I,				"I" },
+	{ FBK_O,				"O" },
+	{ FBK_P,				"P" },
+	{ FBK_LBRACKET,				"OPENING BRACKET" },
+	{ FBK_RBRACKET,				"CLOSING BRACKET" },
+	{ FBK_RETURN,				"ENTER" },
+	{ FBK_LCONTROL,				"LEFT CONTROL" },
+	{ FBK_A,				"Y Button" },
 #if defined (_XBOX)
-	{ FBK_S,					_T("Left Shoulder") },
-	{ FBK_D,					_T("Right Shoulder") },
+	{ FBK_S,				"Left Shoulder" },
+	{ FBK_D,				"Right Shoulder" },
 #else
-	{ FBK_S,					_T("L1 Button") },
-	{ FBK_D,					_T("R1 Button") },
+	{ FBK_S,				"L1 Button" },
+	{ FBK_D,				"R1 Button" },
 #endif
-	{ FBK_F,					_T("F") },
-	{ FBK_G,					_T("G") },
-	{ FBK_H,					_T("H") },
-	{ FBK_J,					_T("J") },
-	{ FBK_K,					_T("K") },
-	{ FBK_L,					_T("L") },
-	{ FBK_SEMICOLON,			_T("SEMICOLON") },
-	{ FBK_APOSTROPHE,			_T("APOSTROPHE") },
-	{ FBK_GRAVE,				_T("ACCENT GRAVE") },
-	{ FBK_LSHIFT,				_T("LEFT SHIFT") },
-	{ FBK_BACKSLASH,			_T("BACKSLASH") },
+	{ FBK_F,				"F" },
+	{ FBK_G,				"G" },
+	{ FBK_H,				"H" },
+	{ FBK_J,				"J" },
+	{ FBK_K,				"K" },
+	{ FBK_L,				"L" },
+	{ FBK_SEMICOLON,			"SEMICOLON" },
+	{ FBK_APOSTROPHE,			"APOSTROPHE" },
+	{ FBK_GRAVE,				"ACCENT GRAVE" },
+	{ FBK_LSHIFT,				"LEFT SHIFT" },
+	{ FBK_BACKSLASH,			"BACKSLASH" },
 #if defined (_XBOX)
-	{ FBK_Z,					_T("A Button") },
-	{ FBK_X,					_T("B Button") },
-	{ FBK_C,					_T("X Button") },
-	{ FBK_V,					_T("Y Button") },
+	{ FBK_Z,				"A Button" },
+	{ FBK_X,				"B Button" },
+	{ FBK_C,				"X Button" },
+	{ FBK_V,				"Y Button" },
 #else
-	{ FBK_Z,					_T("Cross Button") },
-	{ FBK_X,					_T("Circle Button") },
-	{ FBK_C,					_T("Square Button") },
-	{ FBK_V,					_T("Triangle Button") },
+	{ FBK_Z,				"Cross Button" },
+	{ FBK_X,				"Circle Button" },
+	{ FBK_C,				"Square Button" },
+	{ FBK_V,				"Triangle Button" },
 #endif
-	{ FBK_B,					_T("B") },
-	{ FBK_N,					_T("N") },
-	{ FBK_M,					_T("M") },
-	{ FBK_COMMA,				_T("COMMA") },
-	{ FBK_PERIOD,				_T("PERIOD") },
-	{ FBK_SLASH,				_T("SLASH") },
-	{ FBK_RSHIFT,				_T("RIGHT SHIFT") },
-	{ FBK_MULTIPLY,				_T("NUMPAD MULTIPLY") },
-	{ FBK_LALT,					_T("LEFT MENU") },
-	{ FBK_SPACE,				_T("SPACE") },
-	{ FBK_CAPITAL,				_T("CAPSLOCK") },
+	{ FBK_B,				"B" },
+	{ FBK_N,				"N" },
+	{ FBK_M,				"M" },
+	{ FBK_COMMA,				"COMMA" },
+	{ FBK_PERIOD,				"PERIOD" },
+	{ FBK_SLASH,				"SLASH" },
+	{ FBK_RSHIFT,				"RIGHT SHIFT" },
+	{ FBK_MULTIPLY,				"NUMPAD MULTIPLY" },
+	{ FBK_LALT,				"LEFT MENU" },
+	{ FBK_SPACE,				"SPACE" },
+	{ FBK_CAPITAL,				"CAPSLOCK" },
 #if defined (_XBOX)
-	{ FBK_F1,					_T("Left Thumb") },
-	{ FBK_F2,					_T("Right Thumb") },
-	{ FBK_F3,					_T("Right Thumb") },
+	{ FBK_F1,				"Left Thumb" },
+	{ FBK_F2,				"Right Thumb" },
+	{ FBK_F3,				"Right Thumb" },
 #else
-	{ FBK_F1,					_T("L3 Button") },
-	{ FBK_F2,					_T("R3 Button") },
-	{ FBK_F3,					_T("R3 Button") },
+	{ FBK_F1,				"L3 Button" },
+	{ FBK_F2,				"R3 Button" },
+	{ FBK_F3,				"R3 Button" },
 #endif
-	{ FBK_F4,					_T("F4") },
-	{ FBK_F5,					_T("F5") },
-	{ FBK_F6,					_T("F6") },
-	{ FBK_F7,					_T("F7") },
-	{ FBK_F8,					_T("F8") },
-	{ FBK_F9,					_T("F9") },
-	{ FBK_F10,					_T("F10") },
-	{ FBK_NUMLOCK,				_T("NUMLOCK") },
-	{ FBK_SCROLL,				_T("SCROLLLOCK") },
-	{ FBK_NUMPAD7,				_T("NUMPAD 7") },
-	{ FBK_NUMPAD8,				_T("NUMPAD 8") },
-	{ FBK_NUMPAD9,				_T("NUMPAD 9") },
-	{ FBK_SUBTRACT,				_T("NUMPAD SUBTRACT") },
-	{ FBK_NUMPAD4,				_T("NUMPAD 4") },
-	{ FBK_NUMPAD5,				_T("NUMPAD 5") },
-	{ FBK_NUMPAD6,				_T("NUMPAD 6") },
-	{ FBK_ADD,					_T("NUMPAD ADD") },
-	{ FBK_NUMPAD1,				_T("NUMPAD 1") },
-	{ FBK_NUMPAD2,				_T("NUMPAD 2") },
-	{ FBK_NUMPAD3,				_T("NUMPAD 3") },
-	{ FBK_NUMPAD0,				_T("NUMPAD 0") },
-	{ FBK_DECIMAL,				_T("NUMPAD DECIMAL POINT") },
+	{ FBK_F4,				"F4" },
+	{ FBK_F5,				"F5" },
+	{ FBK_F6,				"F6" },
+	{ FBK_F7,				"F7" },
+	{ FBK_F8,				"F8" },
+	{ FBK_F9,				"F9" },
+	{ FBK_F10,				"F10" },
+	{ FBK_NUMLOCK,				"NUMLOCK" },
+	{ FBK_SCROLL,				"SCROLLLOCK" },
+	{ FBK_NUMPAD7,				"NUMPAD 7" },
+	{ FBK_NUMPAD8,				"NUMPAD 8" },
+	{ FBK_NUMPAD9,				"NUMPAD 9" },
+	{ FBK_SUBTRACT,				"NUMPAD SUBTRACT" },
+	{ FBK_NUMPAD4,				"NUMPAD 4" },
+	{ FBK_NUMPAD5,				"NUMPAD 5" },
+	{ FBK_NUMPAD6,				"NUMPAD 6" },
+	{ FBK_ADD,				"NUMPAD ADD" },
+	{ FBK_NUMPAD1,				"NUMPAD 1" },
+	{ FBK_NUMPAD2,				"NUMPAD 2" },
+	{ FBK_NUMPAD3,				"NUMPAD 3" },
+	{ FBK_NUMPAD0,				"NUMPAD 0" },
+	{ FBK_DECIMAL,				"NUMPAD DECIMAL POINT" },
 	{ FBK_DEFNAME(FBK_OEM_102) },
-	{ FBK_F11,					_T("F11") },
-	{ FBK_F12,					_T("F12") },
-	{ FBK_F13,					_T("F13") },
-	{ FBK_F14,					_T("F14") },
-	{ FBK_F15,					_T("F15") },
+	{ FBK_F11,				"F11" },
+	{ FBK_F12,				"F12" },
+	{ FBK_F13,				"F13" },
+	{ FBK_F14,				"F14" },
+	{ FBK_F15,				"F15" },
 	{ FBK_DEFNAME(FBK_KANA) },
 	{ FBK_DEFNAME(FBK_ABNT_C1) },
 	{ FBK_DEFNAME(FBK_CONVERT) },
 	{ FBK_DEFNAME(FBK_NOCONVERT) },
 	{ FBK_DEFNAME(FBK_YEN) },
 	{ FBK_DEFNAME(FBK_ABNT_C2) },
-	{ FBK_NUMPADEQUALS,			_T("NUMPAD EQUALS") },
+	{ FBK_NUMPADEQUALS,			"NUMPAD EQUALS" },
 	{ FBK_DEFNAME(FBK_PREVTRACK) },
 	{ FBK_DEFNAME(FBK_AT) },
-	{ FBK_COLON,				_T("COLON") },
-	{ FBK_UNDERLINE,			_T("UNDERSCORE") },
+	{ FBK_COLON,				"COLON" },
+	{ FBK_UNDERLINE,			"UNDERSCORE" },
 	{ FBK_DEFNAME(FBK_KANJI) },
 	{ FBK_DEFNAME(FBK_STOP) },
 	{ FBK_DEFNAME(FBK_AX) },
 	{ FBK_DEFNAME(FBK_UNLABELED) },
 	{ FBK_DEFNAME(FBK_NEXTTRACK) },
-	{ FBK_NUMPADENTER,			_T("NUMPAD ENTER") },
-	{ FBK_RCONTROL,				_T("RIGHT CONTROL") },
+	{ FBK_NUMPADENTER,			"NUMPAD ENTER" },
+	{ FBK_RCONTROL,				"RIGHT CONTROL" },
 	{ FBK_DEFNAME(FBK_MUTE) },
 	{ FBK_DEFNAME(FBK_CALCULATOR) },
 	{ FBK_DEFNAME(FBK_PLAYPAUSE) },
@@ -1010,22 +1026,22 @@ static struct { int nCode; const char* szName; } KeyNames[] = {
 	{ FBK_DEFNAME(FBK_VOLUMEUP) },
 	{ FBK_DEFNAME(FBK_WEBHOME) },
 	{ FBK_DEFNAME(FBK_NUMPADCOMMA) },
-	{ FBK_DIVIDE,				_T("NUMPAD DIVIDE") },
-	{ FBK_SYSRQ,				_T("PRINTSCREEN") },
-	{ FBK_RALT,					_T("RIGHT MENU") },
-	{ FBK_PAUSE,				_T("PAUSE") },
-	{ FBK_HOME,					_T("HOME") },
-	{ FBK_UPARROW,				_T("ARROW UP") },
-	{ FBK_PRIOR,				_T("PAGE UP") },
-	{ FBK_LEFTARROW,			_T("ARROW LEFT") },
-	{ FBK_RIGHTARROW,			_T("ARROW RIGHT") },
-	{ FBK_END,					_T("END") },
-	{ FBK_DOWNARROW,			_T("ARROW DOWN") },
-	{ FBK_NEXT,					_T("PAGE DOWN") },
-	{ FBK_INSERT,				_T("INSERT") },
-	{ FBK_DELETE,				_T("DELETE") },
-	{ FBK_LWIN,					_T("LEFT WINDOWS") },
-	{ FBK_RWIN,					_T("RIGHT WINDOWS") },
+	{ FBK_DIVIDE,				"NUMPAD DIVIDE" },
+	{ FBK_SYSRQ,				"PRINTSCREEN" },
+	{ FBK_RALT,				"RIGHT MENU" },
+	{ FBK_PAUSE,				"PAUSE" },
+	{ FBK_HOME,				"HOME" },
+	{ FBK_UPARROW,				"ARROW UP" },
+	{ FBK_PRIOR,				"PAGE UP" },
+	{ FBK_LEFTARROW,			"ARROW LEFT" },
+	{ FBK_RIGHTARROW,			"ARROW RIGHT" },
+	{ FBK_END,				"END" },
+	{ FBK_DOWNARROW,			"ARROW DOWN" },
+	{ FBK_NEXT,				"PAGE DOWN" },
+	{ FBK_INSERT,				"INSERT" },
+	{ FBK_DELETE,				"DELETE"},
+	{ FBK_LWIN,				"LEFT WINDOWS" },
+	{ FBK_RWIN,				"RIGHT WINDOWS" },
 	{ FBK_DEFNAME(FBK_APPS) },
 	{ FBK_DEFNAME(FBK_POWER) },
 	{ FBK_DEFNAME(FBK_SLEEP) },
@@ -1040,16 +1056,14 @@ static struct { int nCode; const char* szName; } KeyNames[] = {
 	{ FBK_DEFNAME(FBK_MAIL) },
 	{ FBK_DEFNAME(FBK_MEDIASELECT) },
 #if defined (_XBOX)
-	{ 0x88,						_T("Left Trigger") },
-	{ 0x8A,						_T("Right Trigger") },
+	{ 0x88,					"Left Trigger" },
+	{ 0x8A,					"Right Trigger" },
 #else
-	{ 0x88,						_T("L2 Button") },
-	{ 0x8A,						_T("R2 Button") },
+	{ 0x88,					"L2 Button" },
+	{ 0x8A,					"R2 Button" },
 #endif
-
 #undef FBK_DEFNAME
-
-	{ 0,				NULL }
+	{ 0,					NULL }
 };
 
 char* InputCodeDesc(int c)
@@ -1069,12 +1083,12 @@ char* InputCodeDesc(int c)
 		}
 		if (nCode < 0x06)
 		{
-			char szAxis[3][3] = { _T("X"), _T("Y"), _T("Z") };
-			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
+			char szAxis[3][3] = { "X", "Y", "Z" };
+			char szDir[6][16] = { "negative", "positive", "Left", "Right", "Up", "Down" };
 			if (nCode < 4)
-				sprintf(szString, _T("Mouse %d %s (%s %s)"), nMouse, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, "Mouse %d %s (%s %s)", nMouse, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
 			else
-				sprintf(szString, _T("Mouse %d %s %s"), nMouse, szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, "Mouse %d %s %s", nMouse, szAxis[nCode >> 1], szDir[nCode & 1]);
 			return szString;
 		}
 	}
@@ -1093,32 +1107,32 @@ char* InputCodeDesc(int c)
 				case 0x4080:
 				case 0x4180:
 				case 0x4280:
-					sprintf(szString, _T("A Button"));
+					sprintf(szString, "A Button");
 					break;
 				case 0x4081:
 				case 0x4181:
 				case 0x4281:
-					sprintf(szString, _T("B Button"));
+					sprintf(szString, "B Button");
 					break;
 				case 0x4082:
 				case 0x4182:
 				case 0x4282:
-					sprintf(szString, _T("X Button"));
+					sprintf(szString, "X Button");
 					break;
 				case 0x4083:
 				case 0x4183:
 				case 0x4283:
-					sprintf(szString, _T("Y Button"));
+					sprintf(szString, "Y Button");
 					break;
 				case 0x4084:
 				case 0x4184:
 				case 0x4284:
-					sprintf(szString, _T("Left Shoulder"));
+					sprintf(szString, "Left Shoulder");
 					break;
 				case 0x4085:
 				case 0x4185:
 				case 0x4285:
-					sprintf(szString, _T("Right Shoulder"));
+					sprintf(szString, "Right Shoulder");
 					break;
 
 			}
@@ -1129,75 +1143,74 @@ char* InputCodeDesc(int c)
 				case 0x4080:
 				case 0x4180:
 				case 0x4280:
-					sprintf(szString, _T("Cross Button"));
+					sprintf(szString, "Cross Button");
 					break;
 				case 0x4081:
 				case 0x4181:
 				case 0x4281:
-					sprintf(szString, _T("Circle Button"));
+					sprintf(szString, "Circle Button");
 					break;
 				case 0x4082:
 				case 0x4182:
 				case 0x4282:
-					sprintf(szString, _T("Square Button"));
+					sprintf(szString, "Square Button");
 					break;
 				case 0x4083:
 				case 0x4183:
 				case 0x4283:
-					sprintf(szString, _T("Triangle Button"));
+					sprintf(szString, "Triangle Button");
 					break;
 				case 0x4084:
 				case 0x4184:
 				case 0x4284:
-					sprintf(szString, _T("L1 Button"));
+					sprintf(szString, "L1 Button");
 					break;
 				case 0x4085:
 				case 0x4185:
 				case 0x4285:
-					sprintf(szString, _T("R1 Button"));
+					sprintf(szString, "R1 Button");
 					break;
-					// forgot these
 				case 0x4088:
 				case 0x4188:
 				case 0x4288:
-					sprintf(szString, _T("L2 Button"));
+					sprintf(szString, "L2 Button");
 					break;
 				case 0x408A:
 				case 0x418A:
 				case 0x428A:
-					sprintf(szString, _T("R2 Button"));
+					sprintf(szString, "R2 Button");
 					break;
 				case 0x408B:
 				case 0x418B:
 				case 0x428B:
-					sprintf(szString, _T("L3 Button"));
+					sprintf(szString, "L3 Button");
 					break;
 				case 0x408C:
 				case 0x418C:
 				case 0x428C:
-					sprintf(szString, _T("R3 Button"));
+					sprintf(szString, "R3 Button");
 					break;
 
 			}			
 #else
-			sprintf(szString, _T("Joy %d Button %d"), nJoy, nCode & 0x7F);
+			sprintf(szString, "Joy %d Button %d", nJoy, nCode & 0x7F);
 #endif
 			return szString;
 		}
 		if (nCode < 0x10)
 		{
-			char szAxis[8][3] = { _T("X"), _T("Y"), _T("Z"), _T("rX"), _T("rY"), _T("rZ"), _T("s0"), _T("s1") };
-			char szDir[6][16] = { _T("negative"), _T("positive"), _T("Left"), _T("Right"), _T("Up"), _T("Down") };
+			char szAxis[8][3] = { "X", "Y", "Z", "rX", "rY", "rZ", "s0", "s1" };
+			char szDir[6][16] = { "negative", "positive", "Left", "Right", "Up", "Down" };
 			if (nCode < 4)
-				sprintf(szString, _T("Joy %d %s (%s %s)"), nJoy, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, "Joy %d %s (%s %s)", nJoy, szDir[nCode + 2], szAxis[nCode >> 1], szDir[nCode & 1]);
 			else
-				sprintf(szString, _T("Joy %d %s %s"), nJoy, szAxis[nCode >> 1], szDir[nCode & 1]);
+				sprintf(szString, "Joy %d %s %s", nJoy, szAxis[nCode >> 1], szDir[nCode & 1]);
 			return szString;
 		}
 		if (nCode < 0x20)
 		{
-			char szDir[4][16] = { _T("Left"), _T("Right"), _T("Up"), _T("Down") };
-			sprintf(szString, _T("Joy %d POV-hat %d %s"), nJoy, (nCode & 0x0F) >> 2, szDir[nCode & 3]);
+			char szDir[4][16] = { "Left", "Right", "Up", "Down" };
+			sprintf(szString, "Joy %d POV-hat %d %s", nJoy, (nCode & 0x0F) >> 2, szDir[nCode & 3]);
 			return szString;
 		}
 	}
@@ -1287,6 +1300,7 @@ const char * InpToDesc(struct GameInp* pgi)
 	return InpToString(pgi); // Just do the rest as they are in the config file
 }
 
+#ifndef NO_MACROS
 char* InpMacroToDesc(struct GameInp* pgi)
 {
 	if (pgi->nInput & GIT_GROUP_MACRO)
@@ -1297,6 +1311,7 @@ char* InpMacroToDesc(struct GameInp* pgi)
 
 	return "";
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -1354,6 +1369,7 @@ static char* InputNumToInfo(unsigned int i)
 	return (char *)bii.szInfo;
 }
 
+#ifndef NO_MACROS
 static unsigned int MacroNameToNum(char* szName)
 {
 	struct GameInp* pgi = GameInp + nGameInpCount;
@@ -1367,6 +1383,7 @@ static unsigned int MacroNameToNum(char* szName)
 	}
 	return ~0U;
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -1375,7 +1392,8 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 
 	for (int i = 0; i < nMaxPlayers; i++) {
 		int nSlide = nPlayerDefaultControls[i] >> 4;
-		switch (nPlayerDefaultControls[i] & 0x0F) {
+		switch (nPlayerDefaultControls[i] & 0x0F)
+		{
 			case 0:										// Keyboard
 
 				if (ArcadeJoystick!=1)
@@ -1394,23 +1412,23 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 				}
 				break;
 			case 1:										// Joystick 1
-				#ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 0, nSlide);
-				#endif
+#endif
 				GamcPlayer(pgi, szi, i, 0);
 				GamcMisc(pgi, szi, i);
 				break;
 			case 2:										// Joystick 2
-				#ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 1, nSlide);
-				#endif
+#endif
 				GamcPlayer(pgi, szi, i, 1);
 				GamcMisc(pgi, szi, i);
 				break;
 			case 3:										// Joystick 3
-				#ifndef SN_TARGET_PS3
+#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 2, nSlide);
-				#endif
+#endif
 				GamcPlayer(pgi, szi, i, 2);
 				GamcMisc(pgi, szi, i);
 				break;
@@ -1438,6 +1456,7 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 	return 0;
 }
 
+#ifndef NO_MACROS
 static int AddCustomMacro(char* szValue, bool bOverWrite)
 {
 	char* szQuote = NULL;
@@ -1538,6 +1557,7 @@ static int AddCustomMacro(char* szValue, bool bOverWrite)
 
 	return 1;
 }
+#endif
 
 int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 {
@@ -1552,12 +1572,14 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 	unsigned int i;
 
 	// Go through each line of the config file and process inputs
-	while (fgets(szLine, sizeof(szLine), h)) {
+	while (fgets(szLine, sizeof(szLine), h))
+	{
 		char* szValue;
 		size_t nLen = strlen(szLine);
 
 		// Get rid of the linefeed at the end
-		if (szLine[nLen - 1] == 10) {
+		if (szLine[nLen - 1] == 10)
+		{
 			szLine[nLen - 1] = 0;
 			nLen--;
 		}
@@ -1605,6 +1627,7 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 					StringToInp(GameInp + i, szEnd);
 			}
 
+			#ifndef NO_MACROS
 			szValue = labelCheck(szLine, "macro");
 			if (szValue)
 			{
@@ -1625,6 +1648,7 @@ int GameInputAutoIni(int nPlayer, const char * lpszFile, bool bOverWrite)
 			szValue = labelCheck(szLine, "custom");
 			if (szValue)
 				AddCustomMacro(szValue, bOverWrite);
+			#endif
 		}
 	}
 
@@ -1643,7 +1667,6 @@ int GameInpDefault()
 
 	for (int nPlayer = 0; nPlayer < nMaxPlayers; nPlayer++)
 	{
-
 		if ((nPlayerDefaultControls[nPlayer] & 0x0F) != 0x0F)
 			continue;
 
@@ -1675,6 +1698,7 @@ int GameInpDefault()
 		GameInpAutoOne(pgi, (char*)bii.szInfo);
 	}
 
+	#ifndef NO_MACROS
 	// Fill in macros still undefined
 	for (i = 0; i < nMacroCount; i++, pgi++)
 	{
@@ -1683,6 +1707,7 @@ int GameInpDefault()
 
 		GameInpAutoOne(pgi, pgi->Macro.szName);
 	}
+	#endif
 
 	return 0;
 }
@@ -1690,22 +1715,22 @@ int GameInpDefault()
 // ---------------------------------------------------------------------------
 // Write all the GameInps out to config file 'h'
 
+
 int GameInpWrite(FILE* h, bool bWriteConst)
 {
 	// Write input types
-	for (unsigned int i = 0; i < nGameInpCount; i++) {
+	for (unsigned int i = 0; i < nGameInpCount; i++)
+	{
 		struct GameInp* pgi = GameInp + i;
-		if (pgi->nInput == GIT_CONSTANT && !bWriteConst) {
-			continue; // skip constant, added by regret
-		}
+		if (pgi->nInput == GIT_CONSTANT && !bWriteConst)
+			continue;	// skip constant, added by regret
 
 		// save input info name instead, modified by regret
 		char* szName = NULL;
-		if (pgi->nInput == GIT_CONSTANT) {
+		if (pgi->nInput == GIT_CONSTANT)
 			szName = InputNumToName(i);
-		} else {
-			szName = InputNumToInfo(i);//InputNumToName(i);
-		}
+		else
+			szName = InputNumToInfo(i);	//InputNumToName(i);
 #if defined (_XBOX)
 		fprintf(h, "input  \"%S\" ", szName);
 #else
@@ -1721,20 +1746,23 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 
 	fprintf(h, "\n");
 
+	#ifndef NO_MACROS
 	struct GameInp* pgi = GameInp + nGameInpCount;
-	for (unsigned int i = 0; i < nMacroCount; i++, pgi++) {
+	for (unsigned int i = 0; i < nMacroCount; i++, pgi++)
+	{
 		int nPad = 0;
 
-		if (pgi->nInput & GIT_GROUP_MACRO) {
+		if (pgi->nInput & GIT_GROUP_MACRO)
+		{
 			switch (pgi->nInput)
 			{
-				case GIT_MACRO_AUTO:			// Auto-assigned macros
+				case GIT_MACRO_AUTO:	// Auto-assigned macros
 					fprintf(h, "macro  \"%hs\" ", pgi->Macro.szName);
 					break;
-				case GIT_MACRO_CUSTOM:		// Custom macros
+				case GIT_MACRO_CUSTOM:	// Custom macros
 					fprintf(h, "custom \"%hs\" ", pgi->Macro.szName);
 					break;
-				default:			// Unknown -- ignore
+				default:		// Unknown -- ignore
 					continue;
 			}
 
@@ -1745,11 +1773,10 @@ int GameInpWrite(FILE* h, bool bWriteConst)
 			fprintf(h, "%s\n", InpMacroToString(pgi));
 		}
 	}
+	#endif
 
 	return 0;
 }
-
-// ---------------------------------------------------------------------------
 
 // Read a GameInp in
 int GameInpRead(char* szVal, bool bOverWrite)
@@ -1776,6 +1803,7 @@ int GameInpRead(char* szVal, bool bOverWrite)
 	return 0;
 }
 
+#ifndef NO_MACROS
 int GameInpMacroRead(char* szVal, bool bOverWrite)
 {
 	char* szQuote = NULL;
@@ -1796,8 +1824,11 @@ int GameInpMacroRead(char* szVal, bool bOverWrite)
 
 	return 0;
 }
+#endif
 
+#ifndef NO_MACROS
 int GameInpCustomRead(char* szVal, bool bOverWrite)
 {
 	return AddCustomMacro(szVal, bOverWrite);
 }
+#endif

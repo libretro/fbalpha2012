@@ -329,7 +329,6 @@ void doStretch(void)
 
 	if(CTRL_LSTICK_LEFT(new_state))
 		nXOffset -= 1;
-
 	else if (CTRL_LSTICK_RIGHT(new_state))
 		nXOffset += 1;
 

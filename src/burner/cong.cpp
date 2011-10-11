@@ -1,5 +1,8 @@
 // Burner Config for Game file module
 #include "burner.h"
+#ifdef SN_TARGET_PS3
+#include "burner_ps3.h"
+#endif
 
 const int nConfigMinVersion = 0x020921;
 
@@ -10,7 +13,7 @@ static char* GameConfigName()
 #ifdef _XBOX
 	sprintf(szName, "game:\\config\\games\\%S.ini", BurnDrvGetText(DRV_NAME));
 #else
-	sprintf(szName, "/dev_hdd0/game/FBAN00000/USRDIR/config/games/%s.ini", BurnDrvGetTextA(DRV_NAME));
+	sprintf(szName, "%s%s.ini", GAME_INPUT_DIR, BurnDrvGetTextA(DRV_NAME));
 #endif
 	return szName;
 }
@@ -89,6 +92,7 @@ int ConfigGameLoad(bool bOverWrite)
 				continue;
 			}
 
+			#ifndef NO_MACROS
 			szValue = labelCheck(szLine, _T("macro"));
 			if (szValue)
 			{
@@ -102,6 +106,7 @@ int ConfigGameLoad(bool bOverWrite)
 				GameInpCustomRead(szValue, bOverWrite);
 				continue;
 			}
+			#endif
 		}
 	}
 

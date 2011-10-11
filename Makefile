@@ -53,7 +53,7 @@ INCLUDE                 =       -Isrc/burn              \
                                         -Isrc/burn/sega \
                                         -Isrc/burn/toaplan
                                         
-DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS -DUSE_BPP_RENDERING=32 -DNO_SPRITE_ENABLE_TOGGLE -DNO_LAYER_ENABLE_TOGGLE
+DEFINES += -DSN_TARGET_PS3 -DNDEBUG -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DOLD_AUDIOCORE=0 -DNO_CHEATS -DUSE_BPP_RENDERING=32 -DNO_SPRITE_ENABLE_TOGGLE -DNO_LAYER_ENABLE_TOGGLE -DNO_MACROS
 ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else

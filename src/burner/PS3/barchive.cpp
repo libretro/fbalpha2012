@@ -56,7 +56,6 @@ static int GetBArchiveError(int nState)
 		case STAT_OK:			// OK
 			return 0x0000;
 		case STAT_NOFIND:		// Not present
-			return 0x0001;
 		case STAT_SMALL:		// Incomplete
 			return 0x0001;
 		default:			// CRC wrong or too large

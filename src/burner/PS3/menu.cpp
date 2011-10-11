@@ -54,6 +54,7 @@
 	| MASKGALAXIAN | MASKATARI)
 
 #define SCALING_FACTOR_LIMIT 5
+#define MAX_SHADERS 2
 
 #define KEY(x) pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x);
 
@@ -99,7 +100,7 @@ int HideChildren = 0;
 int ThreeOrFourPlayerOnly = 0;
 int _fd = 0;
 
-// Rom List	Movement 
+// Rom List Movement 
 
 int iGameSelect;
 int iCursorPos;
@@ -107,7 +108,7 @@ int iNumGames;
 int m_iMaxWindowList;
 int m_iWindowMiddle;
 
-selected_shader_t selectedShader[2];
+selected_shader_t selectedShader[MAX_SHADERS];
 uint32_t shaderindex = 0;
 uint32_t shaderindex2 = 0;
 
@@ -234,7 +235,7 @@ bool CheckSetting(int i)
 
 // Make a list view of the DIPswitches
 // do not refresh list every time, modified by regret
-static int InpDIPSWListMake(BOOL bBuild)
+static int InpDIPSWListMake(bool bBuild)
 {
 	return 0;
 }
@@ -864,7 +865,7 @@ void ConfigFrameMove()
 
 		UpdateConsoleXY("Generating clrmame.dat. Please wait...", 0.35f, 0.5f );
 
-		if (create_datfile("/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat",0) == 0)
+		if (create_datfile(DAT_FILE,0) == 0)
 		{
 			dialog_is_running = true;
 			cellMsgDialogOpen2(CELL_MSGDIALOG_DIALOG_TYPE_NORMAL| \
@@ -2405,7 +2406,7 @@ void InGameFrameMove()
 				configAppSaveXml();
 				sys_spu_initialize(6, 0);
 				char multiMAN[512];
-				sprintf(multiMAN, "%s", "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF");
+				sprintf(multiMAN, "%s", MULTIMAN_SELF);
 				sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);		
 				sys_process_exit(0);
 			}
@@ -2672,7 +2673,6 @@ void FrameMove()
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
 				nLastFilter = CurrentFilter;
-				configAppSaveXml();
 				GameStatus = EMULATING;	
 				return;
 

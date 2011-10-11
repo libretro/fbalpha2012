@@ -63,9 +63,32 @@ enum
 
 extern int custom_aspect_ratio_mode;
 
+#define DEFAULT_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini"
+#define DEFAULT_NEO_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini"
+#define DEFAULT_CPS_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini"
+#define GAME_INPUT_DIR "/dev_hdd0/game/FBAN00000/USRDIR/config/games/"
+
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
 #define DEFAULT_SHADER "/dev_hdd0/game/FBAN00000/USRDIR/shaders/stock.cg"
 #define SYS_CONFIG_FILE "/dev_hdd0/game/FBAN00000/USRDIR/fbanext-ps3.cfg"
+#define DAT_FILE "/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat"
+#define MULTIMAN_SELF "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF"
+#define PREVIEWS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/previews/"
+#define CHEATS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/cheats/"
+#define ROMS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/roms/"
+#define SAVESTATES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/savestates/"
+//redundant
+#define SCREENSHOTS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/screenshots/"
+#define RECORDINGS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/recordings/"
+#define SKINS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/skins/"
+#define SCORES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/scores/"
+#define SELECTS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/selects/"
+#define IPS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/ips/"
+#define TITLES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/titles/"
+#define FLYERS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/flyers/"
+#define GAMEOVERS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/gameovers/"
+#define BOSSES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/bosses/"
+#define ICONS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/icons/"
 typedef std::basic_string<char> tstring;
 
 #ifndef MAX_PATH

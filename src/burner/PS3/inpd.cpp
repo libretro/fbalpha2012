@@ -7,22 +7,22 @@ static void GameInpConfigOne(int nPlayer, int nPcDev, int nAnalog, struct GameIn
 	switch (nPcDev)
 	{
 		case  0:
-			GamcPlayer(pgi, szi, nPlayer, -1);						// Keyboard
+			GamcPlayer(pgi, szi, nPlayer, -1);				// Keyboard
 			GamcAnalogKey(pgi, szi, nPlayer, nAnalog);
 			GamcMisc(pgi, szi, nPlayer);
 			break;
 		case  1:
-			GamcPlayer(pgi, szi, nPlayer, 0);						// Joystick 1
+			GamcPlayer(pgi, szi, nPlayer, 0);				// Joystick 1
 			GamcAnalogJoy(pgi, szi, nPlayer, 0, nAnalog);
 			GamcMisc(pgi, szi, nPlayer);
 			break;
 		case  2:
-			GamcPlayer(pgi, szi, nPlayer, 1);						// Joystick 2
+			GamcPlayer(pgi, szi, nPlayer, 1);				// Joystick 2
 			GamcAnalogJoy(pgi, szi, nPlayer, 1, nAnalog);
 			GamcMisc(pgi, szi, nPlayer);
 			break;
 		case  3:
-			GamcPlayer(pgi, szi, nPlayer, 2);						// Joystick 3
+			GamcPlayer(pgi, szi, nPlayer, 2);				// Joystick 3
 			GamcAnalogJoy(pgi, szi, nPlayer, 2, nAnalog);
 			GamcMisc(pgi, szi, nPlayer);
 			break;
@@ -70,8 +70,6 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 
 	return 0;
 }
- 
- 
 
 static int DeleteInput(unsigned int i)
 {
@@ -95,9 +93,9 @@ int UsePreset(bool bMakeDefault)
 }
 
 // ==> default input mapping, added by regret
-const char* defaultInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini";
-const char* defaultNeoInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini";
-const char* defaultCpsInpFilename = "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini";
+const char* defaultInpFilename = DEFAULT_INP_FILENAME;
+const char* defaultNeoInpFilename = DEFAULT_NEO_INP_FILENAME;
+const char* defaultCpsInpFilename = DEFAULT_CPS_INP_FILENAME;
 
 static const char * GetDefaultInputFilename()
 {

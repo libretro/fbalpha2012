@@ -67,7 +67,7 @@ int configAppLoadXml()
 		init_setting_char(tempStr, szPlayerDefaultIni[i], "");
 	}
 
-	init_setting_char("rompath", szAppRomPaths[0], "/dev_hdd0/game/FBAN00000/USRDIR/roms/");
+	init_setting_char("rompath", szAppRomPaths[0], ROMS_DIR);
 
 	//paths
 	for (int i = PATH_PREVIEW; i < PATH_SUM; i++)

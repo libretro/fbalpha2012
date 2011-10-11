@@ -13,7 +13,9 @@
 static char szPlay[4][4]={"p1 ", "p2 ", "p3 ", "p4 "};
 
 #define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch = (unsigned short)(x); }
+#ifndef NO_MACROS
 #define MACRO(x) { pgi->Macro.nMode = 1; pgi->Macro.Switch = (unsigned short)(x); }
+#endif
 
 // Configure the misc game controls
 int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
@@ -405,7 +407,8 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 
 	szi += 3;
 
-	if (nDevice <= -2) {
+	if (nDevice <= -2)
+	{
 		int bOurs = 0;
 
 		if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
@@ -426,8 +429,8 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 		if (!bOurs)
 			return 1;
 
-		pgi->nInput = GIT_CONSTANT;			// Constant zero
-		pgi->Input.Constant = 0;		//
+		pgi->nInput = GIT_CONSTANT;	// Constant zero
+		pgi->Input.Constant = 0;
 
 		return 0;
 	}
@@ -461,6 +464,7 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 			if (strcmp(szi, "fire 4") == 0)
 				KEY(FBK_V);
 
+			#ifndef NO_MACROS
 			if (strcasecmp(szi, "Button ABC") == 0)
 				MACRO(FBK_A);
 
@@ -469,6 +473,7 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 
 			if (strcasecmp(szi, "Button ABCD") == 0)
 				MACRO(FBK_D);
+			#endif
 
 		}
 		else
@@ -493,11 +498,13 @@ int GamcPlayer(struct GameInp* pgi, char* szi, int nPlayer, int nDevice)
 				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_C);
 
+				#ifndef NO_MACROS
 				if (strcasecmp(szi, "3× Punch") == 0)
 					MACRO(FBK_F);
 
 				if (strcasecmp(szi, "3× Kick") == 0)
 					MACRO(FBK_V);
+				#endif
 			}
 			else
 			{
@@ -576,7 +583,6 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 
 	szi += 3;
 
-
 	// Hori Arcade Stick
 	if (strcmp(szi, "x-axis") == 0) {
 		k0 = FBK_LEFTARROW;
@@ -587,18 +593,17 @@ int GamcPlayerHori(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 		k1 = FBK_RIGHTARROW;
 	}
 
-	if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0) {
+	if (strcmp(szi, "up") == 0 || strcmp(szi, "y-axis-neg") == 0)
 		KEY(FBK_NUMPAD8);
-	}
-	if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0) {
+
+	if (strcmp(szi, "down") == 0 || strcmp(szi, "y-axis-pos") == 0)
 		KEY(FBK_NUMPAD2);
-	}
-	if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0) {
+
+	if (strcmp(szi, "left") == 0 || strcmp(szi, "x-axis-neg") == 0)
 		KEY(FBK_NUMPAD4);
-	}
-	if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0) {
+
+	if (strcmp(szi, "right") == 0 || strcmp(szi, "x-axis-pos") == 0)
 		KEY(FBK_NUMPAD6);
-	}
 
 	if (nFireButtons == 4)
 	{
@@ -721,6 +726,7 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 				if (strcmp(szi, "fire 6") == 0)
 					KEY(FBK_X);
 
+				#ifndef NO_MACROS
 				// Map the 3x macros on X-Arcade
 				if ((nFlags & 0x10))
 				{
@@ -729,6 +735,7 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 					if (strcasecmp(szi, "3× Kick") == 0)
 						MACRO(FBK_5);
 				}
+				#endif
 			}
 			else
 			{
@@ -813,6 +820,7 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 					if (strcmp(szi, "fire 6") == 0)
 						KEY(FBK_LBRACKET);
 
+					#ifndef NO_MACROS
 					// Map the 3x macros on X-Arcade
 					if ((nFlags & 0x10))
 					{
@@ -824,6 +832,7 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 							MACRO(FBK_6);
 						}
 					}
+					#endif
 				} else {
 					if (strcmp(szi, "fire 1") == 0)
 						KEY(FBK_W);

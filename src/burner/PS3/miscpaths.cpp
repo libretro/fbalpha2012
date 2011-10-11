@@ -2,24 +2,24 @@
 #include "burner.h"
  
 char szMiscPaths[PATH_SUM][MAX_PATH] = {
-	"/dev_hdd0/game/FBAN00000/USRDIR/previews/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/cheats/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/screenshots/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/savestates/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/recordings/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/skins/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/ips/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/titles/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/flyers/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/scores/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/selects/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/gameovers/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/bosses/",
-	"/dev_hdd0/game/FBAN00000/USRDIR/icons/",
+	PREVIEWS_DIR,
+	CHEATS_DIR,
+	SCREENSHOTS_DIR,
+	SAVESTATES_DIR,
+	RECORDINGS_DIR,
+	SKINS_DIR,
+	IPS_DIR,
+	TITLES_DIR,
+	FLYERS_DIR,
+	SCORES_DIR,
+	SELECTS_DIR,
+	GAMEOVERS_DIR,
+	BOSSES_DIR,
+	ICONS_DIR,
 };
 
 char szAppRomPaths[DIRS_MAX][MAX_PATH] = {
-{ "/dev_hdd0/game/FBAN00000/USRDIR/roms/" }
+{ ROMS_DIR }
 };
  
  

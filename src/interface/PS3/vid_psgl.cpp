@@ -111,8 +111,8 @@ static void VidSFreeVidImage()
 
 static int VidSAllocVidImage()
 {
-	unsigned int pitch = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT;
-	unsigned int nMemLen = (nVidImageHeight + 4) * pitch;
+	nVidImagePitch = nVidImageWidth * SCREEN_RENDER_TEXTURE_BPP;
+	unsigned int nMemLen = (nVidImageHeight + 4) * nVidImagePitch;
 
 	VidSFreeVidImage();
 
@@ -121,7 +121,7 @@ static int VidSAllocVidImage()
 	if (pVidImage)
 	{
 		memset(pVidImage, 0, nMemLen);
-		pVidImage += pitch;
+		pVidImage += nVidImagePitch;
 		return 0;
 	}
 	else

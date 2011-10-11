@@ -1526,9 +1526,9 @@ HRESULT CInputOptions::OnNotifyPress( HXUIOBJ hObjPressed,
 			if (bii.szInfo == NULL) {
 				bii.szInfo = "";
 			}
-			GamcPlayer(pgi, bii.szInfo, 0, -1);						// Keyboard
-			GamcAnalogKey(pgi, bii.szInfo, 0, 1);
-			GamcMisc(pgi, bii.szInfo, 0);
+			GamcPlayer(pgi, (char*)bii.szInfo, 0, -1);						// Keyboard
+			GamcAnalogKey(pgi, (char*)bii.szInfo, 0, 1);
+			GamcMisc(pgi, (char*)bii.szInfo, 0);
 		}
 
  

@@ -141,7 +141,7 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 		if (bii.szInfo == NULL) {
 			bii.szInfo = "";
 		}
-		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, bii.szInfo);
+		GameInpConfigOne(nPlayer, nPcDev, nAnalog, pgi, (char*)bii.szInfo);
 	}
 
 	for (i = 0; i < nMacroCount; i++, pgi++) {

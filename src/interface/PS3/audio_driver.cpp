@@ -33,12 +33,6 @@ int audio_exit()
 		audio_handle = NULL;
 	}
 
-	if (pAudNextSound)
-	{
-		free(pAudNextSound);
-		pAudNextSound = NULL;
-	}
-
 	return 0;
 }
 
@@ -58,13 +52,10 @@ int audio_init(void)
 	audio_handle = driver->init(&params);
 
 	// The next sound block to put in the stream
-	pAudNextSound = (int16_t*)memalign(128, nAudAllocSegLen);
-
 	if (pAudNextSound == NULL)
-	{
-		audio_exit();
-		return 1;
-	}
+		pAudNextSound = (int16_t*)memalign(128, nAudAllocSegLen);
+	else
+		pAudNextSound = (int16_t*)realloc(pAudNextSound, nAudAllocSegLen);
 
 	audio_blank();
 	bAudOkay = true;

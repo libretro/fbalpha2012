@@ -5,17 +5,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "buffer.h"
-
-#define SAMPLES_TIMES_TWO 512
-
-#if 0
-static inline void s16_to_float(float * restrict out, const int16_t * restrict in, uint32_t samples)
+#define CELL_AUDIO_BLOCK_SAMPLES_X2 512
+struct fifo_buffer
 {
-	for (uint32_t i = 0; i < samples; i++)
-		out[i] = (float)in[i]/0x8000;
-}
-#endif
+   char *buffer;
+   uint32_t bufsize;
+   uint32_t first;
+   uint32_t end;
+};
 
 static void init_audioport(void)
 {
@@ -42,11 +39,87 @@ typedef struct audioport
 
 	fifo_buffer_t *buffer;
 
-	cell_audio_sample_cb_t sample_cb;
 	void *userdata;
 
 	uint32_t is_paused;
 } audioport_t;
+
+static fifo_buffer_t* fifo_new(uint32_t size)
+{
+   fifo_buffer_t *buf = calloc(1, sizeof(*buf));
+   if (buf == NULL)
+      return NULL;
+
+   buf->buffer = memalign(128, size + 1);
+   if (buf->buffer == NULL)
+   {
+      free(buf);
+      return NULL;
+   }
+   memset(buf->buffer, 0, size + 1);
+   buf->bufsize = size + 1;
+
+   return buf;
+}
+
+static void fifo_free(fifo_buffer_t* buffer)
+{
+   free(buffer->buffer);
+   free(buffer);
+}
+
+static uint32_t fifo_read_avail(fifo_buffer_t* buffer)
+{
+   uint32_t first = buffer->first;
+   uint32_t end = buffer->end;
+   if (end < first)
+      end += buffer->bufsize;
+   return end - first;
+}
+
+static uint32_t fifo_write_avail(fifo_buffer_t* buffer)
+{
+   uint32_t first = buffer->first;
+   uint32_t end = buffer->end;
+   if (end < first)
+      end += buffer->bufsize;
+
+   return (buffer->bufsize - 1) - (end - first);
+}
+
+static void fifo_write(fifo_buffer_t* buffer, const void* in_buf, uint32_t size)
+{
+   uint32_t first_write = size;
+   uint32_t rest_write = 0;
+   if (buffer->end + size > buffer->bufsize)
+   {
+      first_write = buffer->bufsize - buffer->end;
+      rest_write = size - first_write;
+   }
+
+   memcpy(buffer->buffer + buffer->end, in_buf, first_write);
+   if (rest_write > 0)
+      memcpy(buffer->buffer, (const char*)in_buf + first_write, rest_write);
+
+   buffer->end = (buffer->end + size) % buffer->bufsize;
+}
+
+static void fifo_read(fifo_buffer_t* buffer, void* in_buf, uint32_t size)
+{
+   uint32_t first_read = size;
+   uint32_t rest_read = 0;
+   if (buffer->first + size > buffer->bufsize)
+   {
+      first_read = buffer->bufsize - buffer->first;
+      rest_read = size - first_read;
+   }
+
+   memcpy(in_buf, (const char*)buffer->buffer + buffer->first, first_read);
+   if (rest_read > 0)
+      memcpy((char*)in_buf + first_read, buffer->buffer, rest_read);
+
+   buffer->first = (buffer->first + size) % buffer->bufsize;
+}
 
 static void* event_loop(void *data)
 {
@@ -58,33 +131,31 @@ static void* event_loop(void *data)
 	cellAudioCreateNotifyEventQueue(&id, &key);
 	cellAudioSetNotifyEventQueue(key);
 
-	//pull_event_loop - BEGIN
 	sys_event_t event;
 
-	int16_t *in_buf = memalign(128, SAMPLES_TIMES_TWO * sizeof(int16_t));
-	float *conv_buf = memalign(128, SAMPLES_TIMES_TWO * sizeof(float));
+	int16_t *in_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t));
+	float *conv_buf = memalign(128, CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(float));
 	do
 	{
-		uint32_t has_read = 0;
-		if (port->sample_cb)
-			has_read = port->sample_cb(in_buf, SAMPLES_TIMES_TWO, port->userdata);
-		else
+		uint32_t has_read = CELL_AUDIO_BLOCK_SAMPLES_X2;
+		pthread_mutex_lock(&port->lock);
+		uint32_t avail = fifo_read_avail(port->buffer);
+		if (avail < CELL_AUDIO_BLOCK_SAMPLES_X2 * sizeof(int16_t))
+			has_read = avail / sizeof(int16_t);
+
+		fifo_read(port->buffer, in_buf, has_read * sizeof(int16_t));
+		pthread_mutex_unlock(&port->lock);
+
+		if (has_read < CELL_AUDIO_BLOCK_SAMPLES_X2)
+			memset(in_buf + has_read, 0, (CELL_AUDIO_BLOCK_SAMPLES_X2 - has_read) * sizeof(int16_t));
+
+		for (uint32_t i = 0; i < CELL_AUDIO_BLOCK_SAMPLES_X2; i += 4)
 		{
-			has_read = SAMPLES_TIMES_TWO;
-			pthread_mutex_lock(&port->lock);
-			uint32_t avail = fifo_read_avail(port->buffer);
-			if (avail < SAMPLES_TIMES_TWO * sizeof(int16_t))
-				has_read = avail / sizeof(int16_t);
-
-			fifo_read(port->buffer, in_buf, has_read * sizeof(int16_t));
-			pthread_mutex_unlock(&port->lock);
-		}
-
-		if (has_read < SAMPLES_TIMES_TWO)
-			memset(in_buf + has_read, 0, (SAMPLES_TIMES_TWO - has_read) * sizeof(int16_t));
-
-		for (uint32_t i = 0; i < SAMPLES_TIMES_TWO; i++)
 			conv_buf[i] = (float)in_buf[i]/0x8000;
+			conv_buf[i+1] = (float)in_buf[i+1]/0x8000;
+			conv_buf[i+2] = (float)in_buf[i+1]/0x8000;
+			conv_buf[i+3] = (float)in_buf[i+1]/0x8000;
+		}
 
 		sys_event_queue_receive(id, &event, SYS_NO_TIMEOUT);
 		cellAudioAddData(port->audio_port, conv_buf, CELL_AUDIO_BLOCK_SAMPLES, 1.0);
@@ -92,7 +163,6 @@ static void* event_loop(void *data)
 		pthread_cond_signal(&port->cond);
 	}while(!port->quit_thread);
 	free(conv_buf);
-	//pull_event_loop - END
 
 	cellAudioRemoveNotifyEventQueue(key);
 	pthread_exit(NULL);
@@ -113,7 +183,6 @@ static cell_audio_handle_t audioport_init(const struct cell_audio_params *params
 
 	handle->channels = params->channels;
 
-	handle->sample_cb = params->sample_cb;
 	handle->userdata = params->userdata;
 	handle->buffer = fifo_new(params->buffer_size ? params->buffer_size : 4096);
 
@@ -176,7 +245,8 @@ static uint32_t audioport_write_avail(cell_audio_handle_t handle)
 	pthread_mutex_lock(&port->lock);
 	uint32_t ret = fifo_write_avail(port->buffer);
 	pthread_mutex_unlock(&port->lock);
-	return ret / sizeof(int16_t);
+	ret /= sizeof(int16_t);
+	return ret;
 }
 
 static int32_t audioport_write(cell_audio_handle_t handle, const int16_t *data, uint32_t samples)

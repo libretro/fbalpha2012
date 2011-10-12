@@ -64,7 +64,6 @@ endif
 PPU_CFLAGS              +=  $(DEFINES) $(INCLUDE)
 PPU_CXXFLAGS            +=  $(DEFINES) $(INCLUDE)
 PPU_SRCS                +=  $(INTERFACE_DIR)/PS3/cellframework2/audio/audioport.c \
-                            $(INTERFACE_DIR)/PS3/cellframework2/audio/buffer.c \
                             $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/vid_psgl.cpp
 
 PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3snd.cpp $(BURN_DIR)/cps3/d_cps3.cpp \

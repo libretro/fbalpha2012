@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 typedef void* cell_audio_handle_t;
-typedef uint32_t (*cell_audio_sample_cb_t)(int16_t * out, uint32_t samples, void * userdata);
+
+typedef struct fifo_buffer fifo_buffer_t;
 
 struct cell_audio_params
 {
@@ -12,10 +13,7 @@ struct cell_audio_params
    uint32_t samplerate; // Audio samplerate.
    uint32_t buffer_size; // Desired buffer size in bytes, if 0, a sane default will be provided.
 
-   cell_audio_sample_cb_t sample_cb; // Can choose to use a callback for audio rather than blocking interface with write/write_avail. If this is not NULL, callback will be used. If NULL, you have to write audio using write/write_avail.
-
    void *userdata; // Custom userdata that is passed to sample_cb.
-
    const char *device; // Only used for RSound atm for IP address, etc.
 };
 

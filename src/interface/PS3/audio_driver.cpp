@@ -52,7 +52,6 @@ int audio_init(void)
 	params.channels = 2;
 	params.samplerate = 48000;
 	params.buffer_size = 8192;
-	params.sample_cb = NULL;
 	params.userdata = NULL;
 	params.device = NULL;
 	audio_handle = driver->init(&params);

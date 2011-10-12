@@ -118,17 +118,16 @@ extern int nVidScrnAspectMode;
 extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
 
-extern void return_to_multiman(void);
-extern int startup_rom(const char * rom_name);
-
 // vid_psgl.cpp
+extern uint32_t currentAvailableResolutionId;
+extern uint32_t currentAvailableResolutionNo;
+
 typedef struct {
-	int index;
-	char filename[512];
-	char fullpath[1024];
+int index;
+char filename[512];
+char fullpath[1024];
 } selected_shader_t;
 
-extern uint32_t currentAvailableResolutionId;
 extern selected_shader_t selectedShader[2];
 
 extern char szAppBurnVer[16];
@@ -155,7 +154,7 @@ int FBAPopupDestroyText();
 // media.cpp
 int mediaInit();
 int mediaExit();
-//int mediaReInitAudio();
+int mediaReInitAudio();
 
 // misc_win32.cpp
 void createNeedDir();

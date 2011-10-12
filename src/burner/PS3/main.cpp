@@ -96,35 +96,6 @@ extern unsigned int nPrevGame;
 extern void doStretch();
 extern void StretchMenu();
 
-void return_to_multiman(void)
-{
-	configAppSaveXml();
-	sys_spu_initialize(6, 0);
-	char multiMAN[512];
-	sprintf(multiMAN, "%s", MULTIMAN_SELF);
-	sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);
-	sys_process_exit(0);
-}
-
-int startup_rom(const char * rom_name)
-{
-	int ret = directLoadGame(rom_name);
-	if(ret == 0)
-	{
-		mediaInit();
-		audio_play();
-		return 0;
-	}
-	else
-	{
-		audio_stop();
-		BurnerDrvExit();	// Make sure any game driver is exited
-		mediaExit();		// Exit media
-		return -1;
-	}
-
-}
-
 // Main program entry point
 int  main(int argc, char **argv)
 {
@@ -170,18 +141,18 @@ int  main(int argc, char **argv)
 	dbgFontInit();
 	reset_frame_counter();
 
+	mediaInit();
+
+	audio_play();
+
 #ifdef MULTIMAN_SUPPORT
 	if(argc > 1)
 	{
-		const char * current_game = strrchr(argv[1], '/');
-		int ret = startup_rom(current_game);
-		if(ret == 0)
-		{
-			GameStatus = EMULATING;	
-			nPrevGame = 0;
-		}
-		else
-			return_to_multiman();	
+		const char * current_game = strrchr(strdup(argv[1]), '/');
+		directLoadGame(strdup(current_game));
+		mediaInit();
+		GameStatus = EMULATING;	
+		nPrevGame = 0;
 	}
 #endif
 
@@ -250,7 +221,6 @@ int  main(int argc, char **argv)
 				if(!is_running)
 					GameStatus = PAUSE;
 				CalculateViewports();
-				int audiosize = nAudSize;
 				if(pVidTransImage)
 				{
 					if(bVidRecalcPalette)
@@ -258,7 +228,7 @@ int  main(int argc, char **argv)
 						VidFrame_RecalcPalette();
 					}
 					do{
-						audio_check(audiosize);
+						audio_check();
 						nCurrentFrame++;
 						VidFrame_Recalc();
 						InputMake();
@@ -270,7 +240,7 @@ int  main(int argc, char **argv)
 				else
 				{
 					do{
-						audio_check(audiosize);
+						audio_check();
 						nCurrentFrame++;
 						VidFrame();
 						InputMake();

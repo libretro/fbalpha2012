@@ -18,7 +18,7 @@ int mediaInit(void)
 
 	if (!bAudOkay)
 	{
-		audio_init();		// Init Sound (not critical if it fails)
+		audio_init(48000);		// Init Sound (not critical if it fails)
 	}
 
 	// Assume no sound
@@ -64,7 +64,7 @@ int mediaReInitAudio(void)
 	if (audio_exit())
 		return 1;
 
-	if (audio_init())
+	if (audio_init(48000))
 		return 1;
 
 	nBurnSoundRate = nAudSampleRate;

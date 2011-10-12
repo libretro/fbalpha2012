@@ -42,15 +42,29 @@ int audio_exit()
 	return 0;
 }
 
-int audio_init(void)
+int audio_init(int samplerate)
 {
-	nAudSegLen = AUDIO_SEGMENT_LENGTH;
-	nAudAllocSegLen = 12800;
+	switch(samplerate)
+	{
+		case 44100:
+			nAudSegLen = 735;
+			nAudAllocSegLen = 2940;
+			nAudSampleRate = 44100;
+			break;
+		case 48000:
+		case 48010:
+			nAudSegLen = 801;
+			nAudAllocSegLen = 12800;
+			samplerate = 48000;
+			nAudSampleRate = 48010;
+			break;
+
+	}
 
 	cell_audio_params params;
 	memset(&params, 0, sizeof(params));
 	params.channels = 2;
-	params.samplerate = 48000;
+	params.samplerate = samplerate;
 	params.buffer_size = 8192;
 	params.userdata = NULL;
 	params.device = NULL;

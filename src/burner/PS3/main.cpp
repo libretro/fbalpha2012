@@ -221,6 +221,8 @@ int  main(int argc, char **argv)
 				if(!is_running)
 					GameStatus = PAUSE;
 				CalculateViewports();
+				pBurnSoundOut = pAudNextSound;
+				uint32_t audio_samples = FRAMES_TO_SAMPLES(nAudSegLen);
 				if(pVidTransImage)
 				{
 					if(bVidRecalcPalette)
@@ -228,7 +230,7 @@ int  main(int argc, char **argv)
 						VidFrame_RecalcPalette();
 					}
 					do{
-						audio_check();
+						audio_check(audio_samples);
 						nCurrentFrame++;
 						VidFrame_Recalc();
 						InputMake();
@@ -240,7 +242,7 @@ int  main(int argc, char **argv)
 				else
 				{
 					do{
-						audio_check();
+						audio_check(audio_samples);
 						nCurrentFrame++;
 						VidFrame();
 						InputMake();

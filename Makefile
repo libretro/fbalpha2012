@@ -58,7 +58,7 @@ ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=   -O3 -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else
 INCLUDE                 += -I$(CELL_HOST_PATH)/ppu/lib/gcc/ppu-lv2/4.1.1/include
-DEFINES                 += -D__GCC__ -funroll-loops -finline-functions -funit-at-a-time -finline-functions-called-once --param inline-unit-growth=200 --param large-function-growth=1000 --param max-inline-insns-single=900
+DEFINES                 += -D__GCC__ -funroll-loops -finline-functions -funit-at-a-time -finline-functions-called-once --param inline-unit-growth=200 --param large-function-growth=1000 --param max-inline-insns-single=900 -pipe -w
 endif
 
 PPU_CFLAGS              +=  $(DEFINES) $(INCLUDE)

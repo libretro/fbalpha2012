@@ -71,7 +71,7 @@ int audio_init(int samplerate)
 	audio_handle = driver->init(&params);
 
 	// The next sound block to put in the stream
-	pAudNextSound = (int16_t*)memalign(128, nAudAllocSegLen);
+	pAudNextSound = (int16_t*)realloc(pAudNextSound, nAudAllocSegLen);
 
 	if (pAudNextSound == NULL)
 	{

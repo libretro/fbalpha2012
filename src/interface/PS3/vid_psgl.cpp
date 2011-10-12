@@ -116,7 +116,7 @@ static int VidSAllocVidImage()
 
 	VidSFreeVidImage();
 
-	pVidImage = (uint8_t*)memalign(128, nMemLen);
+	pVidImage = (uint8_t*)realloc(pVidImage, nMemLen);
 
 	if (pVidImage)
 	{

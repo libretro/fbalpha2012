@@ -80,8 +80,8 @@ int VidInit()
 			{
 				nBurnBpp = BPP_16_SCREEN_RENDER_TEXTURE_BPP;
 
-				pVidTransPalette = (unsigned int*)memalign(128, transPaletteSize * sizeof(int));
-				pVidTransImage = (unsigned char*)memalign(128, nVidImageWidth * nVidImageHeight * (nBurnBpp >> 1) * sizeof(short));
+				pVidTransPalette = (unsigned int*)realloc(pVidTransPalette, transPaletteSize * sizeof(int));
+				pVidTransImage = (uint8_t *)realloc(pVidTransImage, nVidImageWidth * nVidImageHeight * (nBurnBpp >> 1) * sizeof(short));
 
 				BurnHighCol = HighCol15;
 

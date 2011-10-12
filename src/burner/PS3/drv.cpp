@@ -67,16 +67,8 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 {
 	BurnerDrvExit(); // Make sure exited
 
-#ifdef NEED_MEDIA_REINIT
-	mediaExit();
-#endif
-
 	nBurnDrvSelect = nDrvNum; // Set the driver number
 
-#ifdef NEED_MEDIA_REINIT
-	mediaInit();
-#endif
-	mediaInit();
 	// Define nMaxPlayers early; GameInpInit() needs it (normally defined in DoLibInit()).
 	nMaxPlayers = BurnDrvGetMaxPlayers();
 
@@ -91,6 +83,8 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 
 	// set functions
 	BurnReinitScrn = simpleReinitScrn;
+
+	mediaInit();
 
 #ifndef NO_IPS
 	//bDoPatch = true; // play with ips
@@ -114,6 +108,7 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	BurnExtLoadRom = DrvLoadRom;
 
 	bDrvOkay = 1;					// Okay to use all BurnDrv functions
+
 
 	bSaveRAM = false;
 	if (bRestore)

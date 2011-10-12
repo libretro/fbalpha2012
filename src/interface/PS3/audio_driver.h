@@ -5,6 +5,7 @@
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS 1602
 
 extern bool bAudPlaying;
+extern bool bAudReinit;
 
 int audio_new(void);
 int audio_exit(void);

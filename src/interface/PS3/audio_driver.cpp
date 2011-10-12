@@ -13,6 +13,7 @@ int		nAudSegLen = 0;		// Segment length in samples (calculated from Rate/Fps)
 int		nAudAllocSegLen = 0;	// Allocated segment length in samples
 bool		bAudOkay = false;	// True if sound was inited okay
 bool		bAudPlaying = false;
+bool		bAudReinit = false;
 int16_t *	pAudNextSound = NULL;	// The next sound seg we will add to the sample loop
 
 int audio_new(void)

@@ -16,9 +16,26 @@ int mediaInit(void)
 
 	nAppVirtualFps = nBurnFPS;
 
-	if (!bAudOkay)
+	char * szName;
+	BurnDrvGetArchiveName(&szName, 0);
+	char  * vendetta_hack = strstr(szName,"vendetta");
+
+	if (!bAudOkay || vendetta_hack || bAudReinit)
 	{
-		audio_init(48000);		// Init Sound (not critical if it fails)
+		if(vendetta_hack)
+		{
+			// If Vendetta is not played with sound samplerate at 44KHz, then
+			// slo-mo Vendetta happens - so we set sound samplerate at 44KHz
+			// and then resample to 48Khz for this game. Possibly more games 
+			// are like this, so check for more
+			audio_init(44100);
+			bAudReinit = true;
+		}
+		else
+		{
+			audio_init(48000);
+			bAudReinit = false;
+		}
 	}
 
 	// Assume no sound
@@ -29,14 +46,6 @@ int mediaInit(void)
 	{
 		nBurnSoundRate = nAudSampleRate;
 		nBurnSoundLen = nAudSegLen;
-	}
-
-	if (!bVidOkay)
-	{
-		VidInit();		// Reinit the video plugin
-
-		if (bVidOkay && (!bDrvOkay))
-			VidFrame();
 	}
 
 	return 0;

@@ -2667,9 +2667,6 @@ void FrameMove()
 			if (directLoadGame(m_vecAvailRomIndex[entryselected].c_str()) == 0)
 			{
 				nPrevGame = m_vecAvailRomBurnDrvIndex[entryselected];
-
-				mediaInit();
-				audio_play();
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
 				nLastFilter = CurrentFilter;

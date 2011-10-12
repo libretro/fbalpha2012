@@ -1,5 +1,6 @@
 // misc win32 functions
 #include "burner.h"
+#include "audio_driver.h"
 
 void setWindowAspect(bool first_boot)
 {
@@ -154,6 +155,18 @@ int directLoadGame(const char * name)
 		if (i < nBurnDrvCount)
 		{
 			RomOK = BurnerDrvInit(i, true);
+			if (!RomOK)
+			{
+				if(!bVidOkay)			// bring up video
+				{
+					VidInit();		// Reinit the video plugin
+
+					if (bVidOkay && (!bDrvOkay))
+						VidFrame();
+				}
+				if(bAudOkay)
+					audio_play();
+			}
 		}
 	}
 

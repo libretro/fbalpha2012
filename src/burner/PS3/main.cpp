@@ -141,16 +141,11 @@ int  main(int argc, char **argv)
 	dbgFontInit();
 	reset_frame_counter();
 
-	mediaInit();
-
-	audio_play();
-
 #ifdef MULTIMAN_SUPPORT
 	if(argc > 1)
 	{
 		const char * current_game = strrchr(strdup(argv[1]), '/');
 		directLoadGame(strdup(current_game));
-		mediaInit();
 		GameStatus = EMULATING;	
 		nPrevGame = 0;
 	}

@@ -580,29 +580,16 @@ static void Cps2Layers()
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
 #endif
 
-#define DoDraw(Recalc) \
-   /* Point to correct tile drawing functions */ \
-	CtvReady(); \
-   BurnClearScreen(); \
-	/* Update Palette */ \
-	CpsPalUpdate(CpsSavePal, Recalc); \
-   /* recalc whole palette if needed */ \
-	CpsClearScreen(); \
-   Cps1Layers();
-
-#define DoDraw_Cps2(Recalc) \
-   /* Point to correct tile drawing functions */ \
-	CtvReady(); \
-   BurnClearScreen(); \
-	/* Update Palette */ \
-	Cps2PalUpdate(CpsSavePal, Recalc); \
-   /* recalc whole palette if needed */ \
-	Cps2ClearScreen(); \
-   Cps2Layers();
-
 int CpsDraw()
 {
-	DoDraw(CpsRecalcPal);
+	/* Point to correct tile drawing functions */
+	CtvReady();
+	BurnClearScreen();
+	/* Update Palette */
+	CpsPalUpdate(CpsSavePal, CpsRecalcPal);
+	/* recalc whole palette if needed */
+	CpsClearScreen();
+	Cps1Layers();
 
 	CpsRecalcPal = 0;
 	return 0;
@@ -610,7 +597,14 @@ int CpsDraw()
 
 int Cps2Draw()
 {
-	DoDraw_Cps2(CpsRecalcPal);
+	/* Point to correct tile drawing functions */
+	CtvReady();
+	BurnClearScreen();
+	/* Update Palette */
+	Cps2PalUpdate(CpsSavePal, CpsRecalcPal);
+	/* recalc whole palette if needed */
+	Cps2ClearScreen();
+	Cps2Layers();
 
 	CpsRecalcPal = 0;
 	return 0;
@@ -618,7 +612,14 @@ int Cps2Draw()
 
 int CpsRedraw()
 {
-	DoDraw(1);
+   	/* Point to correct tile drawing functions */
+	CtvReady();
+   	BurnClearScreen();
+	/* Update Palette */
+	CpsPalUpdate(CpsSavePal, 1);
+   	/* recalc whole palette if needed */
+	CpsClearScreen();
+   	Cps1Layers();
 
 	CpsRecalcPal = 0;
 	return 0;
@@ -626,7 +627,14 @@ int CpsRedraw()
 
 int Cps2Redraw()
 {
-	DoDraw_Cps2(1);
+	/* Point to correct tile drawing functions */
+	CtvReady();
+	BurnClearScreen();
+	/* Update Palette */
+	Cps2PalUpdate(CpsSavePal, 1);
+	/* recalc whole palette if needed */
+	Cps2ClearScreen();
+	Cps2Layers();
 
 	CpsRecalcPal = 0;
 	return 0;

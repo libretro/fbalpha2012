@@ -66,7 +66,7 @@ PPU_CXXFLAGS            +=  $(DEFINES) $(INCLUDE)
 PPU_SRCS                +=  $(INTERFACE_DIR)/PS3/cellframework2/audio/audioport.c \
                             $(INTERFACE_DIR)/PS3/cellframework2/input/pad_input.c $(INTERFACE_DIR)/PS3/vid_psgl.cpp
 
-PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp $(BURN_DIR)/cps3/cps3snd.cpp $(BURN_DIR)/cps3/d_cps3.cpp \
+PPU_SRCS                +=  $(BURN_DIR)/cps3/cps3run.cpp \
 			$(CPU_DIR)/sh2/sh2.cpp $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp \
 			$(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound_c.cpp \
 			$(BURN_DIR)/burn_y8950.cpp $(BURN_DIR)/burn_ym2151.cpp $(BURN_DIR)/burn_ym2203.cpp \

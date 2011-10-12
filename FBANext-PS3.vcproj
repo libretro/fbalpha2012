@@ -550,14 +550,6 @@
 							RelativePath=".\src\burn\cps3\cps3run.cpp"
 							>
 						</File>
-						<File
-							RelativePath=".\src\burn\cps3\cps3snd.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\cps3\d_cps3.cpp"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="galaxian"
@@ -2110,10 +2102,6 @@
 								>
 								<File
 									RelativePath=".\src\interface\PS3\cellframework2\audio\audioport.c"
-									>
-								</File>
-								<File
-									RelativePath=".\src\interface\PS3\cellframework2\audio\buffer.c"
 									>
 								</File>
 							</Filter>

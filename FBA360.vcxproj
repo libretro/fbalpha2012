@@ -552,8 +552,6 @@
     <ClCompile Include="src\burn\cave\d_sailormn.cpp" />
     <ClCompile Include="src\burn\cave\d_uopoko.cpp" />
     <ClCompile Include="src\burn\cps3\cps3run.cpp" />
-    <ClCompile Include="src\burn\cps3\cps3snd.cpp" />
-    <ClCompile Include="src\burn\cps3\d_cps3.cpp" />
     <ClCompile Include="src\burn\galaxian\d_galaxian.cpp" />
     <ClCompile Include="src\burn\galaxian\gal_gfx.cpp" />
     <ClCompile Include="src\burn\galaxian\gal_run.cpp" />

@@ -17,7 +17,7 @@ Port to FBA by OopsWare
 
 **********************************************************************/
 
-#include "cps3.h"
+#include "burnint.h"
 #include "sh2.h"
 #ifdef SN_TARGET_PS3
 #include "highcol.h"
@@ -26,7 +26,14 @@ Port to FBA by OopsWare
 #define BE_GFX		1 // Big-endian?!
 
 #define FAST_BOOT	1
-#define SPEED_HACK	0 // Default should be 1, if not FPS would drop.
+#define SPEED_HACK	1 // Default should be 1, if not FPS would drop.
+
+#define CPS3_VOICES		16
+
+#define CPS3_SND_INT_RATE	(nBurnFPS / 100)
+#define CPS3_SND_RATE		(42954500 / 3 / 384)
+#define CPS3_SND_BUFFER_SIZE	(CPS3_SND_RATE / CPS3_SND_INT_RATE)
+#define CPS3_SND_LINEAR_SHIFT	12
 
 static uint8_t *Mem = NULL;
 static uint8_t *MemEnd = NULL;
@@ -56,20 +63,20 @@ static uint16_t *EEPROM;
 static uint16_t *CurPal;
 static uint32_t *RamScreen;
 
-uint8_t cps3_reset = 0;
-uint8_t cps3_palette_change = 0;
+static uint8_t cps3_reset = 0;
+static uint8_t cps3_palette_change = 0;
 
-uint32_t cps3_key1, cps3_key2, cps3_isSpecial, cps3_redearthHack;
-uint32_t cps3_bios_test_hack, cps3_game_test_hack;
-uint32_t cps3_speedup_ram_address, cps3_speedup_code_address;
-uint8_t cps3_dip;
-uint32_t cps3_region_address, cps3_ncd_address;
+static uint32_t cps3_key1, cps3_key2, cps3_isSpecial, cps3_redearthHack;
+static uint32_t cps3_bios_test_hack, cps3_game_test_hack;
+static uint32_t cps3_speedup_ram_address, cps3_speedup_code_address;
+static uint8_t cps3_dip;
+static uint32_t cps3_region_address, cps3_ncd_address;
 
 static uint32_t cps3_data_rom_size;
 
-uint8_t Cps3But1[16];
-uint8_t Cps3But2[16];
-uint8_t Cps3But3[16];
+static uint8_t Cps3But1[16];
+static uint8_t Cps3But2[16];
+static uint8_t Cps3But3[16];
 
 static uint16_t Cps3Input[4] = {0, 0, 0, 0};
 
@@ -126,9 +133,28 @@ void cps3_flash_init(flash_chip * chip/*, void *data*/)
 	chip->status = 0x80;
 	chip->flash_mode = FM_NORMAL;
 	chip->flash_master_lock = 0;
-}
 
-uint32_t cps3_flash_read(flash_chip * chip, uint32_t addr)
+}typedef struct {
+	unsigned short regs[16];
+	unsigned int pos;
+	unsigned short frac;
+} cps3_voice;
+
+typedef struct {
+	cps3_voice voice[CPS3_VOICES];
+	unsigned short key;
+
+	unsigned char * rombase;
+	unsigned int delta;
+
+} cps3snd_chip;
+
+static cps3snd_chip * chip;
+
+#define cps3SndReset()
+#define cps3SndExit() free(chip);
+
+static uint32_t cps3_flash_read(flash_chip * chip, uint32_t addr)
 {
 	switch( chip->flash_mode )
 	{
@@ -158,7 +184,7 @@ uint32_t cps3_flash_read(flash_chip * chip, uint32_t addr)
 	}
 }
 
-void cps3_flash_write(flash_chip * chip, uint32_t addr, uint32_t data)
+static void cps3_flash_write(flash_chip * chip, uint32_t addr, uint32_t data)
 {
 	//bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
 
@@ -503,7 +529,7 @@ static int MemIndex()
 	return 0;
 }
 
-uint8_t __fastcall cps3ReadByte(uint32_t addr)
+static uint8_t __fastcall cps3ReadByte(uint32_t addr)
 {
 	#if 0
 	addr &= 0xc7ffffff;
@@ -511,7 +537,7 @@ uint8_t __fastcall cps3ReadByte(uint32_t addr)
 	return 0;
 }
 
-uint16_t __fastcall cps3ReadWord(uint32_t addr)
+static uint16_t __fastcall cps3ReadWord(uint32_t addr)
 {
 	addr &= 0xc7ffffff;
 
@@ -558,7 +584,7 @@ uint16_t __fastcall cps3ReadWord(uint32_t addr)
 	return 0;
 }
 
-uint32_t __fastcall cps3ReadLong(uint32_t addr)
+static uint32_t __fastcall cps3ReadLong(uint32_t addr)
 {
 	addr &= 0xc7ffffff;
 
@@ -578,7 +604,7 @@ uint32_t __fastcall cps3ReadLong(uint32_t addr)
 	return 0;
 }
 
-void __fastcall cps3WriteByte(uint32_t addr, uint8_t data)
+static void __fastcall cps3WriteByte(uint32_t addr, uint8_t data)
 {
 	addr &= 0xc7ffffff;
 
@@ -621,7 +647,7 @@ void __fastcall cps3WriteByte(uint32_t addr, uint8_t data)
 	}
 }
 
-void __fastcall cps3WriteWord(uint32_t addr, uint16_t data)
+static void __fastcall cps3WriteWord(uint32_t addr, uint16_t data)
 {
 	addr &= 0xc7ffffff;
 
@@ -765,7 +791,7 @@ void __fastcall cps3WriteWord(uint32_t addr, uint16_t data)
 	}
 }
 
-void __fastcall cps3WriteLong(uint32_t addr, uint32_t data)
+static void __fastcall cps3WriteLong(uint32_t addr, uint32_t data)
 {
 	#if 0
 	addr &= 0xc7ffffff;
@@ -782,17 +808,17 @@ void __fastcall cps3WriteLong(uint32_t addr, uint32_t data)
 	#endif
 }
 
-void __fastcall cps3C0WriteByte(uint32_t addr, uint8_t data)
+static void __fastcall cps3C0WriteByte(uint32_t addr, uint8_t data)
 {
 	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
-void __fastcall cps3C0WriteWord(uint32_t addr, uint16_t data)
+static void __fastcall cps3C0WriteWord(uint32_t addr, uint16_t data)
 {
 	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
-void __fastcall cps3C0WriteLong(uint32_t addr, uint32_t data)
+static void __fastcall cps3C0WriteLong(uint32_t addr, uint32_t data)
 {
 	if (addr < 0xc0000400)
 	{
@@ -805,7 +831,7 @@ void __fastcall cps3C0WriteLong(uint32_t addr, uint32_t data)
 
 // If fastboot != 1
 
-uint8_t __fastcall cps3RomReadByte(uint32_t addr)
+static uint8_t __fastcall cps3RomReadByte(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -818,7 +844,7 @@ uint8_t __fastcall cps3RomReadByte(uint32_t addr)
 	return *(RomGame_D + (addr & 0x00ffffff));
 }
 
-uint16_t __fastcall cps3RomReadWord(uint32_t addr)
+static uint16_t __fastcall cps3RomReadWord(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -831,7 +857,7 @@ uint16_t __fastcall cps3RomReadWord(uint32_t addr)
 	return *(uint16_t *)(RomGame_D + (addr & 0x00ffffff));
 }
 
-uint32_t __fastcall cps3RomReadLong(uint32_t addr)
+static uint32_t __fastcall cps3RomReadLong(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read long value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -850,17 +876,17 @@ uint32_t __fastcall cps3RomReadLong(uint32_t addr)
 	return retvalue;
 }
 
-void __fastcall cps3RomWriteByte(uint32_t addr, uint8_t data)
+static void __fastcall cps3RomWriteByte(uint32_t addr, uint8_t data)
 {
 	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
-void __fastcall cps3RomWriteWord(uint32_t addr, uint16_t data)
+static void __fastcall cps3RomWriteWord(uint32_t addr, uint16_t data)
 {
 	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
-void __fastcall cps3RomWriteLong(uint32_t addr, uint32_t data)
+static void __fastcall cps3RomWriteLong(uint32_t addr, uint32_t data)
 {
 //	bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
 	addr &= 0x00ffffff;
@@ -874,7 +900,7 @@ void __fastcall cps3RomWriteLong(uint32_t addr, uint32_t data)
 	}
 }
 
-uint8_t __fastcall cps3RomReadByteSpe(uint32_t addr)
+static uint8_t __fastcall cps3RomReadByteSpe(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -882,7 +908,7 @@ uint8_t __fastcall cps3RomReadByteSpe(uint32_t addr)
 	return *(RomGame + (addr & 0x00ffffff));
 }
 
-uint16_t __fastcall cps3RomReadWordSpe(uint32_t addr)
+static uint16_t __fastcall cps3RomReadWordSpe(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -890,7 +916,7 @@ uint16_t __fastcall cps3RomReadWordSpe(uint32_t addr)
 	return *(uint16_t *)(RomGame + (addr & 0x00ffffff));
 }
 
-uint32_t __fastcall cps3RomReadLongSpe(uint32_t addr)
+static uint32_t __fastcall cps3RomReadLongSpe(uint32_t addr)
 {
 //	bprintf(PRINT_NORMAL, _T("Rom Attempt to read long value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
@@ -902,35 +928,33 @@ uint32_t __fastcall cps3RomReadLongSpe(uint32_t addr)
 	return retvalue;
 }
 
-//------------------
-
-uint8_t __fastcall cps3VidReadByte(uint32_t addr)
+static uint8_t __fastcall cps3VidReadByte(uint32_t addr)
 {
 	//bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
-uint16_t __fastcall cps3VidReadWord(uint32_t addr)
+static uint16_t __fastcall cps3VidReadWord(uint32_t addr)
 {
 	//bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
-uint32_t __fastcall cps3VidReadLong(uint32_t addr)
+static uint32_t __fastcall cps3VidReadLong(uint32_t addr)
 {
 	//bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
-void __fastcall cps3VidWriteByte(uint32_t addr, uint8_t data)
+static void __fastcall cps3VidWriteByte(uint32_t addr, uint8_t data)
 {
 	//bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
-void __fastcall cps3VidWriteWord(uint32_t addr, uint16_t data)
+static void __fastcall cps3VidWriteWord(uint32_t addr, uint16_t data)
 {
 	addr &= 0xc7ffffff;
 	if ((addr >= 0x04080000) && (addr < 0x040c0000))
@@ -956,7 +980,7 @@ void __fastcall cps3VidWriteWord(uint32_t addr, uint16_t data)
 	}
 }
 
-void __fastcall cps3VidWriteLong(uint32_t addr, uint32_t data)
+static void __fastcall cps3VidWriteLong(uint32_t addr, uint32_t data)
 {
 #if 0
 	addr &= 0xc7ffffff;
@@ -973,7 +997,7 @@ void __fastcall cps3VidWriteLong(uint32_t addr, uint32_t data)
 }
 
 
-uint8_t __fastcall cps3RamReadByte(uint32_t addr)
+static uint8_t __fastcall cps3RamReadByte(uint32_t addr)
 {
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address)
@@ -983,7 +1007,7 @@ uint8_t __fastcall cps3RamReadByte(uint32_t addr)
 	return *(RamMain + (addr ));
 }
 
-uint16_t __fastcall cps3RamReadWord(uint32_t addr)
+static uint16_t __fastcall cps3RamReadWord(uint32_t addr)
 {
 	//bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
 	addr &= 0x7ffff;
@@ -999,7 +1023,7 @@ uint16_t __fastcall cps3RamReadWord(uint32_t addr)
 }
 
 
-uint32_t __fastcall cps3RamReadLong(uint32_t addr)
+static uint32_t __fastcall cps3RamReadLong(uint32_t addr)
 {
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address)
@@ -1079,7 +1103,99 @@ static void cps3_be_to_le(uint8_t * p, int size)
 }
 #endif
 
-int cps3Init()
+static unsigned char __fastcall cps3SndReadByte(unsigned int addr)
+{
+	//addr &= 0x000003ff;
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
+	return 0;
+}
+
+static unsigned short __fastcall cps3SndReadWord(unsigned int addr)
+{
+	addr &= 0x000003ff;
+	
+	if (addr < 0x200)
+		return chip->voice[addr >> 5].regs[(addr>>1) & 0xf];
+	else if (addr == 0x200)
+		return chip->key;
+	#if 0
+	else
+	bprintf(PRINT_NORMAL, _T("SND Attempt to read word value of location %8x\n"), addr);
+	#endif
+	return 0;
+}
+
+static unsigned int __fastcall cps3SndReadLong(unsigned int addr)
+{
+	//addr &= 0x000003ff;
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
+	return 0;
+}
+
+static void __fastcall cps3SndWriteByte(unsigned int addr, unsigned char data)
+{
+	//addr &= 0x000003ff;
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
+}
+
+static void __fastcall cps3SndWriteWord(unsigned int addr, unsigned short data)
+{
+	addr &= 0x000003ff;
+	
+	if (addr < 0x200) {
+		chip->voice[addr >> 5].regs[(addr>>1) & 0xf] = data;
+		//bprintf(PRINT_NORMAL, _T("SND Attempt to write word value %4x to Chip[%02d][%02d] %s\n"), data, addr >> 5, (addr>>2) & 7, (addr & 0x02) ? "lo" : "hi" );
+	} else if (addr == 0x200)
+	{
+		unsigned short key = data;
+		for (int i = 0; i < CPS3_VOICES; i++)
+		{
+			// Key off -> Key on
+			if ((key & (1 << i)) && !(chip->key & (1 << i)))
+			{
+				chip->voice[i].frac = 0;
+				chip->voice[i].pos = 0;
+			}
+		}
+		chip->key = key;
+	}
+	#if 0
+	else
+		bprintf(PRINT_NORMAL, _T("SND Attempt to write word value %4x to location %8x\n"), data, addr);
+	#endif
+	
+}
+
+static void __fastcall cps3SndWriteLong(unsigned int addr, unsigned int data)
+{
+	//addr &= 0x000003ff;
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to write long value %8x to location %8x\n"), data, addr);
+}
+
+static int cps3SndInit(unsigned char * sndrom)
+{
+	chip = (cps3snd_chip *) malloc( sizeof(cps3snd_chip) );
+	if ( chip ) {
+		memset( chip, 0, sizeof(cps3snd_chip) );
+		chip->rombase = sndrom;
+		
+		/* 
+		 * CPS-3 Sound chip clock: 42954500 / 3 / 384 = 37286.89
+		 * Sound interupt 80Hz 
+		 */
+		
+		if (nBurnSoundRate) {
+			//chip->delta = 37286.9 / nBurnSoundRate;
+			chip->delta = (CPS3_SND_BUFFER_SIZE << CPS3_SND_LINEAR_SHIFT) / nBurnSoundLen;
+			//bprintf(0, _T("BurnSnd %08x, %d, %d\n"), chip->delta, chip->burnlen, nBurnSoundLen);
+		}
+		
+		return 0;
+	}
+	return 1;
+}
+
+static int cps3Init()
 {
 	int nRet, ii, offset;
 	struct BurnRomInfo pri;
@@ -1241,7 +1357,7 @@ int cps3Init()
 	return 0;
 }
 
-int cps3Exit()
+static int cps3Exit()
 {
 	int Width, Height;
 	BurnDrvGetVisibleSize(&Width, &Height);
@@ -1562,8 +1678,6 @@ static void cps3_drawgfxzoom_2(uint32_t code, uint32_t pal, int flipx, int flipy
 		}
 	}
 }
-
-
 
 static void cps3_draw_tilemapsprite_line(int drawline, uint32_t * regs )
 {
@@ -2210,7 +2324,89 @@ static void DrvDraw()
 #endif
 }
 
-int cps3Frame_sfiii2()
+static void cps3SndUpdate()
+{
+	memset(pBurnSoundOut, 0, nBurnSoundLen << 2);
+	signed char * base = (signed char *)chip->rombase;
+	cps3_voice *vptr = &chip->voice[0];
+
+	for(int i = 0; i < CPS3_VOICES; i++, vptr++)
+	{
+		if (chip->key & (1 << i))
+		{
+			unsigned int start = ((vptr->regs[ 3] << 16) | vptr->regs[ 2]) - 0x400000;
+			unsigned int end   = ((vptr->regs[11] << 16) | vptr->regs[10]) - 0x400000;
+			unsigned int loop  = ((vptr->regs[ 9] << 16) | vptr->regs[ 7]) - 0x400000;
+			unsigned int step  = ( vptr->regs[ 6] * chip->delta ) >> CPS3_SND_LINEAR_SHIFT;
+
+			//int vol_l = ((signed short)vptr->regs[15] * 12) >> 4;
+			//int vol_r = ((signed short)vptr->regs[14] * 12) >> 4;
+			int vol_l = (signed short)vptr->regs[15];
+			int vol_r = (signed short)vptr->regs[14];
+
+			unsigned int pos = vptr->pos;
+			unsigned int frac = vptr->frac;
+
+			/* Go through the buffer and add voice contributions */
+			signed short * buffer = (signed short *)pBurnSoundOut;
+
+			for (int j=0; j<nBurnSoundLen; j++)
+			{
+				signed int sample;
+
+				pos += (frac >> 12);
+				frac &= 0xfff;
+
+				if (start + pos >= end)
+				{
+					if (vptr->regs[5])
+						pos = loop - start;
+					else
+					{
+						chip->key &= ~(1 << i);
+						break;
+					}
+				}
+
+				// 8bit sample store with 16bit bigend ???
+				sample = base[(start + pos) ^ 1];
+				frac += step;
+
+#if 1
+				int sample_l;
+
+				sample_l = ((sample * vol_r) >> 8) + buffer[0];
+
+				if (sample_l > 32767)
+					buffer[0] = 32767;
+				else if (sample_l < -32768)
+					buffer[0] = -32768;
+				else
+					buffer[0] = sample_l;
+
+				sample_l = ((sample * vol_l) >> 8) + buffer[1];
+				if (sample_l > 32767)
+					buffer[1] = 32767;
+				else if (sample_l < -32768)
+					buffer[1] = -32768;
+				else 
+					buffer[1] = sample_l;
+#else
+				buffer[0] += (sample * (vol_l >> 8));
+				buffer[1] += (sample * (vol_r >> 8));
+#endif
+
+				buffer += 2;
+			}
+
+			vptr->pos = pos;
+			vptr->frac = frac;
+		}
+	}
+	
+}
+
+static int cps3Frame_sfiii2()
 {
 	if (cps3_reset)
 		Cps3Reset();
@@ -2270,7 +2466,7 @@ int cps3Frame_sfiii2()
 	return 0;
 }
 
-int cps3Frame()
+static int cps3Frame()
 {
 	if (cps3_reset)
 		Cps3Reset();
@@ -2329,7 +2525,18 @@ int cps3Frame()
 	return 0;
 }
 
-int cps3Scan(int nAction, int *pnMin)
+static int cps3SndScan(int nAction)
+{
+	if (nAction & ACB_DRIVER_DATA)
+	{
+		SCAN_VAR( chip->voice );
+		SCAN_VAR( chip->key );
+		
+	}
+	return 0;
+}
+
+static int cps3Scan(int nAction, int *pnMin)
 {
 	if (pnMin) *pnMin =  0x029672;
 
@@ -2438,3 +2645,5 @@ int cps3Scan(int nAction, int *pnMin)
 
 	return 0;
 }
+
+#include "d_cps3_.h"

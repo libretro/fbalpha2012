@@ -980,14 +980,6 @@
 							RelativePath=".\src\burn\cps3\cps3run.cpp"
 							>
 						</File>
-						<File
-							RelativePath=".\src\burn\cps3\cps3snd.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burn\cps3\d_cps3.cpp"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="galaxian"

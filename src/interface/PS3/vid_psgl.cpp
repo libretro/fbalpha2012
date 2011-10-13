@@ -190,9 +190,8 @@ static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filenam
 	return id;
 }
 
-static void psglExitCG()
+static void psglDeinitShader()
 {
-
 	if (VertexProgram)
 	{
 		cgGLUnbindProgram(CG_PROFILE_SCE_VP_RSX);
@@ -207,11 +206,6 @@ static void psglExitCG()
 		FragmentProgram = NULL;
 	}
 
-	if (CgContext)
-	{
-		cgDestroyContext(CgContext);
-		CgContext = NULL;
-	}
 
 }
 
@@ -219,7 +213,6 @@ void _psglInitCG()
 {
 	char shaderFile[255];
 
-	psglExitCG();
 
 	CgContext = cgCreateContext();
 	cgRTCgcInit();
@@ -422,7 +415,11 @@ void psglExitGL(void)
 {
 	cellDbgFontExit();
 
-	psglExitCG();
+	if (CgContext)
+	{
+		cgDestroyContext(CgContext);
+		CgContext = NULL;
+	}
 
 	if (psgl_context)
 	{
@@ -700,6 +697,8 @@ void psglRenderAlpha(void)
 
 int32_t psglInitShader(const char* filename)
 {
+	psglDeinitShader();
+
 	CGprogram id = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, filename, "main_fragment");
 	CGprogram v_id = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, filename, "main_vertex");
 	if (id)

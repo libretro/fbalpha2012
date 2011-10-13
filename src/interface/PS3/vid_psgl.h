@@ -38,14 +38,15 @@ extern void psglRender(void);
 	cellSysutilCheckCallback();
 
 #define set_cg_params() \
-   cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
-   cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
-   cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
-   cgGLSetParameter2f(cg_v_video_size, nVidImageWidth, nVidImageHeight); \
-   cgGLSetParameter2f(cg_v_texture_size, nVidImageWidth, nVidImageHeight); \
-   cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
-   cgGLSetParameter1f(cgp_timer, frame_count); \
-   cgGLSetParameter1f(cgp_vertex_timer, frame_count);
+cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
+cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter2f(cg_v_video_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_texture_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter1f(cgp_timer, frame_count); \
+cgGLSetParameter1f(cgp_vertex_timer, frame_count);
 
 #define setview(x, y, w, h, outwidth, outheight) \
    float device_aspect = psglGetDeviceAspectRatio(psgl_device); \

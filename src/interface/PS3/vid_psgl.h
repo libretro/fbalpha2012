@@ -97,9 +97,7 @@ extern void psglRender(void);
    cg_viewport_width = real_width; \
    cg_viewport_height = real_height; \
    cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
-   glOrthof(left, right, bottom, top, zNear, zFar); \
-   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); \
-   glClear(GL_COLOR_BUFFER_BIT); \
+   /* glOrthof(left, right, bottom, top, zNear, zFar); */ \
    glMatrixMode(GL_MODELVIEW); \
    glLoadIdentity();
 

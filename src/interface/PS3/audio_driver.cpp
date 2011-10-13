@@ -47,17 +47,27 @@ int audio_init(int samplerate)
 {
 	switch(samplerate)
 	{
-		case 44100:
+		case SAMPLERATE_11KHZ:
+			nAudSegLen = 184;
+			nAudAllocSegLen = 736;
+			nAudSampleRate = SAMPLERATE_11KHZ;
+			break;
+		case SAMPLERATE_22KHZ:
+			nAudSegLen = 368;
+			nAudAllocSegLen = 1472;
+			nAudSampleRate = SAMPLERATE_22KHZ;
+			break;
+		case SAMPLERATE_44KHZ:
 			nAudSegLen = 735;
 			nAudAllocSegLen = 2940;
-			nAudSampleRate = 44100;
+			nAudSampleRate = SAMPLERATE_44KHZ;
 			break;
 		case 48000:
-		case 48010:
+		case SAMPLERATE_48KHZ: 
 			nAudSegLen = 801;
 			nAudAllocSegLen = 12800;
 			samplerate = 48000;
-			nAudSampleRate = 48010;
+			nAudSampleRate = SAMPLERATE_48KHZ;
 			break;
 
 	}

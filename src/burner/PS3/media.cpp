@@ -28,12 +28,12 @@ int mediaInit(void)
 			// slo-mo Vendetta happens - so we set sound samplerate at 44KHz
 			// and then resample to 48Khz for this game. Possibly more games 
 			// are like this, so check for more
-			audio_init(44100);
+			audio_init(SAMPLERATE_44KHZ);
 			bAudReinit = true;
 		}
 		else
 		{
-			audio_init(48000);
+			audio_init(SAMPLERATE_48KHZ);
 			bAudReinit = false;
 		}
 	}

@@ -579,28 +579,17 @@ int _psglInit(void)
 	return 0;
 }
 
-#define DEST_BOTTOM gl_height
-#define DEST_RIGHT  gl_width
-#define DEST_LEFT   0
-#define DEST_TOP    0
-
 void CalculateViewports(void)
 {
 	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
-	int nNewImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
-	int nNewImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
+	int nNewImageWidth  = ((gl_height) & nrotategame_mask) | ((gl_width) & ~nrotategame_mask);
+	int nNewImageHeight = ((gl_width) & nrotategame_mask) | ((gl_height) & ~nrotategame_mask);
 
 	if (nImageWidth != nNewImageWidth || nImageHeight != nNewImageHeight)
 	{
 		nImageWidth  = nNewImageWidth;
 		nImageHeight = nNewImageHeight;
-		/* Set the size of the image on the PC screen */
-		int vpx, vpy, vpw, vph;
-		vpx = DEST_LEFT;
-		vpy = DEST_TOP;
-		vpw = DEST_RIGHT;
-		vph = DEST_BOTTOM;
-		setview(vpx, vpy, vpw, vph, nImageWidth, nImageHeight);
+		glCalculateViewport(nImageWidth, nImageHeight);
 	}
 	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
 	VidSCopyImage(texture);
@@ -641,21 +630,14 @@ void psglRenderPaused()
 void psglRenderStretch()			 
 {
 	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
-	nImageWidth  = ((DEST_BOTTOM) & nrotategame_mask) | ((DEST_RIGHT) & ~nrotategame_mask);
-	nImageHeight = ((DEST_RIGHT) & nrotategame_mask) | ((DEST_BOTTOM) & ~nrotategame_mask);
+	nImageWidth  = ((gl_height) & nrotategame_mask) | ((gl_width) & ~nrotategame_mask);
+	nImageHeight = ((gl_width) & nrotategame_mask) | ((gl_height) & ~nrotategame_mask);
 
-	// Set the size of the image on the PC screen
-	int vpx, vpy, vpw, vph;
-	vpx = DEST_LEFT;
-	vpy = DEST_TOP;
-	vpw = DEST_RIGHT;
-	vph = DEST_BOTTOM;
-
-	glViewport(vpx + nXOffset , vpy + nYOffset, vpw + nXScale , vph + nYScale);
+	glViewport(nXOffset, nYOffset, gl_width + nXScale , gl_height + nYScale);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(DEST_LEFT + nXOffset, DEST_RIGHT, DEST_BOTTOM + nYOffset, DEST_TOP, -1.0, 1.0);
+	glOrthof(nXOffset, gl_width, gl_height + nYOffset, 0, -1.0, 1.0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

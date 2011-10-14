@@ -20,6 +20,7 @@ extern void psglRenderPaused(void);
 extern void psglRenderAlpha(void);
 extern void CalculateViewports(void);
 extern void psglRender(void);
+extern void setlinear(unsigned int smooth);
 
 #define psglRedraw() \
 	if(pVidTransImage) \
@@ -38,7 +39,6 @@ extern void psglRender(void);
 	cellSysutilCheckCallback();
 
 #define set_cg_params() \
-cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
 cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
 cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
 cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
@@ -48,57 +48,51 @@ cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
 cgGLSetParameter1f(cgp_timer, frame_count); \
 cgGLSetParameter1f(cgp_vertex_timer, frame_count);
 
-#define setview(x, y, w, h, outwidth, outheight) \
+#define glCalculateViewport(outwidth, outheight) \
    float device_aspect = psglGetDeviceAspectRatio(psgl_device); \
    glMatrixMode(GL_PROJECTION); \
    glLoadIdentity(); \
-   GLfloat left = 0; \
-   GLfloat right = outwidth; \
-   GLfloat bottom = 0; \
-   GLfloat top = outheight; \
-   GLfloat zNear = -1.0; \
-   GLfloat zFar = 1.0; \
+   GLfloat left = 0.0f; \
+   GLfloat right = (float)outwidth; \
+   GLfloat bottom = 0.0f; \
+   GLfloat top = (float)outheight; \
+   GLfloat zNear = -1.0f; \
+   GLfloat zFar = 1.0f; \
    float desired_aspect = vidScrnAspect; \
-   GLuint lowerleft_x, lowerleft_y, viewport_width, viewport_height;  \
-   GLuint real_width = w, real_height = h; \
+   GLuint lowerleft_x = 0; \
+   GLuint lowerleft_y = 0; \
+   GLuint viewport_width, viewport_height;  \
+   GLuint real_width = gl_width; \
+   GLuint real_height = gl_height; \
    if(custom_aspect_ratio_mode) \
    { \
-      lowerleft_x = x + nXOffset; \
-      lowerleft_y = y + nYOffset; \
-      real_width = w + nXScale; \
-      real_height = h + nYScale; \
-      left = x + nXOffset; \
-      right = y + nYOffset; \
+      lowerleft_x = nXOffset; \
+      lowerleft_y = nYOffset; \
+      real_width = gl_width + nXScale; \
+      real_height = gl_height + nYScale; \
+      left = nXOffset; \
+      right = nYOffset; \
       bottom = gl_height + nYOffset; \
    } \
    else if ( (int)(device_aspect*1000) > (int)(desired_aspect*1000) ) \
    { \
       float delta = (desired_aspect / device_aspect - 1.0) / 2.0 + 0.5; \
-      lowerleft_x = w * (0.5 - delta); \
-      lowerleft_y = 0; \
-      real_width = (2.0 * w * delta); \
-      real_height = h; \
+      lowerleft_x = gl_width * (0.5 - delta); \
+      real_width = (2.0 * gl_width * delta); \
    } \
    else if ( (int)(device_aspect*1000) < (int)(desired_aspect*1000) ) \
    { \
       float delta = (device_aspect / desired_aspect - 1.0) / 2.0 + 0.5; \
-      lowerleft_x = 0; \
-      lowerleft_y = h * (0.5 - delta); \
-      real_width = w; \
-      real_height = (2.0 * h * delta); \
-   } \
-   else  \
-   { \
-      lowerleft_x = 0; \
-      lowerleft_y = 0; \
-      real_width = w; \
-      real_height = h; \
+      lowerleft_y = gl_height * (0.5 - delta); \
+      real_height = (2.0 * gl_height * delta); \
    } \
    glViewport(lowerleft_x, lowerleft_y, real_width, real_height); \
    cg_viewport_width = real_width; \
    cg_viewport_height = real_height; \
    cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
-   /* glOrthof(left, right, bottom, top, zNear, zFar); */ \
+   glOrthof(left, right, bottom, top, zNear, zFar); \
+   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); \
+   glClear(GL_COLOR_BUFFER_BIT); \
    glMatrixMode(GL_MODELVIEW); \
    glLoadIdentity();
 

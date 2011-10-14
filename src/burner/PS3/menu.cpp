@@ -2254,7 +2254,7 @@ void InGameFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
 				vidFilterLinear = !vidFilterLinear;
-				BurnReinitScrn();
+				setlinear(vidFilterLinear);
 				psglRedraw();
 			}
 			break;
@@ -2262,7 +2262,7 @@ void InGameFrameMove()
 			if(CTRL_LEFT(new_state & diff_state) | CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
 			{
 				vidFilterLinear2 = !vidFilterLinear2;
-				BurnReinitScrn();
+				setlinear(vidFilterLinear2);
 				psglRedraw();
 			}
 			break;

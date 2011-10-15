@@ -349,6 +349,9 @@ static int CheckHiscoreAllowed()
 	return Allowed;
 }
 
+#ifdef __LIBSNES__
+void HiscoreInit() {}
+#else
 void HiscoreInit()
 {
 	if (!CheckHiscoreAllowed()) return;
@@ -445,6 +448,7 @@ void HiscoreInit()
 	
 	nCpuType = -1;
 }
+#endif
 
 void HiscoreReset()
 {
@@ -521,6 +525,9 @@ void HiscoreApply()
 	}
 }
 
+#ifdef __LIBSNES__
+void HiscoreExit() { }
+#else
 void HiscoreExit()
 {
 	if (!CheckHiscoreAllowed() || !HiscoresInUse) return;
@@ -566,3 +573,4 @@ void HiscoreExit()
 		HiscoreMemRange[i].Data = NULL;
 	}
 }
+#endif

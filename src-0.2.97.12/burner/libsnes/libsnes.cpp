@@ -117,6 +117,11 @@ static void check_generic_input(const char *name, uint8_t *ptr)
       fprintf(stderr, "DIP set to 0x%x\n", (unsigned)*ptr);
 }
 
+void Reinitialise(void)
+{
+	//you need to reinitialise video here, currently stub function to get stuff to compile
+}
+
 static void init_neogeo_binds()
 {
    for (unsigned i = 0; i < bind_map_count; i++)

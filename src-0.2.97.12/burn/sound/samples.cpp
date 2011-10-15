@@ -190,6 +190,9 @@ extern int __cdecl ZipLoadOneFile(const char* arcName, const char* fileName, voi
 char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int nOutSize);
 #define _TtoA(a)	TCHARToANSI(a, NULL, 0)
 
+#ifdef __LIBSNES__
+void BurnSampleInit(int, int) {}
+#else
 void BurnSampleInit(int nGain /*volume percentage!*/, int bAdd /*add sample to stream?*/)
 {
 	if (nBurnSoundRate == 0) {
@@ -254,6 +257,7 @@ void BurnSampleInit(int nGain /*volume percentage!*/, int bAdd /*add sample to s
 		destination = NULL;
 	}
 }
+#endif
 
 void BurnSampleExit()
 {

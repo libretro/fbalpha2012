@@ -187,6 +187,12 @@ int BurnTransferInit();
 // ------------------------------------------------------------------
 // Plotting pixels
 
+#if USE_BPP_RENDERING == 16
+static inline void PutPix(uint8_t* pPix, uint32_t c)
+{
+	*((uint16_t*)pPix) = (uint16_t)c;
+}
+#else
 static inline void PutPix(uint8_t* pPix, uint32_t c)
 {
 	if (nBurnBpp >= 4)
@@ -203,6 +209,7 @@ static inline void PutPix(uint8_t* pPix, uint32_t c)
 		}
 	}
 }
+#endif
 
 // ------------------------------------------------------------------
 // Clear opposites

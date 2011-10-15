@@ -647,11 +647,15 @@ int PsikyoshDraw()
 		}
 	}
 
+#if USE_BPP_RENDERING == 16
+	DrvTmpDraw = DrvTmpDraw_ptr;
+#else
 	if (nBurnBpp == 4) {
 		DrvTmpDraw = (unsigned int*)pBurnDraw;
 	} else {
 		DrvTmpDraw = DrvTmpDraw_ptr;
 	}
+#endif
  
 	XMemSet (DrvTmpDraw, 0, ScreenSize << 2);
 	XMemSet (DrvPriBmp, 0, ScreenSize << 1);
@@ -666,12 +670,20 @@ int PsikyoshDraw()
 		if ((psikyosh_vidregs[2] & 0x0f) == i) postlineblend();
 	}
 
+#if USE_BPP_RENDERING == 16
+	for (int i = 0; i < ScreenSize; i++)
+	{
+		int d = DrvTmpDraw[i];
+		PutPix(pBurnDraw + (i << 1), BurnHighCol(d>>16, d>>8, d, 0));
+	}
+#else
 	if (nBurnBpp < 4) {
 		for (int i = 0; i < ScreenSize; i++) {
 			int d = DrvTmpDraw[i];
 			PutPix(pBurnDraw + (i << 1), BurnHighCol(d>>16, d>>8, d, 0));
 		}
 	}
+#endif
 
 	return 0;
 }

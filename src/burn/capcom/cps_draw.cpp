@@ -509,6 +509,21 @@ static void Cps2Layers()
 		Cps2ObjDraw(nPrevPrio + 1, 7);
 }
 
+#if USE_BPP_RENDERING == 16
+#define CpsClearScreen() \
+unsigned int* pClear = (unsigned int*)pBurnDraw; \
+		       unsigned int nColour = CpsPal[0xbff ^ 15] | CpsPal[0xbff ^ 15] << 16; \
+		       for (int i = 0; i < 384 * 224 / 16; i++) { \
+			       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+				       *pClear++ = nColour; \
+		       }
+#else
 #define CpsClearScreen() \
 		switch (nBurnBpp) { \
 			case 4: { \
@@ -555,9 +570,14 @@ static void Cps2Layers()
 				break; \
 			} \
 		}
+#endif
 
+#if USE_BPP_RENDERING == 16
+#define Cps2ClearScreen() memset(pBurnDraw, 0, 172032);
+#else
 #define Cps2ClearScreen() \
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
+#endif
 
 int CpsDraw()
 {

@@ -769,6 +769,24 @@ unsigned int (__cdecl *BurnHighCol) (int r, int g, int b, int i) = BurnHighColFi
 unsigned short* pTransDraw = NULL;
 int nTransWidth, nTransHeight;
 
+#if USE_BPP_RENDERING == 16
+static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restrict pDest, UINT32* __restrict pPalette)
+{
+	for (int y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
+	{
+		for (int x = 0; x < (nTransWidth); x +=8 ) {
+			((UINT16*)pDest)[x] = pPalette[pSrc[x]];
+			((UINT16*)pDest)[x+1] = pPalette[pSrc[x+1]];
+			((UINT16*)pDest)[x+2] = pPalette[pSrc[x+2]];
+			((UINT16*)pDest)[x+3] = pPalette[pSrc[x+3]];
+			((UINT16*)pDest)[x+4] = pPalette[pSrc[x+4]];
+			((UINT16*)pDest)[x+5] = pPalette[pSrc[x+5]];
+			((UINT16*)pDest)[x+6] = pPalette[pSrc[x+6]];
+			((UINT16*)pDest)[x+7] = pPalette[pSrc[x+7]];
+		}
+	}
+}
+#else
 static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restrict pDest, UINT32* __restrict pPalette)
 {
 	switch (nBurnBpp)
@@ -818,6 +836,7 @@ static inline void BurnTransferCopyIn(UINT16* __restrict pSrc, UINT8 * __restric
 			}
 	}
 }
+#endif
 
 int BurnTransferCopy(UINT32* pPalette)
 {

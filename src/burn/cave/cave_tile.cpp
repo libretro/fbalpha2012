@@ -125,7 +125,11 @@ static void Cave8x8Layer_Normal(int nLayer, unsigned int nPriority)
 		pTilePalette = pPalette + ((nTileNumber & nPaletteMask) >> nPaletteShift);
 		nTileNumber &= nTileMask[nLayer];
 
+		#if USE_BPP_RENDERING == 16
+		pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos << 1);
+		#else
 		pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos * nBurnBpp);
+		#endif
 
 		pTileData = (unsigned int*)(CaveTileROM[nLayer] + (nTileNumber << 6));
 
@@ -311,7 +315,11 @@ static void Cave16x16Layer_Normal(int nLayer, unsigned int nPriority)
 
 		nAttrib = swapLong(*((unsigned int*)(CaveTileAttrib[nLayer] + nTileNumber)));
 
+		#if USE_BPP_RENDERING == 16
+		pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos << 1);
+		#else
 		pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos * nBurnBpp);
+		#endif
 
 		pTileStart = (unsigned int*)(CaveTileROM[nLayer] + (nTileNumber << 6));
 
@@ -329,7 +337,11 @@ static void Cave16x16Layer_Normal(int nLayer, unsigned int nPriority)
 			}
 
 			nTileXPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile += 16;
+			#else
 			pTile += 8 * nBurnBpp;
+			#endif
 			if ((nAttrib & 0x0000FF00) == 0) {
 				if (nTileXPos > -8 && nTileXPos < nCaveXSize && nTileYPos > -8 && nTileYPos < nCaveYSize) {
 					pTileData = pTileStart + 16;
@@ -343,7 +355,11 @@ static void Cave16x16Layer_Normal(int nLayer, unsigned int nPriority)
 
 			nTileXPos -= 8;
 			nTileYPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos << 1);
+			#else
 			pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos * nBurnBpp);
+			#endif
 			if ((nAttrib & 0x00FF0000) == 0) {
 				if (nTileXPos > -8 && nTileXPos < nCaveXSize && nTileYPos > -8 && nTileYPos < nCaveYSize) {
 					pTileData = pTileStart + 32;
@@ -356,7 +372,11 @@ static void Cave16x16Layer_Normal(int nLayer, unsigned int nPriority)
 			}
 
 			nTileXPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile += 16;
+			#else
 			pTile += 8 * nBurnBpp;
+			#endif
 			if ((nAttrib & 0xFF000000) == 0) {
 				if (nTileXPos > -8 && nTileXPos < nCaveXSize && nTileYPos > -8 && nTileYPos < nCaveYSize) {
 					pTileData = pTileStart + 48;
@@ -374,20 +394,32 @@ static void Cave16x16Layer_Normal(int nLayer, unsigned int nPriority)
 				RenderTile[0]();
 			}
 			nTileXPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile += 16;
+			#else
 			pTile += 8 * nBurnBpp;
+			#endif
 			if ((nAttrib & 0x0000FF00) == 0) {
 				pTileData = pTileStart + 16;
 				RenderTile[0]();
 			}
 			nTileXPos -= 8;
 			nTileYPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos << 1);
+			#else
 			pTile = pBurnDraw + (nTileYPos * nBurnPitch) + (nTileXPos * nBurnBpp);
+			#endif
 			if ((nAttrib & 0x00FF0000) == 0) {
 				pTileData = pTileStart + 32;
 				RenderTile[0]();
 			}
 			nTileXPos += 8;
+			#if USE_BPP_RENDERING == 16
+			pTile += 16;
+			#else
 			pTile += 8 * nBurnBpp;
+			#endif
 			if ((nAttrib & 0xFF000000) == 0) {
 				pTileData = pTileStart + 48;
 				RenderTile[0]();
@@ -654,7 +686,11 @@ static void Cave16x16Layer_RowSelect(int nLayer, unsigned int nPriority)
 					RenderTile[5]();
 				}
 				nTileXPos += 8;
+				#if USE_BPP_RENDERING == 16
+				pTile += 16; 
+				#else
 				pTile += (nBurnBpp << 3);
+				#endif
 				pTileData = pTileStart + 16;
 				if (nTileXPos >= 0 && nTileXPos <= nClipX16) {
 					RenderTile[4]();
@@ -673,7 +709,11 @@ static void Cave16x16Layer_RowSelect(int nLayer, unsigned int nPriority)
 				nTileNumber = swapWord(*((unsigned short*)(pTileRAM + 0x0000 + nTileRow + nTileColumn))) << 16;
 				if ((nTileNumber >> 30) != nPriority) {
 					nTileXPos += 16;
+#if USE_BPP_RENDERING == 16
+					pTile += 32;
+#else
 					pTile += (nBurnBpp << 4);
+#endif
 					continue;
 				}
 				nTileNumber |= swapWord(*((unsigned short*)(pTileRAM + 0x0002 + nTileRow + nTileColumn)));
@@ -684,7 +724,11 @@ static void Cave16x16Layer_RowSelect(int nLayer, unsigned int nPriority)
 
 				if (((unsigned int*)CaveTileAttrib[nLayer])[nTileNumber] == 0x01010101) {
 					nTileXPos += 16;
+#if USE_BPP_RENDERING == 16
+					pTile += 32;
+#else
 					pTile += (nBurnBpp << 4);
+#endif
 					continue;
 				}
 
@@ -699,7 +743,11 @@ static void Cave16x16Layer_RowSelect(int nLayer, unsigned int nPriority)
 					RenderTile[5]();
 				}
 				nTileXPos += 8;
+				#if USE_BPP_RENDERING == 16
+				pTile += 16;
+				#else
 				pTile += (nBurnBpp << 3);
+				#endif
 
 				pTileData = pTileStart + 16;
 				if (nTileXPos >= 0 && nTileXPos <= nClipX8) {
@@ -708,7 +756,11 @@ static void Cave16x16Layer_RowSelect(int nLayer, unsigned int nPriority)
 					RenderTile[5]();
 				}
 				nTileXPos += 8;
+				#if USE_BPP_RENDERING == 16
+				pTile += 16;
+				#else
 				pTile += (nBurnBpp << 3);
+				#endif
 			}
 		}
 	}

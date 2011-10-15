@@ -18,6 +18,11 @@ int CtvReady()
 {
 	// Set up the CtvDoX functions to point to the correct bpp functions.
 	// Must be called before calling CpstOne
+	#if USE_BPP_RENDERING == 16
+	memcpy(CtvDoX,CtvDo2,sizeof(CtvDoX));
+	memcpy(CtvDoXM,CtvDo2m,sizeof(CtvDoXM));
+	memcpy(CtvDoXB,CtvDo2b,sizeof(CtvDoXB));
+	#else
 	if (nBurnBpp!=nLastBpp)
 	{
 		if (nBurnBpp==2) {
@@ -37,5 +42,6 @@ int CtvReady()
 		}
 	}
 	nLastBpp=nBurnBpp;
+	#endif
 	return 0;
 }

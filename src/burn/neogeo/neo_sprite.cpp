@@ -33,11 +33,15 @@ static RenderBankFunction* RenderBank;
 
 int NeoRenderSprites()
 {
+	#if USE_BPP_RENDERING == 16
+	RenderBank = RenderBankNormal[0];
+	#else
 	   if (nLastBPP != nBurnBpp ) {
 		   nLastBPP = nBurnBpp;
 
 		   RenderBank = RenderBankNormal[nBurnBpp - 2];
 	   }
+	#endif
 
 	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (!(nBurnLayer & 1)) {

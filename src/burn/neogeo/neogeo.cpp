@@ -216,53 +216,72 @@ void NeoClearScreen()
 	unsigned int nColour = NeoPalette[0x0FFF];
 
 	if (nColour) {
+#if USE_BPP_RENDERING == 16
+		unsigned int* pClear = (unsigned int*)pBurnDraw;
+		nColour |= nColour << 16;
+		for (int i = 0; i < nNeoScreenWidth * 224 / 16; i++) {
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+		}
+#else
 		switch (nBurnBpp) {
 			case 4: {
-				unsigned int* pClear = (unsigned int*)pBurnDraw;
-				for (int i = 0; i < nNeoScreenWidth * 224 / 8; i++) {
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
+					unsigned int* pClear = (unsigned int*)pBurnDraw;
+					for (int i = 0; i < nNeoScreenWidth * 224 / 8; i++) {
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+					}
+					break;
 				}
-				break;
-			}
 
 			case 3: {
-				unsigned char* pClear = pBurnDraw;
-				unsigned char r = nColour;
-				unsigned char g = (r >> 8) & 0xFF;
-				unsigned char b = (r >> 16) & 0xFF;
-				r &= 0xFF;
-				for (int i = 0; i < nNeoScreenWidth * 224; i++) {
-					*pClear++ = r;
-					*pClear++ = g;
-					*pClear++ = b;
+					unsigned char* pClear = pBurnDraw;
+					unsigned char r = nColour;
+					unsigned char g = (r >> 8) & 0xFF;
+					unsigned char b = (r >> 16) & 0xFF;
+					r &= 0xFF;
+					for (int i = 0; i < nNeoScreenWidth * 224; i++) {
+						*pClear++ = r;
+						*pClear++ = g;
+						*pClear++ = b;
+					}
+					break;
 				}
-				break;
-			}
 
 			case 2: {
-				unsigned int* pClear = (unsigned int*)pBurnDraw;
-				nColour |= nColour << 16;
-				for (int i = 0; i < nNeoScreenWidth * 224 / 16; i++) {
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
+					unsigned int* pClear = (unsigned int*)pBurnDraw;
+					nColour |= nColour << 16;
+					for (int i = 0; i < nNeoScreenWidth * 224 / 16; i++) {
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+						*pClear++ = nColour;
+					}
+					break;
 				}
-				break;
-			}
 		}
+#endif
 	} else {
+	#if USE_BPP_RENDERING == 16
+		memset(pBurnDraw, 0, nNeoScreenWidth * 448);
+	#else
 		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
+	#endif
 	}
 }

@@ -50,6 +50,9 @@ int NeoRenderText()
 	}
 	#endif
 
+#if USE_BPP_RENDERING == 16
+	RenderTile = *RenderTile16;
+#else
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
@@ -67,6 +70,7 @@ int NeoRenderText()
 				return 1;
 		}
 	}
+#endif
 
 	if (!bBIOSTextROMEnabled && nBankswitch) {
 		if (nBankswitch == 1) {

@@ -1,7 +1,9 @@
 // FB Alpha sample player module
 
 #include "burnint.h"
+#ifndef __LIBSNES__
 #include "direct.h"
+#endif
 #include "samples.h"
 
 #define SAMPLE_DIRECTORY	szAppSamplesPath

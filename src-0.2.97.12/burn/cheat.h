@@ -12,7 +12,7 @@ struct CheatAddressInfo {
 };
 
 struct CheatOption {
-	TCHAR szOptionName[CHEAT_MAX_NAME];
+	char szOptionName[CHEAT_MAX_NAME];
 	struct CheatAddressInfo AddressInfo[CHEAT_MAX_ADDRESS + 1];
 };
 
@@ -23,7 +23,7 @@ struct CheatInfo {
 	int nStatus;								// 0 = Inactive
 	int nCurrent;								// Currently selected option
 	int nDefault;								// Default option
-	TCHAR szCheatName[CHEAT_MAX_NAME];
+	char szCheatName[CHEAT_MAX_NAME];
 	struct CheatOption* pOption[CHEAT_MAX_OPTIONS];
 };
 

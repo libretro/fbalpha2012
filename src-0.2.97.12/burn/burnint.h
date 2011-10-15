@@ -7,7 +7,11 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef __LIBSNES__
+#include "port-typedefs.h"
+#else
 #include "tchar.h"
+#endif
 #include "burn.h"
 
 // ---------------------------------------------------------------------------

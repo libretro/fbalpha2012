@@ -1,9 +1,15 @@
 // Burn - Drivers module
 
+#include <wchar.h>
+
+#ifdef __LIBSNES__
+#include "port-typedefs.h"
+#endif
+
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#include "driverlist.h"
+#include "../generated/driverlist.h"
 
 // filler function, used if the application is not printing debug messages
 static int __cdecl BurnbprintfFiller(int, TCHAR* , ...) { return 0; }

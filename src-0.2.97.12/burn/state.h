@@ -4,6 +4,10 @@
  extern "C" {
 #endif
 
+#ifdef __LIBSNES__
+#include "port-typedefs.h"
+#endif
+
 /* Scan driver data */
 int BurnAreaScan(int nAction, int* pnMin);
 

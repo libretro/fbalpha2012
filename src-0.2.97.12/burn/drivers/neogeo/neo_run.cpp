@@ -772,9 +772,9 @@ int NeoScan(int nAction, int* pnMin)
 		SCAN_VAR(nZ80Bank0); SCAN_VAR(nZ80Bank1); SCAN_VAR(nZ80Bank2); SCAN_VAR(nZ80Bank3);
 		SCAN_VAR(nNeo68KROMBank);
 
-		NeoGraphicsRAMBank -= (unsigned int)NeoGraphicsRAM;
+		NeoGraphicsRAMBank -= (uintptr_t)NeoGraphicsRAM;
 		SCAN_VAR(NeoGraphicsRAMBank); SCAN_VAR(NeoGraphicsRAMPointer); SCAN_VAR(nNeoGraphicsModulo);
-		NeoGraphicsRAMBank += (unsigned int)NeoGraphicsRAM;
+		NeoGraphicsRAMBank += (uintptr_t)NeoGraphicsRAM;
 
 		SCAN_VAR(nNeoSpriteFrame); SCAN_VAR(nSpriteFrameSpeed); SCAN_VAR(nSpriteFrameTimer);
 
@@ -790,9 +790,9 @@ int NeoScan(int nAction, int* pnMin)
 
 		SCAN_VAR(nInputSelect);
 
-		NeoInputBank -= (unsigned int)NeoInput;
+		NeoInputBank -= (uintptr_t)NeoInput;
 		SCAN_VAR(NeoInputBank);
-		NeoInputBank += (unsigned int)NeoInput;
+		NeoInputBank += (uintptr_t)NeoInput;
 
 		SCAN_VAR(nAnalogAxis);
 

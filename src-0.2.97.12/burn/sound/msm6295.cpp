@@ -73,13 +73,13 @@ int MSM6295Scan(int nChip, int /*nAction*/)
 	SCAN_VAR(nMSM6295Status[nChip]);
 
 	for (int i = 0; i < 4; i++) {
-		MSM6295SampleInfo[nChip][i] -= (unsigned int)MSM6295ROM;
+		MSM6295SampleInfo[nChip][i] -= (uintptr_t)MSM6295ROM;
 		SCAN_VAR(MSM6295SampleInfo[nChip][i]);
-		MSM6295SampleInfo[nChip][i] += (unsigned int)MSM6295ROM;
+		MSM6295SampleInfo[nChip][i] += (uintptr_t)MSM6295ROM;
 
-		MSM6295SampleData[nChip][i] -= (unsigned int)MSM6295ROM;
+		MSM6295SampleData[nChip][i] -= (uintptr_t)MSM6295ROM;
 		SCAN_VAR(MSM6295SampleData[nChip][i]);
-		MSM6295SampleData[nChip][i] += (unsigned int)MSM6295ROM;
+		MSM6295SampleData[nChip][i] += (uintptr_t)MSM6295ROM;
 	}
 
 	return 0;

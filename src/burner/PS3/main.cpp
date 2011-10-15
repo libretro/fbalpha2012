@@ -174,7 +174,8 @@ int  main(int argc, char **argv)
 				break;
 			case PAUSE:
 				psglClearUI();
-				psglRenderPaused();
+				CalculateViewports();
+				psglRenderAlpha();
 				InGameMenu();
 				InGameFrameMove();		
 #ifdef CELL_DEBUG_CONSOLE
@@ -184,7 +185,8 @@ int  main(int argc, char **argv)
 				break;
 			case INPUT_MENU:						
 				psglClearUI();
-				psglRenderPaused();
+				CalculateViewports();
+				psglRenderAlpha();
 				InputMenu();
 				InputFrameMove();			
 #ifdef CELL_DEBUG_CONSOLE
@@ -194,14 +196,15 @@ int  main(int argc, char **argv)
 				break;
 			case DIP_MENU:						
 				psglClearUI();
-				psglRenderPaused();
+				CalculateViewports();
+				psglRenderAlpha();
 				DipMenu();
 				DipFrameMove();			
 				psglRenderUI();
 				break;
 			case SCREEN_RESIZE:
 				psglClearUI();			
-				psglRenderStretch();
+				CalculateViewports();
 				psglRenderAlpha();
 				doStretch();
 				StretchMenu();
@@ -228,6 +231,7 @@ int  main(int argc, char **argv)
 						audio_check(audio_samples);
 						nCurrentFrame++;
 						VidFrame_Recalc();
+						psglRenderUI();
 						InputMake();
 #ifdef CELL_DEBUG_CONSOLE
 						cellConsolePoll();
@@ -240,6 +244,7 @@ int  main(int argc, char **argv)
 						audio_check(audio_samples);
 						nCurrentFrame++;
 						VidFrame();
+						psglRenderUI();
 						InputMake();
 #ifdef CELL_DEBUG_CONSOLE
 						cellConsolePoll();

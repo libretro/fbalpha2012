@@ -4,12 +4,6 @@
 
 void setWindowAspect(bool first_boot)
 {
-	if(first_boot)
-	{
-		nVidOriginalScrnAspectX = nVidScrnAspectX;
-		nVidOriginalScrnAspectY = nVidScrnAspectY;
-	}
-
 	custom_aspect_ratio_mode = 0;		//assume this is 0
 
 	switch(nVidScrnAspectMode)
@@ -95,15 +89,10 @@ void setWindowAspect(bool first_boot)
 			}
 			break;
 		case ASPECT_RATIO_AUTO_FBA:
-			if(bDrvOkay)
-			{
-				nVidScrnAspectX = nVidOriginalScrnAspectX;
-				nVidScrnAspectY = nVidOriginalScrnAspectY;
-			}
 			break; 
 	}
 
-	vidScrnAspect = (float)nVidScrnAspectX / (float)nVidScrnAspectY;
+	m_ratio = ((float)nVidScrnAspectX/nVidScrnAspectY);
 }
 
 void createNeedDir()

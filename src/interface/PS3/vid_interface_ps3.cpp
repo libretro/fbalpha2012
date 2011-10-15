@@ -10,12 +10,10 @@ int bVidTripleBuffer = 1;			// 1 = use triple buffering
 int nVidRotationAdjust = 0;			// & 1: do not rotate the graphics for vertical games,  & 2: Reverse flipping for vertical games
 unsigned int vidFilterLinear = 0;		// for shader #1 - 1 = linear filter, 0 = point filter
 unsigned int vidFilterLinear2 = 0;		// for shader #2 - 1 = linear filter, 0 = point filter
-int nVidOriginalScrnAspectX;
-int nVidOriginalScrnAspectY;
 int nVidScrnAspectX = 4;			// Aspect ratio (X-axis)of the display screen
 int nVidScrnAspectY = 3;			// Aspect ratio (Y-axis) of the display screen
 int nVidScrnAspectMode = ASPECT_RATIO_4_3;
-float vidScrnAspect = ASPECT_RATIO_4_3;		// Aspect ratio
+float m_ratio = ASPECT_RATIO_4_3;		// Aspect ratio
 int nVidImageWidth = DEFAULT_IMAGE_WIDTH;	// Memory buffer size
 int nVidImageHeight = DEFAULT_IMAGE_HEIGHT;
 int nVidImagePitch = 0;				// Memory buffer pitch
@@ -28,8 +26,9 @@ static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;
 int nXOffset = 0;
 int nYOffset = 0;
-int nXScale = 0;
-int nYScale = 0;
+uint32_t m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
+uint32_t m_viewport_x_temp, m_viewport_y_temp, m_viewport_width_temp, m_viewport_height_temp, m_delta_temp;
+GLfloat m_left, m_right, m_bottom, m_top, m_zNear, m_zFar;
 
 extern struct BurnDriver * pDriver[];
 

@@ -10,8 +10,8 @@ extern std::vector<std::string> m_ListShader2Data;
 static PSGLdevice* psgl_device = NULL;
 static PSGLcontext* psgl_context = NULL;
 
-static GLuint gl_width = 0;
-static GLuint gl_height = 0;
+GLuint gl_width = 0;
+GLuint gl_height = 0;
 static int nImageWidth;
 static int nImageHeight;
 static int nGameWidth = 0;
@@ -34,6 +34,9 @@ static GLuint cg_viewport_width;
 static GLuint cg_viewport_height;
 static GLuint bufferID = 0;
 static uint32_t frame_count;
+extern GLfloat m_left, m_right, m_bottom, m_top, m_zNear, m_zFar;
+uint32_t m_overscan;
+float m_overscan_amount;
 
 typedef struct dstResType
 {
@@ -65,18 +68,18 @@ unsigned int __cdecl HighCol16(int r, int g, int b, int);
 unsigned int __cdecl HighCol24(int r, int g, int b, int);
 
 // normal vertex
-static const GLfloat   verts  [] = {
-      -1.0f, -1.0f, 0.0f,			// bottom left
-      1.0f, -1.0f, 0.0f,			// bottom right
-      1.0f,  1.0f, 0.0f,			// top right
-      -1.0f, 1.0f, 0.0f				// top left
-};			
+static const GLfloat verts[] = {
+	0, 0,
+	1, 0,
+	1, 1,
+	0, 1,
+};
 
 static const GLfloat   tverts[] = {
-      0.0f, 1.0f,						
-      1.0f, 1.0f, 
-      1.0f, 0.0f, 
-      0.0f, 0.0f
+      0, 1,						
+      1, 1, 
+      1, 0, 
+      0, 0
 };
 
 static const GLfloat   tvertsFlippedRotated[] = {	
@@ -213,7 +216,6 @@ void _psglInitCG()
 {
 	char shaderFile[255];
 
-
 	CgContext = cgCreateContext();
 	cgRTCgcInit();
 
@@ -239,27 +241,25 @@ void apply_rotation_settings(void)
 {
 	if (nRotateGame & 1)		// do not rotate the graphics for vertical games
 	{
+		glVertexPointer(2, GL_FLOAT, 0, verts);
 		if (nRotateGame & 2)	// reverse flipping for vertical games
 		{
-			glVertexPointer(3, GL_FLOAT, 0, verts);
 			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlippedRotated);
 		}
 		else
 		{
-			glVertexPointer(3, GL_FLOAT, 0, verts);
 			glTexCoordPointer(2, GL_FLOAT, 0, tvertsVertical);
 		}
 	}
 	else				// rotate the graphics for vertical games
 	{
+		glVertexPointer(2, GL_FLOAT, 0, verts);
 		if (nRotateGame & 2)	// reverse flipping for vertical games
 		{
-			glVertexPointer(3, GL_FLOAT, 0, verts);
 			glTexCoordPointer(2, GL_FLOAT, 0, tvertsFlipped);
 		}
 		else
 		{
-			glVertexPointer(3, GL_FLOAT, 0, verts);
 			glTexCoordPointer(2, GL_FLOAT, 0, tverts);
 		}
 	}
@@ -343,6 +343,14 @@ void psglInitGL(void)
 	
 	psgl_device = psglCreateDeviceExtended(&params); 
 	psgl_context = psglCreateContext();
+
+	psglGetDeviceDimensions(psgl_device, &gl_width, &gl_height); 
+
+	if(m_viewport_width == 0)
+		m_viewport_width = gl_width;
+	if(m_viewport_height == 0)
+		m_viewport_height = gl_height;
+
 	psglMakeCurrent(psgl_context, psgl_device);
 
 	psglResetCurrentContext();
@@ -579,6 +587,75 @@ int _psglInit(void)
 	return 0;
 }
 
+static void glCalculateViewport(int outwidth, int outheight)
+{
+	float device_aspect = psglGetDeviceAspectRatio(psgl_device);
+	GLuint temp_width = gl_width;
+	GLuint temp_height = gl_height;
+	float desired_aspect = m_ratio;
+	float delta;
+	if(custom_aspect_ratio_mode)
+	{
+		m_viewport_x_temp = m_viewport_x;
+		m_viewport_y_temp = m_viewport_y;
+		m_viewport_width_temp = m_viewport_width;
+		m_viewport_height_temp = m_viewport_height;
+	}
+	else if ( (int)(device_aspect*1000) > (int)(m_ratio *1000) )
+	{
+		delta = (m_ratio / device_aspect - 1.0) / 2.0 + 0.5;
+		m_viewport_x_temp = temp_width * (0.5 - delta);
+		m_viewport_y_temp = 0;
+		m_viewport_width_temp = (int)(2.0 * temp_width * delta);;
+		m_viewport_height_temp = temp_height;
+	}
+	else if ( (int)(device_aspect*1000) < (int)(m_ratio * 1000) )
+	{
+		delta = (device_aspect / m_ratio - 1.0) / 2.0 + 0.5;
+		m_viewport_x_temp = 0;
+		m_viewport_y_temp = temp_height * (0.5 - delta);
+		m_viewport_width_temp = temp_width;
+		m_viewport_height_temp = (int)(2.0 * temp_height * delta);
+	}
+	else
+	{
+		m_viewport_x_temp = 0;
+		m_viewport_y_temp = 0;
+		m_viewport_width_temp = temp_width;
+		m_viewport_height_temp = temp_height;
+	}
+	if(m_overscan)
+	{
+		m_left = -m_overscan_amount/2;
+		m_right = 1 + m_overscan_amount/2;
+		m_bottom = -m_overscan_amount/2;
+		m_top = 1 + m_overscan_amount/2;
+		m_zFar = -1;
+		m_zNear = 1;
+	}
+	else
+	{
+		m_left = 0;
+		m_right = 1;
+		m_bottom = 0;
+		m_top = 1;
+		m_zNear = -1;
+		m_zFar = 1;
+	}
+	cg_viewport_width = m_viewport_width_temp;
+	cg_viewport_height = m_viewport_height_temp;
+}
+
+void glSetViewports()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(m_viewport_x_temp, m_viewport_y_temp, m_viewport_width_temp, m_viewport_height_temp);
+	glOrthof(m_left, m_right, m_bottom, m_top, m_zNear, m_zFar);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 void CalculateViewports(void)
 {
 	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
@@ -589,12 +666,24 @@ void CalculateViewports(void)
 	{
 		nImageWidth  = nNewImageWidth;
 		nImageHeight = nNewImageHeight;
-		glCalculateViewport(nImageWidth, nImageHeight);
 	}
+	glCalculateViewport(nImageWidth, nImageHeight);
+	glSetViewports();
 	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
 	VidSCopyImage(texture);
 	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 }
+
+#define set_cg_params() \
+cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
+cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter2f(cg_v_video_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_texture_size, nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter1f(cgp_timer, frame_count); \
+cgGLSetParameter1f(cgp_vertex_timer, frame_count);
 
 void psglRender(void)
 {
@@ -614,47 +703,13 @@ void psglRender(void)
 	{
 		ShowFPS();
 	}
-
-	psglSwap();
-	cellSysutilCheckCallback();
 }
 
 #define ALPHA 0xA0
 
-void psglRenderPaused()			 
-{
-	CalculateViewports();
-	psglRenderAlpha();
-}
-
-void psglRenderStretch()			 
-{
-	int32_t nrotategame_mask = ((nRotateGame) | -(nRotateGame)) >> 31;
-	nImageWidth  = ((gl_height) & nrotategame_mask) | ((gl_width) & ~nrotategame_mask);
-	nImageHeight = ((gl_width) & nrotategame_mask) | ((gl_height) & ~nrotategame_mask);
-
-	glViewport(nXOffset, nYOffset, gl_width + nXScale , gl_height + nYScale);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrthof(nXOffset, gl_width, gl_height + nYOffset, 0, -1.0, 1.0);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	uint8_t* texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
-	VidSCopyImage(texture);
-	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
-
-}
-
-
 void psglRenderAlpha(void)
 {
-	frame_count += 1;
+	frame_count++;
 
 	uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_READ_WRITE);
 	for(int i = 0; i != nVidImageHeight; i++)

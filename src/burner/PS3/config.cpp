@@ -35,8 +35,6 @@ int configAppLoadXml()
 
 	init_setting_int("xoffset", nXOffset, 0);
 	init_setting_int("yoffset", nYOffset, 0);
-	init_setting_int("xscale", nXScale, 0);
-	init_setting_int("yscale", nYScale, 0);
 	init_setting_uint("scalingfactor", bVidScalingFactor, 1);
 	init_setting_bool("fbomode", bVidFBOEnabled, false);
 
@@ -48,6 +46,13 @@ int configAppLoadXml()
 	init_setting_int("aspectx", nVidScrnAspectX, 4);
 	init_setting_int("aspecty", nVidScrnAspectY, 3);
 	init_setting_int("aspectmode", nVidScrnAspectMode, 0);
+
+	init_setting_uint("viewport_x", m_viewport_x, 0);
+	init_setting_uint("viewport_y", m_viewport_y, 0);
+	init_setting_uint("viewport_width", m_viewport_width, 0);
+	init_setting_uint("viewport_height", m_viewport_height, 0);
+	init_setting_uint("overscan",m_overscan, 0);
+	//init_setting_uint("overscan_amount",m_overscan_amount, 0);
 
 	// gui
 	init_setting_int("lastrom", nLastRom, 0);
@@ -104,8 +109,6 @@ int configAppSaveXml()
 
 	config_set_int(currentconfig, "xoffset", nXOffset);
 	config_set_int(currentconfig, "yoffset", nYOffset);
-	config_set_int(currentconfig, "xscale", nXScale);
-	config_set_int(currentconfig, "yscale", nYScale);
 	config_set_int(currentconfig, "scalingfactor", bVidScalingFactor);
 	config_set_bool(currentconfig, "fbomode", bVidFBOEnabled);
 
@@ -116,6 +119,12 @@ int configAppSaveXml()
 	config_set_int(currentconfig, "aspectx", nVidScrnAspectX);
 	config_set_int(currentconfig, "aspecty", nVidScrnAspectY);
 	config_set_int(currentconfig, "aspectmode", nVidScrnAspectMode);
+	config_set_uint(currentconfig, "viewport_x", m_viewport_x);
+	config_set_uint(currentconfig, "viewport_y", m_viewport_y);
+	config_set_uint(currentconfig, "viewport_width", m_viewport_width);
+	config_set_uint(currentconfig, "viewport_height", m_viewport_height);
+	config_set_uint(currentconfig, "overscan",m_overscan);
+	//config_set_uint(currentconfig, "overscan_amount",m_overscan_amount);
 
 	// gui
 	config_set_int(currentconfig, "lastrom", nLastRom);

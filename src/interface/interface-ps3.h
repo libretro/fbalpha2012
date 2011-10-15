@@ -37,7 +37,7 @@ extern unsigned int	vidFilterLinear;
 extern unsigned int	vidFilterLinear2;
 extern int		nVidScrnAspectX;
 extern int		nVidScrnAspectY;
-extern float		vidScrnAspect;
+extern float		m_ratio;
 extern bool		autoVidScrnAspect;
 extern unsigned char*	pVidImage;
 extern int		nVidImageWidth;

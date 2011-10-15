@@ -809,6 +809,10 @@ void ConfigMenu()
 	cellDbgFontDraw();
 	number++;
 
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_OVERSCAN ? COLS : 0xFFFFFFFF, "Overscan: %f", m_overscan_amount);
+	cellDbgFontDraw();
+	number++;
+
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_VSYNC ? COLS : 0xFFFFFFFF, "Vertical Sync : %s", bVidVSync ? "Yes" : "No");
 	cellDbgFontDraw();
 	number++;
@@ -1043,6 +1047,35 @@ void ConfigFrameMove()
 				//reapply screen here
 				BurnReinitScrn();
 				psglRedraw();
+			}
+			break;
+		case SETTING_OVERSCAN:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(m_overscan_amount == 0.0f)
+					m_overscan = false;
+				else
+					m_overscan = true;
+				m_overscan_amount -= 0.01f;
+				CalculateViewports();
+				glSetViewports();
+			}
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(m_overscan_amount == 0.0f)
+					m_overscan = false;
+				else
+					m_overscan = true;
+				m_overscan_amount += 0.01f;
+				CalculateViewports();
+				glSetViewports();
+			}
+			if(CTRL_START(old_state & diff_state))
+			{
+				m_overscan = false;
+				m_overscan_amount = 0.0f;
+				CalculateViewports();
+				glSetViewports();
 			}
 			break;
 		case SETTING_VSYNC:
@@ -2048,6 +2081,10 @@ void InGameMenu()
 	cellDbgFontDraw();
 	number++;
 
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_OVERSCAN ? COLS : 0xFFFFFFFF, "Overscan: %f", m_overscan_amount);
+	cellDbgFontDraw();
+	number++;
+
 	char rotatemsg[3][256] = {{"Rotate for Vertical Games"},{"Do not rotate for Vertical Games"},{"Reverse flipping for vertical games"}};
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, inGameIndex == INGAME_ROTATE ? COLS : 0xFFFFFFFF, "Rotation Adjust: %s", rotatemsg[nVidRotationAdjust]);     
 	cellDbgFontDraw();
@@ -2284,6 +2321,35 @@ void InGameFrameMove()
 				//reapply screen here
 				BurnReinitScrn();
 				psglRedraw();
+			}
+			break;
+		case INGAME_OVERSCAN:
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state))
+			{
+				if(m_overscan_amount == 0.0f)
+					m_overscan = false;
+				else
+					m_overscan = true;
+				m_overscan_amount -= 0.01f;
+				CalculateViewports();
+				glSetViewports();
+			}
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state))
+			{
+				if(m_overscan_amount == 0.0f)
+					m_overscan = false;
+				else
+					m_overscan = true;
+				m_overscan_amount += 0.01f;
+				CalculateViewports();
+				glSetViewports();
+			}
+			if(CTRL_START(old_state & diff_state))
+			{
+				m_overscan = false;
+				m_overscan_amount = 0.0f;
+				CalculateViewports();
+				glSetViewports();
 			}
 			break;
 		case INGAME_ROTATE:

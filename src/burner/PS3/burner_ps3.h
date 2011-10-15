@@ -119,8 +119,13 @@ extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
 
 // vid_psgl.cpp
+extern uint32_t m_overscan;
+extern float m_overscan_amount;
+extern uint32_t m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
+extern uint32_t m_viewport_x_temp, m_viewport_y_temp, m_viewport_width_temp, m_viewport_height_temp, m_delta_temp;
 extern uint32_t currentAvailableResolutionId;
 extern uint32_t currentAvailableResolutionNo;
+extern void glSetViewports();
 
 typedef struct {
 int index;
@@ -187,8 +192,6 @@ extern int nSavestateSlot;
 
 extern int nXOffset;
 extern int nYOffset;
-extern int nXScale;
-extern int nYScale;
 
 extern void UpdateConsoleXY(const char *text, float X, float Y);
 

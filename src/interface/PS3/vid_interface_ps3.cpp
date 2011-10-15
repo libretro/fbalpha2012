@@ -21,9 +21,6 @@ bool bVidRecalcPalette;
 bool bVidFBOEnabled;				// FBO/Dual shader mode
 unsigned int bVidScalingFactor = 1;		// Scaling factor for use with FBO mode
 unsigned char* pVidImage = NULL;		// Memory buffer
-//unsigned char* pVidTransImage = NULL;
-//static unsigned int* pVidTransPalette = NULL;
-const int transPaletteSize = 65536;
 int nXOffset = 0;
 int nYOffset = 0;
 uint32_t m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
@@ -43,26 +40,6 @@ unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 	return t;
 }
 
-#if 0
-unsigned int __cdecl HighCol16(int r, int g, int b, int /* i */)
-{
-	unsigned int t;
-	t  = (r << 8) & 0xf800; // rrrr r000 0000 0000
-	t |= (g << 3) & 0x07e0; // 0000 0ggg ggg0 0000
-	t |= (b >> 3) & 0x001f; // 0000 0000 000b bbbb
-	return t;
-}
-
-unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
-{
-	unsigned int t;
-	t  = (r << 16) & 0xff0000;
-	t |= (g << 8 ) & 0x00ff00;
-	t |= (b      ) & 0x0000ff;
-	return t;
-}
-#endif
-
 // Forward to VidOut functions
 int VidInit()
 {
@@ -76,24 +53,6 @@ int VidInit()
 		{
 			nBurnBpp = SCREEN_RENDER_TEXTURE_BPP; // Set Burn library Bytes per pixel
 			bVidOkay = true;
-
-			#if 0
-			if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nBurnBpp > 2)
-			{
-				nBurnBpp = BPP_16_SCREEN_RENDER_TEXTURE_BPP;
-
-				pVidTransPalette = (unsigned int*)realloc(pVidTransPalette, transPaletteSize * sizeof(int));
-				pVidTransImage = (uint8_t *)realloc(pVidTransImage, nVidImageWidth * nVidImageHeight * (nBurnBpp >> 1) * sizeof(short));
-
-				BurnHighCol = HighCol15;
-
-				if (pVidTransPalette == NULL || pVidTransImage == NULL)
-				{
-					VidExit();
-					nRet = 1;
-				}
-			}
-			#endif
 		}
 	}
 
@@ -115,70 +74,9 @@ int VidExit()
 	nBurnPitch = 0;
 	nBurnBpp = 0;
 
-	#if 0
-	free(pVidTransPalette);
-	pVidTransPalette = NULL;
-	free(pVidTransImage);
-	pVidTransImage = NULL;
-	#endif
 
 	return nRet;
 }
-
-#if 0
-int VidFrame_RecalcPalette()
-{
-	unsigned short* pSrc = (unsigned short*)pVidTransImage;
-	unsigned char* pDest = pVidImage;
-
-	uint64_t r = 0;
-	do{
-		uint64_t g = 0;
-		do{
-			uint64_t b = 0;
-			do{
-				uint64_t r_ = r | (r >> 5);
-				uint64_t g_ = g | (g >> 5);
-				uint64_t b_ = b | (b >> 5);
-				pVidTransPalette[(r << 7) | (g << 2) | (b >> 3)] = ARGB(r_,g_,b_);
-				b += 8;
-			}while(b < 256);
-			g += 8;
-		}while(g < 256);
-		r += 8;
-	}while(r < 256);
-	bVidRecalcPalette = false;
-
-	return 0;
-}
-
-int VidFrame_Recalc()
-{
-	unsigned short* pSrc = (unsigned short*)pVidTransImage;
-	unsigned char* pDest = pVidImage;
-
-	pBurnDraw = pVidTransImage;
-	nBurnPitch = nVidImageWidth << 1;
-	pDriver[nBurnDrvSelect]->Frame();
-	psglRender();
-
-	int y = 0;
-	do{
-		int x = 0;
-
-		do{
-			((unsigned int*)pDest)[x] = pVidTransPalette[pSrc[x]];
-			x++;
-		}while(x < nVidImageWidth);
-
-		y++;
-		pSrc += nVidImageWidth;
-		pDest += nVidImagePitch;
-	}while(y < nVidImageHeight);
-
-	return 0;
-}
-#endif
 
 int VidFrame()
 {
@@ -208,12 +106,5 @@ int VidReinit()
 
 	CalculateViewports();
 
-	#if 0
-	if(pVidTransImage)
-	{
-		nCurrentFrame++;
-		VidFrame_RecalcPalette();
-	}
-	#endif
 	return 0;
 }

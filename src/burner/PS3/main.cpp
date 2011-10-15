@@ -222,11 +222,6 @@ int  main(int argc, char **argv)
 				pBurnSoundOut = pAudNextSound;
 				uint32_t audio_samples = FRAMES_TO_SAMPLES(nAudSegLen);
 				nBurnBpp = 2;
-   				//int width, height;
-				//BurnDrvGetVisibleSize(&width, &height);
-				//nBurnPitch = width * sizeof(uint16_t);
-				//nVidImageWidth = width;
-				//nVidImageHeight = height;
 				do{
 					audio_check(audio_samples);
 					nCurrentFrame++;

@@ -508,22 +508,7 @@ static int _psglTextureInit()
 	// Use our callback to get colors:
 	VidRecalcPal();
 
-	switch(nBurnBpp)
-	{
-		case BPP_16_SCREEN_RENDER_TEXTURE_BPP:
-			VidHighCol = HighCol15;
-			break;
-		#if 0
-		case BPP_32_SCREEN_RENDER_TEXTURE_BPP:
-			VidHighCol = HighCol24;
-			break;
-		#endif
-	}
-
-	#if 0
-	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY))
-		BurnHighCol = VidHighCol;
-	#endif
+	VidHighCol = HighCol15;
 	BurnHighCol = VidHighCol;
 
 	//End of callback

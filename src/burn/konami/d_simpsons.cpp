@@ -576,11 +576,7 @@ static void DrvRecalcPal()
 		g = (g << 3) | (g >> 2);
 		b = (b << 3) | (b >> 2);
 
-#ifdef SN_TARGET_PS3
-		DrvPalette[i] = ARGB(r, g, b);
-#else
 		DrvPalette[i] = BurnHighCol(r, g, b, 0);
-#endif
 		Palette[i] = (r << 16) | (g << 8) | b;
 	}
 }

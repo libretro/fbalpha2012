@@ -119,6 +119,7 @@ extern int nVidOriginalScrnAspectX;
 extern int nVidOriginalScrnAspectY;
 
 // vid_psgl.cpp
+extern int nImageWidth, nImageHeight;
 extern uint32_t m_overscan;
 extern float m_overscan_amount;
 extern uint32_t m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;

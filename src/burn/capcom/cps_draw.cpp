@@ -509,21 +509,6 @@ static void Cps2Layers()
 		Cps2ObjDraw(nPrevPrio + 1, 7);
 }
 
-#ifdef SN_TARGET_PS3
-#define CpsClearScreen() \
-				unsigned int* pClear = (unsigned int*)pBurnDraw; \
-				unsigned int nColour = CpsPal[0xbff ^ 15]; \
-				for (int i = 0; i < 10752; i++) { \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-					*pClear++ = nColour; \
-				}
-#else
 #define CpsClearScreen() \
 		switch (nBurnBpp) { \
 			case 4: { \
@@ -570,15 +555,9 @@ static void Cps2Layers()
 				break; \
 			} \
 		}
-#endif
 
-#ifdef SN_TARGET_PS3
-#define Cps2ClearScreen() \
-		__builtin_memset(pBurnDraw, 0, 344064);
-#else
 #define Cps2ClearScreen() \
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
-#endif
 
 int CpsDraw()
 {

@@ -41,11 +41,7 @@ static inline unsigned int CalcCol(unsigned short nColour)
 	b = (nColour & 0x001F) << 3;	// Blue
 	b |= b >> 5;
 
-#ifdef SN_TARGET_PS3
-   return RGB15(r,g,b);
-#else
 	return BurnHighCol(r, g, b, 0);
-#endif
 }
 
 int CavePalUpdate4Bit(int nOffset, int nNumPalettes)

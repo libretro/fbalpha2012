@@ -669,11 +669,7 @@ int PsikyoshDraw()
 	if (nBurnBpp < 4) {
 		for (int i = 0; i < ScreenSize; i++) {
 			int d = DrvTmpDraw[i];
-#ifdef SN_TARGET_PS3
-			PutPix(pBurnDraw + (i << 1), RGB15(d>>16, d>>8, d));
-#else
 			PutPix(pBurnDraw + (i << 1), BurnHighCol(d>>16, d>>8, d, 0));
-#endif
 		}
 	}
 

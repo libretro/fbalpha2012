@@ -21,8 +21,8 @@ bool bVidRecalcPalette;
 bool bVidFBOEnabled;				// FBO/Dual shader mode
 unsigned int bVidScalingFactor = 1;		// Scaling factor for use with FBO mode
 unsigned char* pVidImage = NULL;		// Memory buffer
-unsigned char* pVidTransImage = NULL;
-static unsigned int* pVidTransPalette = NULL;
+//unsigned char* pVidTransImage = NULL;
+//static unsigned int* pVidTransPalette = NULL;
 const int transPaletteSize = 65536;
 int nXOffset = 0;
 int nYOffset = 0;
@@ -43,6 +43,7 @@ unsigned int __cdecl HighCol15(int r, int g, int b, int  /* i */)
 	return t;
 }
 
+#if 0
 unsigned int __cdecl HighCol16(int r, int g, int b, int /* i */)
 {
 	unsigned int t;
@@ -60,6 +61,7 @@ unsigned int __cdecl HighCol24(int r, int g, int b, int  /* i */)
 	t |= (b      ) & 0x0000ff;
 	return t;
 }
+#endif
 
 // Forward to VidOut functions
 int VidInit()
@@ -75,6 +77,7 @@ int VidInit()
 			nBurnBpp = SCREEN_RENDER_TEXTURE_BPP; // Set Burn library Bytes per pixel
 			bVidOkay = true;
 
+			#if 0
 			if (bDrvOkay && (BurnDrvGetFlags() & BDF_16BIT_ONLY) && nBurnBpp > 2)
 			{
 				nBurnBpp = BPP_16_SCREEN_RENDER_TEXTURE_BPP;
@@ -90,6 +93,7 @@ int VidInit()
 					nRet = 1;
 				}
 			}
+			#endif
 		}
 	}
 
@@ -111,14 +115,17 @@ int VidExit()
 	nBurnPitch = 0;
 	nBurnBpp = 0;
 
+	#if 0
 	free(pVidTransPalette);
 	pVidTransPalette = NULL;
 	free(pVidTransImage);
 	pVidTransImage = NULL;
+	#endif
 
 	return nRet;
 }
 
+#if 0
 int VidFrame_RecalcPalette()
 {
 	unsigned short* pSrc = (unsigned short*)pVidTransImage;
@@ -171,6 +178,7 @@ int VidFrame_Recalc()
 
 	return 0;
 }
+#endif
 
 int VidFrame()
 {
@@ -200,10 +208,12 @@ int VidReinit()
 
 	CalculateViewports();
 
+	#if 0
 	if(pVidTransImage)
 	{
 		nCurrentFrame++;
 		VidFrame_RecalcPalette();
 	}
+	#endif
 	return 0;
 }

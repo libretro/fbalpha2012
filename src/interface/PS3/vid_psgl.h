@@ -25,6 +25,7 @@ extern void setlinear(unsigned int smooth);
 extern uint32_t m_overscan;
 extern float m_overscan_amount;
 
+#if 0
 #define psglRedraw() \
 	if(pVidTransImage) \
 	{ \
@@ -34,6 +35,9 @@ extern float m_overscan_amount;
 	{ \
 		VidFrame(); \
 	}
+#endif
+
+#define psglRedraw() VidFrame();
 
 #define psglClearUI() glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

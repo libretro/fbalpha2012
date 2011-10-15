@@ -211,7 +211,6 @@ int NeoLoadADPCM(int nOffset, int nNum, unsigned char* pDest)
 }
 
 // This function fills the screen with the first palette entry
-#ifndef SN_TARGET_PS3
 void NeoClearScreen()
 {
 	unsigned int nColour = NeoPalette[0x0FFF];
@@ -267,4 +266,3 @@ void NeoClearScreen()
 		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
 	}
 }
-#endif

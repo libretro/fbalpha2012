@@ -33,16 +33,11 @@ static RenderBankFunction* RenderBank;
 
 int NeoRenderSprites()
 {
-   #ifdef SN_TARGET_PS3
-	   if (nLastBPP != nBurnBpp )
-		   nLastBPP = nBurnBpp;
-   #else
 	   if (nLastBPP != nBurnBpp ) {
 		   nLastBPP = nBurnBpp;
 
 		   RenderBank = RenderBankNormal[nBurnBpp - 2];
 	   }
-   #endif
 
 	#ifndef NO_LAYER_ENABLE_TOGGLE
 	if (!(nBurnLayer & 1)) {
@@ -90,18 +85,10 @@ int NeoRenderSprites()
 			}
 
 			if (nBankXPos >= 0 && nBankXPos < (nNeoScreenWidth - nBankXZoom - 1)) {
-            #ifdef SN_TARGET_PS3
-               RenderBankNormal[2][nBankXZoom]();
-            #else
 				   RenderBank[nBankXZoom]();
-            #endif
 			} else {
 				if (nBankXPos >= -nBankXZoom && nBankXPos < nNeoScreenWidth) {
-            #ifdef SN_TARGET_PS3
-               RenderBankNormal[2][nBankXZoom + 16]();
-            #else
 					RenderBank[nBankXZoom + 16]();
-            #endif
 				}
 			}
 		}

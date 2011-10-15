@@ -33,11 +33,7 @@ static inline unsigned int CalcCol(unsigned short a)
 	g *= f; g /= F_OFFSET + 0x0F;
 	b *= f; b /= F_OFFSET + 0x0F;
 
-#ifdef SN_TARGET_PS3
-	return ARGB(r, g, b);
-#else
 	return BurnHighCol(r, g, b, 0);
-#endif
 }
 
 static int CalcAll()

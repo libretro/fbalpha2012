@@ -12,8 +12,8 @@ static PSGLcontext* psgl_context = NULL;
 
 GLuint gl_width = 0;
 GLuint gl_height = 0;
-static int nImageWidth;
-static int nImageHeight;
+int nImageWidth;
+int nImageHeight;
 static int nGameWidth = 0;
 static int nGameHeight = 0;
 static int nRotateGame = 0;
@@ -64,8 +64,9 @@ uint32_t currentAvailableResolutionNo;
 uint32_t currentAvailableResolutionId;
 
 // forward declarations
+unsigned int __cdecl HighCol15(int r, int g, int b, int);
 unsigned int __cdecl HighCol16(int r, int g, int b, int);
-unsigned int __cdecl HighCol24(int r, int g, int b, int);
+//unsigned int __cdecl HighCol24(int r, int g, int b, int);
 
 // normal vertex
 static const GLfloat verts[] = {
@@ -510,15 +511,20 @@ static int _psglTextureInit()
 	switch(nBurnBpp)
 	{
 		case BPP_16_SCREEN_RENDER_TEXTURE_BPP:
-			VidHighCol = HighCol16;
+			VidHighCol = HighCol15;
 			break;
+		#if 0
 		case BPP_32_SCREEN_RENDER_TEXTURE_BPP:
 			VidHighCol = HighCol24;
 			break;
+		#endif
 	}
 
+	#if 0
 	if (bDrvOkay && !(BurnDrvGetFlags() & BDF_16BIT_ONLY))
 		BurnHighCol = VidHighCol;
+	#endif
+	BurnHighCol = VidHighCol;
 
 	//End of callback
 
@@ -711,18 +717,18 @@ void psglRenderAlpha(void)
 {
 	frame_count++;
 
-	uint32_t* texture = (uint32_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_READ_WRITE);
+	uint16_t* texture = (uint16_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_READ_WRITE);
 	for(int i = 0; i != nVidImageHeight; i++)
 	{
 		for(int j = 0; j != nVidImageWidth; j++)
 		{
-			unsigned char r = (texture[(i) * nVidImageWidth + (j)] >> 16);
-			unsigned char g = (texture[(i) * nVidImageWidth + (j)] >> 8 );
-			unsigned char b = (texture[(i) * nVidImageWidth + (j)] & 0xFF);
+			unsigned char r = (texture[(i) * nVidImageWidth + (j)] >> 10) & 0x1f;
+			unsigned char g = (texture[(i) * nVidImageWidth + (j)] >> 5) & 0x1f;
+			unsigned char b = (texture[(i) * nVidImageWidth + (j)]) & 0x1f;
 			r/=2;
 			g/=2;
 			b/=2;
-			uint32_t pix = (r << 16) | (g << 8 )|  b | (ALPHA << 24);
+			uint16_t pix = (r << 10) | (g << 5 ) | b | 0x8000;
 			texture[i * nVidImageWidth + j] = pix;
 		}
 	}

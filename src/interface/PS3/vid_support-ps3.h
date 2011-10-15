@@ -26,7 +26,7 @@
 #endif
 
 #define VidSCopyImage(dst) \
-	unsigned int pitch = nVidImageWidth * sizeof(unsigned int); \
+	unsigned int pitch = nVidImageWidth * sizeof(uint16_t); \
 	uint8_t * ps = pVidImage; \
 	int linesize = nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT; \
 	uint16_t height = nVidImageHeight; \
@@ -34,11 +34,7 @@
 		memcpy(dst, ps, linesize); \
 		ps += linesize; \
 		dst += pitch; \
-		\
-		memcpy(dst, ps, linesize); \
-		ps += linesize; \
-		dst += pitch; \
-		height -= 2; \
+		height--; \
 	}while(height);
 
 #endif

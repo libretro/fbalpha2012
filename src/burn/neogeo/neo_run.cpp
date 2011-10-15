@@ -2106,27 +2106,6 @@ int NeoExit()
 }
 
 // This function fills the screen with the first palette entry
-#ifdef SN_TARGET_PS3
-#define NeoClearScreen() \
-	unsigned int nColour = NeoPalette[0x0FFF]; \
-	if (nColour) \
-   { \
-      unsigned int* pClear = (unsigned int*)pBurnDraw; \
-      for (int i = 0; i < nNeoScreenWidth * 224 / 8; i++) \
-      { \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-         *pClear++ = nColour; \
-      } \
-	} \
-   else \
-		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
-#endif
 
 int NeoRender()
 {

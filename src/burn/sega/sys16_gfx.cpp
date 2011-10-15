@@ -3182,21 +3182,13 @@ static inline int System16CalcPalette()
 		g = (g << 2) | (g >> 4);
 		b = (b << 3) | (b >> 2);
 
-#ifdef SN_TARGET_PS3
-		System16Palette[i / 2] = ARGB(r, g, b);
-#else
 		System16Palette[i / 2] = BurnHighCol(r, g, b, 0);
-#endif
 
 		r = r * 160 / 256;
 		g = g * 160 / 256;
 		b = b * 160 / 256;
 
-#ifdef SN_TARGET_PS3
-		System16Palette[(i >> 1) + System16PaletteEntries] = ARGB(r, g, b);
-#else
 		System16Palette[(i / 2) + System16PaletteEntries] = BurnHighCol(r, g, b, 0);
-#endif
 		System16Palette[(i / 2) + (System16PaletteEntries * 2)] = BurnHighCol(r, g, b, 0);
 	}
 

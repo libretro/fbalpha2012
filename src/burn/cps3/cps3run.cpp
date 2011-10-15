@@ -717,11 +717,7 @@ static void __fastcall cps3WriteWord(uint32_t addr, uint16_t data)
 						 b = b << 3;
 
 						 RamPal[(paldma_dest + i)] = coldata;
-#ifdef SN_TARGET_PS3
-						 CurPal[(paldma_dest + i) ] = RGB15(r,g,b); 
-#else
 						 CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
-#endif
 					 }
 					 Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 				 }
@@ -971,11 +967,7 @@ static void __fastcall cps3VidWriteWord(uint32_t addr, uint16_t data)
 		g |= g >> 5;
 		b |= b >> 5;
 
-#ifdef SN_TARGET_PS3
-		CurPal[palindex] = RGB15(r, g, b);
-#else
 		CurPal[palindex] = BurnHighCol(r, g, b, 0);
-#endif
 
 	}
 }
@@ -2420,11 +2412,7 @@ static int cps3Frame_sfiii2()
 			r |= r >> 5;
 			g |= g >> 5;
 			b |= b >> 5;
-#ifdef SN_TARGET_PS3
-			CurPal[i] = RGB15(r, g, b);
-#else
 			CurPal[i] = BurnHighCol(r, g, b, 0);
-#endif
 		}
 		cps3_palette_change = 0;
 	}
@@ -2480,11 +2468,7 @@ static int cps3Frame()
 			r |= r >> 5;
 			g |= g >> 5;
 			b |= b >> 5;
-#ifdef SN_TARGET_PS3
-			CurPal[i] = RGB15(r, g, b);
-#else
 			CurPal[i] = BurnHighCol(r, g, b, 0);
-#endif
 		}
 		cps3_palette_change = 0;
 	}

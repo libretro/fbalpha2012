@@ -50,10 +50,6 @@ int NeoRenderText()
 	}
 	#endif
 
-   #ifdef SN_TARGET_PS3
-	if (nLastBPP != nBurnBpp )
-		nLastBPP = nBurnBpp;
-   #else
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
@@ -71,7 +67,6 @@ int NeoRenderText()
 				return 1;
 		}
 	}
-   #endif
 
 	if (!bBIOSTextROMEnabled && nBankswitch) {
 		if (nBankswitch == 1) {
@@ -103,11 +98,7 @@ int NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-                  #ifdef SN_TARGET_PS3
-						   RenderTile32();
-                  #else
 						   RenderTile();
-                  #endif
 					}
 				}
 			}
@@ -128,11 +119,7 @@ int NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-                  #ifdef SN_TARGET_PS3
-						   RenderTile32();
-                  #else
 						   RenderTile();
-                  #endif
 					}
 				}
 			}
@@ -155,11 +142,7 @@ int NeoRenderText()
 				if (pTileAttrib[nTile] == 0) {
 					pTileData = pTextROM + (nTile << 5);
 					pTilePalette = &pTextPalette[nPalette >> 8];
-               #ifdef SN_TARGET_PS3
-			         RenderTile32();
-               #else
 				      RenderTile();
-               #endif
 				}
 			}
 		}

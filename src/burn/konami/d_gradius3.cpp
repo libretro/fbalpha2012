@@ -653,11 +653,7 @@ static inline void DrvRecalcPalette()
 		g = (g << 3) | (g >> 2);
 		b = (b << 3) | (b >> 2);
 
-#ifdef SN_TARGET_PS3
-		DrvPalette[i] = ARGB(r, g, b);
-#else
 		DrvPalette[i] = BurnHighCol(r, g, b, 0);
-#endif
 	}
 }
 

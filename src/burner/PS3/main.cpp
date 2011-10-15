@@ -221,36 +221,22 @@ int  main(int argc, char **argv)
 				CalculateViewports();
 				pBurnSoundOut = pAudNextSound;
 				uint32_t audio_samples = FRAMES_TO_SAMPLES(nAudSegLen);
-				if(pVidTransImage)
-				{
-					if(bVidRecalcPalette)
-					{
-						VidFrame_RecalcPalette();
-					}
-					do{
-						audio_check(audio_samples);
-						nCurrentFrame++;
-						VidFrame_Recalc();
-						psglRenderUI();
-						InputMake();
+				nBurnBpp = 2;
+   				//int width, height;
+				//BurnDrvGetVisibleSize(&width, &height);
+				//nBurnPitch = width * sizeof(uint16_t);
+				//nVidImageWidth = width;
+				//nVidImageHeight = height;
+				do{
+					audio_check(audio_samples);
+					nCurrentFrame++;
+					VidFrame();
+					psglRenderUI();
+					InputMake();
 #ifdef CELL_DEBUG_CONSOLE
-						cellConsolePoll();
+					cellConsolePoll();
 #endif
-					}while(is_running);
-				}
-				else
-				{
-					do{
-						audio_check(audio_samples);
-						nCurrentFrame++;
-						VidFrame();
-						psglRenderUI();
-						InputMake();
-#ifdef CELL_DEBUG_CONSOLE
-						cellConsolePoll();
-#endif
-					}while(is_running);
-				}
+				}while(is_running);
 				break;
 		}
 	}while(!exitGame);

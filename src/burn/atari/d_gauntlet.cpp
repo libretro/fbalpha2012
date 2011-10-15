@@ -2300,11 +2300,7 @@
          g = ((nColour >> 4) & 15) * i; 
          b = ((nColour >> 0) & 15) * i; 
   
-#ifdef SN_TARGET_PS3
-         return ARGB(r, g, b); 
-#else
          return BurnHighCol(r, g, b, 0); 
-#endif
  } 
   
  static void DrvCalcPalette() 

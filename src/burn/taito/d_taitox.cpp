@@ -1238,11 +1238,7 @@ static inline unsigned int CalcCol(unsigned short nColour)
 	g = pal5bit(nColour >>  5);
 	b = pal5bit(nColour >>  0);
 
-#ifdef SN_TARGET_PS3
-	return ARGB(r, g, b);
-#else
 	return BurnHighCol(r, g, b, 0);
-#endif
 }
 
 static void TaitoXCalcPalette()

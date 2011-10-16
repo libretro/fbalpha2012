@@ -251,6 +251,10 @@ int BurnDrvGetFamilyFlags();
 int BurnDrvGetSampleInfo(struct BurnSampleInfo *pri, unsigned int i);
 int BurnDrvGetSampleName(char** pszName, unsigned int i, int nAka);
 
+// Extra helpers:
+unsigned int BurnDrvGetIndexByName(const char* name);
+int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext = true, unsigned type = 0);
+
 void Reinitialise();
 
 extern bool bDoIpsPatch;

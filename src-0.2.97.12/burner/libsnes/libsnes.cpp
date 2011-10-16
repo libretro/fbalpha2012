@@ -2,10 +2,9 @@
 #include "../burner.h"
 #include "../gameinp.h"
 #include "../../burn/state.h"
+#include "archive.h" // FEX wrapper.
 #include <string.h>
 #include <stdio.h>
-
-//#include "../archive.h" // FEX wrapper.
 
 #include <vector>
 #include <string>
@@ -450,8 +449,6 @@ bool snes_unserialize(const uint8_t *data, unsigned size)
 void snes_cheat_reset() {}
 void snes_cheat_set(unsigned, bool, const char*) {}
 
-//FIXME
-#if 0
 static int find_rom_by_crc(unsigned crc, const ArcEntry *list, unsigned elems)
 {
    for (unsigned i = 0; i < elems; i++)
@@ -576,17 +573,13 @@ static bool open_archive()
    BurnExtLoadRom = archive_load_rom;
    return true;
 }
-#endif
 
 static bool fba_init(unsigned driver)
 {
    nBurnDrvSelect = driver;
 
-	//FIXME
-	#if 0
    if (!open_archive())
       return false;
-     #endif
 
    BurnDrvInit();
    return true;
@@ -634,8 +627,6 @@ static void reset_dips()
 // Infer paths from basename.
 bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
-//FIXME
-#if 0
    unsigned i = BurnDrvGetIndexByName(g_basename);
    if (i < nBurnDrvCount)
    {
@@ -651,7 +642,6 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
       return true;
    }
    else
-#endif
       return false;
 }
 

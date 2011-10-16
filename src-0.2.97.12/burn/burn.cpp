@@ -1047,3 +1047,86 @@ extern "C" void state_save_register_double(const char* module, int instance, con
 {
 	BurnStateRegister(module, instance, name, (void*)val, size * sizeof(double));
 }
+
+// Extra helpers:
+
+unsigned int BurnDrvGetIndexByName(const char* name)
+{
+   unsigned int ret = ~0U;
+   unsigned int nOldSelect = nBurnDrvSelect;
+   for (unsigned int i = 0; i < nBurnDrvCount; i++) {
+      nBurnDrvSelect = i;
+      if (strcasecmp(BurnDrvGetText(DRV_NAME), name) == 0) {
+         ret = i;
+         break;
+      }
+   }
+   nBurnDrvSelect = nOldSelect;
+   return ret;
+}
+
+int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int type)
+{
+   if (pszName == NULL)
+      return 1;
+
+   const char* pszGameName = NULL;
+
+   if (i == 0) {
+      pszGameName = pDriver[nBurnDrvSelect]->szShortName;
+   } else {
+      int nOldBurnDrvSelect = nBurnDrvSelect;
+      unsigned int j = pDriver[nBurnDrvSelect]->szBoardROM ? 1 : 0;
+
+      // Try BIOS/board ROMs first
+      if (i == 1 && j == 1) {										// There is a BIOS/board ROM
+         pszGameName = pDriver[nBurnDrvSelect]->szBoardROM;
+      }
+
+      if (pszGameName == NULL) {
+         // Go through the list to seek out the parent
+         while (j < i) {
+            const char* pszParent = pDriver[nBurnDrvSelect]->szParent;
+            pszGameName = NULL;
+
+            if (pszParent == NULL) {							// No parent
+               break;
+            }
+
+            for (nBurnDrvSelect = 0; nBurnDrvSelect < nBurnDrvCount; nBurnDrvSelect++) {
+               if (strcmp(pszParent, pDriver[nBurnDrvSelect]->szShortName) == 0) {	// Found parent
+                  pszGameName = pDriver[nBurnDrvSelect]->szShortName;
+                  break;
+               }
+            }
+
+            j++;
+         }
+      }
+
+      nBurnDrvSelect = nOldBurnDrvSelect;
+   }
+
+   if (pszGameName == NULL) {
+      *pszName = NULL;
+      return 1;
+   }
+
+   static char szFilename[256];
+   strcpy(szFilename, pszGameName);
+
+   // add extension
+   if (ext) {
+      if (type == 0) {			// zip
+         strcat(szFilename, ".zip");
+      }
+      else if (type == 1) {		// 7z
+         strcat(szFilename, ".7z");
+      }
+   }
+
+   *pszName = szFilename;
+
+   return 0;
+}
+

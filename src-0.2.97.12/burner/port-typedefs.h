@@ -4,10 +4,11 @@
 #include <stdint.h>
 
 #define TCHAR char
+#undef __cdecl
 #define __cdecl
 
 #define bprintf(...) {}
-#define _strnicmp(s1, s2, n) strncasecmp(s1, s2, (n))
+#define _strnicmp(s1, s2, n) strncasecmp(s1, s2, n)
 #define _stricmp(x, y) strcasecmp(x,y)
 #define _T(x) x
 #define _tcstol strtol

@@ -1439,7 +1439,7 @@ int SekMapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd,
 	return 0;
 }
 
-int SekMapHandler(unsigned int nHandler, unsigned int nStart, unsigned int nEnd, int nType)
+int SekMapHandler(uintptr_t nHandler, unsigned int nStart, unsigned int nEnd, int nType)
 {
 	unsigned char** pMemMap = pSekExt->MemMap + (nStart >> SEK_SHIFT);
 

@@ -8,16 +8,20 @@ struct giSwitch {
 };
 #endif
 
+#ifdef USE_JOYAXIS
 struct giJoyAxis {
 	unsigned char nJoy;				// The joystick number
 	unsigned char nAxis;	   			// The joystick axis number
 };
+#endif
 
+#ifdef USE_MOUSE
 struct giMouseAxis {
 	unsigned char nMouse;				// The mouse number
 	unsigned char nAxis;				// The axis number
 	unsigned short nOffset;				// Used for absolute axes
 };
+#endif
 
 #if 0
 struct giSliderAxis {
@@ -26,10 +30,14 @@ struct giSliderAxis {
 #endif
 
 struct giSlider {
+	#ifdef USE_JOYAXIS
 	union {
 		struct giJoyAxis JoyAxis;
 		unsigned short SliderAxis[2];
 	};
+	#else
+	unsigned short SliderAxis[2];
+	#endif
 	short nSliderSpeed;				// speed with which keys move the slider
 	short nSliderCenter;				// Speed the slider should center itself (high value = slow)
 	int nSliderValue;				// Current position of the slider
@@ -45,17 +53,24 @@ struct giInput {
 	union {
 		unsigned char Constant;
 		unsigned short Switch;
+		#ifdef USE_JOYAXIS
 		struct giJoyAxis JoyAxis;
+		#endif
+		#ifdef USE_MOUSE
 		struct giMouseAxis MouseAxis;
+		#endif
 		struct giSlider Slider;
 	};
 };
 
+#ifdef USE_FORCEFEEDBACK
 struct giForce {
 	unsigned char nInput;				// The input to apply force feedback efects to
 	unsigned char nEffect;				// The effect to use
 };
+#endif
 
+#ifdef USE_MACROS
 struct giMacro {
 	unsigned char nMode;				// 0 = Unused, 1 = used
 
@@ -67,6 +82,7 @@ struct giMacro {
 
 	char szName[17];				// Maximum name length 16 chars
 };
+#endif
 
 #define GIT_CONSTANT		(0x01)
 #define GIT_SWITCH		(0x02)
@@ -93,10 +109,18 @@ struct GameInp {
 	unsigned char nInput;				// PC side: see above
 	unsigned char nType;				// game side: see burn.h
 
+	#if defined(USE_FORCE_FEEDBACK) || defined(USE_MACROS)
 	union {
 		struct giInput Input;
+		#ifdef USE_FORCEFEEDBACK
 		struct giForce Force;
+		#endif
+		#ifdef USE_MACROS
 		struct giMacro Macro;
+		#endif
 	};
+	#else
+	struct giInput Input;
+	#endif
 };
 

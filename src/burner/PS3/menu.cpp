@@ -730,6 +730,10 @@ void ConfigMenu()
 	cellDbgFontDraw();
 	number++;
 
+	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_SOUND_SAMPLERATE ? COLS : 0xFFFFFFFF, "Sound Samplerate : %d", bAudSetSampleRate);
+	cellDbgFontDraw();
+	number++;
+
 	switch(psglGetCurrentResolutionId())
 	{
 		case CELL_VIDEO_OUT_RESOLUTION_480:
@@ -796,6 +800,7 @@ void ConfigMenu()
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_CURRENT_SHADER2 ? COLS : 0xFFFFFFFF, "Current Shader #2: %s", m_ListShader2Data[shaderindex2].c_str());
 	cellDbgFontDraw();	
 	number++;
+
 
 	cellDbgFontPrintf(0.05f, 0.08f + 0.025f * ((float)number), 0.75f, currentConfigIndex == SETTING_BILINEAR_FILTER ? COLS : 0xFFFFFFFF, "Hardware Filter Shader #1: %s", vidFilterLinear ? "Linear" : "Point");
 	cellDbgFontDraw();
@@ -941,6 +946,50 @@ void ConfigFrameMove()
 				psglResolutionSwitch();	
 			}
 			break;
+		case SETTING_SOUND_SAMPLERATE:
+		{
+			if(CTRL_LEFT(new_state & diff_state) | CTRL_LSTICK_LEFT(new_state)) 
+			{
+				switch(bAudSetSampleRate)
+				{
+					case 11025:
+						break;
+					case 22050:
+						bAudSetSampleRate = 11025;
+						bAudReinit = true;
+						break;
+					case 44010:
+						bAudSetSampleRate = 22050;
+						bAudReinit = true;
+						break;
+					case 48010:
+						bAudSetSampleRate = 44010;
+						bAudReinit = true;
+						break;
+				}
+			}
+			if(CTRL_RIGHT(new_state & diff_state) | CTRL_LSTICK_RIGHT(new_state)) 
+			{
+				switch(bAudSetSampleRate)
+				{
+					case 11025:
+						bAudSetSampleRate = 22050;
+						bAudReinit = true;
+						break;
+					case 22050:
+						bAudSetSampleRate = 44010;
+						bAudReinit = true;
+						break;
+					case 44010:
+						bAudSetSampleRate = 48010;
+						bAudReinit = true;
+						break;
+					case 48010:
+						break;
+				}
+			}
+			break;
+		}
 		case SETTING_KEEP_ASPECT:
 			if(CTRL_LEFT(new_state & diff_state))
 			{
@@ -1046,7 +1095,7 @@ void ConfigFrameMove()
 
 				//reapply screen here
 				BurnReinitScrn();
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case SETTING_OVERSCAN:
@@ -2240,7 +2289,7 @@ void InGameFrameMove()
 				sprintf(selectedShader[0].fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex].c_str());
 				psglInitShader(selectedShader[0].fullpath);
 				BurnReinitScrn();
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_CURRENT_SHADER2:
@@ -2262,7 +2311,7 @@ void InGameFrameMove()
 				sprintf(selectedShader[1].fullpath, SHADER_DIRECTORY, m_ListShader2Data[shaderindex2].c_str());
 				psglInitShader(selectedShader[1].fullpath);
 				BurnReinitScrn();
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_KEEP_ASPECT:
@@ -2273,7 +2322,7 @@ void InGameFrameMove()
 					nVidScrnAspectMode--;
 					setWindowAspect(0);
 					BurnReinitScrn();
-					psglRedraw();
+					VidFrame();
 				}
 			}
 			else if(CTRL_RIGHT(new_state & diff_state) | CTRL_CROSS(old_state & diff_state))
@@ -2283,7 +2332,7 @@ void InGameFrameMove()
 					nVidScrnAspectMode++;
 					setWindowAspect(0);
 					BurnReinitScrn();
-					psglRedraw();
+					VidFrame();
 				}
 			}
 			break;
@@ -2292,7 +2341,7 @@ void InGameFrameMove()
 			{
 				vidFilterLinear = !vidFilterLinear;
 				setlinear(vidFilterLinear);
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_BILINEAR_FILTER2:
@@ -2300,7 +2349,7 @@ void InGameFrameMove()
 			{
 				vidFilterLinear2 = !vidFilterLinear2;
 				setlinear(vidFilterLinear2);
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_SCALING_FACTOR:
@@ -2320,7 +2369,7 @@ void InGameFrameMove()
 				//apply scale here, and reapply FBO if activated
 				//reapply screen here
 				BurnReinitScrn();
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_OVERSCAN:
@@ -2360,7 +2409,7 @@ void InGameFrameMove()
 				if (nVidRotationAdjust > 2)
 					nVidRotationAdjust = 0;
 				BurnReinitScrn();	//apply_rotation_settings();
-				psglRedraw();
+				VidFrame();
 			}
 			break;
 		case INGAME_SAVE_STATE:	
@@ -2710,7 +2759,7 @@ void FrameMove()
 				// same game, do nothing
 				old_state = new_state;
 				audio_play();
-				GameStatus = EMULATING;	
+				GameStatus = EMULATING_INIT;	
 				return;
 			}	
 
@@ -2736,7 +2785,7 @@ void FrameMove()
 				//nCurrentBurnDrvSelect = nBurnDrvSelect;
 				nLastRom = entryselected;
 				nLastFilter = CurrentFilter;
-				GameStatus = EMULATING;	
+				GameStatus = EMULATING_INIT;	
 				return;
 
 			}

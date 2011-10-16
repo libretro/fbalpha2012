@@ -7,6 +7,7 @@
 extern cell_audio_handle_t audio_handle;
 extern const struct cell_audio_driver *	driver;
 
+int		bAudSetSampleRate = 48010;
 int		nAudSampleRate = 48010;	// Sample rate
 int		nAudSegCount = 6;	// Segments in the pdsbLoop buffer
 int		nAudSegLen = 0;		// Segment length in samples (calculated from Rate/Fps)

@@ -5,6 +5,7 @@
 #include <PSGL/psgl.h>
 #include <PSGL/psglu.h>
 #include <cell/dbgfont.h>
+#include "burnint.h"
 #include "vid_support-ps3.h"
 
 extern void psglSetVSync(uint32_t enable);
@@ -24,8 +25,14 @@ extern void setlinear(unsigned int smooth);
 
 extern uint32_t m_overscan;
 extern float m_overscan_amount;
+extern struct BurnDriver * pDriver[];
 
-#define psglRedraw() VidFrame();
+#define VidFrame() \
+	uint32_t current_selected_game_index = nBurnDrvSelect; \
+	pBurnDraw = pVidImage; \
+	nBurnPitch = nVidImagePitch; \
+	pDriver[current_selected_game_index]->Frame(); \
+	psglRender();
 
 #define psglClearUI() glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

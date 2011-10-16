@@ -21,6 +21,9 @@
 #endif
 #include "config_file.h"
 
+#define NORMAL_CONTROLS 0
+#define ANALOG_CONTROLS 1
+
 char		szAppBurnVer[16] = "";
 char		szSVNVer[16] = "";
 char		szSVNDate[30] = "";
@@ -35,6 +38,7 @@ bool		bShowFPS = false;
 int		custom_aspect_ratio_mode = 0;
 cell_audio_handle_t audio_handle;
 const struct cell_audio_driver *driver;
+static int	controls;
 
 extern void reset_frame_counter();
  
@@ -146,7 +150,7 @@ int  main(int argc, char **argv)
 	{
 		const char * current_game = strrchr(strdup(argv[1]), '/');
 		directLoadGame(strdup(current_game));
-		GameStatus = EMULATING;	
+		GameStatus = EMULATING_INIT;	
 		nPrevGame = 0;
 	}
 #endif
@@ -215,23 +219,56 @@ int  main(int argc, char **argv)
 				custom_aspect_ratio_mode = 1;
 				nVidScrnAspectMode = ASPECT_RATIO_CUSTOM;
 				break;
+			case EMULATING_INIT:
+			{
+				struct GameInp * pgi;
+				uint32_t i = 0;
+				pBurnSoundOut = pAudNextSound;
+				nBurnBpp = 2;
+				GameStatus = EMULATING;
+				for(i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+				{
+					if(pgi->nType == BIT_ANALOG_REL)
+					{
+						controls = ANALOG_CONTROLS;
+						break;
+					}
+					else
+						controls = NORMAL_CONTROLS;
+				}
+			}
+				break;
 			case EMULATING:
 				if(!is_running)
 					GameStatus = PAUSE;
 				CalculateViewports();
-				pBurnSoundOut = pAudNextSound;
 				uint32_t audio_samples = FRAMES_TO_SAMPLES(nAudSegLen);
-				nBurnBpp = 2;
-				do{
-					audio_check(audio_samples);
-					nCurrentFrame++;
-					VidFrame();
-					psglRenderUI();
-					InputMake();
+				if(controls)
+				{
+					do{
+						audio_check(audio_samples);
+						nCurrentFrame++;
+						VidFrame();
+						psglRenderUI();
+						InputMake_Analog();
 #ifdef CELL_DEBUG_CONSOLE
-					cellConsolePoll();
+						cellConsolePoll();
 #endif
-				}while(is_running);
+					}while(is_running);
+				}
+				else
+				{
+					do{
+						audio_check(audio_samples);
+						nCurrentFrame++;
+						VidFrame();
+						psglRenderUI();
+						InputMake();
+#ifdef CELL_DEBUG_CONSOLE
+						cellConsolePoll();
+#endif
+					}while(is_running);
+				}
 				break;
 		}
 	}while(!exitGame);

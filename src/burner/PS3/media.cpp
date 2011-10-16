@@ -22,7 +22,7 @@ int mediaInit(void)
 
 	if (!bAudOkay || vendetta_hack || bAudReinit)
 	{
-		if(vendetta_hack)
+		if(vendetta_hack && bAudSetSampleRate == 48010)
 		{
 			// If Vendetta is not played with sound samplerate at 44KHz, then
 			// slo-mo Vendetta happens - so we set sound samplerate at 44KHz
@@ -33,7 +33,7 @@ int mediaInit(void)
 		}
 		else
 		{
-			audio_init(SAMPLERATE_48KHZ);
+			audio_init(bAudSetSampleRate);
 			bAudReinit = false;
 		}
 	}

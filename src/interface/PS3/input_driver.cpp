@@ -10,16 +10,18 @@
 
 bool bInputOkay = false;
 
-static int CellinpState(int nCode)
+static uint32_t CellinpState(int nCode)
 {
-	uint32_t numPadsConnected = 0;
+	#if 0
+	if (nCode < 0)
+		return 0;
+	#endif
 
-	uint64_t pads_connected = cell_pad_input_pads_connected();
+	uint32_t numPadsConnected = cell_pad_input_pads_connected();
+
 	uint64_t new_state_p1 = cell_pad_input_poll_device(0);
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
-	if (nCode < 0)
-		return 0;
 
 	if (DoReset)
 	{
@@ -39,9 +41,6 @@ static int CellinpState(int nCode)
 		is_running = 0;
 		return 0;
 	}
-
-
-	numPadsConnected = cell_pad_input_pads_connected();
 
 	switch (nCode)
 	{
@@ -212,15 +211,16 @@ static int CellinpState(int nCode)
 }
 
 // This will process all PC-side inputs and optionally update the emulated game side.
-void InputMake(void)
+void InputMake_Analog(void)
 {
 	struct GameInp* pgi;
 	unsigned int i;
+	uint32_t controller_binds_count = nGameInpCount;
 
 	// Do one frames worth of keyboard input sliders
 	// Begin of InputTick()
 
-	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	for (i = 0, pgi = GameInp; i < controller_binds_count; i++, pgi++)
 	{
 		int nAdd = 0;
 		if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) // not a slider
@@ -257,18 +257,13 @@ void InputMake(void)
 		if (pgi->Input.Slider.nSliderValue > 0xFF00)
 			pgi->Input.Slider.nSliderValue = 0xFF00;
 	}
+
 	// End of InputTick()
-
-	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
+	pgi = GameInp;
+	for (i = 0; i < controller_binds_count; i++, pgi++)
 	{
-		if (pgi->Input.pVal == NULL)
-			continue;
-
 		switch (pgi->nInput)
 		{
-			case 0: // Undefined
-				pgi->Input.nVal = 0;
-				break;
 			case GIT_CONSTANT: // Constant value
 				pgi->Input.nVal = pgi->Input.Constant;
 				*(pgi->Input.pVal) = pgi->Input.nVal;
@@ -316,6 +311,55 @@ void InputMake(void)
 #else
 					*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
 #endif
+					break;
+				}
+		}
+	}
+}
+
+// This will process all PC-side inputs and optionally update the emulated game side.
+void InputMake(void)
+{
+	struct GameInp* pgi;
+	uint32_t controller_binds_count = nGameInpCount;
+
+	// End of InputTick()
+	pgi = GameInp;
+	for (uint32_t i = 0; i < controller_binds_count; i++, pgi++)
+	{
+		switch (pgi->nInput)
+		{
+			case GIT_CONSTANT: // Constant value
+				pgi->Input.nVal = pgi->Input.Constant;
+				*(pgi->Input.pVal) = pgi->Input.nVal;
+				break;
+			case GIT_SWITCH:
+				{ // Digital input
+					int s = CinpState(pgi->Input.Switch);
+
+					if (pgi->nType & BIT_GROUP_ANALOG)
+					{
+						// Set analog controls to full
+						if (s)
+							pgi->Input.nVal = 0xFFFF;
+						else
+							pgi->Input.nVal = 0x0001;
+#ifdef LSB_FIRST
+						*(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+						*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
+					}
+					else
+					{
+						// Binary controls
+						if (s)
+							pgi->Input.nVal = 1;
+						else
+							pgi->Input.nVal = 0;
+						*(pgi->Input.pVal) = pgi->Input.nVal;
+					}
+
 					break;
 				}
 		}

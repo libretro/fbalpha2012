@@ -140,13 +140,6 @@ extern unsigned int nComCount;
 extern struct BurnInputInfo* DrvCombo;
 #endif
 
-// FBA Combo - extra players input hack
-#ifndef SN_TARGET_PS3
-extern bool bInputSwap;
-extern unsigned char kDropped;			// who's dropped out while playing
-extern void (*BurnDrvInputSwap)();
-#endif
-
 extern bool bBurnUseASM68K;
 
 #ifndef SN_TARGET_PS3
@@ -252,17 +245,17 @@ extern unsigned int JukeboxSoundCommand;
 // Flags used with the Burndriver structure
 
 // Flags for the flags member
-#define BDF_GAME_WORKING			(1 << 0)
+#define BDF_GAME_WORKING		(1 << 0)
 #define BDF_ORIENTATION_FLIPPED		(1 << 1)
 #define BDF_ORIENTATION_VERTICAL	(1 << 2)
-#define BDF_BOARDROM				(1 << 3)
-#define BDF_CLONE					(1 << 4)
-#define BDF_BOOTLEG					(1 << 5)
-#define BDF_PROTOTYPE				(1 << 6)
-#define BDF_16BIT_ONLY				(1 << 7)
-#define BDF_HACK					(1 << 8)
-#define BDF_HOMEBREW				(1 << 9)
-#define BDF_DEMO					(1 << 10)
+#define BDF_BOARDROM			(1 << 3)
+#define BDF_CLONE			(1 << 4)
+#define BDF_BOOTLEG			(1 << 5)
+#define BDF_PROTOTYPE			(1 << 6)
+#define BDF_16BIT_ONLY			(1 << 7)
+#define BDF_HACK			(1 << 8)
+#define BDF_HOMEBREW			(1 << 9)
+#define BDF_DEMO			(1 << 10)
 #define BDF_HISCORE_SUPPORTED		(1 << 11)
 
 #define BDF_ROTATE_GRAPHICS_CW		2
@@ -277,11 +270,11 @@ extern unsigned int JukeboxSoundCommand;
 #define HARDWARE_PREFIX_SEGA		(0x02000000)
 #define HARDWARE_PREFIX_KONAMI		(0x03000000)
 #define HARDWARE_PREFIX_TOAPLAN		(0x04000000)
-#define HARDWARE_PREFIX_SNK			(0x05000000)
+#define HARDWARE_PREFIX_SNK		(0x05000000)
 #define HARDWARE_PREFIX_CAVE		(0x06000000)
 #define HARDWARE_PREFIX_CPS2		(0x07000000)
 #define HARDWARE_PREFIX_SEGAMD		(0x08000000)
-#define HARDWARE_PREFIX_PGM			(0x09000000)
+#define HARDWARE_PREFIX_PGM		(0x09000000)
 #define HARDWARE_PREFIX_CPS3		(0x0a000000)
 #define HARDWARE_PREFIX_TAITO		(0x0b000000)
 #define HARDWARE_PREFIX_PSIKYO		(0x0c000000)
@@ -290,7 +283,7 @@ extern unsigned int JukeboxSoundCommand;
 #define HARDWARE_PREFIX_GALAXIAN	(0x0f000000)
 #define HARDWARE_PREFIX_ATARI		(0x10000000)
 
-#define HARDWARE_MISC_MISC			(HARDWARE_PREFIX_MISC | 0x00010000)
+#define HARDWARE_MISC_MISC		(HARDWARE_PREFIX_MISC | 0x00010000)
 
 #define HARDWARE_CAPCOM_CPS1		(HARDWARE_PREFIX_CPS1 | 0x00010000)
 #define HARDWARE_CAPCOM_CPS1_QSOUND (HARDWARE_PREFIX_CPS1 | 0x00020000)
@@ -313,7 +306,7 @@ extern unsigned int JukeboxSoundCommand;
 
 #define HARDWARE_SEGA_FD1089A_ENC	(0x0002)
 #define HARDWARE_SEGA_FD1089B_ENC	(0x0004)
-#define HARDWARE_SEGA_5358			(0x0008)
+#define HARDWARE_SEGA_5358		(0x0008)
 #define HARDWARE_SEGA_MC8123_ENC	(0x0010)
 #define HARDWARE_SEGA_BAYROUTE_MEMMAP	(0x0020)
 #define HARDWARE_SEGA_ALT_MEMMAP	(0x0040)
@@ -321,8 +314,8 @@ extern unsigned int JukeboxSoundCommand;
 #define HARDWARE_SEGA_SPRITE_LOAD32	(0x0100)
 #define HARDWARE_SEGA_YM2203		(0x0200)
 #define HARDWARE_SEGA_INVERT_TILES	(0x0400)
-#define HARDWARE_SEGA_5521			(0x0800)
-#define HARDWARE_SEGA_5797			(0x1000)
+#define HARDWARE_SEGA_5521		(0x0800)
+#define HARDWARE_SEGA_5797		(0x1000)
 #define HARDWARE_SEGA_YM2413		(0x2000)
 #define HARDWARE_SEGA_FD1094_ENC_CPU2	(0x4000)
 
@@ -333,53 +326,53 @@ extern unsigned int JukeboxSoundCommand;
 #define HARDWARE_TOAPLAN_68K_Zx80	(HARDWARE_PREFIX_TOAPLAN | 0x00020000)
 #define HARDWARE_TOAPLAN_68K_ONLY	(HARDWARE_PREFIX_TOAPLAN | 0x00030000)
 
-#define HARDWARE_SNK_NEOGEO			(HARDWARE_PREFIX_SNK | 0x00010000)
-#define HARDWARE_SNK_SRAM			(0x0001)	// SRAM protection
-#define HARDWARE_SNK_SWAPP			(0x0002)	// Swap code roms
-#define HARDWARE_SNK_SWAPV			(0x0004)	// Swap sound roms
-#define HARDWARE_SNK_SWAPC			(0x0008)	// Swap sprite roms
+#define HARDWARE_SNK_NEOGEO		(HARDWARE_PREFIX_SNK | 0x00010000)
+#define HARDWARE_SNK_SRAM		(0x0001)	// SRAM protection
+#define HARDWARE_SNK_SWAPP		(0x0002)	// Swap code roms
+#define HARDWARE_SNK_SWAPV		(0x0004)	// Swap sound roms
+#define HARDWARE_SNK_SWAPC		(0x0008)	// Swap sprite roms
 #define HARDWARE_SNK_ENCRYPTED_A	(0x0010)	// KOF99 encryption scheme
 #define HARDWARE_SNK_ENCRYPTED_B	(0x0020)	// KOF2000 encryption scheme
 #define HARDWARE_SNK_ALTERNATE_TEXT	(0x0040)	// KOF2000 text layer banks
 #define HARDWARE_SNK_SMA_PROTECTION	(0x0080)	// SMA protection
-#define HARDWARE_SNK_CUSTOM_BANKING (0x0100)	// Uses custom banking
-#define HARDWARE_SNK_P32			(0x0200)	// Uses 32Bit 68000 roms
+#define HARDWARE_SNK_CUSTOM_BANKING	(0x0100)	// Uses custom banking
+#define HARDWARE_SNK_P32		(0x0200)	// Uses 32Bit 68000 roms
 #define HARDWARE_SNK_PVC_PROT		(0x0400)	// PVC protection
 #define HARDWARE_SNK_ENCRYPTED_M1	(0x0800)	// Encrypted M1
 
 #define HARDWARE_SNK_CONTROLMASK	(0xF000)
 #define HARDWARE_SNK_JOYSTICK		(0x0000)	// Uses joysticks
-#define HARDWARE_SNK_PADDLE			(0x1000)	// Uses joysticks or paddles
+#define HARDWARE_SNK_PADDLE		(0x1000)	// Uses joysticks or paddles
 #define HARDWARE_SNK_TRACKBALL		(0x2000)	// Uses a trackball
 #define HARDWARE_SNK_4_JOYSTICKS	(0x3000)	// Uses 4 joysticks
 #define HARDWARE_SNK_MAHJONG		(0x4000)	// Uses a special mahjong controller
 #define HARDWARE_SNK_GAMBLING		(0x5000)	// Uses gambling controls
-#define HARDWARE_SNK_PCB	 		(0x6000)	// Uses custom BIOS
+#define HARDWARE_SNK_PCB	 	(0x6000)	// Uses custom BIOS
 #define HARDWARE_SNK_MVSCARTRIDGE	(0x7000)	// Uses mvs cartridge
 
-#define HARDWARE_SNK_NEOCD			(HARDWARE_PREFIX_SNK | 0x00020000)
+#define HARDWARE_SNK_NEOCD		(HARDWARE_PREFIX_SNK | 0x00020000)
 
 #define HARDWARE_CAVE_68K_ONLY		(HARDWARE_PREFIX_CAVE)
 #define HARDWARE_CAVE_68K_Z80		(HARDWARE_PREFIX_CAVE | 0x0001)
-#define HARDWARE_CAVE_M6295			(0x0002)
+#define HARDWARE_CAVE_M6295		(0x0002)
 #define HARDWARE_CAVE_YM2151		(0x0004)
 
 #define HARDWARE_SEGA_MEGADRIVE		(HARDWARE_PREFIX_SEGAMD | 0x00010000)
 
-#define HARDWARE_IGS_PGM			(HARDWARE_PREFIX_PGM | 0x00010000)
+#define HARDWARE_IGS_PGM		(HARDWARE_PREFIX_PGM | 0x00010000)
 #define HARDWARE_IGS_USE_ARM_CPU	(0x0001)
 
 #define HARDWARE_TAITO_TAITOZ		(HARDWARE_PREFIX_TAITO | 0x00010000)
 #define HARDWARE_TAITO_TAITOF2		(HARDWARE_PREFIX_TAITO | 0x00020000)
-#define HARDWARE_TAITO_MISC			(HARDWARE_PREFIX_TAITO | 0x00030000)
+#define HARDWARE_TAITO_MISC		(HARDWARE_PREFIX_TAITO | 0x00030000)
 #define HARDWARE_TAITO_TAITOX		(HARDWARE_PREFIX_TAITO | 0x00040000)
 
-#define HARDWARE_PSIKYO				(HARDWARE_PREFIX_PSIKYO)
+#define HARDWARE_PSIKYO			(HARDWARE_PREFIX_PSIKYO)
 
-#define HARDWARE_KANEKO16			(HARDWARE_PREFIX_KANEKO16)
+#define HARDWARE_KANEKO16		(HARDWARE_PREFIX_KANEKO16)
 
-#define HARDWARE_PACMAN				(HARDWARE_PREFIX_PACMAN)
-#define HARDWARE_GALAXIAN			(HARDWARE_PREFIX_GALAXIAN)
+#define HARDWARE_PACMAN			(HARDWARE_PREFIX_PACMAN)
+#define HARDWARE_GALAXIAN		(HARDWARE_PREFIX_GALAXIAN)
 
 #define HARDWARE_ATARI_GAUNTLET		(HARDWARE_PREFIX_ATARI | 0x00010000)
 

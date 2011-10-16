@@ -15,6 +15,7 @@ extern bool bInputOkay;
 int InputInit();
 int InputExit();
 void InputMake(void);
+void InputMake_Analog(void);
 
 // Audio
 extern int		nAudSampleRate;		// sample rate
@@ -23,7 +24,6 @@ extern int		nAudSegLen;		// Segment length in samples (calculated from sound rat
 extern int		nAudAllocSegLen;	// Allocated segment length in samples
 extern int16_t *	pAudNextSound;		// The next sound segment we will add to the sample loop
 extern bool		bAudOkay;		// True if sound was inited okay
-//extern unsigned char *	pVidTransImage;
 
 // Video
 extern bool		bVidOkay;
@@ -42,22 +42,14 @@ extern bool		autoVidScrnAspect;
 extern unsigned char*	pVidImage;
 extern int		nVidImageWidth;
 extern int		nVidImageHeight;
-extern int		nVidImageLeft;
-extern int		nVidImageTop;
 extern int		nVidImagePitch;
 extern uint32_t		shaderindex;
 
 int VidInit();
 int VidExit();
-#if 0
-int VidFrame_RecalcPalette();
-int VidFrame_Recalc();
-#endif
-int VidFrame();
-int VidRecalcPal();
 extern int _psglInit(void);
 extern int _psglExit(void);
-
+int VidRecalcPal(void);
 
 extern "C" unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 

@@ -1,4 +1,3 @@
-#include "burnint.h"
 #include "burner.h"
 #include "highcol.h"
 #include "vid_support-ps3.h"
@@ -26,8 +25,6 @@ int nYOffset = 0;
 uint32_t m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
 uint32_t m_viewport_x_temp, m_viewport_y_temp, m_viewport_width_temp, m_viewport_height_temp, m_delta_temp;
 GLfloat m_left, m_right, m_bottom, m_top, m_zNear, m_zFar;
-
-extern struct BurnDriver * pDriver[];
 
 unsigned int (__cdecl *VidHighCol) (int r, int g, int b, int i);
 
@@ -78,16 +75,6 @@ int VidExit()
 	return nRet;
 }
 
-int VidFrame()
-{
-	pBurnDraw = pVidImage;
-	nBurnPitch = nVidImagePitch;
-	pDriver[nBurnDrvSelect]->Frame();
-	psglRender();
-
-	return 0;
-}
-
 int VidRecalcPal()
 {
 	bVidRecalcPalette = true;
@@ -102,7 +89,9 @@ int VidReinit()
 	VidInit();
 
 	if (!bDrvOkay)
+	{
 		VidFrame();
+	}
 
 	CalculateViewports();
 

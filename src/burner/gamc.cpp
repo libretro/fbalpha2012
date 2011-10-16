@@ -233,6 +233,7 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 			break;
 	}
 
+#ifdef USE_MOUSE
 	if (strncmp(szi, "mouse", 5) == 0)
 	{
 
@@ -259,6 +260,7 @@ int GamcMisc(struct GameInp* pgi, char* szi, int nPlayer)
 			return 0;
 		}
 	}
+#endif
 
 	return 0;
 }

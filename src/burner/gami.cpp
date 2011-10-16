@@ -633,6 +633,7 @@ static char* SliderInfo(struct GameInp* pgi, char* s)
 
 static int StringToJoyAxis(struct GameInp* pgi, char* s)
 {
+	#ifdef USE_JOYAXIS
 	char* szRet = s;
 
 	pgi->Input.JoyAxis.nJoy = (unsigned char)strtol(s, &szRet, 0);
@@ -645,18 +646,21 @@ static int StringToJoyAxis(struct GameInp* pgi, char* s)
 
 	if (szRet == NULL)
 		return 1;
+	#endif
 
 	return 0;
 }
 
 static int StringToMouseAxis(struct GameInp* pgi, char* s)
 {
+	#ifdef USE_MOUSE
 	char* szRet = s;
 
 	pgi->Input.MouseAxis.nAxis = (unsigned char)strtol(s, &szRet, 0);
 
 	if (szRet == NULL)
 		return 1;
+	#endif
 
 	return 0;
 }
@@ -762,6 +766,7 @@ static int StringToInp(struct GameInp* pgi, char* s)
 	{
 		s = szRet;
 		pgi->nInput = GIT_JOYSLIDER;
+		#ifdef USE_JOYAXIS
 		pgi->Input.Slider.JoyAxis.nJoy = 0;	// defaults
 		pgi->Input.Slider.JoyAxis.nAxis = 0;
 
@@ -776,6 +781,7 @@ static int StringToInp(struct GameInp* pgi, char* s)
 
 		if (s == NULL)
 			return 1;
+		#endif
 
 		szRet = SliderInfo(pgi, s); // Get remaining slider info
 		s = szRet;
@@ -810,12 +816,17 @@ static char* InpToString(struct GameInp* pgi)
 		case GIT_KEYSLIDER:
 			sprintf(szString, "slider 0x%.2x 0x%.2x speed 0x%x center %d", pgi->Input.Slider.SliderAxis[0], pgi->Input.Slider.SliderAxis[1], pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
 			break;
+		#ifdef USE_JOYAXIS
 		case GIT_JOYSLIDER:
 			sprintf(szString, "joyslider %d %d speed 0x%x center %d", pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis, pgi->Input.Slider.nSliderSpeed, pgi->Input.Slider.nSliderCenter);
 			break;
+		#endif
+		#ifdef USE_MOUSE
 		case GIT_MOUSEAXIS:
 			sprintf(szString, "mouseaxis %d", pgi->Input.MouseAxis.nAxis);
 			break;
+		#endif
+		#ifdef USE_JOYAXIS
 		case GIT_JOYAXIS_FULL:
 			sprintf(szString, "joyaxis %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 			break;
@@ -825,6 +836,7 @@ static char* InpToString(struct GameInp* pgi)
 		case GIT_JOYAXIS_POS:
 			sprintf(szString, "joyaxis-pos %d %d", pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 			break;
+		#endif
 		default:
 			sprintf(szString, "unknown");
 			break;
@@ -1257,6 +1269,7 @@ const char * InpToDesc(struct GameInp* pgi)
 	if (pgi->nInput == GIT_SWITCH)
 		return InputCodeDesc(pgi->Input.Switch);
 
+	#ifdef USE_MOUSE
 	if (pgi->nInput == GIT_MOUSEAXIS)
 	{
 		char nAxis = '?';
@@ -1275,6 +1288,8 @@ const char * InpToDesc(struct GameInp* pgi)
 		sprintf(szInputName, "Mouse %i %c axis", pgi->Input.MouseAxis.nMouse, nAxis);
 		return szInputName;
 	}
+	#endif
+#ifdef USE_JOYAXIS
 	if (pgi->nInput & GIT_GROUP_JOYSTICK)
 	{
 		char szAxis[8][3] = { "X", "Y", "Z", "rX", "rY", "rZ", "s0", "s1" };
@@ -1296,6 +1311,7 @@ const char * InpToDesc(struct GameInp* pgi)
 		sprintf(szInputName, "Joy %d %s axis (%s range)", pgi->Input.JoyAxis.nJoy, szAxis[pgi->Input.JoyAxis.nAxis], szRange[nRange]);
 		return szInputName;
 	}
+#endif
 
 	return InpToString(pgi); // Just do the rest as they are in the config file
 }

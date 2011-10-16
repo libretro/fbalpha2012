@@ -1,5 +1,6 @@
 // misc win32 functions
 #include "burner.h"
+#include "vid_psgl.h"
 #include "audio_driver.h"
 
 void setWindowAspect(bool first_boot)
@@ -151,7 +152,9 @@ int directLoadGame(const char * name)
 					VidInit();		// Reinit the video plugin
 
 					if (bVidOkay && (!bDrvOkay))
+					{
 						VidFrame();
+					}
 				}
 				if(bAudOkay)
 					audio_play();

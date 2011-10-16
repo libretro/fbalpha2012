@@ -6,6 +6,7 @@
 #define SAMPLERATE_44KHZ 44100
 #define SAMPLERATE_48KHZ 48010
 
+extern int bAudSetSampleRate;
 extern bool bAudPlaying;
 extern bool bAudReinit;
 

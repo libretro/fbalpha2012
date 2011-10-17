@@ -10,217 +10,34 @@
 
 bool bInputOkay = false;
 
-static uint32_t CellinpState(int nCode)
-{
-	#if 0
-	if (nCode < 0)
-		return 0;
-	#endif
+#define KEYBIND_PS3BUTTON 0
+#define KEYBIND_PS3PLAYER 1
+static uint64_t keybinds[1024][2] = {0}; 
 
-	uint32_t numPadsConnected = cell_pad_input_pads_connected();
+// This will process all PC-side inputs and optionally update the emulated game side.
+void InputMake_Analog(void)
+{
+	uint32_t set_reset = 0;
+	struct GameInp* pgi = GameInp;
+	uint32_t controller_binds_count = nGameInpCount;
 
 	uint64_t new_state_p1 = cell_pad_input_poll_device(0);
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
-
-	if (DoReset)
-	{
-
-		if (nCode == FBK_F3)
-		{
-			DoReset = false;
-			return 1;
-		}
-
-	}
+	if (set_reset && DoReset)
+		DoReset = false;
 
 	if (pausemenu_condition)
 	{
 		audio_stop();
 		GameStatus = PAUSE;
 		is_running = 0;
-		return 0;
 	}
-
-	switch (nCode)
-	{
-		case P1_COIN:
-			return CTRL_SELECT(new_state_p1);
-		case P1_START:
-			return CTRL_START(new_state_p1);
-		case P1_UP:
-			return ((CTRL_UP(new_state_p1) | CTRL_LSTICK_UP(new_state_p1)) != 0);
-		case P1_DOWN: 
-			return ((CTRL_DOWN(new_state_p1) | CTRL_LSTICK_DOWN(new_state_p1)) != 0);
-		case P1_LEFT:
-			return ((CTRL_LEFT(new_state_p1) | CTRL_LSTICK_LEFT(new_state_p1)) != 0);
-		case P1_RIGHT:
-			return ((CTRL_RIGHT(new_state_p1) | CTRL_LSTICK_RIGHT(new_state_p1)) != 0);
-		case P1_FIRE1:
-			return CTRL_CROSS(new_state_p1);
-		case P1_FIRE2:
-			return CTRL_CIRCLE(new_state_p1);
-		case P1_FIRE3:
-			return CTRL_SQUARE(new_state_p1);
-		case P1_FIRE4: 
-			return CTRL_TRIANGLE(new_state_p1);
-		case P1_FIRE5:
-			return CTRL_L1(new_state_p1);
-		case P1_FIRE6:
-			return CTRL_R1(new_state_p1);
-		case 0x88:
-			return CTRL_L2(new_state_p1);
-		case 0x8A:			 
-			return CTRL_R2(new_state_p1);
-		case 0x3b:
-			return CTRL_L3(new_state_p1);
-		case P1_SERVICE:
-			return CTRL_R3(new_state_p1);
-		case 0x21:
-			return CTRL_R2(new_state_p1);
-		default:
-			break;
-	}
-
-	if (numPadsConnected > 1)
-	{
-		uint64_t new_state_p2 = cell_pad_input_poll_device(1);
-
-		switch (nCode)
-		{
-			case P2_COIN:
-				return CTRL_SELECT(new_state_p2);
-			case P2_START:
-				return CTRL_START(new_state_p2);
-			case P2_UP:
-				return ((CTRL_UP(new_state_p2) | CTRL_LSTICK_UP(new_state_p2)) != 0);
-			case P2_DOWN:
-				return ((CTRL_DOWN(new_state_p2) | CTRL_LSTICK_DOWN(new_state_p2)) != 0);
-			case P2_LEFT:
-				return ((CTRL_LEFT(new_state_p2) | CTRL_LSTICK_LEFT(new_state_p2)) != 0);
-			case P2_RIGHT:
-				return ((CTRL_RIGHT(new_state_p2) | CTRL_LSTICK_RIGHT(new_state_p2)) != 0);
-			case P2_FIRE1:
-				return CTRL_CROSS(new_state_p2);
-			case P2_FIRE2:
-				return CTRL_CIRCLE(new_state_p2);
-			case P2_FIRE3:
-				return CTRL_SQUARE(new_state_p2);
-			case P2_FIRE4: 
-				return CTRL_TRIANGLE(new_state_p2);
-			case P2_FIRE5:
-				return CTRL_L1(new_state_p2);
-			case P2_FIRE6:
-				return CTRL_R1(new_state_p2);
-			case 0x4088:
-				return CTRL_L2(new_state_p2);
-			case 0x408A:			 
-				return CTRL_R2(new_state_p2);
-			case 0x408b:
-				return CTRL_L3(new_state_p2);
-			case 0x408c:
-				return CTRL_R3(new_state_p2);
-		}
-	}
-
-
-	if (numPadsConnected > 2)
-	{
-		uint64_t new_state_p3 = cell_pad_input_poll_device(2);
-
-		switch (nCode)
-		{ 
-			case P3_COIN:
-				return CTRL_SELECT(new_state_p3);
-			case P3_START:
-				return CTRL_START(new_state_p3);
-			case P3_UP:
-				return ((CTRL_UP(new_state_p3) | CTRL_LSTICK_UP(new_state_p3)) != 0);
-			case P3_DOWN:
-				return ((CTRL_DOWN(new_state_p3) | CTRL_LSTICK_DOWN(new_state_p3)) != 0);
-			case P3_LEFT:
-				return ((CTRL_LEFT(new_state_p3) | CTRL_LSTICK_LEFT(new_state_p3)) != 0);
-			case P3_RIGHT:
-				return ((CTRL_RIGHT(new_state_p3) | CTRL_LSTICK_RIGHT(new_state_p3)) != 0);
-			case P3_FIRE1:
-				return CTRL_CROSS(new_state_p3);
-			case P3_FIRE2:
-				return CTRL_CIRCLE(new_state_p3);
-			case P3_FIRE3:
-				return CTRL_SQUARE(new_state_p3);
-			case P3_FIRE4:
-				return CTRL_TRIANGLE(new_state_p3);
-			case P3_FIRE5:
-				return CTRL_L1(new_state_p3);
-			case P3_FIRE6:
-				return CTRL_R1(new_state_p3);
-			case 0x4188:
-				return CTRL_L2(new_state_p3);
-			case 0x418A:			 
-				return CTRL_R2(new_state_p3);
-			case 0x418b:
-				return CTRL_L3(new_state_p3);
-			case 0x418c:
-				return CTRL_R3(new_state_p3);
-		}
-	}
-
-	if (numPadsConnected > 3)
-	{
-		uint64_t new_state_p4 = cell_pad_input_poll_device(3);
-
-		switch (nCode)
-		{
-			case P4_COIN:
-				return CTRL_SELECT(new_state_p4);
-			case P4_START:
-				return CTRL_START(new_state_p4);
-			case P4_UP:
-				return ((CTRL_UP(new_state_p4) | CTRL_LSTICK_UP(new_state_p4)) != 0);
-			case P4_DOWN:
-				return ((CTRL_DOWN(new_state_p4) | CTRL_LSTICK_DOWN(new_state_p4)) != 0);
-			case P4_LEFT:
-				return ((CTRL_LEFT(new_state_p4) | CTRL_LSTICK_LEFT(new_state_p4)) != 0);
-			case P4_RIGHT:
-				return ((CTRL_RIGHT(new_state_p4) | CTRL_LSTICK_RIGHT(new_state_p4)) != 0);
-			case P4_FIRE1:
-				return CTRL_CROSS(new_state_p4);
-			case P4_FIRE2:
-				return CTRL_CIRCLE(new_state_p4);
-			case P4_FIRE3:
-				return CTRL_SQUARE(new_state_p4);
-			case P4_FIRE4:
-				return CTRL_TRIANGLE(new_state_p4);
-			case P4_FIRE5:
-				return CTRL_L1(new_state_p4);
-			case P4_FIRE6:
-				return CTRL_R1(new_state_p4);
-			case 0x4288:
-				return CTRL_L2(new_state_p4);
-			case 0x428A:			 
-				return CTRL_R2(new_state_p4);
-			case 0x428b:
-				return CTRL_L3(new_state_p4);
-			case 0x428c:
-				return CTRL_R3(new_state_p4);
-
-		} 
-	}
-
-	return 0;
-}
-
-// This will process all PC-side inputs and optionally update the emulated game side.
-void InputMake_Analog(void)
-{
-	struct GameInp* pgi;
-	unsigned int i;
-	uint32_t controller_binds_count = nGameInpCount;
 
 	// Do one frames worth of keyboard input sliders
 	// Begin of InputTick()
 
-	for (i = 0, pgi = GameInp; i < controller_binds_count; i++, pgi++)
+	for (uint32_t i = 0; i < controller_binds_count; i++, pgi++)
 	{
 		int nAdd = 0;
 		if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) // not a slider
@@ -228,10 +45,20 @@ void InputMake_Analog(void)
 
 		if (pgi->nInput == GIT_KEYSLIDER)
 		{
+			int mask_a = keybinds[pgi->Input.Slider.SliderAxis[0]][0];
+			int player_a = keybinds[pgi->Input.Slider.SliderAxis[0]][1];
+			uint64_t state_a = cell_pad_input_poll_device(player_a);
+
+			int mask_b = keybinds[pgi->Input.Slider.SliderAxis[1]][0];
+			int player_b = keybinds[pgi->Input.Slider.SliderAxis[1]][1];
+			uint64_t state_b = cell_pad_input_poll_device(player_b);
+
+			uint32_t s = mask_a & state_a;
+			uint32_t s2 = mask_b & state_b;
 			// Get states of the two keys
-			if (CinpState(pgi->Input.Slider.SliderAxis[0]))
+			if (s)
 				nAdd -= 0x100;
-			if (CinpState(pgi->Input.Slider.SliderAxis[1]))
+			if (s2)
 				nAdd += 0x100;
 		}
 
@@ -260,7 +87,7 @@ void InputMake_Analog(void)
 
 	// End of InputTick()
 	pgi = GameInp;
-	for (i = 0; i < controller_binds_count; i++, pgi++)
+	for (uint32_t i = 0; i < controller_binds_count; i++, pgi++)
 	{
 		switch (pgi->nInput)
 		{
@@ -269,8 +96,13 @@ void InputMake_Analog(void)
 				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
+				if(pgi->Input.Switch != FBK_F3)
 				{ // Digital input
-					int s = CinpState(pgi->Input.Switch);
+					uint64_t mask = keybinds[pgi->Input.Switch][0];
+					int player = keybinds[pgi->Input.Switch][1];
+					uint64_t state = cell_pad_input_poll_device(player);
+
+					uint64_t s = mask & state;
 
 					if (pgi->nType & BIT_GROUP_ANALOG)
 					{
@@ -297,6 +129,8 @@ void InputMake_Analog(void)
 
 					break;
 				}
+				else
+					set_reset = 1;
 			case GIT_KEYSLIDER:						// Keyboard slider
 				{
 					int nSlider = pgi->Input.Slider.nSliderValue;
@@ -317,14 +151,177 @@ void InputMake_Analog(void)
 	}
 }
 
+//returns 1 if input has analog controls, else returns 0;
+int InputPrepare(void)
+{
+	uint32_t ret = 0;
+	struct GameInp* pgi = GameInp;
+	for(uint32_t i = 0; i < nGameInpCount; i++, pgi++)
+	{
+		if(pgi->nType == BIT_ANALOG_REL)
+		{
+			ret = 1;
+			break;
+		}
+	}
+
+	keybinds[P1_COIN	][0] = CTRL_SELECT_MASK;
+	keybinds[P1_COIN	][1] = 0;
+	keybinds[P1_START	][0] = CTRL_START_MASK;
+	keybinds[P1_START	][1] = 0;
+	keybinds[P1_UP		][0] = CTRL_UP_MASK | CTRL_LSTICK_UP_MASK;
+	keybinds[P1_UP		][1] = 0;
+	keybinds[P1_DOWN	][0] = CTRL_DOWN_MASK | CTRL_LSTICK_DOWN_MASK;
+	keybinds[P1_DOWN	][1] = 0;
+	keybinds[P1_LEFT	][0] = CTRL_LEFT_MASK | CTRL_LSTICK_LEFT_MASK;
+	keybinds[P1_LEFT	][1] = 0;
+	keybinds[P1_RIGHT	][0] = CTRL_RIGHT_MASK | CTRL_LSTICK_RIGHT_MASK;
+	keybinds[P1_RIGHT	][1] = 0;
+	keybinds[P1_FIRE1	][0] = CTRL_CROSS_MASK;
+	keybinds[P1_FIRE1	][1] = 0;
+	keybinds[P1_FIRE2	][0] = CTRL_CIRCLE_MASK;
+	keybinds[P1_FIRE2	][1] = 0;
+	keybinds[P1_FIRE3	][0] = CTRL_SQUARE_MASK;
+	keybinds[P1_FIRE3	][1] = 0;
+	keybinds[P1_FIRE4	][0] = CTRL_TRIANGLE_MASK;
+	keybinds[P1_FIRE4	][1] = 0;
+	keybinds[P1_FIRE5	][0] = CTRL_L1_MASK;
+	keybinds[P1_FIRE5	][1] = 0;
+	keybinds[P1_FIRE6	][0] = CTRL_R1_MASK;
+	keybinds[P1_FIRE6	][1] = 0;
+	keybinds[0x88		][0] = CTRL_L2_MASK;
+	keybinds[0x88		][1] = 0;
+	keybinds[0x8A		][0] = CTRL_R2_MASK;
+	keybinds[0x8A		][1] = 0;
+	keybinds[0x3b		][0] = CTRL_L3_MASK;
+	keybinds[0x3b		][1] = 0;
+	keybinds[P1_SERVICE	][0] = CTRL_R3_MASK;
+	keybinds[P1_SERVICE	][1] = 0;
+	keybinds[0x21		][0] = CTRL_R2_MASK;
+	keybinds[0x21		][1] = 0;
+
+	keybinds[P2_COIN	][0] = CTRL_SELECT_MASK;
+	keybinds[P2_COIN	][1] = 1;
+	keybinds[P2_START	][0] = CTRL_START_MASK;
+	keybinds[P2_START	][1] = 1;
+	keybinds[P2_UP		][0] = CTRL_UP_MASK;
+	keybinds[P2_UP		][1] = 1;
+	keybinds[P2_DOWN	][0] = CTRL_DOWN_MASK;
+	keybinds[P2_DOWN	][1] = 1;
+	keybinds[P2_LEFT	][0] = CTRL_LEFT_MASK;
+	keybinds[P2_LEFT	][1] = 1;
+	keybinds[P2_RIGHT	][0] = CTRL_RIGHT_MASK;
+	keybinds[P2_RIGHT	][1] = 1;
+	keybinds[P2_FIRE1	][0] = CTRL_CROSS_MASK;
+	keybinds[P2_FIRE1	][1] = 1;
+	keybinds[P2_FIRE2	][0] = CTRL_CIRCLE_MASK;
+	keybinds[P2_FIRE2	][1] = 1;
+	keybinds[P2_FIRE3	][0] = CTRL_SQUARE_MASK;
+	keybinds[P2_FIRE3	][1] = 1;
+	keybinds[P2_FIRE4	][0] = CTRL_TRIANGLE_MASK;
+	keybinds[P2_FIRE4	][1] = 1;
+	keybinds[P2_FIRE5	][0] = CTRL_L1_MASK;
+	keybinds[P2_FIRE5	][1] = 1;
+	keybinds[P2_FIRE6	][0] = CTRL_R1_MASK;
+	keybinds[P2_FIRE6	][1] = 1;
+	keybinds[0x4088		][0] = CTRL_L2_MASK;
+	keybinds[0x4088		][1] = 1;
+	keybinds[0x408A		][0] = CTRL_R2_MASK;
+	keybinds[0x408A		][1] = 1;
+	keybinds[0x408b		][0] = CTRL_L3_MASK;
+	keybinds[0x408b		][1] = 1;
+	keybinds[0x408c		][0] = CTRL_R3_MASK;
+	keybinds[0x408c		][1] = 1;
+
+	keybinds[P3_COIN	][0] = CTRL_SELECT_MASK;
+	keybinds[P3_COIN	][1] = 2;
+	keybinds[P3_START	][0] = CTRL_START_MASK;
+	keybinds[P3_START	][1] = 2;
+	keybinds[P3_UP		][0] = CTRL_UP_MASK;
+	keybinds[P3_UP		][1] = 2;
+	keybinds[P3_DOWN	][0] = CTRL_DOWN_MASK;
+	keybinds[P3_DOWN	][1] = 2;
+	keybinds[P3_LEFT	][0] = CTRL_LEFT_MASK;
+	keybinds[P3_LEFT	][1] = 2;
+	keybinds[P3_RIGHT	][0] = CTRL_RIGHT_MASK;
+	keybinds[P3_RIGHT	][1] = 2;
+	keybinds[P3_FIRE1	][0] = CTRL_CROSS_MASK;
+	keybinds[P3_FIRE1	][1] = 2;
+	keybinds[P3_FIRE2	][0] = CTRL_CIRCLE_MASK;
+	keybinds[P3_FIRE2	][1] = 2;
+	keybinds[P3_FIRE3	][0] = CTRL_SQUARE_MASK;
+	keybinds[P3_FIRE3	][1] = 2;
+	keybinds[P3_FIRE4	][0] = CTRL_TRIANGLE_MASK;
+	keybinds[P3_FIRE4	][1] = 2;
+	keybinds[P3_FIRE5	][0] = CTRL_L1_MASK;
+	keybinds[P3_FIRE5	][1] = 2;
+	keybinds[P3_FIRE6	][0] = CTRL_R1_MASK;
+	keybinds[P3_FIRE6	][1] = 2;
+	keybinds[0x4188		][0] = CTRL_L2_MASK;
+	keybinds[0x4188		][1] = 2;
+	keybinds[0x418A		][0] = CTRL_R2_MASK;
+	keybinds[0x418A		][1] = 2;
+	keybinds[0x418b		][0] = CTRL_L3_MASK;
+	keybinds[0x418b		][1] = 2;
+	keybinds[0x418c		][0] = CTRL_R3_MASK;
+	keybinds[0x418c		][1] = 2;
+
+	keybinds[P4_COIN	][0] = CTRL_SELECT_MASK;
+	keybinds[P4_COIN	][1] = 3;
+	keybinds[P4_START	][0] = CTRL_START_MASK;
+	keybinds[P4_START	][1] = 3;
+	keybinds[P4_UP		][0] = CTRL_UP_MASK;
+	keybinds[P4_UP		][1] = 3;
+	keybinds[P4_DOWN	][0] = CTRL_DOWN_MASK;
+	keybinds[P4_DOWN	][1] = 3;
+	keybinds[P4_LEFT	][0] = CTRL_LEFT_MASK;
+	keybinds[P4_LEFT	][1] = 3;
+	keybinds[P4_RIGHT	][0] = CTRL_RIGHT_MASK;
+	keybinds[P4_RIGHT	][1] = 3;
+	keybinds[P4_FIRE1	][0] = CTRL_CROSS_MASK;
+	keybinds[P4_FIRE1	][1] = 3;
+	keybinds[P4_FIRE2	][0] = CTRL_CIRCLE_MASK;
+	keybinds[P4_FIRE2	][1] = 3;
+	keybinds[P4_FIRE3	][0] = CTRL_SQUARE_MASK;
+	keybinds[P4_FIRE3	][1] = 3;
+	keybinds[P4_FIRE4	][0] = CTRL_TRIANGLE_MASK;
+	keybinds[P4_FIRE4	][1] = 3;
+	keybinds[P4_FIRE5	][0] = CTRL_L1_MASK;
+	keybinds[P4_FIRE5	][1] = 3;
+	keybinds[P4_FIRE6	][0] = CTRL_R1_MASK;
+	keybinds[P4_FIRE6	][1] = 3;
+	keybinds[0x4288		][0] = CTRL_L2_MASK;
+	keybinds[0x4288		][1] = 3;
+	keybinds[0x428A		][0] = CTRL_R2_MASK;
+	keybinds[0x428A		][1] = 3;
+	keybinds[0x428b		][0] = CTRL_L3_MASK;
+	keybinds[0x428b		][1] = 3;
+	keybinds[0x428c		][0] = CTRL_R3_MASK;
+	keybinds[0x428c		][1] = 3;
+	return ret;
+}
+
 // This will process all PC-side inputs and optionally update the emulated game side.
 void InputMake(void)
 {
-	struct GameInp* pgi;
+	uint32_t set_reset = 0;
+	struct GameInp* pgi = GameInp;
 	uint32_t controller_binds_count = nGameInpCount;
 
-	// End of InputTick()
-	pgi = GameInp;
+	uint64_t new_state_p1 = cell_pad_input_poll_device(0);
+	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
+
+
+	if (set_reset && DoReset)
+		DoReset = false;
+
+	if (pausemenu_condition)
+	{
+		audio_stop();
+		GameStatus = PAUSE;
+		is_running = 0;
+	}
+
 	for (uint32_t i = 0; i < controller_binds_count; i++, pgi++)
 	{
 		switch (pgi->nInput)
@@ -334,8 +331,13 @@ void InputMake(void)
 				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
+				if(pgi->Input.Switch != FBK_F3)
 				{ // Digital input
-					int s = CinpState(pgi->Input.Switch);
+					uint64_t mask = keybinds[pgi->Input.Switch][0];
+					int player = keybinds[pgi->Input.Switch][1];
+					uint64_t state = cell_pad_input_poll_device(player);
+
+					uint64_t s = mask & state;
 
 					if (pgi->nType & BIT_GROUP_ANALOG)
 					{
@@ -362,8 +364,11 @@ void InputMake(void)
 
 					break;
 				}
+				else
+					set_reset = 1;
 		}
 	}
+
 }
 
 #include <PSGL/psglu.h>

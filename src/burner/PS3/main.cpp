@@ -220,23 +220,10 @@ int  main(int argc, char **argv)
 				nVidScrnAspectMode = ASPECT_RATIO_CUSTOM;
 				break;
 			case EMULATING_INIT:
-			{
-				struct GameInp * pgi;
-				uint32_t i = 0;
 				pBurnSoundOut = pAudNextSound;
 				nBurnBpp = 2;
 				GameStatus = EMULATING;
-				for(i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++)
-				{
-					if(pgi->nType == BIT_ANALOG_REL)
-					{
-						controls = ANALOG_CONTROLS;
-						break;
-					}
-					else
-						controls = NORMAL_CONTROLS;
-				}
-			}
+				controls = InputPrepare();
 				break;
 			case EMULATING:
 				if(!is_running)

@@ -13,19 +13,17 @@ bool bInputOkay = false;
 #define KEYBIND_PS3BUTTON 0
 #define KEYBIND_PS3PLAYER 1
 static uint64_t keybinds[1024][2] = {0}; 
+bool DoReset = false;
 
 // This will process all PC-side inputs and optionally update the emulated game side.
 void InputMake_Analog(void)
 {
-	uint32_t set_reset = 0;
 	struct GameInp* pgi = GameInp;
 	uint32_t controller_binds_count = nGameInpCount;
 
 	uint64_t new_state_p1 = cell_pad_input_poll_device(0);
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
-	if (set_reset && DoReset)
-		DoReset = false;
 
 	if (pausemenu_condition)
 	{
@@ -45,6 +43,7 @@ void InputMake_Analog(void)
 
 		if (pgi->nInput == GIT_KEYSLIDER)
 		{
+			uint64_t reset = DoReset;
 			int mask_a = keybinds[pgi->Input.Slider.SliderAxis[0]][0];
 			int player_a = keybinds[pgi->Input.Slider.SliderAxis[0]][1];
 			uint64_t state_a = cell_pad_input_poll_device(player_a);
@@ -53,8 +52,8 @@ void InputMake_Analog(void)
 			int player_b = keybinds[pgi->Input.Slider.SliderAxis[1]][1];
 			uint64_t state_b = cell_pad_input_poll_device(player_b);
 
-			uint32_t s = mask_a & state_a;
-			uint32_t s2 = mask_b & state_b;
+			uint32_t s = mask_a & state_a | (reset);
+			uint32_t s2 = mask_b & state_b | (reset);
 			// Get states of the two keys
 			if (s)
 				nAdd -= 0x100;
@@ -96,13 +95,14 @@ void InputMake_Analog(void)
 				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
-				if(pgi->Input.Switch != FBK_F3)
-				{ // Digital input
+				{
+					// Digital input
+					uint64_t reset = DoReset;
 					uint64_t mask = keybinds[pgi->Input.Switch][0];
 					int player = keybinds[pgi->Input.Switch][1];
 					uint64_t state = cell_pad_input_poll_device(player);
 
-					uint64_t s = mask & state;
+					uint64_t s = mask & state | (reset);
 
 					if (pgi->nType & BIT_GROUP_ANALOG)
 					{
@@ -126,11 +126,8 @@ void InputMake_Analog(void)
 							pgi->Input.nVal = 0;
 						*(pgi->Input.pVal) = pgi->Input.nVal;
 					}
-
-					break;
 				}
-				else
-					set_reset = 1;
+				break;
 			case GIT_KEYSLIDER:						// Keyboard slider
 				{
 					int nSlider = pgi->Input.Slider.nSliderValue;
@@ -149,6 +146,8 @@ void InputMake_Analog(void)
 				}
 		}
 	}
+
+	DoReset = 0;
 }
 
 //returns 1 if input has analog controls, else returns 0;
@@ -165,6 +164,8 @@ int InputPrepare(void)
 		}
 	}
 
+	keybinds[FBK_F3		][0] = 0;
+	keybinds[FBK_F3		][0] = 0;
 	keybinds[P1_COIN	][0] = CTRL_SELECT_MASK;
 	keybinds[P1_COIN	][1] = 0;
 	keybinds[P1_START	][0] = CTRL_START_MASK;
@@ -304,7 +305,6 @@ int InputPrepare(void)
 // This will process all PC-side inputs and optionally update the emulated game side.
 void InputMake(void)
 {
-	uint32_t set_reset = 0;
 	struct GameInp* pgi = GameInp;
 	uint32_t controller_binds_count = nGameInpCount;
 
@@ -312,8 +312,6 @@ void InputMake(void)
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
 
-	if (set_reset && DoReset)
-		DoReset = false;
 
 	if (pausemenu_condition)
 	{
@@ -331,44 +329,42 @@ void InputMake(void)
 				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
-				if(pgi->Input.Switch != FBK_F3)
-				{ // Digital input
-					uint64_t mask = keybinds[pgi->Input.Switch][0];
-					int player = keybinds[pgi->Input.Switch][1];
-					uint64_t state = cell_pad_input_poll_device(player);
+				// Digital input
+				uint64_t reset = DoReset;
+				uint64_t mask = keybinds[pgi->Input.Switch][0];
+				int player = keybinds[pgi->Input.Switch][1];
+				uint64_t state = cell_pad_input_poll_device(player);
 
-					uint64_t s = mask & state;
+				uint64_t s = mask & state | (reset);
 
-					if (pgi->nType & BIT_GROUP_ANALOG)
-					{
-						// Set analog controls to full
-						if (s)
-							pgi->Input.nVal = 0xFFFF;
-						else
-							pgi->Input.nVal = 0x0001;
-#ifdef LSB_FIRST
-						*(pgi->Input.pShortVal) = pgi->Input.nVal;
-#else
-						*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
-#endif
-					}
+				if (pgi->nType & BIT_GROUP_ANALOG)
+				{
+					// Set analog controls to full
+					if (s)
+						pgi->Input.nVal = 0xFFFF;
 					else
-					{
-						// Binary controls
-						if (s)
-							pgi->Input.nVal = 1;
-						else
-							pgi->Input.nVal = 0;
-						*(pgi->Input.pVal) = pgi->Input.nVal;
-					}
-
-					break;
+						pgi->Input.nVal = 0x0001;
+#ifdef LSB_FIRST
+					*(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+					*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
 				}
 				else
-					set_reset = 1;
+				{
+					// Binary controls
+					if (s)
+						pgi->Input.nVal = 1;
+					else
+						pgi->Input.nVal = 0;
+					*(pgi->Input.pVal) = pgi->Input.nVal;
+				}
+
+				break;
 		}
 	}
 
+	DoReset = 0;
 }
 
 #include <PSGL/psglu.h>

@@ -27,7 +27,6 @@
 char		szAppBurnVer[16] = "";
 char		szSVNVer[16] = "";
 char		szSVNDate[30] = "";
-bool		DoReset = false;
 int		ArcadeJoystick = 0;
 int		exitGame = 0;
 uint32_t	bBurnFirstStartup;

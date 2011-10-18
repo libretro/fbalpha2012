@@ -13,7 +13,7 @@ extern void psglInitGL(void);
 extern void dbgFontInit(void);
 extern void psglResolutionPrevious(void);
 extern void psglResolutionNext(void);
-extern int32_t psglInitShader(const char* filename);
+extern int32_t psglInitShader(const char* filename, unsigned index);
 extern uint32_t psglGetCurrentResolutionId(void);
 extern void psglResolutionSwitch(void);
 extern void psglRenderStretch(void);

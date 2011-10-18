@@ -4,6 +4,8 @@
 #include "vid_support-ps3.h"
 #include "vid_psgl.h"
 
+#define MAX_SHADERS 3
+
 extern std::vector<std::string> m_ListShaderData;
 extern std::vector<std::string> m_ListShader2Data;
 
@@ -19,20 +21,20 @@ static int nGameHeight = 0;
 static int nRotateGame = 0;
 
 static CGcontext CgContext = NULL;
-static CGprogram VertexProgram = NULL;
-static CGprogram FragmentProgram = NULL;
-static CGparameter ModelViewProj_cgParam;
-static CGparameter cg_video_size;
-static CGparameter cg_texture_size;
-static CGparameter cg_output_size;
-static CGparameter cg_v_video_size;
-static CGparameter cg_v_texture_size;
-static CGparameter cg_v_output_size;
-static CGparameter cgp_timer;
-static CGparameter cgp_vertex_timer;
+static CGprogram VertexProgram[MAX_SHADERS];
+static CGprogram FragmentProgram[MAX_SHADERS];
+static CGparameter ModelViewProj_cgParam[MAX_SHADERS];
+static CGparameter cg_video_size[MAX_SHADERS];
+static CGparameter cg_texture_size[MAX_SHADERS];
+static CGparameter cg_output_size[MAX_SHADERS];
+static CGparameter cg_v_video_size[MAX_SHADERS];
+static CGparameter cg_v_texture_size[MAX_SHADERS];
+static CGparameter cg_v_output_size[MAX_SHADERS];
+static CGparameter cgp_timer[MAX_SHADERS];
+static CGparameter cgp_vertex_timer[MAX_SHADERS];
 static GLuint cg_viewport_width;
 static GLuint cg_viewport_height;
-static GLuint bufferID = 0;
+static GLuint vbo[2];
 static uint32_t frame_count;
 extern GLfloat m_left, m_right, m_bottom, m_top, m_zNear, m_zFar;
 uint32_t m_overscan;
@@ -165,25 +167,25 @@ void VidInitInfo()
 	}
 }
 
-static void get_cg_params(void)
+static void get_cg_params(unsigned index)
 {
-      cgGLBindProgram(FragmentProgram);
-      cgGLBindProgram(VertexProgram);
+      cgGLBindProgram(FragmentProgram[index]);
+      cgGLBindProgram(VertexProgram[index]);
 
       /* fragment params */
-      cg_video_size = cgGetNamedParameter(FragmentProgram, "IN.video_size");
-      cg_texture_size = cgGetNamedParameter(FragmentProgram, "IN.texture_size");
-      cg_output_size = cgGetNamedParameter(FragmentProgram, "IN.output_size");
-      cgp_timer = cgGetNamedParameter(FragmentProgram, "IN.frame_count");
+      cg_video_size[index] = cgGetNamedParameter(FragmentProgram[index], "IN.video_size");
+      cg_texture_size[index] = cgGetNamedParameter(FragmentProgram[index], "IN.texture_size");
+      cg_output_size[index] = cgGetNamedParameter(FragmentProgram[index], "IN.output_size");
+      cgp_timer[index] = cgGetNamedParameter(FragmentProgram[index], "IN.frame_count");
 
       /* vertex params */
-      cg_v_video_size = cgGetNamedParameter(VertexProgram, "IN.video_size");
-      cg_v_texture_size = cgGetNamedParameter(VertexProgram, "IN.texture_size");
-      cg_v_output_size = cgGetNamedParameter(VertexProgram, "IN.output_size");
-      cgp_vertex_timer = cgGetNamedParameter(VertexProgram, "IN.frame_count");
-      ModelViewProj_cgParam = cgGetNamedParameter(VertexProgram, "modelViewProj");
+      cg_v_video_size[index] = cgGetNamedParameter(VertexProgram[index], "IN.video_size");
+      cg_v_texture_size[index] = cgGetNamedParameter(VertexProgram[index], "IN.texture_size");
+      cg_v_output_size[index] = cgGetNamedParameter(VertexProgram[index], "IN.output_size");
+      cgp_vertex_timer[index] = cgGetNamedParameter(VertexProgram[index], "IN.frame_count");
+      ModelViewProj_cgParam[index] = cgGetNamedParameter(VertexProgram[index], "modelViewProj");
 
-      cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
+      cgGLSetStateMatrixParameter(ModelViewProj_cgParam[index], CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
 }
 
 static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filename, const char *entry)
@@ -194,20 +196,20 @@ static CGprogram _psglLoadShaderFromSource(CGprofile target, const char* filenam
 	return id;
 }
 
-static void psglDeinitShader()
+static void psglDeinitShader(unsigned index)
 {
-	if (VertexProgram)
+	if (VertexProgram[index])
 	{
 		cgGLUnbindProgram(CG_PROFILE_SCE_VP_RSX);
-		cgDestroyProgram(VertexProgram);
-		VertexProgram = NULL;
+		cgDestroyProgram(VertexProgram[index]);
+		VertexProgram[index] = NULL;
 	}
 
-	if (FragmentProgram)
+	if (FragmentProgram[index])
 	{
 		cgGLUnbindProgram(CG_PROFILE_SCE_FP_RSX);
-		cgDestroyProgram(FragmentProgram);
-		FragmentProgram = NULL;
+		cgDestroyProgram(FragmentProgram[index]);
+		FragmentProgram[index] = NULL;
 	}
 
 
@@ -224,13 +226,13 @@ void _psglInitCG()
 	strcat(shaderFile, m_ListShaderData[shaderindex].c_str());
 
 	const char *shader = shaderFile;
-	VertexProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
-	FragmentProgram = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
+	VertexProgram[0] = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
+	FragmentProgram[0] = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
 
 	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
 	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
 
-	get_cg_params();
+	get_cg_params(0);
 }
 
 void reset_frame_counter()
@@ -484,44 +486,9 @@ void psglSetVSync(uint32_t enable)
 
 int _psglExit(void)
 {
-	glDeleteBuffers(1, &bufferID); 
+	glDeleteBuffers(2, vbo); 
 	pVidImage = NULL;
 	nRotateGame = 0;
-	return 0;
-}
-
-static int _psglTextureInit()
-{
-	if (nRotateGame & 1)
-	{
-		nVidImageWidth = nGameHeight;
-		nVidImageHeight = nGameWidth;
-	}
-	else
-	{
-		nVidImageWidth = nGameWidth;
-		nVidImageHeight = nGameHeight;
-	}
-
-	nBurnBpp = SCREEN_RENDER_TEXTURE_BPP;		// Set Burn library Bytes per pixel
-
-	// Use our callback to get colors:
-	VidRecalcPal();
-
-	VidHighCol = HighCol15;
-	BurnHighCol = VidHighCol;
-
-	//End of callback
-
-	// Make the normal memory buffer
-	if (VidSAllocVidImage())
-	{
-		psglExit();
-		return 1;
-	}
-
-	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, NULL, GL_SYSTEM_DRAW_SCE);
-
 	return 0;
 }
 
@@ -553,19 +520,43 @@ int _psglInit(void)
 	/*enable useful and required features */
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	glGenBuffers(1, &bufferID);
-	glBindBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, bufferID);
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, vbo[0]);
 
 	_psglInitCG();
 
 	VidInitInfo();
 
 	// Initialize the buffer surfaces
-	if (_psglTextureInit())
+	if (nRotateGame & 1)
+	{
+		nVidImageWidth = nGameHeight;
+		nVidImageHeight = nGameWidth;
+	}
+	else
+	{
+		nVidImageWidth = nGameWidth;
+		nVidImageHeight = nGameHeight;
+	}
+
+	nBurnBpp = SCREEN_RENDER_TEXTURE_BPP;		// Set Burn library Bytes per pixel
+
+	// Use our callback to get colors:
+	VidRecalcPal();
+
+	VidHighCol = HighCol15;
+	BurnHighCol = VidHighCol;
+
+	//End of callback
+
+	// Make the normal memory buffer
+	if (VidSAllocVidImage())
 	{
 		psglExit();
 		return 1;
 	}
+
+	glBufferData(GL_TEXTURE_REFERENCE_BUFFER_SCE, (nVidImageWidth * nVidImageHeight) << SCREEN_RENDER_TEXTURE_BPP_SHIFT, NULL, GL_SYSTEM_DRAW_SCE);
 
 	apply_rotation_settings();
 
@@ -665,16 +656,16 @@ void CalculateViewports(void)
 	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 }
 
-#define set_cg_params() \
-cgGLSetStateMatrixParameter(ModelViewProj_cgParam, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
-cgGLSetParameter2f(cg_video_size, nVidImageWidth, nVidImageHeight); \
-cgGLSetParameter2f(cg_texture_size, nVidImageWidth, nVidImageHeight); \
-cgGLSetParameter2f(cg_output_size, cg_viewport_width, cg_viewport_height); \
-cgGLSetParameter2f(cg_v_video_size, nVidImageWidth, nVidImageHeight); \
-cgGLSetParameter2f(cg_v_texture_size, nVidImageWidth, nVidImageHeight); \
-cgGLSetParameter2f(cg_v_output_size, cg_viewport_width, cg_viewport_height); \
-cgGLSetParameter1f(cgp_timer, frame_count); \
-cgGLSetParameter1f(cgp_vertex_timer, frame_count);
+#define set_cg_params(index) \
+cgGLSetStateMatrixParameter(ModelViewProj_cgParam[index], CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY); \
+cgGLSetParameter2f(cg_video_size[index], nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_texture_size[index], nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_output_size[index], cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter2f(cg_v_video_size[index], nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_texture_size[index], nVidImageWidth, nVidImageHeight); \
+cgGLSetParameter2f(cg_v_output_size[index], cg_viewport_width, cg_viewport_height); \
+cgGLSetParameter1f(cgp_timer[index], frame_count); \
+cgGLSetParameter1f(cgp_vertex_timer[index], frame_count);
 
 void psglRender(void)
 {
@@ -686,7 +677,7 @@ void psglRender(void)
 
 	frame_count += 1;
 	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
-	set_cg_params();
+	set_cg_params(0);
 
 	glDrawArrays(GL_QUADS, 0, 4);
 
@@ -719,22 +710,23 @@ void psglRenderAlpha(void)
 	}
 	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 1, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
-	set_cg_params();
+	set_cg_params(0);
 	glDrawArrays(GL_QUADS, 0, 4);
 }
 
-int32_t psglInitShader(const char* filename)
+int32_t psglInitShader(const char* filename, unsigned index)
 {
-	psglDeinitShader();
+	psglDeinitShader(index);
 
 	CGprogram id = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, filename, "main_fragment");
 	CGprogram v_id = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, filename, "main_vertex");
+
 	if (id)
 	{
-		FragmentProgram = id;
-		VertexProgram = v_id;
+		FragmentProgram[index] = id;
+		VertexProgram[index] = v_id;
 
-		get_cg_params();
+		get_cg_params(index);
 
 		return CELL_OK;
 	}

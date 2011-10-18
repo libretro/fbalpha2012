@@ -1046,7 +1046,7 @@ void ConfigFrameMove()
 				selectedShader[0].index = shaderindex;
 				strcpy(selectedShader[0].filename, m_ListShaderData[shaderindex].c_str());
 				sprintf(selectedShader[0].fullpath, "%s%s", SHADER_DIRECTORY,m_ListShaderData[shaderindex].c_str());
-				psglInitShader(selectedShader[0].fullpath);
+				psglInitShader(selectedShader[0].fullpath, 0);
 			}
 			break;
 		case SETTING_CURRENT_SHADER2:
@@ -1066,7 +1066,7 @@ void ConfigFrameMove()
 				selectedShader[1].index = shaderindex2;
 				strcpy(selectedShader[1].filename, m_ListShader2Data[shaderindex2].c_str());
 				sprintf(selectedShader[1].fullpath, "%s%s", SHADER_DIRECTORY,m_ListShader2Data[shaderindex2].c_str());
-				psglInitShader(selectedShader[1].fullpath);
+				psglInitShader(selectedShader[1].fullpath, 1);
 			}
 			break;
 		case SETTING_BILINEAR_FILTER:
@@ -2287,7 +2287,7 @@ void InGameFrameMove()
 				selectedShader[0].index = shaderindex;
 				strcpy(selectedShader[0].filename, m_ListShaderData[shaderindex].c_str());
 				sprintf(selectedShader[0].fullpath, SHADER_DIRECTORY, m_ListShaderData[shaderindex].c_str());
-				psglInitShader(selectedShader[0].fullpath);
+				psglInitShader(selectedShader[0].fullpath, 0);
 				BurnReinitScrn();
 				VidFrame();
 			}
@@ -2309,7 +2309,7 @@ void InGameFrameMove()
 				selectedShader[1].index = shaderindex2;
 				strcpy(selectedShader[1].filename, m_ListShader2Data[shaderindex2].c_str());
 				sprintf(selectedShader[1].fullpath, SHADER_DIRECTORY, m_ListShader2Data[shaderindex2].c_str());
-				psglInitShader(selectedShader[1].fullpath);
+				psglInitShader(selectedShader[1].fullpath, 1);
 				BurnReinitScrn();
 				VidFrame();
 			}

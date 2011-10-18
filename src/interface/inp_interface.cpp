@@ -128,11 +128,13 @@ int InputMake(bool bCopy)
 				nAdd += 0x100;
 		}
 
+#ifdef USE_JOYAXIS
 		if (pgi->nInput == GIT_JOYSLIDER)
 		{	// Get state of the axis
 			nAdd = CinpJoyAxis(pgi->Input.Slider.JoyAxis.nJoy, pgi->Input.Slider.JoyAxis.nAxis);
 			nAdd /= 0x100;
 		}
+#endif
 
 		// nAdd is now -0x100 to +0x100
 
@@ -222,6 +224,7 @@ int InputMake(bool bCopy)
 						 }
 						 break;
 					 }
+#ifdef USE_MOUSE
 			case GIT_MOUSEAXIS:						// Mouse axis
 					 pgi->Input.nVal = (unsigned short)(CinpMouseAxis(pgi->Input.MouseAxis.nMouse, pgi->Input.MouseAxis.nAxis) * nAnalogSpeed);
 					 if (bCopy) {
@@ -232,6 +235,8 @@ int InputMake(bool bCopy)
 #endif
 					 }
 					 break;
+#endif
+#ifdef USE_JOYAXIS
 			case GIT_JOYAXIS_FULL:	{				// Joystick axis
 							int nJoy = CinpJoyAxis(pgi->Input.JoyAxis.nJoy, pgi->Input.JoyAxis.nAxis);
 
@@ -321,9 +326,11 @@ int InputMake(bool bCopy)
 							}
 							break;
 						}
+#endif
 		}
 	}
 
+#ifndef NO_MACROS
 	for (i = 0; i < nMacroCount; i++, pgi++)
 	{
 		if (pgi->Macro.nMode)
@@ -339,6 +346,7 @@ int InputMake(bool bCopy)
 			}
 		}
 	}
+#endif
 
 	return 0;
 }

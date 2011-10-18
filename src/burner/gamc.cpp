@@ -323,7 +323,8 @@ int GamcAnalogKey(struct GameInp* pgi, char* szi, int nPlayer, int nSlide)
 	return 0;
 }
 
-#ifndef SN_TARGET_PS3
+#if defined(SN_TARGET_PS3) || defined(_XBOX)
+#else
 int GamcAnalogJoy(struct GameInp* pgi, char* szi, int nPlayer, int nJoy, int nSlide)
 {
 	int nAxis = 0;
@@ -378,19 +379,25 @@ int GamcAnalogJoy(struct GameInp* pgi, char* szi, int nPlayer, int nJoy, int nSl
 			pgi->Input.Slider.JoyAxis.nJoy = (unsigned char)nJoy;
 			break;
 		case 3:								// Absolute, axis-neg
+#ifdef USE_JOYAXIS
 			pgi->nInput = GIT_JOYAXIS_NEG;
 			pgi->Input.JoyAxis.nAxis = nAxis;
 			pgi->Input.JoyAxis.nJoy = (unsigned char)nJoy;
+#endif
 			break;
 		case 4:								// Absolute, axis-pos
+			#ifdef USE_JOYAXIS
 			pgi->nInput = GIT_JOYAXIS_POS;
 			pgi->Input.JoyAxis.nAxis = nAxis;
 			pgi->Input.JoyAxis.nJoy = (unsigned char)nJoy;
+#endif
 			break;
 		default:							// Absolute, entire axis
+						#ifdef USE_JOYAXIS
 			pgi->nInput = GIT_JOYAXIS_FULL;
 			pgi->Input.JoyAxis.nAxis = nAxis;
 			pgi->Input.JoyAxis.nJoy = (unsigned char)nJoy;
+#endif
 	}
 
 	return 0;

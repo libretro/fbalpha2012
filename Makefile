@@ -213,7 +213,7 @@ PPU_CXXFLAGS   += -DMULTIMAN_SUPPORT=1
    endif
 endif
 
-PPU_LDLIBS                 +=      -L. -L$(CELL_SDK)/target/ppu/lib/PSGL/RSX/opt -lrtc_stub -ldbgfont -lPSGL -lPSGLcgc -lcgc -lgcm_cmd -lgcm_sys_stub -lresc_stub -lm -lio_stub -lfs_stub -lsysutil_stub $(L_CONTROL_CONSOLE_LDLIBS) -lsysmodule_stub -laudio_stub -lpthread $(L_NET_LDLIBS) $(L_NET_CTL_LDLIBS)
+PPU_LDLIBS                 +=      -L. -L$(CELL_SDK)/target/ppu/lib/PSGL/RSX/opt -lrtc_stub -ldbgfont -lPSGL -lPSGLcgc -lcgc -lgcm_cmd -lgcm_sys_stub -lresc_stub -lm -lio_stub -lfs_stub -lsysutil_stub $(L_CONTROL_CONSOLE_LDLIBS) -lpngdec_stub -ljpgdec_stub -lsysmodule_stub -laudio_stub -lpthread $(L_NET_LDLIBS) $(L_NET_CTL_LDLIBS)
 
 include $(CELL_MK_DIR)/sdk.target.mk
 

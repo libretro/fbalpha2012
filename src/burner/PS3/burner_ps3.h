@@ -66,6 +66,8 @@ extern int custom_aspect_ratio_mode;
 #define DEFAULT_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini"
 #define DEFAULT_NEO_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_neo.ini"
 #define DEFAULT_CPS_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default_cps.ini"
+#define DEFAULT_MENU_BORDER_FILE "/dev_hdd0/game/FBAN00000/USRDIR/borders/Menu/main-menu.png"
+#define DEFAULT_MENU_SHADER_FILE "/dev_hdd0/game/FBAN00000/USRDIR/shaders/Borders/Menu/border-only.cg"
 #define GAME_INPUT_DIR "/dev_hdd0/game/FBAN00000/USRDIR/config/games/"
 
 #define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"

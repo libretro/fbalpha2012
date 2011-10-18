@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include <cell/codec.h>
 #include <sys/sys_time.h>
 
 #include "burner.h"
@@ -5,12 +7,17 @@
 #include "vid_psgl.h"
 
 #define MAX_SHADERS 3
+#define SHADER_ONE 0
+#define SHADER_TWO 1
+#define MENU_SHADER 2
 
 extern std::vector<std::string> m_ListShaderData;
 extern std::vector<std::string> m_ListShader2Data;
 
 static PSGLdevice* psgl_device = NULL;
 static PSGLcontext* psgl_context = NULL;
+
+uint8_t *decode_buffer;
 
 GLuint gl_width = 0;
 GLuint gl_height = 0;
@@ -19,6 +26,11 @@ int nImageHeight;
 static int nGameWidth = 0;
 static int nGameHeight = 0;
 static int nRotateGame = 0;
+
+// textures
+static GLuint tex = 0;
+static GLuint tex_menu = 0;
+static GLuint tex_backdrop = 0;
 
 static CGcontext CgContext = NULL;
 static CGprogram VertexProgram[MAX_SHADERS];
@@ -169,9 +181,6 @@ void VidInitInfo()
 
 static void get_cg_params(unsigned index)
 {
-      cgGLBindProgram(FragmentProgram[index]);
-      cgGLBindProgram(VertexProgram[index]);
-
       /* fragment params */
       cg_video_size[index] = cgGetNamedParameter(FragmentProgram[index], "IN.video_size");
       cg_texture_size[index] = cgGetNamedParameter(FragmentProgram[index], "IN.texture_size");
@@ -226,13 +235,8 @@ void _psglInitCG()
 	strcat(shaderFile, m_ListShaderData[shaderindex].c_str());
 
 	const char *shader = shaderFile;
-	VertexProgram[0] = _psglLoadShaderFromSource(CG_PROFILE_SCE_VP_RSX, shader, "main_vertex");
-	FragmentProgram[0] = _psglLoadShaderFromSource(CG_PROFILE_SCE_FP_RSX, shader, "main_fragment");
-
-	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
-	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
-
-	get_cg_params(0);
+	psglInitShader(shaderFile, SHADER_ONE);
+	//psglInitShader(DEFAULT_MENU_SHADER_FILE, MENU_SHADER);
 }
 
 void reset_frame_counter()
@@ -425,6 +429,7 @@ void psglResolutionSwitch(void)
 void psglExitGL(void)
 {
 	cellDbgFontExit();
+	//free(decode_buffer);
 
 	if (CgContext)
 	{
@@ -494,12 +499,16 @@ int _psglExit(void)
 
 void setlinear(unsigned int smooth)
 {
+	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 }
 
 int _psglInit(void)
 {
+	decode_buffer = (uint8_t*)memalign(128, 2048 * 2048 * 4);
+	memset(decode_buffer, 0, (2048 * 2048 * 4));
+
 	psglResetCurrentContext();
 
 	psglGetRenderBufferDimensions(psgl_device, &gl_width, &gl_height);
@@ -519,8 +528,10 @@ int _psglInit(void)
 
 	/*enable useful and required features */
 	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	glGenBuffers(1, vbo);
+
+	glGenBuffers(2, vbo);
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	glBindBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, vbo[0]);
 
 	_psglInitCG();
@@ -563,6 +574,32 @@ int _psglInit(void)
 	setlinear(vidFilterLinear);
 
 	psglSetVSync(bVidVSync);
+
+	// VBO #2
+	// Use some initial values for the screen quad.
+	GLfloat vertexes[] = {
+		0, 0, 0,
+		0, 1, 0,
+		1, 1, 0,
+		1, 0, 0,
+		0, 1,
+		0, 0,
+		1, 0,
+		1, 1
+	};
+
+	GLfloat vertex_buf[128];
+	memcpy(vertex_buf, vertexes, 12 * sizeof(GLfloat));
+	memcpy(vertex_buf + 32, vertexes + 12, 8 * sizeof(GLfloat));
+	memcpy(vertex_buf + 32 * 3, vertexes + 12, 8 * sizeof(GLfloat));
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, 512, vertex_buf, GL_STREAM_DRAW);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glTexCoordPointer(2, GL_FLOAT, 0, (void*)128);
 
 	nImageWidth = nImageHeight = 0;
 
@@ -667,9 +704,24 @@ cgGLSetParameter2f(cg_v_output_size[index], cg_viewport_width, cg_viewport_heigh
 cgGLSetParameter1f(cgp_timer[index], frame_count); \
 cgGLSetParameter1f(cgp_vertex_timer[index], frame_count);
 
+#define texture_backdrop(number) \
+	if (tex_backdrop) \
+	{ \
+		/* Set up texture coord array (TEXCOORD1). */ \
+		glClientActiveTexture(GL_TEXTURE1); \
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY); \
+		glTexCoordPointer(2, GL_FLOAT, 0, (void*)(128 * 3)); \
+		glClientActiveTexture(GL_TEXTURE0); \
+		\
+		CGparameter param = cgGetNamedParameter(FragmentProgram[number], "bg"); \
+		cgGLSetTextureParameter(param, tex_backdrop); \
+		cgGLEnableTextureParameter(param); \
+	}
+
 void psglRender(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	uint8_t * texture = (uint8_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_WRITE_ONLY);
 	VidSCopyImage(texture);
@@ -677,9 +729,12 @@ void psglRender(void)
 
 	frame_count += 1;
 	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 0, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
-	set_cg_params(0);
+	set_cg_params(SHADER_ONE);
+
+	texture_backdrop(0);
 
 	glDrawArrays(GL_QUADS, 0, 4);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	if (bShowFPS)
 	{
@@ -693,6 +748,7 @@ void psglRenderAlpha(void)
 {
 	frame_count++;
 
+	glBindTexture(GL_TEXTURE_2D, tex);
 	uint16_t* texture = (uint16_t*)glMapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE, GL_READ_WRITE);
 	for(int i = 0; i != nVidImageHeight; i++)
 	{
@@ -710,8 +766,9 @@ void psglRenderAlpha(void)
 	}
 	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 	glTextureReferenceSCE(GL_TEXTURE_2D, 1, nVidImageWidth, nVidImageHeight, 1, SCREEN_RENDER_TEXTURE_PIXEL_FORMAT, nVidImageWidth << SCREEN_RENDER_TEXTURE_BPP_SHIFT, 0);
-	set_cg_params(0);
+	set_cg_params(SHADER_ONE);
 	glDrawArrays(GL_QUADS, 0, 4);
+	glBindTexture(GL_TEXTURE_2D, tex);
 }
 
 int32_t psglInitShader(const char* filename, unsigned index)
@@ -725,10 +782,363 @@ int32_t psglInitShader(const char* filename, unsigned index)
 	{
 		FragmentProgram[index] = id;
 		VertexProgram[index] = v_id;
+		// bind and enable the vertex and fragment programs
+		cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
+		cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
+		cgGLBindProgram(VertexProgram[index]);
+		cgGLBindProgram(FragmentProgram[index]);
 
 		get_cg_params(index);
+
+		if(index == 1 && VertexProgram[0] && FragmentProgram[0])
+		{
+			cgGLBindProgram(VertexProgram[0]);
+			cgGLBindProgram(FragmentProgram[0]);
+		}
 
 		return CELL_OK;
 	}
 	return !CELL_OK;
+}
+
+/******************************************************************************* 
+	Image decompression
+********************************************************************************/
+
+/******************************************************************************* 
+	Image decompression - structs
+********************************************************************************/
+
+typedef struct CtrlMallocArg
+{
+	uint32_t mallocCallCounts;
+} CtrlMallocArg;
+
+typedef struct CtrlFreeArg
+{
+	uint32_t freeCallCounts;
+} CtrlFreeArg;
+
+void *img_malloc(uint32_t size, void * a)
+{
+	CtrlMallocArg *arg;
+	arg = (CtrlMallocArg *) a;
+	arg->mallocCallCounts++;
+	return malloc(size);
+}
+
+static int img_free(void *ptr, void * a)
+{
+	CtrlFreeArg *arg;
+	arg = (CtrlFreeArg *) a;
+	arg->freeCallCounts++;
+	free(ptr);
+	return 0;
+}
+
+/******************************************************************************* 
+	Image decompression - libJPEG
+********************************************************************************/
+
+bool load_jpeg(const char * path, unsigned &width, unsigned &height, uint8_t *data)
+{
+	// More Holy shit
+	CtrlMallocArg              MallocArg;
+	CtrlFreeArg                FreeArg;
+	CellJpgDecMainHandle       mHandle = NULL;
+	CellJpgDecSubHandle        sHandle = NULL;
+	CellJpgDecThreadInParam    InParam;
+	CellJpgDecThreadOutParam   OutParam;
+	CellJpgDecSrc              src;
+	CellJpgDecOpnInfo          opnInfo;
+	CellJpgDecInfo             info;
+	CellJpgDecInParam          inParam;
+	CellJpgDecOutParam         outParam;
+	CellJpgDecDataOutInfo      dOutInfo;
+	CellJpgDecDataCtrlParam    dCtrlParam;
+
+	MallocArg.mallocCallCounts = 0;
+	FreeArg.freeCallCounts = 0;
+	InParam.spuThreadEnable = CELL_JPGDEC_SPU_THREAD_ENABLE;
+	InParam.ppuThreadPriority = 1001;
+	InParam.spuThreadPriority = 250;
+	InParam.cbCtrlMallocFunc = img_malloc;
+	InParam.cbCtrlMallocArg = &MallocArg;
+	InParam.cbCtrlFreeFunc = img_free;
+	InParam.cbCtrlFreeArg = &FreeArg;
+
+	int ret_jpeg, ret = -1;
+	ret_jpeg = cellJpgDecCreate(&mHandle, &InParam, &OutParam);
+
+	if (ret_jpeg != CELL_OK)
+	{
+		goto error;
+	}
+
+	memset(&src, 0, sizeof(CellJpgDecSrc));
+	src.srcSelect        = CELL_JPGDEC_FILE;
+	src.fileName         = path;
+	src.fileOffset       = 0;
+	src.fileSize         = 0;
+	src.streamPtr        = NULL;
+	src.streamSize       = 0;
+
+	src.spuThreadEnable  = CELL_JPGDEC_SPU_THREAD_ENABLE;
+
+	ret = cellJpgDecOpen(mHandle, &sHandle, &src, &opnInfo);
+
+	if (ret != CELL_OK)
+	{
+		goto error;
+	}
+
+	ret = cellJpgDecReadHeader(mHandle, sHandle, &info);
+
+	if (ret != CELL_OK)
+	{
+		goto error;
+	}
+
+	inParam.commandPtr         = NULL;
+	inParam.method             = CELL_JPGDEC_FAST;
+	inParam.outputMode         = CELL_JPGDEC_TOP_TO_BOTTOM;
+	inParam.outputColorSpace   = CELL_JPG_ARGB;
+	inParam.downScale          = 1;
+	inParam.outputColorAlpha = 0xfe;
+	ret = cellJpgDecSetParameter(mHandle, sHandle, &inParam, &outParam);
+
+	if (ret != CELL_OK)
+	{
+		sys_process_exit(0);
+		goto error;
+	}
+
+	dCtrlParam.outputBytesPerLine = outParam.outputWidth * 4;
+	ret = cellJpgDecDecodeData(mHandle, sHandle, data, &dCtrlParam, &dOutInfo);
+
+	if (ret != CELL_OK || dOutInfo.status != CELL_JPGDEC_DEC_STATUS_FINISH)
+	{
+		sys_process_exit(0);
+		goto error;
+	}
+
+	width = outParam.outputWidth;
+	height = outParam.outputHeight;
+
+	cellJpgDecClose(mHandle, sHandle);
+	cellJpgDecDestroy(mHandle);
+
+	return true;
+
+error:
+	if (mHandle && sHandle)
+		cellJpgDecClose(mHandle, sHandle);
+	if (mHandle)
+		cellJpgDecDestroy(mHandle);
+	return false;
+}
+
+/******************************************************************************* 
+	Image decompression - libPNG
+********************************************************************************/
+
+bool load_png(const char * path, unsigned &width, unsigned &height, uint8_t *data)
+{
+	// Holy shit, Sony!
+	CtrlMallocArg              MallocArg;
+	CtrlFreeArg                FreeArg;
+	CellPngDecMainHandle       mHandle = NULL;
+	CellPngDecSubHandle        sHandle = NULL;
+	CellPngDecThreadInParam    InParam;
+	CellPngDecThreadOutParam   OutParam;
+	CellPngDecSrc              src;
+	CellPngDecOpnInfo          opnInfo;
+	CellPngDecInfo             info;
+	CellPngDecInParam          inParam;
+	CellPngDecOutParam         outParam;
+	CellPngDecDataOutInfo      dOutInfo;
+	CellPngDecDataCtrlParam    dCtrlParam;
+
+	MallocArg.mallocCallCounts = 0;
+	FreeArg.freeCallCounts = 0;
+	InParam.spuThreadEnable = CELL_PNGDEC_SPU_THREAD_ENABLE;
+	InParam.ppuThreadPriority = 512;
+	InParam.spuThreadPriority = 200;
+	InParam.cbCtrlMallocFunc = img_malloc;
+	InParam.cbCtrlMallocArg = &MallocArg;
+	InParam.cbCtrlFreeFunc = img_free;
+	InParam.cbCtrlFreeArg = &FreeArg;
+
+	int ret_png, ret = -1;
+	ret_png = cellPngDecCreate(&mHandle, &InParam, &OutParam);
+
+	if (ret_png != CELL_OK)
+		goto error;
+
+	memset(&src, 0, sizeof(CellPngDecSrc));
+	src.srcSelect        = CELL_PNGDEC_FILE;
+	src.fileName         = path;
+	src.fileOffset       = 0;
+	src.fileSize         = 0;
+	src.streamPtr        = 0;
+	src.streamSize       = 0;
+
+	src.spuThreadEnable  = CELL_PNGDEC_SPU_THREAD_ENABLE;
+
+	ret = cellPngDecOpen(mHandle, &sHandle, &src, &opnInfo);
+
+	if (ret != CELL_OK)
+		goto error;
+
+	ret = cellPngDecReadHeader(mHandle, sHandle, &info);
+
+	if (ret != CELL_OK)
+		goto error;
+
+	inParam.commandPtr         = NULL;
+	inParam.outputMode         = CELL_PNGDEC_TOP_TO_BOTTOM;
+	inParam.outputColorSpace   = CELL_PNGDEC_ARGB;
+	inParam.outputBitDepth     = 8;
+	inParam.outputPackFlag     = CELL_PNGDEC_1BYTE_PER_1PIXEL;
+	inParam.outputAlphaSelect  = CELL_PNGDEC_STREAM_ALPHA;
+	ret = cellPngDecSetParameter(mHandle, sHandle, &inParam, &outParam);
+
+	if (ret != CELL_OK)
+		goto error;
+
+	dCtrlParam.outputBytesPerLine = outParam.outputWidth * 4;
+	ret = cellPngDecDecodeData(mHandle, sHandle, data, &dCtrlParam, &dOutInfo);
+
+	if (ret != CELL_OK || dOutInfo.status != CELL_PNGDEC_DEC_STATUS_FINISH)
+		goto error;
+
+	width = outParam.outputWidth;
+	height = outParam.outputHeight;
+
+	cellPngDecClose(mHandle, sHandle);
+	cellPngDecDestroy(mHandle);
+
+	return true;
+
+error:
+	if (mHandle && sHandle)
+		cellPngDecClose(mHandle, sHandle);
+	if (mHandle)
+		cellPngDecDestroy(mHandle);
+	return false;
+}
+
+void setup_texture(GLuint tex, unsigned width, unsigned height)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ARGB_SCE, width, height, 0,
+			GL_ARGB_SCE, GL_UNSIGNED_INT_8_8_8_8, decode_buffer);
+
+	// Set up texture coord array (TEXCOORD1).
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, 0, (void*)(128 * 3));
+	glClientActiveTexture(GL_TEXTURE0);
+
+	// Go back to old stuff.
+	glBindTexture(GL_TEXTURE_2D, tex);
+}
+
+bool LoadMenuTexture(enum menu_type type, const char * path)
+{
+	GLuint *texture = NULL;
+	switch (type)
+	{
+		case TEXTURE_BACKDROP:
+			texture = &tex_backdrop;
+			break;
+
+		case TEXTURE_MENU:
+			texture = &tex_menu;
+			break;
+
+		default:
+			return false;
+	}
+
+	unsigned width, height;
+	if(strstr(path, ".PNG") != NULL || strstr(path, ".png") != NULL)
+	{
+		if (!load_png(path, width, height, decode_buffer))
+			return false;
+	}
+	else
+	{
+		if (!load_jpeg(path, width, height, decode_buffer))
+			return false;
+	}
+
+	if (*texture == 0)
+		glGenTextures(1, texture);
+
+	setup_texture(*texture, width, height);
+
+	return true;
+}
+
+void psglRenderMenu(int width, int height)
+{
+	#if 0
+	float device_aspect = psglGetDeviceAspectRatio(psgl_device);
+	GLuint temp_width = gl_width;
+	GLuint temp_height = gl_height;
+	cg_viewport_width = temp_width;
+	cg_viewport_height = temp_width;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, temp_width, temp_height);
+	glOrthof(0, 1, 0, 1, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	printf("0\n");
+
+	cgGLBindProgram(VertexProgram[MENU_SHADER]);
+	cgGLBindProgram(FragmentProgram[MENU_SHADER]);
+	cgGLSetStateMatrixParameter(ModelViewProj_cgParam[MENU_SHADER], CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
+	cgGLSetParameter2f(cg_video_size[MENU_SHADER], width, height);
+	cgGLSetParameter2f(cg_texture_size[MENU_SHADER], width, height);
+	cgGLSetParameter2f(cg_output_size[MENU_SHADER], cg_viewport_width, cg_viewport_height);
+	cgGLSetParameter2f(cg_v_video_size[MENU_SHADER], width, height);
+	cgGLSetParameter2f(cg_v_texture_size[MENU_SHADER], width, height);
+	cgGLSetParameter2f(cg_v_output_size[MENU_SHADER], cg_viewport_width, cg_viewport_height);
+	printf("1\n");
+
+	cgp_timer[MENU_SHADER] = cgGetNamedParameter(FragmentProgram[MENU_SHADER], "IN.frame_count");
+	cgp_vertex_timer[MENU_SHADER] = cgGetNamedParameter(VertexProgram[MENU_SHADER], "IN.frame_count");
+	cgGLSetParameter1f(cgp_timer[MENU_SHADER], frame_count);
+	cgGLSetParameter1f(cgp_vertex_timer[MENU_SHADER], frame_count);
+	CGparameter param = cgGetNamedParameter(FragmentProgram[MENU_SHADER], "bg");
+	cgGLSetTextureParameter(param, tex_menu);
+	cgGLEnableTextureParameter(param);
+	printf("2\n");
+
+	printf("3\n");
+	// Set up texture coord array (TEXCOORD1).
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	printf("3.1\n");
+	glTexCoordPointer(2, GL_FLOAT, 0, (void*)(128 * 3));
+	glClientActiveTexture(GL_TEXTURE0);
+	printf("3.2\n");
+
+	glDrawArrays(GL_QUADS, 0, 4); 
+	printf("3.3\n");
+
+	printf("4\n");
+	// EnableTextureParameter might overwrite bind in TEXUNIT0.
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	cgGLBindProgram(VertexProgram[0]);
+	cgGLBindProgram(FragmentProgram[0]);
+	#endif
 }

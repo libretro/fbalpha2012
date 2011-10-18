@@ -8,6 +8,12 @@
 #include "burnint.h"
 #include "vid_support-ps3.h"
 
+enum menu_type
+{
+	TEXTURE_BACKDROP,
+	TEXTURE_MENU
+};
+
 extern void psglSetVSync(uint32_t enable);
 extern void psglInitGL(void);
 extern void dbgFontInit(void);
@@ -21,7 +27,9 @@ extern void psglRenderPaused(void);
 extern void psglRenderAlpha(void);
 extern void CalculateViewports(void);
 extern void psglRender(void);
+extern void psglRenderMenu(int width, int height);
 extern void setlinear(unsigned int smooth);
+bool LoadMenuTexture(enum menu_type type, const char * path);
 
 extern uint32_t m_overscan;
 extern float m_overscan_amount;

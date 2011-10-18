@@ -107,6 +107,8 @@ int  main(int argc, char **argv)
 
 	cellSysmoduleLoadModule(CELL_SYSMODULE_FS);
 	cellSysmoduleLoadModule(CELL_SYSMODULE_IO);     
+	cellSysmoduleLoadModule(CELL_SYSMODULE_PNGDEC);
+	cellSysmoduleLoadModule(CELL_SYSMODULE_JPGDEC);
 	cellSysmoduleLoadModule(CELL_SYSMODULE_RTC);
 
 	cellSysutilRegisterCallback(0, sysutil_exit_callback, NULL);
@@ -144,6 +146,8 @@ int  main(int argc, char **argv)
 	dbgFontInit();
 	reset_frame_counter();
 
+	LoadMenuTexture(TEXTURE_MENU, DEFAULT_MENU_BORDER_FILE);
+
 #ifdef MULTIMAN_SUPPORT
 	if(argc > 1)
 	{
@@ -159,6 +163,7 @@ int  main(int argc, char **argv)
 		{
 			case MENU:	
 				psglClearUI();
+				psglRenderMenu(1920, 1080);
 				RomMenu();
 				FrameMove();
 #ifdef CELL_DEBUG_CONSOLE
@@ -275,6 +280,8 @@ int  main(int argc, char **argv)
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_FS);
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_IO);     
 	cellSysmoduleUnloadModule(CELL_SYSMODULE_RTC);
+	cellSysmoduleUnloadModule(CELL_SYSMODULE_PNGDEC);
+	cellSysmoduleUnloadModule(CELL_SYSMODULE_JPGDEC);
 	cellSysutilUnregisterCallback(0);
 
 	sys_process_exit(0);

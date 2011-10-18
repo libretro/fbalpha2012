@@ -589,6 +589,8 @@ void BuildRomList()
 					if(strstr(dirent.d_name,".cg") || strstr(dirent.d_name,".CG"))
 						m_ListShaderData.push_back(dirent.d_name);
 				}
+				else
+					continue;
 			}
 			cellFsClosedir(_fd);
 		}
@@ -620,6 +622,8 @@ void BuildRomList()
 					if(strstr(dirent.d_name,".cg") || strstr(dirent.d_name,".CG"))
 						m_ListShader2Data.push_back(dirent.d_name);
 				}
+				else
+					continue;
 			}
 			cellFsClosedir(_fd);
 		}

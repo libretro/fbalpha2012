@@ -8,6 +8,10 @@
 #include "../burn/ssnes-typedefs.h"
 #endif
 
+#if defined(SN_TARGET_PS3) || defined(_XBOX)
+#define GamcAnalogJoy(pgi, szi, nPlayer, nJoy, nSlide) {}
+#endif
+
 // Player Default Controls
 int nPlayerDefaultControls[4] = {0, 1, 2, 3};
 char szPlayerDefaultIni[4][MAX_PATH] = { "", "", "", ""};
@@ -1428,23 +1432,17 @@ static int GameInpAutoOne(struct GameInp* pgi, char* szi)
 				}
 				break;
 			case 1:										// Joystick 1
-#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 0, nSlide);
-#endif
 				GamcPlayer(pgi, szi, i, 0);
 				GamcMisc(pgi, szi, i);
 				break;
 			case 2:										// Joystick 2
-#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 1, nSlide);
-#endif
 				GamcPlayer(pgi, szi, i, 1);
 				GamcMisc(pgi, szi, i);
 				break;
 			case 3:										// Joystick 3
-#ifndef SN_TARGET_PS3
 				GamcAnalogJoy(pgi, szi, i, 2, nSlide);
-#endif
 				GamcPlayer(pgi, szi, i, 2);
 				GamcMisc(pgi, szi, i);
 				break;

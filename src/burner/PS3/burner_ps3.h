@@ -130,6 +130,8 @@ extern uint32_t currentAvailableResolutionId;
 extern uint32_t currentAvailableResolutionNo;
 extern void glSetViewports();
 
+extern int FetchRoms();
+
 typedef struct {
 int index;
 char filename[512];

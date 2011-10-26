@@ -74,16 +74,24 @@ static int AppInit()
 	init_setting_uint("firststartup", bBurnFirstStartup, 1);
 
 	if (bBurnFirstStartup)
+	{
+		printf("Creating initial config file...\n");
 		configAppSaveXml();	// Create initial config file
+	}
 
 	configAppLoadXml();		// Load config for the application
 
+	InitRomList();
+	uint32_t roms_fetched = FetchRoms();
+
 	BurnLibInit();			// Init the Burn library
 
-	getAllRomsetInfo();		// Build the ROM information
+	if(roms_fetched)
+	{
+		getAllRomsetInfo();		// Build the ROM information
+	}
 
 	BurnExtLoadOneRom = archiveLoadOneFile; 
-	InitRomList();
 	InitInputList();
 	InitDipList();
 

@@ -157,6 +157,8 @@ std::map<int, std::string> m_HardwareFilterDesc;
 
 std::vector<std::string> m_vecAvailRomList;
 
+static int romsfound_count;
+
 extern int GameStatus;
 
 // DIP Switch Handler Code
@@ -537,10 +539,31 @@ static int AvRoms()
          if (nread == 0) \
             break; \
          if (dirent.d_type == CELL_FS_TYPE_REGULAR) \
+	 { \
             array.push_back(dirent.d_name); \
+	    romsfound_count++; \
+	 } \
       } \
       cellFsClosedir(_fd); \
    }	
+
+int FetchRoms()
+{
+	if (m_ListData.empty())
+	{
+		for (int d = 0; d < DIRS_MAX; d++)
+		{
+			if (!strcasecmp(szAppRomPaths[d], ""))
+				continue; // skip empty path
+
+			iterate_directory(szAppRomPaths[d], m_ListData);
+		}
+		if(romsfound_count)
+			std::sort(m_ListData.begin(), m_ListData.end());
+	}
+
+	return romsfound_count;
+}
 
 void BuildRomList()
 {
@@ -560,18 +583,6 @@ void BuildRomList()
 
 	iGameSelect = 0;
 	iCursorPos = 0;
-
-	if (m_ListData.empty())
-	{
-		for (int d = 0; d < DIRS_MAX; d++)
-		{
-			if (!strcasecmp(szAppRomPaths[d], ""))
-				continue; // skip empty path
-
-			iterate_directory(szAppRomPaths[d], m_ListData);
-		}
-		std::sort(m_ListData.begin(), m_ListData.end());
-	}
 
 	//shader #1
 	if (m_ListShaderData.empty())
@@ -641,71 +652,74 @@ void BuildRomList()
 
 	// Now build a vector of Burn Roms
 	unsigned int i = 0;
-	do
+	if(romsfound_count)
 	{
-		nBurnDrvSelect = i;	
-		char *szName;
-
-		BurnDrvGetArchiveName(&szName, 0);
-
-		vecAvailRomListFileName.push_back(szName);
-		vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
-		vecAvailRomIndex.push_back(i);
-		i++;
-	}while(i < nBurnDrvCount-1);
-
-	// For each *.zip we have, see if there is a matching burn rom
-	// if so add it to the m_vec members and we are done.
-
-	for (unsigned int x = 0; x < vecAvailRomListFileName.size(); x++)
-	{
-		for (unsigned int y = 0; y < m_ListData.size(); y++)
+		do
 		{
-			if (m_ListData[y] == vecAvailRomListFileName[x])
+			nBurnDrvSelect = i;	
+			char *szName;
+
+			BurnDrvGetArchiveName(&szName, 0);
+
+			vecAvailRomListFileName.push_back(szName);
+			vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
+			vecAvailRomIndex.push_back(i);
+			i++;
+		}while(i < nBurnDrvCount-1);
+
+		// For each *.zip we have, see if there is a matching burn rom
+		// if so add it to the m_vec members and we are done.
+
+		for (unsigned int x = 0; x < vecAvailRomListFileName.size(); x++)
+		{
+			for (unsigned int y = 0; y < m_ListData.size(); y++)
 			{
-				nBurnDrvSelect = vecAvailRomIndex[x];
+				if (m_ListData[y] == vecAvailRomListFileName[x])
+				{
+					nBurnDrvSelect = vecAvailRomIndex[x];
 
-				const int nHardware = 1 << (BurnDrvGetHardwareCode() >> 24);
+					const int nHardware = 1 << (BurnDrvGetHardwareCode() >> 24);
 
-				if (CurrentFilter > 0)
-					IsFiltered = (nHardware) == m_HardwareFilterMap[CurrentFilter];
-				else
-					IsFiltered = true;
+					if (CurrentFilter > 0)
+						IsFiltered = (nHardware) == m_HardwareFilterMap[CurrentFilter];
+					else
+						IsFiltered = true;
 
 
-				if ((IsFiltered))  // skip roms marked as not working
-					if (BurnDrvIsWorking() && (IsFiltered))  // skip roms marked as not working
-					{
-
-						int nNumPlayers = BurnDrvGetMaxPlayers();
-
-						if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) || (HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) || (HideChildren == 0))
+					if ((IsFiltered))  // skip roms marked as not working
+						if (BurnDrvIsWorking() && (IsFiltered))  // skip roms marked as not working
 						{
-							if ((ThreeOrFourPlayerOnly == 1 && nNumPlayers > 2) || ThreeOrFourPlayerOnly == 0)
+
+							int nNumPlayers = BurnDrvGetMaxPlayers();
+
+							if ((HideChildren == 1 && (BurnDrvGetTextA(DRV_PARENT) == NULL && !(BurnDrvGetFlags() & BDF_CLONE))) || (HideChildren == 1 && (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CAPCOM_CPS3) || (HideChildren == 0))
 							{
-								m_vecAvailRomIndex.push_back(vecAvailRomListFileName[x]);
-								m_vecAvailRomBurnDrvIndex.push_back(vecAvailRomIndex[x]);
-								m_vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
-								m_vecAvailRomReleasedBy.push_back(BurnDrvGetTextA(DRV_MANUFACTURER));		
+								if ((ThreeOrFourPlayerOnly == 1 && nNumPlayers > 2) || ThreeOrFourPlayerOnly == 0)
+								{
+									m_vecAvailRomIndex.push_back(vecAvailRomListFileName[x]);
+									m_vecAvailRomBurnDrvIndex.push_back(vecAvailRomIndex[x]);
+									m_vecAvailRomList.push_back(BurnDrvGetTextA(DRV_FULLNAME));
+									m_vecAvailRomReleasedBy.push_back(BurnDrvGetTextA(DRV_MANUFACTURER));		
 
-								if (BurnDrvGetTextA(DRV_SYSTEM))
-									m_vecAvailRomManufacturer.push_back(BurnDrvGetTextA(DRV_SYSTEM));
-								else
-									m_vecAvailRomManufacturer.push_back("Unknown");
+									if (BurnDrvGetTextA(DRV_SYSTEM))
+										m_vecAvailRomManufacturer.push_back(BurnDrvGetTextA(DRV_SYSTEM));
+									else
+										m_vecAvailRomManufacturer.push_back("Unknown");
 
-								if (BurnDrvGetTextA(DRV_COMMENT))
-									m_vecAvailRomInfo.push_back(BurnDrvGetTextA(DRV_COMMENT));
-								else
-									m_vecAvailRomInfo.push_back("No Additional Information");
+									if (BurnDrvGetTextA(DRV_COMMENT))
+										m_vecAvailRomInfo.push_back(BurnDrvGetTextA(DRV_COMMENT));
+									else
+										m_vecAvailRomInfo.push_back("No Additional Information");
 
-								if (BurnDrvGetTextA(DRV_PARENT))
-									m_vecAvailRomParent.push_back(BurnDrvGetTextA(DRV_PARENT));
-								else
-									m_vecAvailRomParent.push_back("No Parent Rom");
+									if (BurnDrvGetTextA(DRV_PARENT))
+										m_vecAvailRomParent.push_back(BurnDrvGetTextA(DRV_PARENT));
+									else
+										m_vecAvailRomParent.push_back("No Parent Rom");
+								}
 							}
 						}
-					}
-				break;
+					break;
+				}
 			}
 		}
 	}
@@ -1185,69 +1199,71 @@ void RomMenu()
 	cellDbgFontPuts(0.6f, 0.06f, 0.75f, 0xFFE0EEFF ,"L1/R1 - Previous/Next Hardware Filter");     
 	cellDbgFontDraw();
 
-	if (iNumGames == 0)
+	if (!iNumGames)
 	{		
-		cellDbgFontPuts(0.05f, 0.08f, 0.75f, COLS, "No Roms Found");             
+		cellDbgFontPrintf(0.05f, 0.08f, 0.75f, COLS, "No ROMs found in directory: %s\n", szAppRomPaths[0]);             
 		cellDbgFontDraw();
 	}
-
-	iGameidx = 0;
-	do
+	else
 	{
-		if (iGameidx==iCursorPos)
-		{	
-			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx ), 0.75f, COLS, m_vecAvailRomList[iTempGameSel++].c_str());             
-			cellDbgFontDraw();	
+		iGameidx = 0;
+		do
+		{
+			if (iGameidx==iCursorPos)
+			{	
+				cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx ), 0.75f, COLS, m_vecAvailRomList[iTempGameSel++].c_str());             
+				cellDbgFontDraw();	
 
-			cellDbgFontPuts(0.6f, 0.80f + 0.025f, 0.75f, 0xFFE0EEFF ,"Select - Options Menu");     
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.6f, 0.82f + 0.025f, 0.75f, 0xFFE0EEFF ,"X - Load ROM");     
-			cellDbgFontDraw();
+				cellDbgFontPuts(0.6f, 0.80f + 0.025f, 0.75f, 0xFFE0EEFF ,"Select - Options Menu");     
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.6f, 0.82f + 0.025f, 0.75f, 0xFFE0EEFF ,"X - Load ROM");     
+				cellDbgFontDraw();
 
-			if (bDrvOkay)
-			{
-				cellDbgFontPrintf(0.6f, 0.90f + 0.025f, 0.75f, 0xFF805EFF ,"Circle - Return to Game");     
-				cellDbgFontDraw();
-				cellDbgFontPrintf(0.6f, 0.88f + 0.025f, 0.75f, 0xFF805EFF ,"Start - Exit Rom");     
-				cellDbgFontDraw();
-			}
+				if (bDrvOkay)
+				{
+					cellDbgFontPrintf(0.6f, 0.90f + 0.025f, 0.75f, 0xFF805EFF ,"Circle - Return to Game");     
+					cellDbgFontDraw();
+					cellDbgFontPrintf(0.6f, 0.88f + 0.025f, 0.75f, 0xFF805EFF ,"Start - Exit Rom");     
+					cellDbgFontDraw();
+				}
 
 #ifdef CELL_DEBUG_MEMORY
-			cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, COLS ,"%ld free memory",mem_info.available_user_memory );     
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, COLS ,"%ld total memory",mem_info.total_user_memory );     
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.75f, 0.95f + 0.025f, 0.75f, COLS ,"BurnDrvSelect = %ld ", m_vecAvailRomBurnDrvIndex[iGameSelect+iCursorPos]);     
-			cellDbgFontDraw();
+				cellDbgFontPrintf(0.75f, 0.90f + 0.025f, 0.75f, COLS ,"%ld free memory",mem_info.available_user_memory );     
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, COLS ,"%ld total memory",mem_info.total_user_memory );     
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.75f, 0.95f + 0.025f, 0.75f, COLS ,"BurnDrvSelect = %ld ", m_vecAvailRomBurnDrvIndex[iGameSelect+iCursorPos]);     
+				cellDbgFontDraw();
 #endif
 
 
-			cellDbgFontPrintf(0.05f, 0.80f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Name : %s", m_vecAvailRomIndex[iGameSelect+iCursorPos].c_str() );     
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.05f, 0.82f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Info : %s", m_vecAvailRomInfo[iGameSelect+iCursorPos].c_str());
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.05f, 0.84f + 0.025f, 0.75f, 0xFFFFE0E0, "Hardware : %s", m_vecAvailRomManufacturer[iGameSelect+iCursorPos].c_str() );     
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.05f, 0.86f + 0.025f, 0.75f, 0xFFFFE0E0, "Released by : %s", m_vecAvailRomReleasedBy[iGameSelect+iCursorPos].c_str());
-			cellDbgFontDraw();
-			cellDbgFontPrintf(0.05f, 0.88f + 0.025f, 0.75f, 0xFFFFE0E0, "Parent ROM : %s", m_vecAvailRomParent[iGameSelect+iCursorPos].c_str());
-			cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.80f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Name : %s", m_vecAvailRomIndex[iGameSelect+iCursorPos].c_str() );     
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.82f + 0.025f, 0.75f, 0xFFFFE0E0, "ROM Info : %s", m_vecAvailRomInfo[iGameSelect+iCursorPos].c_str());
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.84f + 0.025f, 0.75f, 0xFFFFE0E0, "Hardware : %s", m_vecAvailRomManufacturer[iGameSelect+iCursorPos].c_str() );     
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.86f + 0.025f, 0.75f, 0xFFFFE0E0, "Released by : %s", m_vecAvailRomReleasedBy[iGameSelect+iCursorPos].c_str());
+				cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.88f + 0.025f, 0.75f, 0xFFFFE0E0, "Parent ROM : %s", m_vecAvailRomParent[iGameSelect+iCursorPos].c_str());
+				cellDbgFontDraw();
 
-			cellDbgFontPrintf(0.05f, 0.92f + 0.025f, 0.50f, 0xFFFFE0E0, "Core %s - r%s - %s", szAppBurnVer, szSVNVer, szSVNDate);
-			cellDbgFontDraw();
+				cellDbgFontPrintf(0.05f, 0.92f + 0.025f, 0.50f, 0xFFFFE0E0, "Core %s - r%s - %s", szAppBurnVer, szSVNVer, szSVNDate);
+				cellDbgFontDraw();
 
-			cellDbgFontPuts(0.6f, 0.84f + 0.025f  , 0.75f, 0xFFE0EEFF, "Triangle - Hide Clone Roms");
-			cellDbgFontDraw();
-			cellDbgFontPuts(0.6f, 0.86f + 0.025f  , 0.75f, 0xFFE0EEFF, "Square - Show 3 or 4 Player Roms Only");
-			cellDbgFontDraw();
-		}
-		else
-		{			 
-			cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx), 0.75f, 0xFFFFFFFF, m_vecAvailRomList[iTempGameSel++].c_str());             
-			cellDbgFontDraw();
-		}
-		iGameidx++;
-	}while(iGameidx<m_iMaxWindowList);
+				cellDbgFontPuts(0.6f, 0.84f + 0.025f  , 0.75f, 0xFFE0EEFF, "Triangle - Hide Clone Roms");
+				cellDbgFontDraw();
+				cellDbgFontPuts(0.6f, 0.86f + 0.025f  , 0.75f, 0xFFE0EEFF, "Square - Show 3 or 4 Player Roms Only");
+				cellDbgFontDraw();
+			}
+			else
+			{			 
+				cellDbgFontPuts(0.05f, 0.08f + 0.025f * ((float)iGameidx), 0.75f, 0xFFFFFFFF, m_vecAvailRomList[iTempGameSel++].c_str());             
+				cellDbgFontDraw();
+			}
+			iGameidx++;
+		}while(iGameidx<m_iMaxWindowList);
+	}
 }
 
 void DipFrameMove()

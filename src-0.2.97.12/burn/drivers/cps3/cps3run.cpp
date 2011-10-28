@@ -2133,11 +2133,16 @@ int cps3Scan(int nAction, int *pnMin)
 		ba.szName	= "Palette";
 		BurnAcb(&ba);
 
+      // Hack to greatly speed up serialization.
+      // The price is slightly garbles graphics if you rewind long enough, but
+      // not a real problem.
+#ifndef __LIBSNES__
 		ba.Data		= RamCRam;
 		ba.nLen		= 0x0800000;
 		ba.nAddress = 0;
 		ba.szName	= "Sprite ROM";
 		BurnAcb(&ba);
+#endif
 
 /*		// so huge. need not backup it while NOCD
 		// otherwize, need backup gfx also

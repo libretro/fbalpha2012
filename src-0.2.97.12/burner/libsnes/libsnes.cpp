@@ -89,6 +89,14 @@ static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
    video_cb(g_fba_frame_conv, width, height);
 }
 
+static inline void blit_flipped(unsigned width, unsigned height, unsigned pitch)
+{
+   for (unsigned y = 0; y < height; y++)
+      memcpy(g_fba_frame_conv + (height - 1 - y) * 1024, g_fba_frame + y * (pitch >> 1), width * sizeof(uint16_t));
+
+   video_cb(g_fba_frame_conv, width, height);
+}
+
 static inline void blit_vertical(unsigned width, unsigned height, unsigned pitch)
 {
    unsigned in_width = height;
@@ -103,14 +111,16 @@ static inline void blit_vertical(unsigned width, unsigned height, unsigned pitch
    video_cb(g_fba_frame_conv, width, height);
 }
 
-
 void snes_run()
 {
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    pBurnDraw = (uint8_t*)g_fba_frame;
 
-   nBurnPitch = width * sizeof(uint16_t);
+   if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+      nBurnPitch = height * sizeof(uint16_t);
+   else
+      nBurnPitch = width * sizeof(uint16_t);
 
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
@@ -123,7 +133,9 @@ void snes_run()
    BurnDrvFrame();
 
    if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
-      blit_vertical(width, height, height * 2);
+      blit_vertical(width, height, nBurnPitch);
+   else if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
+      blit_flipped(width, height, nBurnPitch);
    else
       blit_regular(width, height, nBurnPitch);
 

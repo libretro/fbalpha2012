@@ -446,6 +446,7 @@ void Reinitialise(void)
 
 // Input stuff.
 
+// Ref GamcPlayer() in ../gamc.cpp
 #define P1_COIN	FBK_5
 #define P1_START  FBK_1
 #define P1_LEFT   FBK_LEFTARROW

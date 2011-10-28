@@ -81,6 +81,7 @@ void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
 
+// Copy stuff :o
 static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
 {
    for (unsigned y = 0; y < height; y++)
@@ -111,13 +112,29 @@ static inline void blit_vertical(unsigned width, unsigned height, unsigned pitch
    video_cb(g_fba_frame_conv, width, height);
 }
 
+static inline void blit_vertical_flipped(unsigned width, unsigned height, unsigned pitch)
+{
+   unsigned in_width = height;
+   unsigned in_height = width;
+   pitch >>= 1;
+
+   // Flip y and x coords pretty much ...
+   for (unsigned y = 0; y < in_height; y++)
+      for (unsigned x = 0; x < in_width; x++)
+         g_fba_frame_conv[x * 1024 + (width - 1 - y)] = g_fba_frame[y * pitch + x];
+
+   video_cb(g_fba_frame_conv, width, height);
+}
+
+
 void snes_run()
 {
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    pBurnDraw = (uint8_t*)g_fba_frame;
 
-   if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+   unsigned drv_flags = BurnDrvGetFlags();
+   if (drv_flags & BDF_ORIENTATION_VERTICAL)
       nBurnPitch = height * sizeof(uint16_t);
    else
       nBurnPitch = width * sizeof(uint16_t);
@@ -132,9 +149,11 @@ void snes_run()
 
    BurnDrvFrame();
 
-   if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+   if ((drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED)) == (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
+      blit_vertical_flipped(width, height, nBurnPitch);
+   else if (drv_flags & BDF_ORIENTATION_VERTICAL)
       blit_vertical(width, height, nBurnPitch);
-   else if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
+   else if (drv_flags & BDF_ORIENTATION_FLIPPED)
       blit_flipped(width, height, nBurnPitch);
    else
       blit_regular(width, height, nBurnPitch);

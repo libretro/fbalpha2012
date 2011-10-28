@@ -1,6 +1,7 @@
 #include "libsnes.hpp"
 #include "../burner.h"
 #include "../gameinp.h"
+#include "../../interface/inp_keys.h"
 #include "../../burn/state.h"
 #include "archive.h" // FEX wrapper.
 #include <string.h>
@@ -55,6 +56,8 @@ static char g_rom_dir[1024];
 static char g_basename[1024];
 
 /////
+static void poll_input();
+static bool init_input();
 
 void snes_init()
 {
@@ -73,271 +76,6 @@ static uint8_t *g_service_ptr;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
-#define MAX_BINDS 64
-struct fba_bind
-{
-   uint8_t *ptr;
-   unsigned snes;
-   unsigned player;
-};
-
-struct bind_conv
-{
-   const char *fba;
-   unsigned snes;
-};
-
-#define DECL_MAP(fba, snes) { fba, SNES_DEVICE_ID_JOYPAD_##snes }
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
-
-static fba_bind bind_map[MAX_BINDS];
-static unsigned bind_map_count;
-
-static const bind_conv neogeo_map[] = {
-   DECL_MAP("coin", SELECT),
-   DECL_MAP("start", START),
-   DECL_MAP("up", UP),
-   DECL_MAP("down", DOWN),
-   DECL_MAP("left", LEFT),
-   DECL_MAP("right", RIGHT),
-   DECL_MAP("fire 1", B),
-   DECL_MAP("fire 2", A),
-   DECL_MAP("fire 3", X),
-   DECL_MAP("fire 4", Y),
-};
-
-static void check_generic_input(const char *name, uint8_t *ptr)
-{
-   if (strcmp(name, "reset") == 0)
-      g_reset_ptr = ptr;
-   else if (strcmp(name, "service") == 0)
-      g_service_ptr = ptr;
-   else if (strcmp(name, "dip") == 0)
-      fprintf(stderr, "DIP set to 0x%x\n", (unsigned)*ptr);
-}
-
-void Reinitialise(void)
-{
-	//you need to reinitialise video here, currently stub function to get stuff to compile
-}
-
-static void init_neogeo_binds()
-{
-   for (unsigned i = 0; i < bind_map_count; i++)
-   {
-      BurnInputInfo bii;
-      BurnDrvGetInputInfo(&bii, i);
-      if (!bii.szInfo)
-         bii.szInfo = "";
-
-      bind_map[i].ptr = bii.pVal;
-
-      int player = bii.szName[1] - '1';
-      bind_map[i].player = player;
-
-      std::string name_(bii.szInfo + 3);
-      for (unsigned j = 0; j < name_.size(); j++)
-         name_[j] = tolower(name_[j]);
-
-      const char *name = name_.c_str();
-      unsigned snes = ~0;
-
-      check_generic_input(bii.szInfo, bii.pVal);
-
-      for (unsigned j = 0; j < ARRAY_SIZE(neogeo_map); j++)
-      {
-         if (strstr(name, neogeo_map[j].fba))
-         {
-            snes = neogeo_map[j].snes;
-            break;
-         }
-      }
-
-      bind_map[i].snes = snes;
-   }
-}
-
-static const bind_conv cps_map[] = {
-   DECL_MAP("coin", SELECT),
-   DECL_MAP("start", START),
-   DECL_MAP("up", UP),
-   DECL_MAP("down", DOWN),
-   DECL_MAP("left", LEFT),
-   DECL_MAP("right", RIGHT),
-   DECL_MAP("weak punch", Y),
-   DECL_MAP("medium punch", X),
-   DECL_MAP("strong punch", L),
-   DECL_MAP("weak kick", B),
-   DECL_MAP("medium kick", A),
-   DECL_MAP("strong kick", R),
-   DECL_MAP("button 4", X),
-
-   // for Super Puzzle Fighter II Turbo
-   DECL_MAP("rotate left", Y),
-   DECL_MAP("rotate right", B),
-
-   // for Mega man 2
-   DECL_MAP("jump", X),
-
-   // for Eco figher
-   DECL_MAP("turn 1", X),
-   DECL_MAP("attack", Y),
-   DECL_MAP("turn 2", B),
-
-   // for Dungeons & Dragons
-   DECL_MAP("use", B),
-   DECL_MAP("select", A),
-
-   // for Pang
-   DECL_MAP("shot1", Y),
-   DECL_MAP("shot2", B),
-
-   // for Pro Gear
-   DECL_MAP("shot", Y),
-   DECL_MAP("bomb", X),
-   DECL_MAP("auto", B),
-
-   // for Super Gem Fighter / Pocket Fighter (only has Punch/kick)
-   DECL_MAP("special", A),
-   DECL_MAP("punch", X),
-   DECL_MAP("kick", B),
-};
-
-static void init_cps_binds()
-{
-	for (unsigned i = 0; i < bind_map_count; i++)
-	{
-		BurnInputInfo bii;
-		BurnDrvGetInputInfo(&bii, i);
-		if (!bii.szName)
-			bii.szName = "";
-
-		bind_map[i].ptr = bii.pVal;
-
-		int player = bii.szName[1] - '1';
-		bind_map[i].player = player;
-
-		std::string name_(bii.szName + 3);
-		for (unsigned j = 0; j < name_.size(); j++)
-			name_[j] = tolower(name_[j]);
-
-		const char *name = name_.c_str();
-		unsigned snes = ~0;
-
-      check_generic_input(bii.szInfo, bii.pVal);
-
-      for (unsigned j = 0; j < ARRAY_SIZE(cps_map); j++)
-      {
-         if (strstr(name, cps_map[j].fba))
-         {
-            snes = cps_map[j].snes;
-            break;
-         }
-      }
-
-		bind_map[i].snes = snes;
-	}
-}
-
-static const bind_conv dummy_map[] = {
-   DECL_MAP("coin", SELECT),
-   DECL_MAP("start", START),
-   DECL_MAP("up", UP),
-   DECL_MAP("down", DOWN),
-   DECL_MAP("left", LEFT),
-   DECL_MAP("right", RIGHT),
-   DECL_MAP("button 1", Y),
-   DECL_MAP("button 2", X),
-   DECL_MAP("button 3", B),
-};
-
-static void init_dummy_binds()
-{
-   for (unsigned i = 0; i < bind_map_count; i++)
-   {
-	   BurnInputInfo bii;
-	   BurnDrvGetInputInfo(&bii, i);
-	   bind_map[i].snes = i;
-	   bind_map[i].ptr = bii.pVal;
-	   bind_map[i].player = i & 1;
-
-	   std::string name_(bii.szName + 3);
-	   for (unsigned j = 0; j < name_.size(); j++)
-		   name_[j] = tolower(name_[j]);
-
-	   const char *name = name_.c_str();
-	   unsigned snes = ~0;
-
-      check_generic_input(bii.szInfo, bii.pVal);
-
-      for (unsigned j = 0; j < ARRAY_SIZE(dummy_map); j++)
-      {
-         if (strstr(name, dummy_map[j].fba))
-         {
-            snes = dummy_map[j].snes;
-            break;
-         }
-      }
-
-	   bind_map[i].snes = snes;
-   }
-}
-
-static void init_input()
-{
-   bind_map_count = 0;
-   while (BurnDrvGetInputInfo(0, bind_map_count) == 0)
-      bind_map_count++;
-
-   switch (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK)
-   {
-      case HARDWARE_CAPCOM_CPS1:
-      case HARDWARE_CAPCOM_CPS1_QSOUND:
-      case HARDWARE_CAPCOM_CPS1_GENERIC:
-      case HARDWARE_CAPCOM_CPSCHANGER:
-      case HARDWARE_CAPCOM_CPS2:
-      case HARDWARE_CAPCOM_CPS3:
-         init_cps_binds();
-         break;
-
-      case HARDWARE_SNK_NEOGEO:
-         init_neogeo_binds();
-         break;
-
-      default:
-         init_dummy_binds();
-         fprintf(stderr, "WARNING: No specific button config was found for this driver! Using default controls..\n");
-         break;
-   }
-}
-
-// Very incomplete ... Just do digital input :D
-static void poll_input()
-{
-   for (unsigned i = 0; i < bind_map_count; i++)
-   {
-      *bind_map[i].ptr = input_cb(bind_map[i].player,
-            SNES_DEVICE_JOYPAD, 0, bind_map[i].snes);
-   }
-
-   if (g_reset_ptr)
-   {
-      *g_reset_ptr = g_reset;
-      g_reset = false;
-   }
-
-   if (g_service_ptr)
-   {
-      static bool old_service = false;
-      bool new_service = 
-         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_L) &&
-         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_R) &&
-         input_cb(0, SNES_DEVICE_JOYPAD, 0, SNES_DEVICE_ID_JOYPAD_START);
-      *g_service_ptr = new_service && !old_service;
-
-      old_service = new_service;
-   }
-}
 
 static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
 {
@@ -361,6 +99,7 @@ static inline void blit_vertical(unsigned width, unsigned height, unsigned pitch
    video_cb(g_fba_frame_conv, width, height);
 }
 
+
 void snes_run()
 {
    int width, height;
@@ -375,7 +114,6 @@ void snes_run()
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
-   poll_cb();
    poll_input();
 
    BurnDrvFrame();
@@ -607,23 +345,6 @@ static void init_audio()
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 }
 
-static void reset_dips()
-{
-   // Just checking DIP options ...
-   BurnDIPInfo bdi;
-   fprintf(stderr, "=== DIP enumeration ===\n");
-   for (unsigned i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
-   {
-      fprintf(stderr, "DIP #%u:\n", i);
-      fprintf(stderr, "   nInput:   %d\n", (int)bdi.nInput);
-      fprintf(stderr, "   nFlags:   0x%x\n", (unsigned)bdi.nFlags);
-      fprintf(stderr, "   nMask:    0x%x\n", (unsigned)bdi.nMask);
-      fprintf(stderr, "   nSetting: %d\n", (int)bdi.nSetting);
-      fprintf(stderr, "   szText:   %s\n", bdi.szText);
-   }
-   fprintf(stderr, "=== DIP END ===\n");
-}
-
 // Infer paths from basename.
 bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
 {
@@ -637,7 +358,6 @@ bool snes_load_cartridge_normal(const char*, const uint8_t *, unsigned)
          return false;
 
       init_input();
-      reset_dips();
 
       return true;
    }
@@ -706,4 +426,290 @@ unsigned snes_library_revision_minor() { return 3; }
 
 const char *snes_library_id() { return "FBANext/libsnes"; }
 void snes_set_controller_port_device(bool, unsigned) {}
+
+// Stub
+void Reinitialise(void)
+{}
+
+// Input stuff.
+
+#define P1_COIN	FBK_5
+#define P1_START  FBK_1
+#define P1_LEFT   FBK_LEFTARROW
+#define P1_RIGHT  FBK_RIGHTARROW
+#define P1_UP     FBK_UPARROW
+#define P1_DOWN   FBK_DOWNARROW
+#define P1_FIRE1  FBK_A
+#define P1_FIRE2  FBK_S
+#define P1_FIRE3  FBK_D
+#define P1_FIRE4  FBK_Z
+#define P1_FIRE5  FBK_X
+#define P1_FIRE6  FBK_C
+#define P1_SERVICE FBK_F2
+
+#define P2_COIN 0x07
+#define P2_START 0x03
+#define P2_LEFT 0x4000
+#define P2_RIGHT 0x4001
+#define P2_UP 0x4002
+#define P2_DOWN 0x4003
+#define P2_FIRE1 0x4080
+#define P2_FIRE2 0x4081
+#define P2_FIRE3 0x4082
+#define P2_FIRE4 0x4083
+#define P2_FIRE5 0x4084
+#define P2_FIRE6 0x4085
+
+#define P3_COIN 0x08
+#define P3_START 0x04
+#define P3_LEFT 0x4100
+#define P3_RIGHT 0x4101
+#define P3_UP 0x4102
+#define P3_DOWN 0x4103
+#define P3_FIRE1 0x4180
+#define P3_FIRE2 0x4181
+#define P3_FIRE3 0x4182
+#define P3_FIRE4 0x4183
+#define P3_FIRE5 0x4184
+#define P3_FIRE6 0x4185
+
+#define P4_COIN 0x09
+#define P4_START 0x05
+#define P4_LEFT 0x4200
+#define P4_RIGHT 0x4201
+#define P4_UP 0x4202
+#define P4_DOWN 0x4203
+#define P4_FIRE1 0x4280
+#define P4_FIRE2 0x4281
+#define P4_FIRE3 0x4282
+#define P4_FIRE4 0x4283
+#define P4_FIRE5 0x4284
+#define P4_FIRE6 0x4285
+
+static unsigned char keybinds[0x5000][2] = {0}; 
+#define _B(x) SNES_DEVICE_ID_JOYPAD_##x
+static bool init_input()
+{
+   GameInpInit();
+   GameInpDefault();
+
+   bool has_analog = false;
+   struct GameInp* pgi = GameInp;
+   for (unsigned i = 0; i < nGameInpCount; i++, pgi++)
+   {
+      if (pgi->nType == BIT_ANALOG_REL)
+      {
+         has_analog = true;
+         break;
+      }
+   }
+
+   // Bind to nothing.
+   for (unsigned i = 0; i < 0x5000; i++)
+      keybinds[i][0] = 0xff;
+
+   // Reset
+   //keybinds[FBK_F3		][0] = -1u;
+   //keybinds[FBK_F3		][1] = 0;
+   ///
+
+   keybinds[P1_COIN	][0] = _B(SELECT);
+   keybinds[P1_COIN	][1] = 0;
+   keybinds[P1_START	][0] = _B(START);
+   keybinds[P1_START	][1] = 0;
+   keybinds[P1_UP		][0] = _B(UP);
+   keybinds[P1_UP		][1] = 0;
+   keybinds[P1_DOWN	][0] = _B(DOWN);
+   keybinds[P1_DOWN	][1] = 0;
+   keybinds[P1_LEFT	][0] = _B(LEFT);
+   keybinds[P1_LEFT	][1] = 0;
+   keybinds[P1_RIGHT	][0] = _B(RIGHT);
+   keybinds[P1_RIGHT	][1] = 0;
+   keybinds[P1_FIRE1	][0] = _B(B);
+   keybinds[P1_FIRE1	][1] = 0;
+   keybinds[P1_FIRE2	][0] = _B(A);
+   keybinds[P1_FIRE2	][1] = 0;
+   keybinds[P1_FIRE3	][0] = _B(Y);
+   keybinds[P1_FIRE3	][1] = 0;
+   keybinds[P1_FIRE4	][0] = _B(X);
+   keybinds[P1_FIRE4	][1] = 0;
+   keybinds[P1_FIRE5	][0] = _B(L);
+   keybinds[P1_FIRE5	][1] = 0;
+   keybinds[P1_FIRE6	][0] = _B(R);
+   keybinds[P1_FIRE6	][1] = 0;
+#if 0
+   keybinds[0x88		][0] = L2;
+   keybinds[0x88		][1] = 0;
+   keybinds[0x8A		][0] = R2;
+   keybinds[0x8A		][1] = 0;
+   keybinds[0x3b		][0] = L3;
+   keybinds[0x3b		][1] = 0;
+   keybinds[P1_SERVICE	][0] = R3;
+   keybinds[P1_SERVICE	][1] = 0;
+   keybinds[0x21		][0] = R2;
+   keybinds[0x21		][1] = 0;
+#endif
+
+   keybinds[P2_COIN	][0] = _B(SELECT);
+   keybinds[P2_COIN	][1] = 1;
+   keybinds[P2_START	][0] = _B(START);
+   keybinds[P2_START	][1] = 1;
+   keybinds[P2_UP		][0] = _B(UP);
+   keybinds[P2_UP		][1] = 1;
+   keybinds[P2_DOWN	][0] = _B(DOWN);
+   keybinds[P2_DOWN	][1] = 1;
+   keybinds[P2_LEFT	][0] = _B(LEFT);
+   keybinds[P2_LEFT	][1] = 1;
+   keybinds[P2_RIGHT	][0] = _B(RIGHT);
+   keybinds[P2_RIGHT	][1] = 1;
+   keybinds[P2_FIRE1	][0] = _B(B);
+   keybinds[P2_FIRE1	][1] = 1;
+   keybinds[P2_FIRE2	][0] = _B(A);
+   keybinds[P2_FIRE2	][1] = 1;
+   keybinds[P2_FIRE3	][0] = _B(Y);
+   keybinds[P2_FIRE3	][1] = 1;
+   keybinds[P2_FIRE4	][0] = _B(X);
+   keybinds[P2_FIRE4	][1] = 1;
+   keybinds[P2_FIRE5	][0] = _B(L);
+   keybinds[P2_FIRE5	][1] = 1;
+   keybinds[P2_FIRE6	][0] = _B(R);
+   keybinds[P2_FIRE6	][1] = 1;
+
+#if 0
+   keybinds[0x4088		][0] = L2;
+   keybinds[0x4088		][1] = 1;
+   keybinds[0x408A		][0] = R2;
+   keybinds[0x408A		][1] = 1;
+   keybinds[0x408b		][0] = L3;
+   keybinds[0x408b		][1] = 1;
+   keybinds[0x408c		][0] = R3;
+   keybinds[0x408c		][1] = 1;
+#endif
+
+#if 0
+   keybinds[P3_COIN	][0] = SELECT;
+   keybinds[P3_COIN	][1] = 2;
+   keybinds[P3_START	][0] = START;
+   keybinds[P3_START	][1] = 2;
+   keybinds[P3_UP		][0] = UP;
+   keybinds[P3_UP		][1] = 2;
+   keybinds[P3_DOWN	][0] = DOWN;
+   keybinds[P3_DOWN	][1] = 2;
+   keybinds[P3_LEFT	][0] = LEFT;
+   keybinds[P3_LEFT	][1] = 2;
+   keybinds[P3_RIGHT	][0] = RIGHT;
+   keybinds[P3_RIGHT	][1] = 2;
+   keybinds[P3_FIRE1	][0] = CROSS;
+   keybinds[P3_FIRE1	][1] = 2;
+   keybinds[P3_FIRE2	][0] = CIRCLE;
+   keybinds[P3_FIRE2	][1] = 2;
+   keybinds[P3_FIRE3	][0] = SQUARE;
+   keybinds[P3_FIRE3	][1] = 2;
+   keybinds[P3_FIRE4	][0] = TRIANGLE;
+   keybinds[P3_FIRE4	][1] = 2;
+   keybinds[P3_FIRE5	][0] = L1;
+   keybinds[P3_FIRE5	][1] = 2;
+   keybinds[P3_FIRE6	][0] = R1;
+   keybinds[P3_FIRE6	][1] = 2;
+   keybinds[0x4188		][0] = L2;
+   keybinds[0x4188		][1] = 2;
+   keybinds[0x418A		][0] = R2;
+   keybinds[0x418A		][1] = 2;
+   keybinds[0x418b		][0] = L3;
+   keybinds[0x418b		][1] = 2;
+   keybinds[0x418c		][0] = R3;
+   keybinds[0x418c		][1] = 2;
+
+   keybinds[P4_COIN	][0] = SELECT;
+   keybinds[P4_COIN	][1] = 3;
+   keybinds[P4_START	][0] = START;
+   keybinds[P4_START	][1] = 3;
+   keybinds[P4_UP		][0] = UP;
+   keybinds[P4_UP		][1] = 3;
+   keybinds[P4_DOWN	][0] = DOWN;
+   keybinds[P4_DOWN	][1] = 3;
+   keybinds[P4_LEFT	][0] = LEFT;
+   keybinds[P4_LEFT	][1] = 3;
+   keybinds[P4_RIGHT	][0] = RIGHT;
+   keybinds[P4_RIGHT	][1] = 3;
+   keybinds[P4_FIRE1	][0] = CROSS;
+   keybinds[P4_FIRE1	][1] = 3;
+   keybinds[P4_FIRE2	][0] = CIRCLE;
+   keybinds[P4_FIRE2	][1] = 3;
+   keybinds[P4_FIRE3	][0] = SQUARE;
+   keybinds[P4_FIRE3	][1] = 3;
+   keybinds[P4_FIRE4	][0] = TRIANGLE;
+   keybinds[P4_FIRE4	][1] = 3;
+   keybinds[P4_FIRE5	][0] = L1;
+   keybinds[P4_FIRE5	][1] = 3;
+   keybinds[P4_FIRE6	][0] = R1;
+   keybinds[P4_FIRE6	][1] = 3;
+   keybinds[0x4288		][0] = L2;
+   keybinds[0x4288		][1] = 3;
+   keybinds[0x428A		][0] = R2;
+   keybinds[0x428A		][1] = 3;
+   keybinds[0x428b		][0] = L3;
+   keybinds[0x428b		][1] = 3;
+   keybinds[0x428c		][0] = R3;
+   keybinds[0x428c		][1] = 3;
+#endif
+
+   return has_analog;
+}
+#undef _B
+
+static void poll_input()
+{
+   poll_cb();
+
+   struct GameInp* pgi = GameInp;
+   unsigned controller_binds_count = nGameInpCount;
+
+   for (unsigned i = 0; i < controller_binds_count; i++, pgi++)
+   {
+      switch (pgi->nInput)
+      {
+         case GIT_CONSTANT: // Constant value
+            pgi->Input.nVal = pgi->Input.Constant.nConst;
+            *(pgi->Input.pVal) = pgi->Input.nVal;
+            break;
+         case GIT_SWITCH:
+            // Digital input
+            //uint64_t reset = DoReset;
+            unsigned id = keybinds[pgi->Input.Switch.nCode][0];
+            unsigned port = keybinds[pgi->Input.Switch.nCode][1];
+            bool state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
+
+            if (pgi->nType & BIT_GROUP_ANALOG)
+            {
+               // Set analog controls to full
+               if (state)
+                  pgi->Input.nVal = 0xFFFF;
+               else
+                  pgi->Input.nVal = 0x0001;
+#ifdef LSB_FIRST
+               *(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+               *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
+            }
+            else
+            {
+               // Binary controls
+               if (state)
+                  pgi->Input.nVal = 1;
+               else
+                  pgi->Input.nVal = 0;
+               *(pgi->Input.pVal) = pgi->Input.nVal;
+            }
+
+            break;
+      }
+   }
+}
+
+// Stubs
+int QuoteRead(char **, char **, char*) { return 1; }
+char *LabelCheck(char *, char *) { return 0; }
+const int nConfigMinVersion = 0x020921;
 

@@ -29,7 +29,7 @@ struct ROMFIND
 #define STAT_LARGE	4
 
 static std::vector<std::string> g_find_list_path;
-static ROMFIND g_find_list[32];
+static ROMFIND g_find_list[1024];
 static unsigned g_rom_count;
 
 #define AUDIO_SEGMENT_LENGTH 534

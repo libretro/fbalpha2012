@@ -135,15 +135,15 @@ inline static void SingleStep_PC()
 // ----------------------------------------------------------------------------
 // Default memory access handlers
 
-unsigned char __fastcall DefReadByte(unsigned int) { return 0; }
-void __fastcall DefWriteByte(unsigned int, unsigned char) { }
+static unsigned char __fastcall DefReadByte(unsigned int) { return 0; }
+static void __fastcall DefWriteByte(unsigned int, unsigned char) { }
 
 #define DEFWORDHANDLERS(i)																				\
-	unsigned short __fastcall DefReadWord##i(unsigned int a) { SEK_DEF_READ_WORD(i, a) }				\
-	void __fastcall DefWriteWord##i(unsigned int a, unsigned short d) { SEK_DEF_WRITE_WORD(i, a ,d) }
+	static unsigned short __fastcall DefReadWord##i(unsigned int a) { SEK_DEF_READ_WORD(i, a) }				\
+	static void __fastcall DefWriteWord##i(unsigned int a, unsigned short d) { SEK_DEF_WRITE_WORD(i, a ,d) }
 #define DEFLONGHANDLERS(i)																				\
-	unsigned int __fastcall DefReadLong##i(unsigned int a) { SEK_DEF_READ_LONG(i, a) }					\
-	void __fastcall DefWriteLong##i(unsigned int a, unsigned int d) { SEK_DEF_WRITE_LONG(i, a , d) }
+	static unsigned int __fastcall DefReadLong##i(unsigned int a) { SEK_DEF_READ_LONG(i, a) }					\
+	static void __fastcall DefWriteLong##i(unsigned int a, unsigned int d) { SEK_DEF_WRITE_LONG(i, a , d) }
 
 DEFWORDHANDLERS(0)
 DEFLONGHANDLERS(0)

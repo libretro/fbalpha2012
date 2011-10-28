@@ -51,6 +51,10 @@ void snes_set_audio_sample(snes_audio_sample_t cb) { audio_cb = cb; }
 void snes_set_input_poll(snes_input_poll_t cb) { poll_cb = cb; }
 void snes_set_input_state(snes_input_state_t cb) { input_cb = cb; }
 
+// SSNES extension.
+static snes_environment_t environ_cb;
+void snes_set_environment(snes_environment_t cb) { environ_cb = cb; }
+
 static char g_rom_name[1024];
 static char g_rom_dir[1024];
 static char g_basename[1024];
@@ -320,6 +324,15 @@ static bool fba_init(unsigned driver)
       return false;
 
    BurnDrvInit();
+
+   if (environ_cb)
+   {
+      int width, height;
+      BurnDrvGetVisibleSize(&width, &height);
+      snes_geometry geom = { width, height, width, height };
+      environ_cb(SNES_ENVIRONMENT_SET_GEOMETRY, &geom);
+   }
+
    return true;
 }
 

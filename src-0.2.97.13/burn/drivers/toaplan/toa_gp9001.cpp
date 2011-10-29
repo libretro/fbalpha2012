@@ -491,7 +491,7 @@ int ToaInitGP9001(int n)
 		pTileQueueData[i] = (unsigned int*)malloc(nSize);
 		memset(pTileQueueData[i], 0, nSize);
 
-		nSize = 0x10 * 0x101 * sizeof(int);
+		nSize = 0x10 * 0x101 * sizeof(unsigned char*);
 		pSpriteQueueData[i] = (unsigned char**)malloc(nSize);
 		memset(pSpriteQueueData[i], 0, nSize);
 

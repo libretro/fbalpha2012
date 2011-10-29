@@ -358,7 +358,7 @@ int ToaInitBCU2()
 
 	nFCU2MaxSprite = (nFCU2ROMSize - 1) >> 5;
 
-	nSize = 0x10 * 0x101 * sizeof(int);
+	nSize = 0x10 * 0x101 * sizeof(unsigned short*);
 	pFCU2SpriteQueueData = (unsigned short**)malloc(nSize);
 	memset(pFCU2SpriteQueueData, 0, nSize);
 

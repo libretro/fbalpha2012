@@ -380,9 +380,15 @@ static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 	return t;
 }
 
+int VidRecalcPal()
+{
+	return BurnRecalcPal();
+}
+
 static void init_video()
 {
    nBurnBpp = 2;
+   VidRecalcPal();
    BurnHighCol = HighCol15;
 }
 

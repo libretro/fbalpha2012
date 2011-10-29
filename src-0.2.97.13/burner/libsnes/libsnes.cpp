@@ -354,6 +354,9 @@ static bool fba_init(unsigned driver)
    if (!open_archive())
       return false;
 
+   nFMInterpolation = 3;
+   nInterpolation = 3;
+
    BurnDrvInit();
 
    if (environ_cb)
@@ -363,6 +366,7 @@ static bool fba_init(unsigned driver)
       snes_geometry geom = { width, height, width, height };
       environ_cb(SNES_ENVIRONMENT_SET_GEOMETRY, &geom);
    }
+
 
    return true;
 }

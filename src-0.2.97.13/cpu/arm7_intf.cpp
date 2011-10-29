@@ -31,7 +31,7 @@ static unsigned int Arm7IdleLoop = ~0;
 void Arm7Init( int num ) // only one cpu supported
 {
 	for (int i = 0; i < 3; i++) {
-		membase[i] = (unsigned char**)malloc(PAGE_COUNT * sizeof(int));
+		membase[i] = (unsigned char**)malloc(PAGE_COUNT * sizeof(unsigned char*));
 	}
 
 	CpuCheatRegister(0x000a, num);

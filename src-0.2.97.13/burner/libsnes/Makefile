@@ -60,7 +60,6 @@ CXXFLAGS += -O3 -g $(fpic) -Wno-write-strings $(FBA_DEFINES)
 LDFLAGS += -Wl,-no-undefined $(fpic)
 
 INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURN_DIR)/sound -I$(FBA_BURN_DIR)/devices -I../../generated -I../../interface -I$(FBA_BURNER_DIR) -I$(FBA_BURNER_DIR)/generated -I$(FBA_CPU_DIR) -I$(FBA_CPU_DIR)/m6809 -I$(FBA_CPU_DIR)/m6805 -I$(FBA_CPU_DIR)/m6800 -I$(FBA_CPU_DIR)/nec -I$(FBA_CPU_DIR)/hd6309 -I$(FBA_CPU_DIR)/arm7 -I$(FBA_CPU_DIR)/i8039 -I$(FBA_CPU_DIR)/konami -I$(FBA_CPU_DIR)/m68k -I$(FBA_CPU_DIR)/m6502 -I$(FBA_CPU_DIR)/z80 -I$(FBA_CPU_DIR)/sh2 -I$(FBA_CPU_DIR)/s2650 -I$(FBA_CPU_DIR)/arm -I$(FBA_BURNER_DIR)/libsnes -I$(FBA_LIB_DIR)/zlib -I$(FBA_LIB_DIR)/File_Extractor -I$(FBA_BURN_DIR)/drivers/capcom -I$(FBA_BURN_DIR)/drivers/cave -I$(FBA_BURN_DIR)/drivers/neogeo -I$(FBA_BURN_DIR)/drivers/psikyo -I$(FBA_BURN_DIR)/drivers/sega -I$(FBA_BURN_DIR)/drivers/toaplan -I$(FBA_BURN_DIR)/drivers/taito -I$(FBA_BURN_DIR)/drivers/misc_post90s -I$(FBA_LIB_DIR)
-LIBS := -lz
 
 $(TARGET): $(OBJS)
 	@echo "LD $@"
@@ -79,3 +78,4 @@ clean:
 	rm -f $(OBJS)
 
 .PHONY: clean
+

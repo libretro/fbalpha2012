@@ -1142,15 +1142,13 @@ extern "C" void state_save_register_double(const char* module, int instance, con
 unsigned int BurnDrvGetIndexByName(const char* name)
 {
    unsigned int ret = ~0U;
-   unsigned int nOldSelect = nBurnDrvActive;
    for (unsigned int i = 0; i < nBurnDrvCount; i++) {
       nBurnDrvActive = i;
-      if (strcasecmp(BurnDrvGetText(DRV_NAME), name) == 0) {
+      if (strcmp(BurnDrvGetText(DRV_NAME), name) == 0) {
          ret = i;
          break;
       }
    }
-   nBurnDrvActive = nOldSelect;
    return ret;
 }
 

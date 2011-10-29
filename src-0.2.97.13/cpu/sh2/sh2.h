@@ -26,7 +26,7 @@ void Sh2Reset(unsigned int pc, unsigned r15);
 int Sh2Run(int cycles);
 
 int Sh2MapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd, int nType);
-int Sh2MapHandler(unsigned int nHandler, unsigned int nStart, unsigned int nEnd, int nType);
+int Sh2MapHandler(uintptr_t nHandler, unsigned int nStart, unsigned int nEnd, int nType);
 
 int Sh2SetReadByteHandler(int i, pSh2ReadByteHandler pHandler);
 int Sh2SetWriteByteHandler(int i, pSh2WriteByteHandler pHandler);

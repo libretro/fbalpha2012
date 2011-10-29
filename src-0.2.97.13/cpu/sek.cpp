@@ -135,15 +135,15 @@ inline static void SingleStep_PC()
 // ----------------------------------------------------------------------------
 // Default memory access handlers
 
-unsigned char __fastcall DefReadByte(unsigned int) { return 0; }
-void __fastcall DefWriteByte(unsigned int, unsigned char) { }
+static unsigned char __fastcall DefReadByte(unsigned int) { return 0; }
+static void __fastcall DefWriteByte(unsigned int, unsigned char) { }
 
 #define DEFWORDHANDLERS(i)																				\
-	unsigned short __fastcall DefReadWord##i(unsigned int a) { SEK_DEF_READ_WORD(i, a) }				\
-	void __fastcall DefWriteWord##i(unsigned int a, unsigned short d) { SEK_DEF_WRITE_WORD(i, a ,d) }
+	static unsigned short __fastcall DefReadWord##i(unsigned int a) { SEK_DEF_READ_WORD(i, a) }				\
+	static void __fastcall DefWriteWord##i(unsigned int a, unsigned short d) { SEK_DEF_WRITE_WORD(i, a ,d) }
 #define DEFLONGHANDLERS(i)																				\
-	unsigned int __fastcall DefReadLong##i(unsigned int a) { SEK_DEF_READ_LONG(i, a) }					\
-	void __fastcall DefWriteLong##i(unsigned int a, unsigned int d) { SEK_DEF_WRITE_LONG(i, a , d) }
+	static unsigned int __fastcall DefReadLong##i(unsigned int a) { SEK_DEF_READ_LONG(i, a) }					\
+	static void __fastcall DefWriteLong##i(unsigned int a, unsigned int d) { SEK_DEF_WRITE_LONG(i, a , d) }
 
 DEFWORDHANDLERS(0)
 DEFLONGHANDLERS(0)
@@ -213,11 +213,11 @@ inline static unsigned char ReadByte(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("read8 0x%08X\n"), a);
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		a ^= 1;
 		return pr[a & SEK_PAGEM];
 	}
-	return pSekExt->ReadByte[(unsigned int)pr](a);
+	return pSekExt->ReadByte[(uintptr_t)pr](a);
 }
 
 inline static unsigned char FetchByte(unsigned int a)
@@ -229,11 +229,11 @@ inline static unsigned char FetchByte(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("fetch8 0x%08X\n"), a);
 
 	pr = FIND_F(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		a ^= 1;
 		return pr[a & SEK_PAGEM];
 	}
-	return pSekExt->ReadByte[(unsigned int)pr](a);
+	return pSekExt->ReadByte[(uintptr_t)pr](a);
 }
 
 inline static void WriteByte(unsigned int a, unsigned char d)
@@ -245,12 +245,12 @@ inline static void WriteByte(unsigned int a, unsigned char d)
 //	bprintf(PRINT_NORMAL, _T("write8 0x%08X\n"), a);
 
 	pr = FIND_W(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		a ^= 1;
 		pr[a & SEK_PAGEM] = (unsigned char)d;
 		return;
 	}
-	pSekExt->WriteByte[(unsigned int)pr](a, d);
+	pSekExt->WriteByte[(uintptr_t)pr](a, d);
 }
 
 inline static void WriteByteROM(unsigned int a, unsigned char d)
@@ -260,12 +260,12 @@ inline static void WriteByteROM(unsigned int a, unsigned char d)
 	a &= 0xFFFFFF;
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		a ^= 1;
 		pr[a & SEK_PAGEM] = (unsigned char)d;
 		return;
 	}
-	pSekExt->WriteByte[(unsigned int)pr](a, d);
+	pSekExt->WriteByte[(uintptr_t)pr](a, d);
 }
 
 inline static unsigned short ReadWord(unsigned int a)
@@ -277,10 +277,10 @@ inline static unsigned short ReadWord(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("read16 0x%08X\n"), a);
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		return *((unsigned short*)(pr + (a & SEK_PAGEM)));
 	}
-	return pSekExt->ReadWord[(unsigned int)pr](a);
+	return pSekExt->ReadWord[(uintptr_t)pr](a);
 }
 
 inline static unsigned short FetchWord(unsigned int a)
@@ -292,10 +292,10 @@ inline static unsigned short FetchWord(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("fetch16 0x%08X\n"), a);
 
 	pr = FIND_F(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		return *((unsigned short*)(pr + (a & SEK_PAGEM)));
 	}
-	return pSekExt->ReadWord[(unsigned int)pr](a);
+	return pSekExt->ReadWord[(uintptr_t)pr](a);
 }
 
 inline static void WriteWord(unsigned int a, unsigned short d)
@@ -307,11 +307,11 @@ inline static void WriteWord(unsigned int a, unsigned short d)
 //	bprintf(PRINT_NORMAL, _T("write16 0x%08X\n"), a);
 
 	pr = FIND_W(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		*((unsigned short*)(pr + (a & SEK_PAGEM))) = (unsigned short)d;
 		return;
 	}
-	pSekExt->WriteWord[(unsigned int)pr](a, d);
+	pSekExt->WriteWord[(uintptr_t)pr](a, d);
 }
 
 inline static void WriteWordROM(unsigned int a, unsigned short d)
@@ -321,11 +321,11 @@ inline static void WriteWordROM(unsigned int a, unsigned short d)
 	a &= 0xFFFFFF;
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		*((unsigned short*)(pr + (a & SEK_PAGEM))) = (unsigned short)d;
 		return;
 	}
-	pSekExt->WriteWord[(unsigned int)pr](a, d);
+	pSekExt->WriteWord[(uintptr_t)pr](a, d);
 }
 
 inline static unsigned int ReadLong(unsigned int a)
@@ -337,12 +337,12 @@ inline static unsigned int ReadLong(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("read32 0x%08X\n"), a);
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		unsigned int r = *((unsigned int*)(pr + (a & SEK_PAGEM)));
 		r = (r >> 16) | (r << 16);
 		return r;
 	}
-	return pSekExt->ReadLong[(unsigned int)pr](a);
+	return pSekExt->ReadLong[(uintptr_t)pr](a);
 }
 
 inline static unsigned int FetchLong(unsigned int a)
@@ -354,12 +354,12 @@ inline static unsigned int FetchLong(unsigned int a)
 //	bprintf(PRINT_NORMAL, _T("fetch32 0x%08X\n"), a);
 
 	pr = FIND_F(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		unsigned int r = *((unsigned int*)(pr + (a & SEK_PAGEM)));
 		r = (r >> 16) | (r << 16);
 		return r;
 	}
-	return pSekExt->ReadLong[(unsigned int)pr](a);
+	return pSekExt->ReadLong[(uintptr_t)pr](a);
 }
 
 inline static void WriteLong(unsigned int a, unsigned int d)
@@ -371,12 +371,12 @@ inline static void WriteLong(unsigned int a, unsigned int d)
 //	bprintf(PRINT_NORMAL, _T("write32 0x%08X\n"), a);
 
 	pr = FIND_W(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		d = (d >> 16) | (d << 16);
 		*((unsigned int*)(pr + (a & SEK_PAGEM))) = d;
 		return;
 	}
-	pSekExt->WriteLong[(unsigned int)pr](a, d);
+	pSekExt->WriteLong[(uintptr_t)pr](a, d);
 }
 
 inline static void WriteLongROM(unsigned int a, unsigned int d)
@@ -386,12 +386,12 @@ inline static void WriteLongROM(unsigned int a, unsigned int d)
 	a &= 0xFFFFFF;
 
 	pr = FIND_R(a);
-	if ((unsigned int)pr >= SEK_MAXHANDLER) {
+	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
 		d = (d >> 16) | (d << 16);
 		*((unsigned int*)(pr + (a & SEK_PAGEM))) = d;
 		return;
 	}
-	pSekExt->WriteLong[(unsigned int)pr](a, d);
+	pSekExt->WriteLong[(uintptr_t)pr](a, d);
 }
 
 #if defined (FBA_DEBUG)
@@ -1445,7 +1445,7 @@ int SekMapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd,
 	return 0;
 }
 
-int SekMapHandler(unsigned int nHandler, unsigned int nStart, unsigned int nEnd, int nType)
+int SekMapHandler(uintptr_t nHandler, unsigned int nStart, unsigned int nEnd, int nType)
 {
 	unsigned char** pMemMap = pSekExt->MemMap + (nStart >> SEK_SHIFT);
 

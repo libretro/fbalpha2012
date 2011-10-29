@@ -1,6 +1,11 @@
 // Burner Game Control
 #include "burner.h"
 
+#ifdef __LIBSNES__
+#include "gameinp.h"
+#include "../interface/inp_keys.h"
+#endif
+
 static char szPlay[4][4]={"p1 ", "p2 ", "p3 ", "p4 "};
 
 #define KEY(x) { pgi->nInput = GIT_SWITCH; pgi->Input.Switch.nCode = (unsigned short)(x); }

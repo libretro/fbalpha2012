@@ -19,23 +19,31 @@ int CDEmuGetSoundBuffer(short* buffer, int samples);
 
 static inline CDEmuStatusValue CDEmuGetStatus()
 {
+#ifndef __LIBSNES__
 	extern CDEmuStatusValue CDEmuStatus;
 
 	return CDEmuStatus;
+#else
+   return idle;
+#endif
 }
 
 static inline void CDEmuStartRead()
 {
+#ifndef __LIBSNES__
 	extern CDEmuStatusValue CDEmuStatus;
 
 	CDEmuStatus = seeking;
+#endif
 }
 
 static inline void CDEmuPause()
 {
+#ifndef __LIBSNES__
 	extern CDEmuStatusValue CDEmuStatus;
 
 	CDEmuStatus = paused;
+#endif
 }
 
 // ----------------------------------------------------------------------------

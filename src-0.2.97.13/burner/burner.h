@@ -10,7 +10,11 @@
 #include <assert.h>
 #include <ctype.h>
 
+#ifdef __LIBSNES__
+#include "port-typedefs.h"
+#else
 #include "tchar.h"
+#endif
 
 // Macro to make quoted strings
 #define MAKE_STRING_2(s) #s
@@ -31,16 +35,20 @@
  #include "burner_sdl.h"
 #endif
 
+#ifndef __LIBSNES__
 #include <shellapi.h>
 #include <shlwapi.h>
 #include "net.h"
 #include "png.h"
 #include "dwmapi_core.h"
+#endif
 
 // ---------------------------------------------------------------------------
 // OS independent functionality
 
+#ifndef __LIBSNES__
 #include "interface.h"
+#endif
 
 #define IMG_FREE		(1 << 0)
 
@@ -50,11 +58,13 @@
 #define FIND_QT(s) while (*s && *s != _T('\"')) { s++; }	// Find quote
 
 // image.cpp
+#ifdef USE_IMAGE
 void img_free(IMAGE* img);
 int img_alloc(IMAGE* img);
 
 bool PNGIsImage(FILE* fp);
 int PNGLoad(IMAGE* img, FILE* fp, int nPreset);
+#endif
 
 // gami.cpp
 extern struct GameInp* GameInp;
@@ -71,23 +81,23 @@ extern bool bLeftAltkeyMapped;
 
 int GameInpInit();
 int GameInpExit();
-TCHAR* InputCodeDesc(int c);
-TCHAR* InpToDesc(struct GameInp* pgi);
-TCHAR* InpMacroToDesc(struct GameInp* pgi);
+char * InputCodeDesc(int c);
+char * InpToDesc(struct GameInp* pgi);
+char * InpMacroToDesc(struct GameInp* pgi);
 void GameInpCheckLeftAlt();
 void GameInpCheckMouse();
 int GameInpBlank(int bDipSwitch);
-int GameInputAutoIni(int nPlayer, TCHAR* lpszFile, bool bOverWrite);
+int GameInputAutoIni(int nPlayer, char * lpszFile, bool bOverWrite);
 int ConfigGameLoadHardwareDefaults();
 int GameInpDefault();
 int GameInpWrite(FILE* h);
-int GameInpRead(TCHAR* szVal, bool bOverWrite);
-int GameInpMacroRead(TCHAR* szVal, bool bOverWrite);
-int GameInpCustomRead(TCHAR* szVal, bool bOverWrite);
+int GameInpRead(char * szVal, bool bOverWrite);
+int GameInpMacroRead(char * szVal, bool bOverWrite);
+int GameInpCustomRead(char* szVal, bool bOverWrite);
 
 // Player Default Controls
 extern int nPlayerDefaultControls[4];
-extern TCHAR szPlayerDefaultIni[4][MAX_PATH];
+extern char szPlayerDefaultIni[4][MAX_PATH];
 
 // cong.cpp
 extern const int nConfigMinVersion;					// Minimum version of application for which input files are valid
@@ -107,8 +117,8 @@ int GamcPlayerHotRod(struct GameInp* pgi, char* szi, int nPlayer, int nFlags, in
 
 // misc.cpp
 #define QUOTE_MAX (128)															// Maximum length of "quoted strings"
-int QuoteRead(TCHAR** ppszQuote, TCHAR** ppszEnd, TCHAR* pszSrc);					// Read a quoted string from szSrc and point to the end
-TCHAR* LabelCheck(TCHAR* s, TCHAR* pszLabel);
+int QuoteRead(char ** ppszQuote, char ** ppszEnd, char * pszSrc);					// Read a quoted string from szSrc and point to the end
+char* LabelCheck(char* s, char* pszLabel);
 
 TCHAR* ExtractFilename(TCHAR* fullname);
 TCHAR* DriverToName(unsigned int nDrv);
@@ -120,21 +130,21 @@ extern double nGamma;
 
 int SetBurnHighCol(int nDepth);
 char* DecorateGameName(unsigned int nBurnDrv);
-TCHAR* DecorateGenreInfo();
+char* DecorateGenreInfo();
 void ComputeGammaLUT();
 
 // dat.cpp
 int write_datfile(int bIncMegadrive, FILE* fDat);
-int create_datfile(TCHAR* szFilename, int bIncMegadrive);
+int create_datfile(char* szFilename, int bIncMegadrive);
 
 // sshot.cpp
 int MakeScreenShot();
 
 // state.cpp
 int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)());
-int BurnStateLoad(TCHAR* szName, int bAll, int (*pLoadGame)());
+int BurnStateLoad(char* szName, int bAll, int (*pLoadGame)());
 int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll);
-int BurnStateSave(TCHAR* szName, int bAll);
+int BurnStateSave(char* szName, int bAll);
 
 // statec.cpp
 int BurnStateCompress(unsigned char** pDef, int* pnDefLen, int bAll);

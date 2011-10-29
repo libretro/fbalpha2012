@@ -1142,7 +1142,7 @@ struct BurnDriver BurnDrvNeoGeoMVS = {
 // Neo Geo CD ID
 
 BurnMediaInfo neocdMedia[] = {
-	{ NULL,			"unidentified CD\0",																										_T("unidentified CD\0") },
+	{ NULL,			"unidentified CD\0",																										L"unidentified CD\0" },
 };
 
 // ----------------------------------------------------------------------------

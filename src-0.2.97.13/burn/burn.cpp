@@ -1,9 +1,15 @@
 // Burn - Drivers module
 
+#include <wchar.h>
+
+#ifdef __LIBSNES__
+#include "port-typedefs.h"
+#endif
+
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#include "driverlist.h"
+#include "../generated/driverlist.h"
 
 // filler function, used if the application is not printing debug messages
 static int __cdecl BurnbprintfFiller(int, TCHAR* , ...) { return 0; }
@@ -1130,3 +1136,86 @@ extern "C" void state_save_register_double(const char* module, int instance, con
 {
 	BurnStateRegister(module, instance, name, (void*)val, size * sizeof(double));
 }
+
+// Extra helpers:
+
+unsigned int BurnDrvGetIndexByName(const char* name)
+{
+   unsigned int ret = ~0U;
+   unsigned int nOldSelect = nBurnDrvActive;
+   for (unsigned int i = 0; i < nBurnDrvCount; i++) {
+      nBurnDrvActive = i;
+      if (strcasecmp(BurnDrvGetText(DRV_NAME), name) == 0) {
+         ret = i;
+         break;
+      }
+   }
+   nBurnDrvActive = nOldSelect;
+   return ret;
+}
+
+int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int type)
+{
+   if (pszName == NULL)
+      return 1;
+
+   const char* pszGameName = NULL;
+
+   if (i == 0) {
+      pszGameName = pDriver[nBurnDrvActive]->szShortName;
+   } else {
+      int nOldBurnDrvSelect = nBurnDrvActive;
+      unsigned int j = pDriver[nBurnDrvActive]->szBoardROM ? 1 : 0;
+
+      // Try BIOS/board ROMs first
+      if (i == 1 && j == 1) {										// There is a BIOS/board ROM
+         pszGameName = pDriver[nBurnDrvActive]->szBoardROM;
+      }
+
+      if (pszGameName == NULL) {
+         // Go through the list to seek out the parent
+         while (j < i) {
+            const char* pszParent = pDriver[nBurnDrvActive]->szParent;
+            pszGameName = NULL;
+
+            if (pszParent == NULL) {							// No parent
+               break;
+            }
+
+            for (nBurnDrvActive = 0; nBurnDrvActive < nBurnDrvCount; nBurnDrvActive++) {
+               if (strcmp(pszParent, pDriver[nBurnDrvActive]->szShortName) == 0) {	// Found parent
+                  pszGameName = pDriver[nBurnDrvActive]->szShortName;
+                  break;
+               }
+            }
+
+            j++;
+         }
+      }
+
+      nBurnDrvActive = nOldBurnDrvSelect;
+   }
+
+   if (pszGameName == NULL) {
+      *pszName = NULL;
+      return 1;
+   }
+
+   static char szFilename[256];
+   strcpy(szFilename, pszGameName);
+
+   // add extension
+   if (ext) {
+      if (type == 0) {			// zip
+         strcat(szFilename, ".zip");
+      }
+      else if (type == 1) {		// 7z
+         strcat(szFilename, ".7z");
+      }
+   }
+
+   *pszName = szFilename;
+
+   return 0;
+}
+

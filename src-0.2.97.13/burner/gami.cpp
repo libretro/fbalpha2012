@@ -1,6 +1,14 @@
 // Burner Game Input
 #include "burner.h"
 
+#ifdef __LIBSNES__
+#include "gameinp.h"
+#include "../interface/inp_keys.h"
+#define ANSIToTCHAR(str, foo, bar) (str)
+#define _tcsicmp(a, b) strcasecmp(a, b)
+#define _tcscpy(to, from) strcpy(to, from)
+#endif
+
 // Player Default Controls
 int nPlayerDefaultControls[4] = {0, 1, 2, 3};
 TCHAR szPlayerDefaultIni[4][MAX_PATH] = { _T(""), _T(""), _T(""), _T("") };
@@ -55,6 +63,7 @@ void GameInpCheckLeftAlt()
 	}
 }
 
+#ifndef __LIBSNES__
 // Check if the sytem mouse is mapped and set the cooperative level apropriately
 void GameInpCheckMouse()
 {
@@ -103,6 +112,7 @@ void GameInpCheckMouse()
 		InputSetCooperativeLevel(false, false);
 	}
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -608,6 +618,39 @@ static void GameInpInitMacros()
 	}
 }
 
+#ifdef __LIBSNES__
+static int nDIPOffset;
+static void InpDIPSGetOffset()
+{
+	BurnDIPInfo bdi;
+
+	nDIPOffset = 0;
+	for (int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++) {
+		if (bdi.nFlags == 0xF0) {
+			nDIPOffset = bdi.nInput;
+			break;
+		}
+	}
+}
+
+static void InpDIPSReset()
+{
+   int i = 0;
+   BurnDIPInfo bdi;
+   struct GameInp* pgi;
+
+   InpDIPSGetOffset();
+
+   while (BurnDrvGetDIPInfo(&bdi, i) == 0) {
+      if (bdi.nFlags == 0xFF) {
+         pgi = GameInp + bdi.nInput + nDIPOffset;
+         pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);
+      }
+      i++;
+   }
+}
+#endif
+
 int GameInpInit()
 {
 	int nRet = 0;
@@ -634,7 +677,11 @@ int GameInpInit()
 
 	GameInpBlank(1);
 
+#ifdef __LIBSNES__
+   InpDIPSReset();
+#else
 	InpDIPSWResetDIPs();
+#endif
 
 	GameInpInitMacros();
 

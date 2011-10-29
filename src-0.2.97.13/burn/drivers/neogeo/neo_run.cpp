@@ -2507,7 +2507,9 @@ static void NeoCDProcessCommand()
 			break;
 		case 1:
 //								bprintf(PRINT_ERROR, _T("    CD comms received command %i\n"), NeoCDCommsCommandFIFO[0]);
+#ifndef __LIBSNES__
 			CDEmuStop();
+#endif
 
 			NeoCDAssyStatus = 0x0E;
 			bNeoCDLoadSector = false;
@@ -2518,7 +2520,11 @@ static void NeoCDProcessCommand()
 			 switch (NeoCDCommsCommandFIFO[3]) {
 
 				case 0: {
+#ifndef __LIBSNES__
 					unsigned char* ChannelData = CDEmuReadQChannel();
+#else
+               unsigned char* ChannelData = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = ChannelData[1] / 10;
 					NeoCDCommsStatusFIFO[3] = ChannelData[1] % 10;
@@ -2536,7 +2542,11 @@ static void NeoCDProcessCommand()
 					break;
 				}
 				case 1: {
+#ifndef __LIBSNES__
 					unsigned char* ChannelData = CDEmuReadQChannel();
+#else
+               unsigned char* ChannelData = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = ChannelData[4] / 10;
 					NeoCDCommsStatusFIFO[3] = ChannelData[4] % 10;
@@ -2552,8 +2562,11 @@ static void NeoCDProcessCommand()
 					break;
 				}
 				case 2: {
-
+#ifndef __LIBSNES__
 					unsigned char* ChannelData = CDEmuReadQChannel();
+#else
+               unsigned char* ChannelData = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = ChannelData[0] / 10;
 					NeoCDCommsStatusFIFO[3] = ChannelData[0] % 10;
@@ -2564,7 +2577,11 @@ static void NeoCDProcessCommand()
 					break;
 				}
 				case 3: {
+#ifndef __LIBSNES__
 					unsigned char* TOCEntry = CDEmuReadTOC(-2);
+#else
+               unsigned char* TOCEntry = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = TOCEntry[0] / 10;
 					NeoCDCommsStatusFIFO[3] = TOCEntry[0] % 10;
@@ -2578,7 +2595,11 @@ static void NeoCDProcessCommand()
 					break;
 				}
 				case 4: {
+#ifndef __LIBSNES__
 					unsigned char* TOCEntry = CDEmuReadTOC(-1);
+#else
+					unsigned char* TOCEntry = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = TOCEntry[0] / 10;
 					NeoCDCommsStatusFIFO[3] = TOCEntry[0] % 10;
@@ -2591,7 +2612,11 @@ static void NeoCDProcessCommand()
 				case 5:	{
 					NeoCDTrack = NeoCDCommsCommandFIFO[4] * 10 + NeoCDCommsCommandFIFO[5];
 
+#ifndef __LIBSNES__
 					unsigned char* TOCEntry = CDEmuReadTOC(NeoCDTrack);
+#else
+					unsigned char* TOCEntry = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[2] = TOCEntry[0] / 10;
 					NeoCDCommsStatusFIFO[3] = TOCEntry[0] % 10;
@@ -2613,8 +2638,11 @@ static void NeoCDProcessCommand()
 				}
 
 				case 6: {
-
+#ifndef __LIBSNES__
 					unsigned char* ChannelData = CDEmuReadQChannel();
+#else
+					unsigned char* ChannelData = 0;
+#endif
 
 					NeoCDCommsStatusFIFO[8] = ChannelData[7];
 
@@ -2654,7 +2682,9 @@ static void NeoCDProcessCommand()
 
 				NeoCDSectorLBA -= CD_FRAMES_PREGAP;
 
+#ifndef __LIBSNES__
 				CDEmuStartRead();
+#endif
 //				LC8951RegistersR[1] |= 0x20;
 			} else {
 
@@ -2662,7 +2692,10 @@ static void NeoCDProcessCommand()
 					bprintf(PRINT_ERROR, _T("*** Switching CD mode to audio while in CD-ROM mode!(PC: 0x%06X)\n"), SekGetPC(-1));
 				}
 
+#ifndef __LIBSNES__
 				CDEmuPlay((NeoCDCommsCommandFIFO[2] * 10) + NeoCDCommsCommandFIFO[3], (NeoCDCommsCommandFIFO[4] * 10) + NeoCDCommsCommandFIFO[5], (NeoCDCommsCommandFIFO[6] * 10) + NeoCDCommsCommandFIFO[7]);
+#endif
+
 			}
 
 			NeoCDAssyStatus = 1;
@@ -2672,7 +2705,9 @@ static void NeoCDProcessCommand()
 		}
 		case 4:
 //			bprintf(PRINT_ERROR, _T("    CD comms received command %i\n"), NeoCDCommsCommandFIFO[0]);
+#ifndef __LIBSNES__
 			CDEmuPause();
+#endif
 			break;
 		case 5:
 //			bprintf(PRINT_ERROR, _T("    CD comms received command %i\n"), NeoCDCommsCommandFIFO[0]);
@@ -2940,8 +2975,10 @@ if (NeoCDDMAAddress2 == 0x0800)  {
 			bprintf(PRINT_ERROR, _T("    Unknown transfer type 0x%04X (PC: 0x%06X)\n"), NeoCDDMAMode, SekGetPC(-1));
 			bprintf(PRINT_NORMAL, _T("    ??? : 0x%08X  0x%08X 0x%04X 0x%04X 0x%08X\n"), NeoCDDMAAddress1, NeoCDDMAAddress2, NeoCDDMAValue1, NeoCDDMAValue2, NeoCDDMACount);
 
+#ifndef __LIBSNES__
 extern int bRunPause;
 bRunPause = 1;
+#endif
 
 		}
 	}
@@ -3035,7 +3072,9 @@ void NeoCDReadSector()
 
 //			if (LC8951RegistersW[10] & 0x80) {
 				NeoCDSectorLBA++;
+#ifndef __LIBSNES__
 				NeoCDSectorLBA = CDEmuLoadSector(NeoCDSectorLBA, NeoCDSectorData + 4) - 1;
+#endif
 //			}
 
 			if (LC8951RegistersW[10] & 0x80) {
@@ -4869,7 +4908,9 @@ int NeoFrame()
 		}
 	}
 
+#ifndef __LIBSNES__
 	CDEmuGetSoundBuffer(pBurnSoundOut, nBurnSoundLen);
+#endif
 
 	return 0;
 }

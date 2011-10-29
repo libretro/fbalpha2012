@@ -20,8 +20,8 @@
 #define MAX_PATH (260)
 #endif
 
-extern TCHAR szAppHiscorePath[MAX_PATH];
-extern TCHAR szAppSamplesPath[MAX_PATH];
+extern char szAppHiscorePath[MAX_PATH];
+extern char szAppSamplesPath[MAX_PATH];
 
 // Enable the MAME logerror() function in debug builds
 // #define MAME_USE_LOGERROR
@@ -81,7 +81,7 @@ extern int (__cdecl *BurnExtLoadRom)(unsigned char* Dest, int* pnWrote, int i);
 
 // Application-defined progress indicator functions
 extern int (__cdecl *BurnExtProgressRangeCallback)(double dProgressRange);
-extern int (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const TCHAR* pszText, bool bAbs);
+extern int (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const char* pszText, bool bAbs);
 
 // Application-defined catridge initialisation function
 extern int (__cdecl *BurnExtCartridgeSetupCallback)(BurnCartrigeCommand nCommand);
@@ -205,7 +205,7 @@ extern unsigned int *pBurnDrvPalette;
 #define PRINT_IMPORTANT (2)
 #define PRINT_ERROR		(3)
 
-extern int (__cdecl *bprintf) (int nStatus, TCHAR* szFormat, ...);
+extern int (__cdecl *bprintf) (int nStatus, char* szFormat, ...);
 
 int BurnLibInit();
 int BurnLibExit();
@@ -221,7 +221,7 @@ int BurnRecalcPal();
 int BurnDrvGetPaletteEntries();
 
 int BurnSetProgressRange(double dProgressRange);
-int BurnUpdateProgress(double dProgressStep, const TCHAR* pszText, bool bAbs);
+int BurnUpdateProgress(double dProgressStep, const char* pszText, bool bAbs);
 
 // ---------------------------------------------------------------------------
 // Retrieve driver information
@@ -241,7 +241,7 @@ int BurnUpdateProgress(double dProgressStep, const TCHAR* pszText, bool bAbs);
 #define DRV_ASCIIONLY	 (1 << 12)
 #define DRV_UNICODEONLY	 (1 << 13)
 
-TCHAR* BurnDrvGetText(unsigned int i);
+char* BurnDrvGetText(unsigned int i);
 char* BurnDrvGetTextA(unsigned int i);
 
 int BurnDrvGetZipName(char** pszName, unsigned int i);
@@ -263,6 +263,10 @@ int BurnDrvGetGenreFlags();
 int BurnDrvGetFamilyFlags();
 int BurnDrvGetSampleInfo(struct BurnSampleInfo *pri, unsigned int i);
 int BurnDrvGetSampleName(char** pszName, unsigned int i, int nAka);
+
+// Extra helpers:
+unsigned int BurnDrvGetIndexByName(const char* name);
+int BurnDrvGetArchiveName(char** pszName, unsigned int i, bool ext = true, unsigned type = 0);
 
 void Reinitialise();
 

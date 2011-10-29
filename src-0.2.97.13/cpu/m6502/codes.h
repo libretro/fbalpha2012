@@ -234,6 +234,6 @@ default:
       printf
       (
         "[M6502 %lX] Unrecognized instruction: $%02X at PC=$%04X\n",
-        (unsigned long)(size_t)(R->User),Op6502(R->PC.W-1),(word)(R->PC.W-1)
+        (unsigned)(size_t)(R->User),Op6502(R->PC.W-1),(word)(R->PC.W-1)
       );
   break;

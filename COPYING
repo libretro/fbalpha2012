@@ -1,4 +1,7 @@
-You may freely use, modify, and distribute both the FB Alpha source code and binary, however the following restrictions apply to the FB Alpha original material (see below for a list of libraries with differing licenses, please consult their respective documentation for more information):
+You may freely use, modify, and distribute both the FB Alpha source code and binary,
+however the following restrictions apply to the FB Alpha original material
+(see below for a list of libraries with differing licenses,
+please consult their respective documentation for more information):
 
  - You may not sell, lease, rent or otherwise seek to gain monetary profit from FB Alpha;
  - You must make public any changes you make to the source code;
@@ -10,7 +13,10 @@ You may freely use, modify, and distribute both the FB Alpha source code and bin
 
 FB Alpha can currently be obtained from http://www.barryharris.me.uk/.
 
-FB Alpha would not exist without a lot of code from the MAME project. The MAME project is subject to it's own license, which can be found at http://mamedev.org/legal.html. Due to the use of MAME code in FB Alpha, FB Alpha is also subject to the terms of the MAME license.
+FB Alpha would not exist without a lot of code from the MAME project.
+The MAME project is subject to it's own license,
+which can be found at http://mamedev.org/legal.html.
+Due to the use of MAME code in FB Alpha, FB Alpha is also subject to the terms of the MAME license.
 
 FB Alpha is based on Final Burn (formally at http://www.finalburn.com/), see additional text below.
 Musashi MC68000/MC68010/MC68EC020 core by Karl Stenerud (http://www.mamedev.org/).
@@ -28,20 +34,39 @@ Z80 emulation core by Juergen Buchmueller (http://www.mamedev.org/).
 PNG functionality provided by libpng (http://www.libpng.org/) and PNGlib (http://www.madwizard.org/).
 Zip functionality provided by zlib (http://www.zlib.net/).
 
-Some graphics effects provided by the Scale2x, 2xPM, Eagle Graphics, 2xSaI, hq2x/hq3x/hq4x, hq2xS/hq3xS/SuperEagle/2xSaI (VBA), hq2xS/hq3xS/hq2xBold/hq3xBold/EPXB/EPXC (SNES9X ReRecording) and SuperScale libraries (http://scale2x.sourceforge.net/, http://2xpm.freeservers.com/, http://retrofx.com/, http://elektron.its.tudelft.nl/~dalikifa/, http://www.hiend3d.com/, http://code.google.com/p/vba-rerecording/, http://code.google.com/p/snes9x151-rerecording/, http://nebula.emulatronia.com/).
+Some graphics effects provided by the
+Scale2x, 2xPM, Eagle Graphics, 2xSaI,
+hq2x/hq3x/hq4x, hq2xS/hq3xS/SuperEagle/2xSaI (VBA),
+hq2xS/hq3xS/hq2xBold/hq3xBold/EPXB/EPXC (SNES9X ReRecording)
+and SuperScale libraries (http://scale2x.sourceforge.net/,
+http://2xpm.freeservers.com/, http://retrofx.com/, http://elektron.its.tudelft.nl/~dalikifa/,
+http://www.hiend3d.com/, http://code.google.com/p/vba-rerecording/,
+http://code.google.com/p/snes9x151-rerecording/,
+http://nebula.emulatronia.com/).
 
-Miscellaneous other components from various sources. Copyright and license information are contained in the relevant parts of the source code.
+Miscellaneous other components from various sources.
+Copyright and license information are contained in the relevant parts of the source code.
 
 All material not covered above © 2004-2010 Team FB Alpha.
 
-DISCLAIMER: The authors of FB Alpha don't guarantee its fitness for any purpose, implied or otherwise, and do not accept responsibility for any damages whatsoever that might occur when using FB Alpha. All games emulated by FB Alpha, including any images and sounds therein, are copyrighted by their respective copyright holders. FB Alpha DOES NOT INCLUDE any ROM images of emulated games.
+DISCLAIMER: The authors of FB Alpha don't guarantee its fitness for any purpose,
+implied or otherwise, and do not accept responsibility for any damages whatsoever that might occur when using FB Alpha.
+All games emulated by FB Alpha, including any images and sounds therein,
+are copyrighted by their respective copyright holders.
+FB Alpha DOES NOT INCLUDE any ROM images of emulated games.
 
-The following information and license conditions accompanied the original Final Burn emulator. They also apply to FB Alpha:
+The following information and license conditions accompanied the original Final Burn emulator.
+They also apply to FB Alpha:
 
-"Copyright (c)2001 Dave (formally of www.finalburn.com), all rights reserved. This refers to all code except where stated otherwise (e.g. unzip and zlib code)."
+"Copyright (c)2001 Dave (formally of www.finalburn.com), all rights reserved.
+This refers to all code except where stated otherwise (e.g. unzip and zlib code)."
 
-"You can use, modify and redistribute this code freely as long as you don't do so commercially. This copyright notice must remain with the code. If your program uses this code, you must either distribute or link to the source code. If you modify or improve this code, you must distribute the source code improvements."
+"You can use, modify and redistribute this code freely as long as you don't do so commercially.
+This copyright notice must remain with the code.
+If your program uses this code, you must either distribute or link to the source code.
+If you modify or improve this code, you must distribute the source code improvements."
 
 "Dave"
 "Former Homepage: www.finalburn.com"
 "E-mail: dave@finalburn.com"
+

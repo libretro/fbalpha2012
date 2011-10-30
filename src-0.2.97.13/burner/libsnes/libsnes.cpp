@@ -546,6 +546,7 @@ void Reinitialise(void)
 
 static unsigned char keybinds[0x5000][2] = {0}; 
 #define _B(x) SNES_DEVICE_ID_JOYPAD_##x
+#define RESET_BIND 12
 static bool init_input()
 {
    GameInpInit();
@@ -567,9 +568,8 @@ static bool init_input()
       keybinds[i][0] = 0xff;
 
    // Reset
-   //keybinds[FBK_F3		][0] = -1u;
-   //keybinds[FBK_F3		][1] = 0;
-   ///
+   keybinds[FBK_F3		][0] = RESET_BIND;
+   keybinds[FBK_F3		][1] = 0;
 
    keybinds[P1_COIN	][0] = _B(SELECT);
    keybinds[P1_COIN	][1] = 0;
@@ -740,7 +740,12 @@ static void poll_input()
             unsigned port = keybinds[pgi->Input.Switch.nCode][1];
 
             bool state;
-            if (port < 2)
+            if (id == RESET_BIND)
+            {
+               state = g_reset;
+               g_reset = false;
+            }
+            else if (port < 2)
                state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
             else
                state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);

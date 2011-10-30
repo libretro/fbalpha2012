@@ -74,9 +74,7 @@ void snes_term()
    BurnLibExit();
 }
 
-static bool g_reset;
-static uint8_t *g_reset_ptr;
-static uint8_t *g_service_ptr;
+static bool g_reset, g_service;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
@@ -549,6 +547,7 @@ void Reinitialise(void)
 static unsigned char keybinds[0x5000][2] = {0}; 
 #define _B(x) SNES_DEVICE_ID_JOYPAD_##x
 #define RESET_BIND 12
+#define SERVICE_BIND 13
 static bool init_input()
 {
    GameInpInit();
@@ -575,6 +574,8 @@ static bool init_input()
    // Reset
    keybinds[FBK_F3		][0] = RESET_BIND;
    keybinds[FBK_F3		][1] = 0;
+   keybinds[P1_SERVICE	][0] = SERVICE_BIND;
+   keybinds[P1_SERVICE	][1] = 0;
 
    keybinds[P1_COIN	][0] = _B(SELECT);
    keybinds[P1_COIN	][1] = 0;
@@ -618,8 +619,6 @@ else
    keybinds[0x8A		][1] = 0;
    keybinds[0x3b		][0] = L3;
    keybinds[0x3b		][1] = 0;
-   keybinds[P1_SERVICE	][0] = R3;
-   keybinds[P1_SERVICE	][1] = 0;
    keybinds[0x21		][0] = R2;
    keybinds[0x21		][1] = 0;
 #endif
@@ -748,7 +747,6 @@ else
 
    return has_analog;
 }
-#undef _B
 
 static void poll_input()
 {
@@ -777,6 +775,11 @@ static void poll_input()
                state = g_reset;
                g_reset = false;
             }
+	    else if (id == SERVICE_BIND)
+	    {
+	    	state = input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(START)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(SELECT)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(L)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(R));
+		g_service = false;
+	    }
             else if (port < 2)
                state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
             else
@@ -809,6 +812,7 @@ static void poll_input()
       }
    }
 }
+#undef _B
 
 // Stubs
 int QuoteRead(char **, char **, char*) { return 1; }

@@ -17,7 +17,7 @@ static int nYM2610Position;
 static int nAY8910Position;
 
 static unsigned int nSampleSize;
-static int nFractionalPosition;
+static unsigned int nFractionalPosition;
 
 static int bYM2610AddSignal;
 static int bYM2610MixSound;

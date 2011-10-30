@@ -14,7 +14,7 @@ static short* pYM2413Buffer[2];
 
 static int nBurnPosition;
 static unsigned int nSampleSize;
-static int nFractionalPosition;
+static unsigned int nFractionalPosition;
 static unsigned int nSamplesRendered;
 
 static int nYM2413Volume;

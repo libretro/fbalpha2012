@@ -644,31 +644,31 @@ static bool init_input()
    keybinds[0x408c		][1] = 1;
 #endif
 
-#if 0
-   keybinds[P3_COIN	][0] = SELECT;
+   keybinds[P3_COIN	][0] = _B(SELECT);
    keybinds[P3_COIN	][1] = 2;
-   keybinds[P3_START	][0] = START;
+   keybinds[P3_START	][0] = _B(START);
    keybinds[P3_START	][1] = 2;
-   keybinds[P3_UP		][0] = UP;
+   keybinds[P3_UP		][0] = _B(UP);
    keybinds[P3_UP		][1] = 2;
-   keybinds[P3_DOWN	][0] = DOWN;
+   keybinds[P3_DOWN	][0] = _B(DOWN);
    keybinds[P3_DOWN	][1] = 2;
-   keybinds[P3_LEFT	][0] = LEFT;
+   keybinds[P3_LEFT	][0] = _B(LEFT);
    keybinds[P3_LEFT	][1] = 2;
-   keybinds[P3_RIGHT	][0] = RIGHT;
+   keybinds[P3_RIGHT	][0] = _B(RIGHT);
    keybinds[P3_RIGHT	][1] = 2;
-   keybinds[P3_FIRE1	][0] = CROSS;
+   keybinds[P3_FIRE1	][0] = _B(Y);
    keybinds[P3_FIRE1	][1] = 2;
-   keybinds[P3_FIRE2	][0] = CIRCLE;
+   keybinds[P3_FIRE2	][0] = _B(X);
    keybinds[P3_FIRE2	][1] = 2;
-   keybinds[P3_FIRE3	][0] = SQUARE;
+   keybinds[P3_FIRE3	][0] = _B(L);
    keybinds[P3_FIRE3	][1] = 2;
-   keybinds[P3_FIRE4	][0] = TRIANGLE;
+   keybinds[P3_FIRE4	][0] = _B(B);
    keybinds[P3_FIRE4	][1] = 2;
-   keybinds[P3_FIRE5	][0] = L1;
+   keybinds[P3_FIRE5	][0] = _B(A);
    keybinds[P3_FIRE5	][1] = 2;
-   keybinds[P3_FIRE6	][0] = R1;
+   keybinds[P3_FIRE6	][0] = _B(R);
    keybinds[P3_FIRE6	][1] = 2;
+#if 0
    keybinds[0x4188		][0] = L2;
    keybinds[0x4188		][1] = 2;
    keybinds[0x418A		][0] = R2;
@@ -677,31 +677,33 @@ static bool init_input()
    keybinds[0x418b		][1] = 2;
    keybinds[0x418c		][0] = R3;
    keybinds[0x418c		][1] = 2;
+#endif
 
-   keybinds[P4_COIN	][0] = SELECT;
+   keybinds[P4_COIN	][0] = _B(SELECT);
    keybinds[P4_COIN	][1] = 3;
-   keybinds[P4_START	][0] = START;
+   keybinds[P4_START	][0] = _B(START);
    keybinds[P4_START	][1] = 3;
-   keybinds[P4_UP		][0] = UP;
+   keybinds[P4_UP		][0] = _B(UP);
    keybinds[P4_UP		][1] = 3;
-   keybinds[P4_DOWN	][0] = DOWN;
+   keybinds[P4_DOWN	][0] = _B(DOWN);
    keybinds[P4_DOWN	][1] = 3;
-   keybinds[P4_LEFT	][0] = LEFT;
+   keybinds[P4_LEFT	][0] = _B(LEFT);
    keybinds[P4_LEFT	][1] = 3;
-   keybinds[P4_RIGHT	][0] = RIGHT;
+   keybinds[P4_RIGHT	][0] = _B(RIGHT);
    keybinds[P4_RIGHT	][1] = 3;
-   keybinds[P4_FIRE1	][0] = CROSS;
+   keybinds[P4_FIRE1	][0] = _B(Y);
    keybinds[P4_FIRE1	][1] = 3;
-   keybinds[P4_FIRE2	][0] = CIRCLE;
+   keybinds[P4_FIRE2	][0] = _B(X);
    keybinds[P4_FIRE2	][1] = 3;
-   keybinds[P4_FIRE3	][0] = SQUARE;
+   keybinds[P4_FIRE3	][0] = _B(L);
    keybinds[P4_FIRE3	][1] = 3;
-   keybinds[P4_FIRE4	][0] = TRIANGLE;
+   keybinds[P4_FIRE4	][0] = _B(B);
    keybinds[P4_FIRE4	][1] = 3;
-   keybinds[P4_FIRE5	][0] = L1;
+   keybinds[P4_FIRE5	][0] = _B(A);
    keybinds[P4_FIRE5	][1] = 3;
-   keybinds[P4_FIRE6	][0] = R1;
+   keybinds[P4_FIRE6	][0] = _B(R);
    keybinds[P4_FIRE6	][1] = 3;
+#if 0
    keybinds[0x4288		][0] = L2;
    keybinds[0x4288		][1] = 3;
    keybinds[0x428A		][0] = R2;
@@ -736,7 +738,12 @@ static void poll_input()
             //uint64_t reset = DoReset;
             unsigned id = keybinds[pgi->Input.Switch.nCode][0];
             unsigned port = keybinds[pgi->Input.Switch.nCode][1];
-            bool state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
+
+            bool state;
+            if (port < 2)
+               state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
+            else
+               state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);
 
             if (pgi->nType & BIT_GROUP_ANALOG)
             {

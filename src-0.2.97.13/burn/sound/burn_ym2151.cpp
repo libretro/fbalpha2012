@@ -14,7 +14,7 @@ static short* pYM2151Buffer[2];
 
 static int nBurnPosition;
 static unsigned int nSampleSize;
-static unsigned int nFractionalPosition;
+static int nFractionalPosition;
 static unsigned int nSamplesRendered;
 
 static int nYM2151Volume;

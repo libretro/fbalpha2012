@@ -17,7 +17,7 @@ static int nYM2203Position;
 static int nAY8910Position;
 
 static unsigned int nSampleSize;
-static unsigned int nFractionalPosition;
+static int nFractionalPosition;
 
 static int nNumChips = 0;
 

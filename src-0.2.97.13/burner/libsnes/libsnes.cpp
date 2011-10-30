@@ -503,6 +503,7 @@ void Reinitialise(void)
 #define P1_FIRE4  FBK_Z
 #define P1_FIRE5  FBK_X
 #define P1_FIRE6  FBK_C
+#define P1_FIRED  FBK_V
 #define P1_SERVICE FBK_F2
 
 #define P2_COIN 0x07
@@ -517,6 +518,7 @@ void Reinitialise(void)
 #define P2_FIRE4 0x4083
 #define P2_FIRE5 0x4084
 #define P2_FIRE6 0x4085
+#define P2_FIRED 0x4086
 
 #define P3_COIN 0x08
 #define P3_START 0x04
@@ -563,6 +565,9 @@ static bool init_input()
       }
    }
 
+   //needed for Neo Geo button mappings (and other drivers in future)
+   const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
+
    // Bind to nothing.
    for (unsigned i = 0; i < 0x5000; i++)
       keybinds[i][0] = 0xff;
@@ -593,8 +598,19 @@ static bool init_input()
    keybinds[P1_FIRE4	][1] = 0;
    keybinds[P1_FIRE5	][0] = _B(A);
    keybinds[P1_FIRE5	][1] = 0;
-   keybinds[P1_FIRE6	][0] = _B(R);
-   keybinds[P1_FIRE6	][1] = 0;
+
+if(boardrom && (strcmp(boardrom,"neogeo") == 0))
+{
+	keybinds[P1_FIRE6][0] = _B(Y);
+	keybinds[P1_FIRE6][1] = 0;
+	keybinds[P1_FIRED][0] = _B(X);
+	keybinds[P1_FIRED][1] = 0;
+}
+else
+{
+	keybinds[P1_FIRE6	][0] = _B(R);
+	keybinds[P1_FIRE6	][1] = 0;
+}
 #if 0
    keybinds[0x88		][0] = L2;
    keybinds[0x88		][1] = 0;
@@ -621,6 +637,21 @@ static bool init_input()
    keybinds[P2_RIGHT	][0] = _B(RIGHT);
    keybinds[P2_RIGHT	][1] = 1;
    keybinds[P2_FIRE1	][0] = _B(Y);
+
+
+if(boardrom && (strcmp(boardrom,"neogeo") == 0))
+{
+	keybinds[P2_FIRE3][0] = _B(Y);
+	keybinds[P2_FIRE3][1] = 1;
+	keybinds[P2_FIRE4][0] = _B(X);
+	keybinds[P2_FIRE4][1] = 1;
+	keybinds[P2_FIRE1][0] = _B(B);
+	keybinds[P2_FIRE1][1] = 1;
+	keybinds[P2_FIRE2][0] = _B(A);
+	keybinds[P2_FIRE2][1] = 1;
+}
+else
+{
    keybinds[P2_FIRE1	][1] = 1;
    keybinds[P2_FIRE2	][0] = _B(X);
    keybinds[P2_FIRE2	][1] = 1;
@@ -632,6 +663,7 @@ static bool init_input()
    keybinds[P2_FIRE5	][1] = 1;
    keybinds[P2_FIRE6	][0] = _B(R);
    keybinds[P2_FIRE6	][1] = 1;
+}
 
 #if 0
    keybinds[0x4088		][0] = L2;

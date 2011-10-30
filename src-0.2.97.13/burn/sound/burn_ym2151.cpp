@@ -26,13 +26,13 @@ static void YM2151RenderResample(short* pSoundBuf, int nSegmentLength)
 	if (nBurnPosition >= nBurnSoundRate) {
 		nBurnPosition = nSegmentLength;
 
-		pYM2151Buffer[0][1] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 3];
-		pYM2151Buffer[0][2] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 2];
-		pYM2151Buffer[0][3] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 1];
+		pYM2151Buffer[0][1] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 3L];
+		pYM2151Buffer[0][2] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 2L];
+		pYM2151Buffer[0][3] = pYM2151Buffer[0][(nFractionalPosition >> 16) - 1L];
 
-		pYM2151Buffer[1][1] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 3];
-		pYM2151Buffer[1][2] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 2];
-		pYM2151Buffer[1][3] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 1];
+		pYM2151Buffer[1][1] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 3L];
+		pYM2151Buffer[1][2] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 2L];
+		pYM2151Buffer[1][3] = pYM2151Buffer[1][(nFractionalPosition >> 16) - 1L];
 
 		nSamplesRendered -= (nFractionalPosition >> 16) - 4;
 
@@ -60,18 +60,18 @@ static void YM2151RenderResample(short* pSoundBuf, int nSegmentLength)
 
 		// Left channel
 		pSoundBuf[i + 0] = INTERPOLATE4PS_CUSTOM((nFractionalPosition >> 4) & 0x0FFF,
-												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 3],
-												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 2],
-												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 1],
-												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 0],
+												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 3L],
+												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 2L],
+												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 1L],
+												 pYM2151Buffer[0][(nFractionalPosition >> 16) - 0L],
 												 nYM2151Volume);
 
 		// Right channel
 		pSoundBuf[i + 1] = INTERPOLATE4PS_CUSTOM((nFractionalPosition >> 4) & 0x0FFF,
-												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 3],
-												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 2],
-												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 1],
-												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 0],
+												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 3L],
+												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 2L],
+												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 1L],
+												 pYM2151Buffer[1][(nFractionalPosition >> 16) - 0L],
 												 nYM2151Volume);
 	}
 }

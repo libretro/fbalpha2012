@@ -15,14 +15,14 @@
 static unsigned int nUpdateStep;
 
 struct k053260_channel_def {
-	unsigned long		rate;
-	unsigned long		size;
-	unsigned long		start;
-	unsigned long		bank;
-	unsigned long		volume;
+	uint32_t		rate;
+	uint32_t		size;
+	uint32_t		start;
+	uint32_t		bank;
+	uint32_t		volume;
 	int					play;
-	unsigned long		pan;
-	unsigned long		pos;
+	uint32_t		pan;
+	uint32_t		pos;
 	int					loop;
 	int					ppcm; /* packed PCM ( 4 bit signed ) */
 	int					ppcm_data;
@@ -32,7 +32,7 @@ struct k053260_chip_def {
 	int								regs[0x30];
 	unsigned char					*rom;
 	int								rom_size;
-	unsigned long					*delta_table;
+	uint32_t					*delta_table;
 	k053260_channel_def channels[4];
 };
 
@@ -43,7 +43,7 @@ static void InitDeltaTable(int rate, int clock ) {
 	int		i;
 	double	base = ( double )rate;
 	double	max = (double)(clock); /* Hz */
-	unsigned long val;
+	uint32_t val;
 
 	for( i = 0; i < 0x1000; i++ ) {
 		double v = ( double )( 0x1000 - i );
@@ -52,7 +52,7 @@ static void InitDeltaTable(int rate, int clock ) {
 
 		if ( target && base ) {
 			target = fixed / ( base / target );
-			val = ( unsigned long )target;
+			val = ( uint32_t )target;
 			if ( val == 0 )
 				val = 1;
 		} else
@@ -95,11 +95,11 @@ K053260_INLINE int limit( int val, int max, int min ) {
 
 void K053260Update(int chip, short *pBuf, int length)
 {
-	static const long dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1};
+	static const int dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1};
 
 	int i, j, lvol[4], rvol[4], play[4], loop[4], ppcm_data[4], ppcm[4];
 	unsigned char *rom[4];
-	unsigned long delta[4], end[4], pos[4];
+	uint32_t delta[4], end[4], pos[4];
 	int dataL, dataR;
 	signed char d;
 	ic = &Chips[chip];
@@ -211,7 +211,7 @@ void K053260Init(int chip, int clock, unsigned char *rom, int nLen)
 	for ( i = 0; i < 0x30; i++ )
 		ic->regs[i] = 0;
 
-	ic->delta_table = ( unsigned long * )malloc( 0x1000 * sizeof( unsigned long ) );
+	ic->delta_table = ( uint32_t * )malloc( 0x1000 * sizeof( uint32_t ) );
 
 	InitDeltaTable( rate, clock );
 

@@ -365,6 +365,9 @@ static bool fba_init(unsigned driver)
       BurnDrvGetVisibleSize(&width, &height);
       snes_geometry geom = { width, height, width, height };
       environ_cb(SNES_ENVIRONMENT_SET_GEOMETRY, &geom);
+
+      unsigned pitch = 2048;
+      environ_cb(SNES_ENVIRONMENT_SET_PITCH, &pitch);
    }
 
 

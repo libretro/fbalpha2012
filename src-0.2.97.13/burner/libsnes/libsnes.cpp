@@ -755,6 +755,51 @@ static void poll_input()
    struct GameInp* pgi = GameInp;
    unsigned controller_binds_count = nGameInpCount;
 
+   for (int i = 0; i < controller_binds_count; i++, pgi++)
+   {
+	   int nAdd = 0;
+	   if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) {                           // not a slider
+		   continue;
+	   }
+
+	   if (pgi->nInput == GIT_KEYSLIDER) {
+		   // Get states of the two keys
+		   if (keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]])
+		   {
+			   nAdd -= 0x100;
+		   }
+		   if (keybinds[pgi->Input.Slider.SliderAxis.nSlider[1]])
+		   {
+			   nAdd += 0x100;
+		   }
+	   }
+
+	   // nAdd is now -0x100 to +0x100
+
+	   // Change to slider speed
+	   nAdd *= pgi->Input.Slider.nSliderSpeed;
+	   nAdd /= 0x100;
+
+	   if (pgi->Input.Slider.nSliderCenter) {                                          // Attact to center
+		   int v = pgi->Input.Slider.nSliderValue - 0x8000;
+		   v *= (pgi->Input.Slider.nSliderCenter - 1);
+		   v /= pgi->Input.Slider.nSliderCenter;
+		   v += 0x8000;
+		   pgi->Input.Slider.nSliderValue = v;
+	   }
+
+	   pgi->Input.Slider.nSliderValue += nAdd;
+	   // Limit slider
+	   if (pgi->Input.Slider.nSliderValue < 0x0100) {
+		   pgi->Input.Slider.nSliderValue = 0x0100;
+	   }
+	   if (pgi->Input.Slider.nSliderValue > 0xFF00) {
+		   pgi->Input.Slider.nSliderValue = 0xFF00;
+	   }
+   }
+
+   pgi = GameInp;
+
    for (unsigned i = 0; i < controller_binds_count; i++, pgi++)
    {
       switch (pgi->nInput)
@@ -764,51 +809,67 @@ static void poll_input()
             *(pgi->Input.pVal) = pgi->Input.nVal;
             break;
          case GIT_SWITCH:
-            // Digital input
-            //uint64_t reset = DoReset;
-            unsigned id = keybinds[pgi->Input.Switch.nCode][0];
-            unsigned port = keybinds[pgi->Input.Switch.nCode][1];
-
-            bool state;
-            if (id == RESET_BIND)
-            {
-               state = g_reset;
-               g_reset = false;
-            }
-	    else if (id == SERVICE_BIND)
 	    {
-	    	state = input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(START)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(SELECT)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(L)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(R));
-		g_service = false;
-	    }
-            else if (port < 2)
-               state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
-            else
-               state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);
+		    // Digital input
+		    unsigned id = keybinds[pgi->Input.Switch.nCode][0];
+		    unsigned port = keybinds[pgi->Input.Switch.nCode][1];
 
-            if (pgi->nType & BIT_GROUP_ANALOG)
-            {
-               // Set analog controls to full
-               if (state)
-                  pgi->Input.nVal = 0xFFFF;
-               else
-                  pgi->Input.nVal = 0x0001;
+		    bool state;
+		    if (id == RESET_BIND)
+		    {
+			    state = g_reset;
+			    g_reset = false;
+		    }
+		    else if (id == SERVICE_BIND)
+		    {
+			    state = input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(START)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(SELECT)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(L)) && input_cb(port, SNES_DEVICE_JOYPAD, 0, _B(R));
+			    g_service = false;
+		    }
+		    else if (port < 2)
+			    state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
+		    else
+			    state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);
+
+		    if (pgi->nType & BIT_GROUP_ANALOG)
+		    {
+			    // Set analog controls to full
+			    if (state)
+				    pgi->Input.nVal = 0xFFFF;
+			    else
+				    pgi->Input.nVal = 0x0001;
 #ifdef LSB_FIRST
-               *(pgi->Input.pShortVal) = pgi->Input.nVal;
+			    *(pgi->Input.pShortVal) = pgi->Input.nVal;
 #else
-               *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+			    *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
 #endif
-            }
-            else
-            {
-               // Binary controls
-               if (state)
-                  pgi->Input.nVal = 1;
-               else
-                  pgi->Input.nVal = 0;
-               *(pgi->Input.pVal) = pgi->Input.nVal;
-            }
+		    }
+		    else
+		    {
+			    // Binary controls
+			    if (state)
+				    pgi->Input.nVal = 1;
+			    else
+				    pgi->Input.nVal = 0;
+			    *(pgi->Input.pVal) = pgi->Input.nVal;
+		    }
+		    break;
+	    }
+	 case GIT_KEYSLIDER:						// Keyboard slider
+	    {
+		    int nSlider = pgi->Input.Slider.nSliderValue;
+		    if (pgi->nType == BIT_ANALOG_REL) {
+			    nSlider -= 0x8000;
+			    nSlider >>= 4;
+		    }
 
-            break;
+		    pgi->Input.nVal = (unsigned short)nSlider;
+#ifdef LSB_FIRST
+		    *(pgi->Input.pShortVal) = pgi->Input.nVal;
+#else
+		    *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+#endif
+		    break;
+	    }
       }
    }
 }

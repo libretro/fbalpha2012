@@ -2728,12 +2728,6 @@ static int ddp3Init()
 	return pgmInit();
 }
 
-#ifdef __LIBSNES__
-#define HACKED_RESOLUTION_HEIGHT 450
-#else
-#define HACKED_RESOLUTION_HEIGHT 448
-#endif
-
 struct BurnDriver BurnDrvDdp3 = {
 	"ddpdoj", NULL, NULL,  NULL, "2002",
 	"DoDonPachi Dai-Ou-Jou (V101, Japan)\0", "Incomplete Protection Simulation", "Cave / AMI", "PolyGameMaster",
@@ -2741,7 +2735,7 @@ struct BurnDriver BurnDrvDdp3 = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL, 4, HARDWARE_IGS_PGM /* | HARDWARE_IGS_USE_ARM_CPU */, GBF_SCRFIGHT, 0,
 	NULL, NULL, ddp3RomInfo, ddp3RomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ddp3Init, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x1200,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2774,7 +2768,7 @@ struct BurnDriver BurnDrvDdp3a = {
 	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 4, HARDWARE_IGS_PGM /* | HARDWARE_IGS_USE_ARM_CPU */, GBF_SCRFIGHT, 0,
 	NULL, NULL, ddp3aRomInfo, ddp3aRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ddp3Init, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x1200,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2807,7 +2801,7 @@ struct BurnDriver BurnDrvDdp3b = {
 	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 4, HARDWARE_IGS_PGM /* | HARDWARE_IGS_USE_ARM_CPU */, GBF_SCRFIGHT, 0,
 	NULL, NULL, ddp3bRomInfo, ddp3bRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ddp3Init, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x1200,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2871,7 +2865,7 @@ struct BurnDriver BurnDrvDdp3blk = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL | BDF_CLONE, 4, HARDWARE_IGS_PGM /* | HARDWARE_IGS_USE_ARM_CPU */, GBF_SCRFIGHT, 0,
 	NULL, NULL, ddp3blkRomInfo, ddp3blkRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ddp3blkInit, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x600,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2913,7 +2907,7 @@ struct BurnDriver BurnDrvKet = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL, 4, HARDWARE_IGS_PGM | HARDWARE_IGS_JAMMAPCB/* | HARDWARE_IGS_USE_ARM_CPU*/, GBF_VERSHOOT, 0,
 	NULL, NULL, ketRomInfo, ketRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ketsuiInit, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x600,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2946,7 +2940,7 @@ struct BurnDriver BurnDrvKeta = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL | BDF_CLONE, 4, HARDWARE_IGS_PGM | HARDWARE_IGS_JAMMAPCB/* | HARDWARE_IGS_USE_ARM_CPU*/, GBF_VERSHOOT, 0,
 	NULL, NULL, ketaRomInfo, ketaRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ketsuiInit, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x600,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -2979,7 +2973,7 @@ struct BurnDriver BurnDrvKetb = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL | BDF_CLONE, 4, HARDWARE_IGS_PGM | HARDWARE_IGS_JAMMAPCB/* | HARDWARE_IGS_USE_ARM_CPU*/, GBF_VERSHOOT, 0,
 	NULL, NULL, ketbRomInfo, ketbRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	ketsuiInit, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x600,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 
@@ -3019,7 +3013,7 @@ struct BurnDriver BurnDrvEspgal = {
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL, 4, HARDWARE_IGS_PGM | HARDWARE_IGS_JAMMAPCB/* | HARDWARE_IGS_USE_ARM_CPU*/, GBF_VERSHOOT, 0,
 	NULL, NULL, espgalRomInfo, espgalRomName, NULL, NULL, pgmInputInfo, jammaDIPInfo,
 	espgalInit, pgmExit, pgmFrame, pgmDraw, pgmScan, &nPgmPalRecalc, 0x600,
-	224, HACKED_RESOLUTION_HEIGHT, 3, 4
+	224, 448, 3, 4
 };
 
 	

@@ -600,18 +600,18 @@ static bool init_input()
    keybinds[P1_FIRE5	][0] = _B(A);
    keybinds[P1_FIRE5	][1] = 0;
 
-if(boardrom && (strcmp(boardrom,"neogeo") == 0))
-{
-	keybinds[P1_FIRE6][0] = _B(Y);
-	keybinds[P1_FIRE6][1] = 0;
-	keybinds[P1_FIRED][0] = _B(X);
-	keybinds[P1_FIRED][1] = 0;
-}
-else
-{
-	keybinds[P1_FIRE6	][0] = _B(R);
-	keybinds[P1_FIRE6	][1] = 0;
-}
+   if(boardrom && (strcmp(boardrom,"neogeo") == 0))
+   {
+      keybinds[P1_FIRE6][0] = _B(Y);
+      keybinds[P1_FIRE6][1] = 0;
+      keybinds[P1_FIRED][0] = _B(X);
+      keybinds[P1_FIRED][1] = 0;
+   }
+   else
+   {
+      keybinds[P1_FIRE6	][0] = _B(R);
+      keybinds[P1_FIRE6	][1] = 0;
+   }
 #if 0
    keybinds[0x88		][0] = L2;
    keybinds[0x88		][1] = 0;
@@ -637,32 +637,31 @@ else
    keybinds[P2_RIGHT	][1] = 1;
    keybinds[P2_FIRE1	][0] = _B(Y);
 
-
-if(boardrom && (strcmp(boardrom,"neogeo") == 0))
-{
-	keybinds[P2_FIRE3][0] = _B(Y);
-	keybinds[P2_FIRE3][1] = 1;
-	keybinds[P2_FIRE4][0] = _B(X);
-	keybinds[P2_FIRE4][1] = 1;
-	keybinds[P2_FIRE1][0] = _B(B);
-	keybinds[P2_FIRE1][1] = 1;
-	keybinds[P2_FIRE2][0] = _B(A);
-	keybinds[P2_FIRE2][1] = 1;
-}
-else
-{
-   keybinds[P2_FIRE1	][1] = 1;
-   keybinds[P2_FIRE2	][0] = _B(X);
-   keybinds[P2_FIRE2	][1] = 1;
-   keybinds[P2_FIRE3	][0] = _B(L);
-   keybinds[P2_FIRE3	][1] = 1;
-   keybinds[P2_FIRE4	][0] = _B(B);
-   keybinds[P2_FIRE4	][1] = 1;
-   keybinds[P2_FIRE5	][0] = _B(A);
-   keybinds[P2_FIRE5	][1] = 1;
-   keybinds[P2_FIRE6	][0] = _B(R);
-   keybinds[P2_FIRE6	][1] = 1;
-}
+   if (boardrom && (strcmp(boardrom, "neogeo") == 0))
+   {
+      keybinds[P2_FIRE3][0] = _B(Y);
+      keybinds[P2_FIRE3][1] = 1;
+      keybinds[P2_FIRE4][0] = _B(X);
+      keybinds[P2_FIRE4][1] = 1;
+      keybinds[P2_FIRE1][0] = _B(B);
+      keybinds[P2_FIRE1][1] = 1;
+      keybinds[P2_FIRE2][0] = _B(A);
+      keybinds[P2_FIRE2][1] = 1;
+   }
+   else
+   {
+      keybinds[P2_FIRE1	][1] = 1;
+      keybinds[P2_FIRE2	][0] = _B(X);
+      keybinds[P2_FIRE2	][1] = 1;
+      keybinds[P2_FIRE3	][0] = _B(L);
+      keybinds[P2_FIRE3	][1] = 1;
+      keybinds[P2_FIRE4	][0] = _B(B);
+      keybinds[P2_FIRE4	][1] = 1;
+      keybinds[P2_FIRE5	][0] = _B(A);
+      keybinds[P2_FIRE5	][1] = 1;
+      keybinds[P2_FIRE6	][0] = _B(R);
+      keybinds[P2_FIRE6	][1] = 1;
+   }
 
 #if 0
    keybinds[0x4088		][0] = L2;
@@ -758,20 +757,19 @@ static void poll_input()
    for (int i = 0; i < controller_binds_count; i++, pgi++)
    {
       int nAdd = 0;
-      if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) {                           // not a slider
+      if ((pgi->nInput & GIT_GROUP_SLIDER) == 0) {                           // not a slider
          continue;
       }
 
       if (pgi->nInput == GIT_KEYSLIDER) {
          // Get states of the two keys
-         if (keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]])
-         {
+         if (input_cb(0, SNES_DEVICE_JOYPAD, 0,
+                  keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]][0]))
             nAdd -= 0x100;
-         }
-         if (keybinds[pgi->Input.Slider.SliderAxis.nSlider[1]])
-         {
+
+         if (input_cb(0, SNES_DEVICE_JOYPAD, 0,
+                  keybinds[pgi->Input.Slider.SliderAxis.nSlider[1]][0]))
             nAdd += 0x100;
-         }
       }
 
       // nAdd is now -0x100 to +0x100

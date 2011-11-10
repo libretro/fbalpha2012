@@ -1,2 +1,0 @@
-void VidSFreeVidImage();
-int VidSAllocVidImage();

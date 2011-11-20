@@ -596,7 +596,11 @@ static void atarigen_render_display_list (/*struct osd_bitmap *bitmap, atarigen_
 
 	int xscroll = DrvScrollX;
 	UINT16 *AlphaRam = (UINT16*)DrvAlphaRam;
+	#ifdef LSB_FIRST
 	int yscroll = AlphaRam[0xf6e >> 1] >> 7;
+	#else
+	int yscroll = swapWord(AlphaRam[0xf6e >> 1]) >> 7;
+	#endif
 	yscroll &= 0x1ff;
 
 	/* create a clipping rectangle so that only partial sections are updated at a time */
@@ -2339,7 +2343,11 @@ static void DrvRenderPlayfield(int PriorityDraw)
 	for (mx = 0; mx < 64; mx++) {
 		for (my = 0; my < 64; my++) {
 			TileIndex = (my * 64) + mx;
+			#ifdef LSB_FIRST
 			Data = VideoRam[TileIndex];
+			#else
+			Data = swapWord(VideoRam[TileIndex]);
+			#endif
 			Code = ((DrvTileBank * 0x1000) + (Data & 0xfff)) ^ 0x800;
 			
 			if (Code < 0x3000) {
@@ -2382,7 +2390,11 @@ static void DrvRenderCharLayer()
 
 	for (my = 0; my < 32; my++) {
 		for (mx = 0; mx < 64; mx++) {
+			#ifdef LSB_FIRST
 			UINT16 Data = VideoRam[TileIndex];
+			#else
+			UINT16 Data = swapWord(VideoRam[TileIndex]);
+			#endif
 			Code = Data & 0x3ff;
 			Colour = ((Data >> 10) & 0x0f) | ((Data >> 9) & 0x20);
 			Opaque = Data & 0x8000;
@@ -2432,7 +2444,11 @@ static int DrvFrame()
 	int NextScanline = 0;
 	
 	UINT16 *AlphaRam = (UINT16*)DrvAlphaRam;	
+	#ifdef LSB_FIRST
 	DrvScrollY = AlphaRam[0xf6e >> 1];
+	#else
+	DrvScrollY = swapWord(AlphaRam[0xf6e >> 1]);
+	#endif
 	DrvTileBank = DrvScrollY & 0x03;
 	DrvScrollY >>= 7;
 	DrvScrollY &= 0x1ff;

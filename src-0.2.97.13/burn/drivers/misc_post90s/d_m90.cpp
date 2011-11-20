@@ -811,6 +811,9 @@ static void setvector_callback(int param)
 static inline void update_palette_entry(int entry)
 {
 	unsigned short d = *((unsigned short*)(DrvPalRAM + entry));
+	#ifndef LSB_FIRST
+	d = swapWord(d);
+	#endif
 	unsigned char r = (d >>  0) & 0x1f;
 	unsigned char g = (d >>  5) & 0x1f;
 	unsigned char b = (d >> 10) & 0x1f;
@@ -1210,9 +1213,15 @@ static void draw_sprites()
 
 	for (int offs = 0x1f2/2; offs >= 0; offs -= 3)
 	{
+		#ifdef LSB_FIRST
 		int sy    = sram[offs + 0];
 		int code  = sram[offs + 1];
 		int sx    = sram[offs + 2];
+		#else
+		int sy    = swapWord(sram[offs + 0]);
+		int code  = swapWord(sram[offs + 1]);
+		int sx    = swapWord(sram[offs + 2]);
+		#endif
 
 		int flipy = sy & 0x8000;
 		int flipx = sx & 0x0200;
@@ -1267,10 +1276,18 @@ static void draw_layer(int layer)
 		unsigned short *dest = pTransDraw + (sy * nScreenWidth);
 		unsigned char *pri = RamPrioBitmap + (sy * nScreenWidth);
 
+		#ifdef LSB_FIRST
 		if (enable_rowscroll) scrollx_1 += xscroll[sy];
+		#else
+		if (enable_rowscroll) scrollx_1 += swapWord(xscroll[sy]);
+		#endif
 
 		if (enable_colscroll) {
+			#ifdef LSB_FIRST
 			scrolly_1 += (scrolly + sy + yscroll[sy] + 128) & 0x1ff;
+			#else
+			scrolly_1 += (scrolly + sy + swapWord(yscroll[sy]) + 128) & 0x1ff;
+			#endif
 		} else {
 			scrolly_1 += (scrolly + sy) & 0x1ff;
 		}
@@ -1283,8 +1300,13 @@ static void draw_layer(int layer)
 
 			int offs = ((scrolly_1 / 8) * wide) | (scrollx_2 / 8);
 
+			#ifdef LSB_FIRST
 			int code  = vram[offs * 2 + 0] & code_mask[0];
 			int color = vram[offs * 2 + 1];
+			#else
+			int code  = swapWord(vram[offs * 2 + 0] & code_mask[0]);
+			int color = swapWord(vram[offs * 2 + 1]);
+			#endif
 
 			int flipy = color & 0x80;
 			int flipx = color & 0x40;

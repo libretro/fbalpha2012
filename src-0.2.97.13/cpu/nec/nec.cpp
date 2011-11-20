@@ -644,6 +644,10 @@ OP( 0xc5, i_lds_dw   ) { GetModRM; unsigned short tmp = GetRMWord(ModRM); RegWor
 OP( 0xc6, i_mov_bd8  ) { GetModRM; PutImmRMByte(ModRM); I->nec_ICount-=(ModRM >=0xc0 )?4:11; }
 OP( 0xc7, i_mov_wd16 ) { GetModRM; PutImmRMWord(ModRM); I->nec_ICount-=(ModRM >=0xc0 )?4:15; }
 
+#ifndef LSB_FIRST
+#pragma optimize( "", off )
+#endif
+
 OP( 0xc8, i_enter ) {
     unsigned int nb = FETCH;
     unsigned int i,level;
@@ -733,6 +737,10 @@ OP( 0xd3, i_rotshft_wcl ) {
 		case 0x38: SHRA_WORD(c); break;
 	}
 }
+
+#ifndef LSB_FIRST
+#pragma optimize( "", on )
+#endif
 
 OP( 0xd4, i_aam    ) { unsigned int mult=FETCH; mult=0; I->regs.b[AH] = I->regs.b[AL] / 10; I->regs.b[AL] %= 10; SetSZPF_Word(I->regs.w[AW]); CLKS(15,15,12); }
 OP( 0xd5, i_aad    ) { unsigned int mult=FETCH; mult=0; I->regs.b[AL] = I->regs.b[AH] * 10 + I->regs.b[AL]; I->regs.b[AH] = 0; SetSZPF_Byte(I->regs.b[AL]); CLKS(7,7,8); }

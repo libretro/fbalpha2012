@@ -39,6 +39,16 @@ static unsigned int DrvInputs;
 static unsigned char DrvDips[2];
 static unsigned char DrvJoy1[32];
 
+static void le_to_be(unsigned char * p, int size)
+{
+	unsigned char c;
+	for(int i=0; i<size; i+=4, p+=4) {
+		c = *(p+0);  *(p+0) = *(p+3);  *(p+3) = c;
+		c = *(p+1);  *(p+1) = *(p+2);  *(p+2) = c;
+	}
+}
+
+
 static struct BurnInputInfo Common2ButtonInputList[] = {
 	{"P1 Coin",		BIT_DIGITAL,	DrvJoy1 + 0,	"p1 coin"	},
 	{"P1 Start",		BIT_DIGITAL,	DrvJoy1 + 24,	"p1 start"	},
@@ -483,12 +493,20 @@ unsigned int __fastcall hack_read_long(unsigned int a)
 
 unsigned short __fastcall hack_read_word(unsigned int a)
 {
+	#ifdef LSB_FIRST
 	return *((unsigned short *)(DrvSh2RAM + ((a & 0xfffff) ^ 2)));
+	#else
+	return *((unsigned short *)(DrvSh2RAM + ((a & 0xfffff) )));
+	#endif
 }
 
 unsigned char __fastcall hack_read_byte(unsigned int a)
 {
+	#ifdef LSB_FIRST
 	return DrvSh2RAM[(a & 0xfffff) ^ 3];
+	#else
+	return DrvSh2RAM[(a & 0xfffff)];
+	#endif
 }
 
 //-------------------------------------------------------------------------------------
@@ -622,6 +640,10 @@ static int DrvInit(int (*LoadCallback)(), int type, int gfx_max, int gfx_min)
 		}
 
 		BurnSwap32(DrvSh2ROM, 0x100000);
+		#ifndef LSB_FIRST
+		//FIXME: If not little-endian - why is the data here LE since SH2 is BE?
+		le_to_be(DrvSh2Rom, 0x200000);
+		#endif
 		BurnSwapEndian(0x200000);
 		DrvGfxDecode(gfx_max - gfx_min);
 		graphics_min_max[0] = gfx_min;

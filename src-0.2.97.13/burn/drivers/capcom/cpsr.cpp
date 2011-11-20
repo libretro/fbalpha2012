@@ -17,11 +17,22 @@ static void GetRowsRange(int *pnStart,int *pnWidth,int nRowFrom,int nRowTo)
 
   // Get the range of scroll values within nRowCount rows
   // Start with zero range
-  nStart=CpsrRows[nRowFrom&0x3ff]; nStart&=0x3ff; nWidth=0;
+  #ifdef LSB_FIRST
+  nStart=CpsrRows[nRowFrom&0x3ff];
+  #else
+  nStart=swapWord(CpsrRows[nRowFrom&0x3ff]);
+  #endif
+  nStart&=0x3ff;
+  nWidth=0;
   for (i=nRowFrom;i<nRowTo;i++)
   {
     int nViz; int nDiff;
-    nViz=CpsrRows[i&0x3ff]; nViz&=0x3ff;
+    #ifdef LSB_FIRST
+    nViz=CpsrRows[i&0x3ff];
+    #else
+    nViz=swapWord(CpsrRows[i&0x3ff]);
+    #endif
+    nViz&=0x3ff;
     // Work out if this is on the left or the right of our
     // start point.
     nDiff=nViz-nStart;
@@ -82,7 +93,11 @@ static int PrepareRows()
         {
           int v;
           v =(pli->nTileStart<<4)-nCpsrScrX;
+	  #ifdef LSB_FIRST
           v-=CpsrRows[(nCpsrRowStart+r)&0x3ff];
+	  #else
+          v-= swapWord(CpsrRows[(nCpsrRowStart+r)&0x3ff]);
+	  #endif
           // clip to 10-bit signed
           v+=0x200; v&=0x3ff; v-=0x200;
           *pr=(short)v;

@@ -13,6 +13,10 @@ inline static unsigned int CalcColCPS1(unsigned short a)
 	int r, g, b, f;
 	const int F_OFFSET = 0x0F;
 
+	#ifndef LSB_FIRST
+	a = swapWord(a);
+	#endif
+
 	// Format is FFFF RRRR GGGG BBBB
 	f = (a & 0xF000) >> 12;
 
@@ -35,6 +39,10 @@ static unsigned int CalcColCPS2(unsigned short a)
 {
 	int r, g, b, f;
 	const int F_OFFSET = 0x0F;
+
+	#ifndef LSB_FIRST
+	a = swapWord(a);
+	#endif
 
 	// Format is FFFF RRRR GGGG BBBB
 	f = (a & 0xF000) >> 12;

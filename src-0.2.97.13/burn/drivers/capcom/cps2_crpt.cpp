@@ -741,9 +741,15 @@ static void cps2_decrypt(const UINT32 *master_key, unsigned int upper_limit)
 		// decrypt the opcodes
 		for (a = i; a < length/2 && a < upper_limit/2; a += 0x10000)
 		{
+			#ifdef LSB_FIRST
 			dec[a] = feistel(rom[a], fn2_groupA, fn2_groupB,
 				&sboxes2[0*4], &sboxes2[1*4], &sboxes2[2*4], &sboxes2[3*4],
 				key2[0], key2[1], key2[2], key2[3]);
+			#else
+			dec[a] = swapWord(feistel(swapWord(rom[a]), fn2_groupA, fn2_groupB,
+				&sboxes2[0*4], &sboxes2[1*4], &sboxes2[2*4], &sboxes2[3*4],
+				key2[0], key2[1], key2[2], key2[3]));
+			#endif
 		}
 		// copy the unencrypted part (not really needed)
 		while (a < length/2)

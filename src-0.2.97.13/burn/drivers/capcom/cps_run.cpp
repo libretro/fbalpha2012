@@ -159,7 +159,12 @@ int CpsRunExit()
 inline static void GetPalette(int nStart, int nCount)
 {
 	// Update Palette (Ghouls points to the wrong place on boot up I think)
+	#ifdef LSB_FIRST
 	int nPal = (*((unsigned short*)(CpsReg + 0x0A)) << 8) & 0xFFF800;
+	#else
+	unsigned short val = (*(unsigned short*)(CpsReg + 0x0A));
+	int nPal = (swapWord(val) << 8) & 0xFFF800;
+	#endif
 
 	unsigned char* Find = CpsFindGfxRam(nPal, 0x1000);
 	if (Find) {
@@ -370,18 +375,38 @@ int Cps2Frame()
 	// Determine which (if any) of the line counters generates the first IRQ
 	bEnableAutoIrq50 = bEnableAutoIrq52 = false;
 	nIrqLine50 = nIrqLine52 = 0x0106;
+	#ifdef LSB_FIRST
 	if (*((unsigned short*)(CpsReg + 0x50)) & 0x8000) {
+	#else
+	if (swapWord(*((unsigned short*)(CpsReg + 0x50))) & 0x8000) {
+	#endif
 		bEnableAutoIrq50 = true;
 	}
+	#ifdef LSB_FIRST
 	if (bEnableAutoIrq50 || (*((unsigned short*)(CpsReg + 0x4E)) & 0x0200) == 0) {
 		nIrqLine50 = (*((unsigned short*)(CpsReg + 0x50)) & 0x01FF);
 	}
+	#else
+	if (bEnableAutoIrq50 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0) {
+		nIrqLine50 = swapWord((*((unsigned short*)(CpsReg + 0x50))) & 0x01FF);
+	}
+	#endif
+	#ifdef LSB_FIRST
 	if (*((unsigned short*)(CpsReg + 0x52)) & 0x8000) {
+	#else
+	if (swapWord(*((unsigned short*)(CpsReg + 0x52))) & 0x8000) {
+	#endif
 		bEnableAutoIrq52 = true;
 	}
+	#ifdef LSB_FIRST
 	if (bEnableAutoIrq52 || (*((unsigned short*)(CpsReg + 0x4E)) & 0x0200) == 0) {
 		nIrqLine52 = (*((unsigned short*)(CpsReg + 0x52)) & 0x01FF);
 	}
+	#else
+	if (bEnableAutoIrq52 || (swapWord(*((unsigned short*)(CpsReg + 0x4E))) & 0x0200) == 0) {
+		nIrqLine52 = (swapWord(*((unsigned short*)(CpsReg + 0x52))) & 0x01FF);
+	}
+	#endif
 	ScheduleIRQ();
 
 	SekOpen(0);

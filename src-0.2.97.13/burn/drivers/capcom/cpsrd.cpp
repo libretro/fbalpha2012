@@ -34,7 +34,11 @@ static void Cps1TileLine(int y,int sx)
     else nCpstType=CTT_16X16;
 
     pst=FindTile(ix+x,iy+y);
+    #ifdef LSB_FIRST
     t=pst[0];
+    #else
+    t = swapWord(pst[0]);
+    #endif
     
     if (Scroll2TileMask) t &= Scroll2TileMask;
 
@@ -45,12 +49,20 @@ static void Cps1TileLine(int y,int sx)
     t+=nCpsGfxScroll[2]; // add on offset to scroll tile
     if (t==nKnowBlank) continue; // Don't draw: we know it's blank
     
+    #ifdef LSB_FIRST
     a=pst[1];
+    #else
+    a=swapWord(pst[1]);
+    #endif
 
     CpstSetPal(0x40 | (a&0x1f));
     nCpstX=sx+(x<<4); nCpstTile=t; nCpstFlip=(a>>5)&3;
 
+	#ifdef LSB_FIRST
 	if(nBgHi) CpstPmsk=*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a&0x180)>>7]);
+	#else
+	if(nBgHi) CpstPmsk=swapWOrd(*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a&0x180)>>7]));
+	#endif
     if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
   }
 }
@@ -71,11 +83,19 @@ static void Cps2TileLine(int y,int sx)
     else nCpstType=CTT_16X16;
 
     pst=FindTile(ix+x,iy+y);
+    #ifdef LSB_FIRST
     t=pst[0];
+    #else
+    t=swapWord(pst[0]);
+    #endif
     t<<=7; // Get real tile address
     t+=nCpsGfxScroll[2]; // add on offset to scroll tiles
 	if (t==nKnowBlank) continue; // Don't draw: we know it's blank
+    #ifdef LSB_FIRST
     a=pst[1];
+    #else
+    a=swapWord(pst[1]);
+    #endif
 
     CpstSetPal(0x40 | (a&0x1f));
     nCpstX=sx+(x<<4); nCpstTile=t; nCpstFlip=(a>>5)&3;
@@ -121,7 +141,11 @@ static void Cps1TileLineRows(int y,struct CpsrLineInfo *pli)
     else       nCpstType=CTT_16X16 | CTT_ROWS;
 
     pst=FindTile(tx,iy+y);
+    #ifdef LSB_FIRST
     t=pst[0];
+    #else
+    t=swapWord(pst[0]);
+    #endif
     
     if (Scroll2TileMask) t &= Scroll2TileMask;
 
@@ -132,14 +156,22 @@ static void Cps1TileLineRows(int y,struct CpsrLineInfo *pli)
     t+=nCpsGfxScroll[2]; // add on offset to scroll tiles
     if (t==nKnowBlank) continue; // Don't draw: we know it's blank
 
+#ifdef LSB_FIRST
     a=pst[1];
-
+#else
+    a=swapWord(pst[1]);
+#endif
     CpstSetPal(0x40 | (a&0x1f));
 
     nCpstX=x<<4; nCpstTile=t; nCpstFlip=(a>>5)&3;
 
 	if (nBgHi) {
+		//FIXME: Endian patch here correct?
+		#ifdef LSB_FIRST
 		CpstPmsk = *(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]);
+		#else
+		CpstPmsk = swapWord(*(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]));
+		#endif
 	}
 
 	if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
@@ -180,12 +212,20 @@ static void Cps2TileLineRows(int y,struct CpsrLineInfo *pli)
     else       nCpstType=CTT_16X16 | CTT_ROWS;
 
     pst=FindTile(tx,iy+y);
+    #ifdef LSB_FIRST
     t=pst[0];
+    #else
+    t=swapWord(pst[0]);
+    #endif
     t<<=7; // Get real tile address
     t+=nCpsGfxScroll[2]; // add on offset to scroll tiles
 
     if (t==nKnowBlank) continue; // Don't draw: we know it's blank
+    #ifdef LSB_FIRST
     a=pst[1];
+    #else
+    a=swapWord(pst[1]);
+    #endif
 
     CpstSetPal(0x40 | (a&0x1f));
 

@@ -38,7 +38,11 @@ int Cps1Scr1Draw(unsigned char *Base,int sx,int sy)
       p&=0x3fff;
       pst=(unsigned short *)(Base + p);
 
+#ifdef LSB_FIRST
       t=pst[0];
+#else
+      t = swapWord(pst[0]);
+#endif
       
       if (Scroll1TileMask) t &= Scroll1TileMask;
       
@@ -50,7 +54,11 @@ int Cps1Scr1Draw(unsigned char *Base,int sx,int sy)
       t+=nCpsGfxScroll[1]; // add on offset to scroll tiles
       if (t==nKnowBlank) continue; // Don't draw: we know it's blank
 
+#ifdef LSB_FIRST
       a=pst[1];
+#else
+      a=swapWord(pst[1]);
+#endif
 
       CpstSetPal(0x20 | (a&0x1f));
 
@@ -64,7 +72,11 @@ int Cps1Scr1Draw(unsigned char *Base,int sx,int sy)
       nCpstTile=t; nCpstFlip=(a>>5)&3;
 
 	  if (nBgHi) {
+	  	#ifdef LSB_FIRST
 		  CpstPmsk = *(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]);
+		  #else
+		  CpstPmsk = swapWord(*(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]));
+		  #endif
 	  }
 
 	  if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
@@ -101,20 +113,28 @@ int Cps2Scr1Draw(unsigned char *Base, int sx, int sy)
 			unsigned short *pst;
 			int fx, fy, p;
 			fx = ix + x;
-			fy = iy + y;								// 0 <= fx/fy <= 63
+			fy = iy + y;						// 0 <= fx/fy <= 63
 
 			// Find tile address
 			p = ((fy & 0x20) << 8) | ((fx & 0x3F) << 7) | ((fy & 0x1F) << 2);
 			p &= 0x3FFF;
 			pst = (unsigned short *)(Base + p);
 
+			#ifdef LSB_FIRST
 			t = pst[0];
-			t <<= 6;										// Get real tile address
+			#else
+			t = swapWord(pst[0]);
+			#endif
+			t <<= 6;						// Get real tile address
 
-			t += nCpsGfxScroll[1];							// add on offset to scroll tiles
+			t += nCpsGfxScroll[1];					// add on offset to scroll tiles
 
-			if (t != nKnowBlank) {							// Draw tile
+			if (t != nKnowBlank) {					// Draw tile
+				#ifdef LSB_FIRST
 				a = pst[1];
+				#else
+				a = swapWord(pst[1]);
+				#endif
 
 				CpstSetPal(0x20 | (a & 0x1F));
 
@@ -161,7 +181,11 @@ int Cps1Scr3Draw(unsigned char *Base,int sx,int sy)
       p&=0x3fff;
       pst=(unsigned short *)(Base + p);
 
+      #ifdef LSB_FIRST
       t=pst[0];
+      #else
+      t = swapWord(pst[0]);
+      #endif
       
       if (Scroll3TileMask) t &= Scroll3TileMask;
       
@@ -173,7 +197,11 @@ int Cps1Scr3Draw(unsigned char *Base,int sx,int sy)
       
       if (t==nKnowBlank) continue; // Don't draw: we know it's blank
 
+#ifdef LSB_FIRST
       a=pst[1];
+      #else
+      a= swapWord(pst[1]);
+      #endif
 
       CpstSetPal(0x60 | (a&0x1f));
 
@@ -187,7 +215,11 @@ int Cps1Scr3Draw(unsigned char *Base,int sx,int sy)
       nCpstTile=t; nCpstFlip=(a>>5)&3;
 
 	  if (nBgHi) {
+#ifdef LSB_FIRST
 		  CpstPmsk = *(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]);
+#else
+		  CpstPmsk = swapWord(*(unsigned short*)(CpsSaveReg[0] + MaskAddr[(a & 0x180) >> 7]));
+#endif
 	  }
 
       if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
@@ -230,7 +262,11 @@ int Cps2Scr3Draw(unsigned char *Base, int sx, int sy)
 			p &= 0x3FFF;
 			pst = (unsigned short *)(Base + p);
 
+			#ifdef LSB_FIRST
 			t = pst[0];
+			#else
+			t = swapWord(pst[0]);
+			#endif
 
 			if(Xmcota && t>=0x5800)      t-=0x4000;
 	        else if(Ssf2t && t<0x5600)   t+=0x4000;
@@ -238,7 +274,11 @@ int Cps2Scr3Draw(unsigned char *Base, int sx, int sy)
  			t += nCpsGfxScroll[3];							// add on offset to scroll tiles
 
 			if (t != nKnowBlank) {							// Draw tile
+				#ifdef LSB_FIRST
 				a = pst[1];
+				#else
+				a = swapWord(pst[1]);
+				#endif
 
 				CpstSetPal(0x60 | (a & 0x1F));
 

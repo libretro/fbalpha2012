@@ -102,7 +102,11 @@ int CpsObjGet()
 		pof->nShiftX = -CpsSaveFrg[0][0x9];
 		pof->nShiftY = -CpsSaveFrg[0][0xB];
 	} else {
+		#ifdef LSB_FIRST
 		int nOff = *((unsigned short*)(CpsReg + 0x00)) << 8;
+		#else
+		int nOff = swapWord(*((unsigned short*)(CpsReg + 0x00))) << 8;
+		#endif
 		nOff &= 0xfff800;
 		Get = CpsFindGfxRam(nOff, 0x800);		
 		
@@ -122,28 +126,43 @@ int CpsObjGet()
 		unsigned short* ps = (unsigned short*)pg;
 
 		if (Cps == 2) {
-			if (ps[1] & 0x8000)	{													// end of sprite list?
-				break;
-			}
-			if (ps[0] == 0 && ps[1] == 0x0100 && ps[2] == 0 && ps[3] == 0xff00) {	// Slammasters end of sprite list?
-				break;
-			}
+			#ifdef LSB_FIRST
+			if (ps[1] & 0x8000)
+			#else
+			if (swapWord(ps[1]) & 0x8000)
+			#endif
+				break;	// end of sprite list?
+			#ifdef LSB_FIRST
+			if (ps[0] == 0 && ps[1] == 0x0100 && ps[2] == 0 && ps[3] == 0xff00)
+			#else
+			if (ps[0] == 0 && swapWord(ps[1]) == 0x0100 && ps[2] == 0 && swapWord(ps[3]) == 0xff00)
+			#endif
+				break;	// Slammasters end of sprite list?
 		} else {
 			if (Dinopic) {
-				if (ps[1] == 0x8000) {													// end of sprite list
-					break;
-				}
+				#ifdef LSB_FIRST 
+				if (ps[1] == 0x8000)
+				#else
+				if (swapWord(ps[1]) == 0x8000)
+				#endif
+					break;	//end of sprite list
 			} else {
-				if (ps[3] == 0xff00) {													// end of sprite list
-					break;
-				}
+				#ifdef LSB_FIRST
+				if (ps[3] == 0xff00)
+				#else
+				if (swapWord(ps[3]) == 0xff00)
+				#endif
+					break;	//end of sprite list
 			}
 		}
 		
 		if (Dinopic) {
-			if (((ps[2] - 461) | ps[1]) == 0) {													// sprite blank
-				continue;
-			}
+			#ifdef LSB_FIRST
+			if (((ps[2] - 461) | ps[1]) == 0)
+			#else
+			if (((swapWord(ps[2]) - 461) | ps[1]) == 0)
+			#endif
+				continue;	// sprite blank
 		} else {
 			if ((ps[0] | ps[3]) == 0) {													// sprite blank
 				continue;
@@ -208,7 +227,11 @@ int Cps1ObjDraw(int nLevelFrom,int nLevelTo)
 			bx = 1;
 			by = 1;
 		} else {
+			#ifdef LSB_FIRST
 			x = ps[0]; y = ps[1]; n = ps[2]; a = ps[3];
+			#else
+			x = swapWord(ps[0]); y = swapWord(ps[1]); n = swapWord(ps[2]); a = swapWord(ps[3]);
+			#endif
 			
 			// Find out sprite size
 			bx=((a>> 8)&15)+1;
@@ -283,7 +306,11 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 	for (ZValue = (unsigned short)nMaxZValue; ZValue <= nCount; ZValue++, ps += nPsAdd) {
 		int x, y, n, a, bx, by, dx, dy;
 		int nFlip;
+		#ifdef LSB_FIRST
 		int v = ps[0] >> 13;
+		#else
+		int v = swapWord(ps[0]) >> 13;
+		#endif
 
 		if ((nSpriteEnable & (1 << v)) == 0) {
 			continue;
@@ -311,10 +338,17 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 			pCpstOne = CpstOneObjDoX[0];
 		}
 
+		#ifdef LSB_FIRST
 		x = ps[0];
 		y = ps[1];
 		n = ps[2];
 		a = ps[3];
+		#else
+		x = swapWord(ps[0]);
+		y = swapWord(ps[1]);
+		n = swapWord(ps[2]);
+		a = swapWord(ps[3]);
+		#endif
 
 		if (a & 0x80) {														// marvel vs capcom ending sprite off-set
 			x += CpsSaveFrg[0][0x9];
@@ -347,7 +381,11 @@ int Cps2ObjDraw(int nLevelFrom, int nLevelTo)
 //		y -= CpsSaveFrg[0][0xB];
 
 #endif
+		#ifdef LSB_FIRST
 		n |= (ps[1] & 0x6000) << 3;	// high bits of address
+		#else
+		n |= (swapWord(ps[1]) & 0x6000) << 3;	// high bits of address
+		#endif
 		
 		// Find the palette for the tiles on this sprite
 		CpstPal = CpsObjPal + ((a & 0x1F) << 4);

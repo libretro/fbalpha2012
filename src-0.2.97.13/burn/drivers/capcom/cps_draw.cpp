@@ -59,11 +59,20 @@ static int DrawScroll1(int i)
 	int nOff, nScrX, nScrY;
 	unsigned char *Find;
 
+	#ifdef LSB_FIRST
 	nOff = *((unsigned short *)(CpsSaveReg[i] + 0x02));
+	#else
+	nOff = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x02)));
+	#endif
 
 	// Get scroll coordinates
+	#ifdef LSB_FIRST
 	nScrX = *((unsigned short *)(CpsSaveReg[i] + 0x0c)); // Scroll 1 X
 	nScrY = *((unsigned short *)(CpsSaveReg[i] + 0x0e)); // Scroll 1 Y
+	#else
+	nScrX = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x0c))); // Scroll 1 X
+	nScrY = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x0e))); // Scroll 1 Y
+	#endif
 
 	nScrX += 0x40;
 
@@ -87,14 +96,27 @@ static int DrawScroll2Init(int i)
 	// Draw Scroll 2
 	int nScr2Off; int n;
 
+	#ifdef LSB_FIRST
 	nScr2Off = *((unsigned short *)(CpsSaveReg[i] + 0x04));
+	#else
+	nScr2Off = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x04)));
+	#endif
 
 	// Get scroll coordinates
+	#ifdef LSB_FIRST
 	nCpsrScrX= *((unsigned short *)(CpsSaveReg[i] + 0x10)); // Scroll 2 X
 	nCpsrScrY= *((unsigned short *)(CpsSaveReg[i] + 0x12)); // Scroll 2 Ytess
+	#else
+	nCpsrScrX= swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x10))); // Scroll 2 X
+	nCpsrScrY= swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x12))); // Scroll 2 Ytess
+	#endif
 
 	// Get row scroll information
+	#ifdef LSB_FIRST
 	n = *((unsigned short *)(CpsSaveReg[i] + 0x22));
+	#else
+	n = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x22)));
+	#endif
 
 	nScr2Off <<= 8;
 
@@ -121,8 +143,13 @@ static int DrawScroll2Init(int i)
 		int nTab, nStart;
 		// Find row scroll table:
 
+		#ifdef LSB_FIRST
 		nTab = *((unsigned short *)(CpsSaveReg[i] + 0x08));
 		nStart = *((unsigned short *)(CpsSaveReg[i] + 0x20));
+		#else
+		nTab = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x08)));
+		nStart = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x20)));
+		#endif
 
 		nTab <<= 8;
 		nTab &= 0xFFF800; // Vampire - Row scroll effect in VS screen background
@@ -161,11 +188,20 @@ static int DrawScroll3(int i)
 	int nOff, nScrX, nScrY;
 	unsigned char *Find;
 
+	#ifdef LSB_FIRST
 	nOff = *((unsigned short *)(CpsSaveReg[i] + 0x06));
+	#else
+	nOff = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x06)));
+	#endif
 
 	// Get scroll coordinates
+	#ifdef LSB_FIRST
 	nScrX = *((unsigned short *)(CpsSaveReg[i] + 0x14)); // Scroll 3 X
 	nScrY = *((unsigned short *)(CpsSaveReg[i] + 0x16)); // Scroll 3 Y
+	#else
+	nScrX = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x14))); // Scroll 3 X
+	nScrY = swapWord(*((unsigned short *)(CpsSaveReg[i] + 0x16))); // Scroll 3 Y
+	#endif
 
 	nScrX += 0x40;
 
@@ -214,7 +250,11 @@ static void Cps1Layers()
   int i=0;
 
   nDrawMask=1; // Sprites always on
+  #ifdef LSB_FIRST
   LayerCont = *((unsigned short *)(CpsSaveReg[0] + nCpsLcReg));
+  #else
+  LayerCont = swapWord(*((unsigned short *)(CpsSaveReg[0] + nCpsLcReg)));
+  #endif
   // Get correct bits from Layer Controller
   if (LayerCont & CpsLayEn[1]) nDrawMask|=2;
   if (LayerCont & CpsLayEn[2]) nDrawMask|=4;
@@ -294,7 +334,11 @@ static void Cps2Layers()
 
 	int nSlice = 0;
 	do {
+		#ifdef LSB_FIRST
 		LayerCont = *((unsigned short *)(CpsSaveReg[nSlice] + nCpsLcReg));
+		#else
+		LayerCont = swapWord(*((unsigned short *)(CpsSaveReg[nSlice] + nCpsLcReg)));
+		#endif
 
 		// Determine which layers are enabled
 		nDrawMask[nSlice] = 1;								// Sprites always on

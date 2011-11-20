@@ -54,9 +54,9 @@ typedef unsigned long long UINT64;
 #define FAST_OP_FETCH		1
 #define USE_JUMPTABLE		0
 
-#define SH2_INT_15			15
+#define SH2_INT_15		15
 
-#define	INLINE
+#define	INLINE	inline
 
 #if FAST_OP_FETCH
 
@@ -494,7 +494,11 @@ void program_write_dword_32be(unsigned int /*A*/, unsigned int /*V*/)
 
 #if FAST_OP_FETCH
 
+#if defined (LSB_FIRST)
 #define cpu_readop16(A)	*(unsigned short *)(pSh2Ext->opbase + ((A) ^ 0x02))
+#else
+#define cpu_readop16(A)	(*(unsigned short *)(pSh2Ext->opbase + ((A))))
+#endif
 
 #else
 
@@ -503,7 +507,9 @@ INLINE unsigned short cpu_readop16(unsigned int A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
 	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
+		#if defined(LSB_FIRST)
 		A ^= 2;
+		#endif
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
 	}
 	return pSh2Ext->ReadWord[(unsigned int)pr](A);
@@ -523,7 +529,9 @@ INLINE UINT8 RB(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
+		#if defined (LSB_FIRST)
 		A ^= 3;
+		#endif
 		return pr[A & SH2_PAGEM];
 	}
 	return pSh2Ext->ReadByte[(uintptr_t)pr](A);
@@ -539,7 +547,9 @@ INLINE UINT16 RW(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
+		#if defined (LSB_FIRST)
 		A ^= 2;
+		#endif
 		//return (pr[A & SH2_PAGEM] << 8) | pr[(A & SH2_PAGEM) + 1];
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
 	}
@@ -552,7 +562,9 @@ INLINE UINT16 OPRW(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
+		#if defined (LSB_FIRST)
 		A ^= 2;
+		#endif
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
 	}
 	
@@ -585,7 +597,9 @@ INLINE void WB(UINT32 A, UINT8 V)
 	unsigned char* pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
 	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
+		#if defined (LSB_FIRST)
 		A ^= 3;
+		#endif
 		pr[A & SH2_PAGEM] = (unsigned char)V;
 		return;
 	}
@@ -602,7 +616,9 @@ INLINE void WW(UINT32 A, UINT16 V)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
 	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
+		#if defined (LSB_FIRST)
 		A ^= 2;
+		#endif
 		*((unsigned short *)(pr + (A & SH2_PAGEM))) = (unsigned short)V;
 		return;
 	}

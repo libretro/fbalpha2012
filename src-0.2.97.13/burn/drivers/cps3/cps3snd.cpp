@@ -28,7 +28,7 @@ static cps3snd_chip * chip;
 unsigned char __fastcall cps3SndReadByte(unsigned int addr)
 {
 	addr &= 0x000003ff;
-	bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
 	return 0;
 }
 
@@ -41,9 +41,12 @@ unsigned short __fastcall cps3SndReadWord(unsigned int addr)
 	} else
 	if (addr == 0x200)	{
 		return chip->key;
-	} else
+	}
+	#if 0
+	else
 
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read word value of location %8x\n"), addr);
+	#endif
 	return 0;
 }
 
@@ -51,14 +54,14 @@ unsigned int __fastcall cps3SndReadLong(unsigned int addr)
 {
 	addr &= 0x000003ff;
 	
-	bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
 	return 0;
 }
 
 void __fastcall cps3SndWriteByte(unsigned int addr, unsigned char data)
 {
 	addr &= 0x000003ff;
-	bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3SndWriteWord(unsigned int addr, unsigned short data)
@@ -79,15 +82,18 @@ void __fastcall cps3SndWriteWord(unsigned int addr, unsigned short data)
 			}
 		}
 		chip->key = key;
-	} else
+	}
+	#if 0
+	else
 		bprintf(PRINT_NORMAL, _T("SND Attempt to write word value %4x to location %8x\n"), data, addr);
+	#endif
 	
 }
 
 void __fastcall cps3SndWriteLong(unsigned int addr, unsigned int data)
 {
 	//addr &= 0x000003ff;
-	bprintf(PRINT_NORMAL, _T("SND Attempt to write long value %8x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to write long value %8x to location %8x\n"), data, addr);
 }
 
 int cps3SndInit(unsigned char * sndrom)

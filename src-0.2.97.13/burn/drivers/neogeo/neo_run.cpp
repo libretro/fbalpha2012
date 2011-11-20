@@ -2277,7 +2277,11 @@ void __fastcall neogeoWriteWordSRAM(unsigned int sekAddress, unsigned short word
 	sekAddress &= 0xFFFF;
 
 	if (bSRAMWritable) {
+	#ifdef LSB_FIRST
 		*((unsigned short*)(NeoNVRAM + sekAddress)) = wordValue;
+	#else
+		*((unsigned short*)(NeoNVRAM + sekAddress)) = swapWord(wordValue);
+	#endif
 	}
 }
 
@@ -3164,13 +3168,13 @@ unsigned short __fastcall neogeoReadWordCDROM(unsigned int sekAddress)
 #if 1
 	switch (sekAddress & 0xFFFF) {
 		case 0x011C:
-			return ~((0x10 | (NeoSystem & 3)) << 8);
+			return (~((0x10 | (NeoSystem & 3)) << 8));
 	}
 #endif
 
 //	bprintf(PRINT_NORMAL, _T("  - NGCD port 0x%06X read (word, PC: 0x%06X)\n"), sekAddress, SekGetPC(-1));
 
-	return ~0;
+	return (~0);
 }
 
 void __fastcall neogeoWriteByteCDROM(unsigned int sekAddress, unsigned char byteValue)
@@ -3503,21 +3507,21 @@ void __fastcall neogeoWriteWordTransfer(unsigned int sekAddress, unsigned short 
 
 	switch (nActiveTransferArea) {
 		case 0:							// Sprites
-			*((unsigned short*)(NeoSpriteRAM + nSpriteTransferBank + (sekAddress & 0xFFFFF))) = wordValue;
+			*((unsigned short*)(NeoSpriteRAM + nSpriteTransferBank + (sekAddress & 0xFFFFF))) = (wordValue);
 			NeoCDOBJBankUpdate[nSpriteTransferBank >> 20] = true;
 			break;
 		case 1:							// ADPCM
-			YM2610ADPCMAROM[nNeoActiveSlot][nADPCMTransferBank + ((sekAddress & 0x0FFFFF) >> 1)] = wordValue;
+			YM2610ADPCMAROM[nNeoActiveSlot][nADPCMTransferBank + ((sekAddress & 0x0FFFFF) >> 1)] = (wordValue);
 			break;
 		case 4:							// Z80
 			// The games that write here, seem to write crap, however the BIOS writes the Z80 code here, and not in the byte area
 			// So basically, we are allowing writes to here, until the BIOS has finished writing the program, then not allowing any further writes
 			if (((sekAddress & 0xfffff) >= 0x20000) || nNeoCDZ80ProgWriteWordCancelHack) break;
 			if (sekAddress == 0xe1fdf2) nNeoCDZ80ProgWriteWordCancelHack = 1;
-			NeoZ80ROMActive[(sekAddress & 0x1FFFF) >> 1] = wordValue;
+			NeoZ80ROMActive[(sekAddress & 0x1FFFF) >> 1] = (wordValue);
 			break;
 		case 5:							// Text
-			NeoTextRAM[(sekAddress & 0x3FFFF) >> 1] = wordValue;
+			NeoTextRAM[(sekAddress & 0x3FFFF) >> 1] = (wordValue);
 //			NeoUpdateTextOne((sekAddress & 0x3FFFF) >> 1, wordValue);
 			break;
 	}
@@ -3530,9 +3534,17 @@ void __fastcall neogeoWriteWord68KProgram(unsigned int sekAddress, unsigned shor
 //	if (sekAddress < 16)
 //	bprintf(PRINT_NORMAL, _T("  - 68K: 0x%06X -> 0x%04X (PC: 0x%06X)\n"), sekAddress, wordValue, SekGetPC(-1));
 
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + sekAddress)) = wordValue;
+	#else
+	*((unsigned short*)(Neo68KROMActive + sekAddress)) = swapWord(wordValue);
+	#endif
 	if (sekAddress >= 0x0100) {
+	#ifdef LSB_FIRST
 		*((unsigned short*)(NeoVectorActive + sekAddress)) = wordValue;
+	#else
+		*((unsigned short*)(NeoVectorActive + sekAddress)) = swapWord(wordValue);
+	#endif
 	}
 }
 
@@ -3559,7 +3571,11 @@ static int neogeoReset()
 	
 		if (nBIOS == -1 || nBIOS == 23) {
 			// Write system type & region code into BIOS ROM
+			#ifdef LSB_FIRST
 			*((unsigned short*)(Neo68KBIOS + 0x000400)) = ((NeoSystem & 4) << 13) | (NeoSystem & 0x03);
+			#else
+			*((unsigned short*)(Neo68KBIOS + 0x000400)) = swapWord(((NeoSystem & 4) << 13) | (NeoSystem & 0x03));
+			#endif
 		}
 
 #if 1 && defined FBA_DEBUG

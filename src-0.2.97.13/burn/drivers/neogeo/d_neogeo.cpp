@@ -1448,7 +1448,11 @@ void __fastcall PVCWriteByteBankSwitch(unsigned int sekAddress, unsigned char by
 
 void __fastcall PVCWriteWordBankSwitch(unsigned int sekAddress, unsigned short wordValue)
 {
+#ifdef LSB_FIRST
 	*((unsigned short *)(PVCRAM + (sekAddress & 0x1ffe))) = wordValue;
+#else
+	*((unsigned short *)(PVCRAM + (sekAddress & 0x1ffe))) = swapWord(wordValue);
+#endif
 	if (sekAddress >= 0x2fffe0 && sekAddress <= 0x2fffe1) NeoPVCPallette01();
 	else if (sekAddress >= 0x2fffe8 && sekAddress <= 0x2fffeb) NeoPVCPallette02();
 	else if (sekAddress >= 0x2ffff0 && sekAddress <= 0x2ffff3) NeoPVCBankswitch();
@@ -5331,12 +5335,23 @@ STD_ROM_FN(mslugx)
 static void mslugxPatch()
 {
 	for (int i = 0; i < 0x100000 - 8; i += 2) {
+#ifdef LSB_FIRST
 		if (*((unsigned short*)(Neo68KROMActive + i + 0)) == 0x0243 && *((unsigned short*)(Neo68KROMActive + i + 2)) == 0x0001 && *((unsigned short*)(Neo68KROMActive + i + 4)) == 0x6600) {
 			*((unsigned short*)(Neo68KROMActive + i + 4)) = 0x4e71;
 			*((unsigned short*)(Neo68KROMActive + i + 6)) = 0x4e71;
 		}
+#else
+		if (*((unsigned short*)(Neo68KROMActive + i + 0)) == 0x4302 && *((unsigned short*)(Neo68KROMActive + i + 2)) == 0x0100 && *((unsigned short*)(Neo68KROMActive + i + 4)) == 0x0066) {
+
+			*((unsigned short*)(Neo68KROMActive + i + 4)) = 0x714e;
+
+			*((unsigned short*)(Neo68KROMActive + i + 6)) = 0x714e;
+
+		}
+#endif
 	}
 
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0x3bdc)) = 0x4e71;
 	*((unsigned short*)(Neo68KROMActive + 0x3bde)) = 0x4e71;
 	*((unsigned short*)(Neo68KROMActive + 0x3be0)) = 0x4e71;
@@ -5347,6 +5362,18 @@ static void mslugxPatch()
 
 	*((unsigned short*)(Neo68KROMActive + 0x3c36)) = 0x4e71;
 	*((unsigned short*)(Neo68KROMActive + 0x3c38)) = 0x4e71;
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0x3bdc)) = 0x714e;
+	*((unsigned short*)(Neo68KROMActive + 0x3bde)) = 0x714e;
+	*((unsigned short*)(Neo68KROMActive + 0x3be0)) = 0x714e;
+
+	*((unsigned short*)(Neo68KROMActive + 0x3c0c)) = 0x714e;
+	*((unsigned short*)(Neo68KROMActive + 0x3c0e)) = 0x714e;
+	*((unsigned short*)(Neo68KROMActive + 0x3c10)) = 0x714e;
+
+	*((unsigned short*)(Neo68KROMActive + 0x3c36)) = 0x714e;
+	*((unsigned short*)(Neo68KROMActive + 0x3c38)) = 0x714e;
+	#endif
 }
 
 static int mslugxInit()
@@ -5396,18 +5423,30 @@ STD_ROM_FN(kof99)
 static void kof99SMADecrypt()
 {
 	for (int i = 0; i < 0x800000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 13, 7, 3, 0, 9, 4, 5, 6, 1, 12, 8, 14, 10, 11, 2, 15);
+		#else
+		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(swapWord(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 13, 7, 3, 0, 9, 4, 5, 6, 1, 12, 8, 14, 10, 11, 2, 15));
+		#endif
 	}
 
 	for (int i = 0; i < 0x0C0000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)Neo68KROMActive)[i] = ((unsigned short*)Neo68KROMActive)[0x700000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 11, 6, 14, 17, 16, 5, 8, 10, 12, 0, 4, 3, 2, 7, 9, 15, 13, 1)];
+		#else
+		((unsigned short*)Neo68KROMActive)[i] = swapWord(((unsigned short*)Neo68KROMActive)[0x700000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 11, 6, 14, 17, 16, 5, 8, 10, 12, 0, 4, 3, 2, 7, 9, 15, 13, 1)]);
+		#endif
 	}
 
 	for (int i = 0; i < 0x600000 / 2; i += 0x0800 / 2) {
 		unsigned short nBuffer[0x0800 / 2];
 		memcpy(nBuffer, &((unsigned short*)(Neo68KROMActive + 0x100000))[i], 0x0800);
 		for (int j = 0; j < 0x0800 / 2; j++) {
+			#ifdef LSB_FIRST
 			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 6, 2, 4, 9, 8, 3, 1, 7, 0, 5)];
+			#else
+			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = swapWord(nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 6, 2, 4, 9, 8, 3, 1, 7, 0, 5)]);
+			#endif
 		}
 	}
 }
@@ -5649,18 +5688,30 @@ STD_ROM_FN(garou)
 static void garouSMADecrypt()
 {
 	for (int i = 0; i < 0x800000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 13, 12, 14, 10, 8, 2, 3, 1, 5, 9, 11, 4, 15, 0, 6, 7);
+		#else
+		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(swapWord(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 13, 12, 14, 10, 8, 2, 3, 1, 5, 9, 11, 4, 15, 0, 6, 7));
+		#endif
 	}
 
 	for (int i = 0; i < 0x0C0000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)Neo68KROMActive)[i] = ((unsigned short*)Neo68KROMActive)[0x710000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 4, 5, 16, 14, 7, 9, 6, 13, 17, 15, 3, 1, 2, 12, 11, 8, 10, 0)];
+		#else
+		((unsigned short*)Neo68KROMActive)[i] = swapWord(((unsigned short*)Neo68KROMActive)[0x710000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 4, 5, 16, 14, 7, 9, 6, 13, 17, 15, 3, 1, 2, 12, 11, 8, 10, 0)]);
+		#endif
 	}
 
 	for (int i = 0; i < 0x800000 / 2; i += 0x8000 / 2) {
 		unsigned short nBuffer[0x8000 / 2];
 		memcpy(nBuffer, &((unsigned short*)(Neo68KROMActive + 0x100000))[i], 0x8000);
 		for (int j = 0; j < 0x8000 / 2; j++) {
+			#ifdef LSB_FIRST
 			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 9, 4, 8, 3, 13, 6, 2, 7, 0, 12, 1, 11, 10, 5)];
+			#else
+			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = swapWord(nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 9, 4, 8, 3, 13, 6, 2, 7, 0, 12, 1, 11, 10, 5)]);
+			#endif
 		}
 	}
 }
@@ -5943,18 +5994,30 @@ STD_ROM_FN(mslug3)
 static void mslug3SMADecrypt()
 {
 	for (int i = 0; i < 0x800000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 4, 11, 14, 3, 1, 13, 0, 7, 2, 8, 12, 15, 10, 9, 5, 6);
+		#else
+		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(swapWord(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 4, 11, 14, 3, 1, 13, 0, 7, 2, 8, 12, 15, 10, 9, 5, 6));
+		#endif
 	}
 
 	for (int i = 0; i < 0x0C0000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)Neo68KROMActive)[i] = ((unsigned short*)Neo68KROMActive)[0x5D0000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 15, 2, 1, 13, 3, 0, 9, 6, 16, 4, 11, 5, 7, 12, 17, 14, 10, 8)];
+		#else
+		((unsigned short*)Neo68KROMActive)[i] = swapWord(((unsigned short*)Neo68KROMActive)[0x5D0000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 15, 2, 1, 13, 3, 0, 9, 6, 16, 4, 11, 5, 7, 12, 17, 14, 10, 8)]);
+		#endif
 	}
 
 	for (int i = 0; i < 0x800000 / 2; i += 0x010000 / 2) {
 		unsigned short nBuffer[0x010000 / 2];
 		memcpy(nBuffer, &((unsigned short*)(Neo68KROMActive + 0x100000))[i], 0x010000);
 		for (int j = 0; j < 0x010000 / 2; j++) {
+		#ifdef LSB_FIRST
 			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1)];
+		#else
+			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = swapWord(nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1)]);
+		#endif
 		}
 	}
 }
@@ -6141,18 +6204,30 @@ STD_ROM_FN(kof2000)
 static void kof2000SMADecrypt()
 {
 	for (int i = 0; i < 0x800000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 12, 8, 11, 3, 15, 14, 7, 0, 10, 13, 6, 5, 9, 2, 1, 4);
+		#else
+		((unsigned short*)(Neo68KROMActive + 0x100000))[i] = BITSWAP16(swapWord(((unsigned short*)(Neo68KROMActive + 0x100000))[i], 12, 8, 11, 3, 15, 14, 7, 0, 10, 13, 6, 5, 9, 2, 1, 4));
+		#endif
 	}
 
 	for (int i = 0; i < 0x0C0000 / 2; i++) {
+		#ifdef LSB_FIRST
 		((unsigned short*)Neo68KROMActive)[i] = ((unsigned short*)Neo68KROMActive)[0x73A000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 8, 4, 15, 13, 3, 14, 16, 2, 6, 17, 7, 12, 10, 0, 5, 11, 1, 9)];
+		#else
+		((unsigned short*)Neo68KROMActive)[i] = swapWord(((unsigned short*)Neo68KROMActive)[0x73A000 / 2 + BITSWAP24(i, 23, 22, 21, 20, 19, 18, 8, 4, 15, 13, 3, 14, 16, 2, 6, 17, 7, 12, 10, 0, 5, 11, 1, 9)]);
+		#endif
 	}
 
 	for (int i = 0; i < 0x63A000 / 2; i += 0x0800 / 2) {
 		unsigned short nBuffer[0x0800 / 2];
 		memcpy(nBuffer, &((unsigned short*)(Neo68KROMActive + 0x100000))[i], 0x0800);
 		for (int j = 0; j < 0x0800 / 2; j++) {
+			#ifdef LSB_FIRST
 			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 4, 1, 3, 8, 6, 2, 7, 0, 9, 5)];
+			#else
+			((unsigned short*)(Neo68KROMActive + 0x100000))[i + j] = swapWord(nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 4, 1, 3, 8, 6, 2, 7, 0, 9, 5)]);
+			#endif
 		}
 	}
 }
@@ -6455,9 +6530,15 @@ static void cthd2003_decode()
 	int i, n;
 
 	// fix garbage on s1 layer over everything
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0xf415a)) = 0x4ef9;
 	*((unsigned short*)(Neo68KROMActive + 0xf415c)) = 0x000f;
 	*((unsigned short*)(Neo68KROMActive + 0xf415e)) = 0x4cf2;
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0xf415a)) = 0xf94e;
+	*((unsigned short*)(Neo68KROMActive + 0xf415c)) = 0x0f00;
+	*((unsigned short*)(Neo68KROMActive + 0xf415e)) = 0xf24c;
+	#endif
 
 	// Fix corruption in attract mode before title screen
 	for (i = 0x1ae290; i < 0x1ae8d0; i+=2) {
@@ -6466,8 +6547,13 @@ static void cthd2003_decode()
 
 	// Fix for title page
 	for (i = 0x1f8ef0; i < 0x1fa1f0; i += 4) {
+	#ifdef LSB_FIRST
 		*((unsigned short*)(Neo68KROMActive + i + 0)) -= 0x7000;
 		*((unsigned short*)(Neo68KROMActive + i + 2)) -= 0x0010;
+	#else
+		*((unsigned short*)(Neo68KROMActive + i + 0)) -= 0x0070;
+		*((unsigned short*)(Neo68KROMActive + i + 2)) -= 0x1000;
+	#endif
 	}
 
 	// Fix for green dots on title page
@@ -6476,10 +6562,17 @@ static void cthd2003_decode()
 	}
 
 	// Fix for blanks as screen change level end clear
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0x991d0)) = 0xdd03;
 	*((unsigned short*)(Neo68KROMActive + 0x99306)) = 0xdd03;
 	*((unsigned short*)(Neo68KROMActive + 0x99354)) = 0xdd03;
 	*((unsigned short*)(Neo68KROMActive + 0x9943e)) = 0xdd03;
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0x991d0)) = 0x03dd;
+	*((unsigned short*)(Neo68KROMActive + 0x99306)) = 0x03dd;
+	*((unsigned short*)(Neo68KROMActive + 0x99354)) = 0x03dd;
+	*((unsigned short*)(Neo68KROMActive + 0x9943e)) = 0x03dd;
+	#endif
 
 	// Swap bits 15 & 16 in the address of the Z80 ROM
 	for (i = 0; i < 0x10000 / 2; i++) {
@@ -7052,6 +7145,9 @@ static void kof10thBankswitch(unsigned int nBank)
 // Text data extraction, game does this on the fly!
 void __fastcall kof10thWriteWordCustom(unsigned int sekAddress, unsigned short wordValue)
 {
+#ifndef LSB_FIRST
+	wordValue = swapWord(wordValue);
+#endif
 	if (kof10thExtraRAMB[0x1ffc]) {
 		NeoUpdateTextOne(((sekAddress >> 1) & 0x1ffff), BITSWAP08(wordValue, 3, 2, 1, 5, 7, 6, 0, 4));
 	} else {
@@ -7073,7 +7169,11 @@ void __fastcall kof10thWriteWordBankswitch(unsigned int sekAddress, unsigned sho
 {
 	if (sekAddress == 0x2ffff0)
 		kof10thBankswitch(wordValue);
+	#ifdef LSB_FIRST
 	else if (sekAddress == 0x2ffff8 && *(unsigned short*)(kof10thExtraRAMB + 0x1ff8) != wordValue)
+	#else
+	else if (sekAddress == 0x2ffff8 && *(unsigned short*)(kof10thExtraRAMB + 0x1ff8) != swapWord(wordValue))
+	#endif
 		SekMapMemory(Neo68KROMActive + ((wordValue & 1) ? 0x710000 : 0x010000) , 0x010000, 0x0dffff, SM_ROM);
 
 	*(unsigned short*)(kof10thExtraRAMB + (sekAddress & 0x01ffe)) = wordValue;
@@ -7102,12 +7202,21 @@ static void kof10thCallback()
 	}
 
 	// Altera protection chip patches these over P ROM
+	#ifdef LSB_FIRST
 	*((unsigned short *)(Neo68KROMActive + 0x0124)) = 0x000d; // Enables XOR for RAM moves, forces SoftDIPs, and USA region
 	*((unsigned short *)(Neo68KROMActive + 0x0126)) = 0xf7a8;
 
 	*((unsigned short *)(Neo68KROMActive + 0x8bf4)) = 0x4ef9; // Run code to change "S" data
 	*((unsigned short *)(Neo68KROMActive + 0x8bf6)) = 0x000d;
 	*((unsigned short *)(Neo68KROMActive + 0x8bf8)) = 0xf980;
+	#else
+	*((unsigned short *)(Neo68KROMActive + 0x0124)) = 0x0d00; // Enables XOR for RAM moves, forces SoftDIPs, and USA region
+	*((unsigned short *)(Neo68KROMActive + 0x0126)) = 0xa8f7;
+
+	*((unsigned short *)(Neo68KROMActive + 0x8bf4)) = 0xf94e; // Run code to change "S" data
+	*((unsigned short *)(Neo68KROMActive + 0x8bf6)) = 0x0d00;
+	*((unsigned short *)(Neo68KROMActive + 0x8bf8)) = 0x80f9;
+	#endif
 }
 
 static void kof10thMapBank()
@@ -7250,11 +7359,19 @@ static void kf10thepCallback()
 	{
 		if ((*((unsigned short*)(Neo68KROMActive + i + 0)) & 0xffbf) == 0x4eb9 && *((unsigned short*)(Neo68KROMActive + i + 2)) == 0x0000)
 		{
+			#ifdef LSB_FIRST
 			*((unsigned short*)(Neo68KROMActive + i + 2)) = 0x000f;
+			#else
+			*((unsigned short*)(Neo68KROMActive + i + 2)) = 0x0f00;
+			#endif
  		}
 	}
 
+#ifdef LSB_FIRST
 	*((unsigned short *)(Neo68KROMActive + 0x00342)) = 0x000f;
+	#else
+	*((unsigned short *)(Neo68KROMActive + 0x00342)) = 0x0f00;
+	#endif
 
 	lans2004_sx_decode();
 }
@@ -7448,9 +7565,17 @@ static void mslug5Callback()
 
 	for (i = 0x100000; i < 0x0500000; i += 4)
 	{
+		#ifdef LSB_FIRST
 		unsigned short rom16 = *((unsigned short *)(Neo68KROMActive + i + 1));
+		#else
+		unsigned short rom16 = swapWord(*((unsigned short *)(Neo68KROMActive + i + 1)));
+		#endif
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 10, 11, 8, 9, 6, 7, 4, 5, 3, 2, 1, 0);
+		#ifdef LSB_FIRST
 		*((unsigned short *)(Neo68KROMActive + i + 1)) = rom16;
+		#else
+		*((unsigned short *)(Neo68KROMActive + i + 1)) = swapWord(rom16);
+		#endif
 	}
 
 	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
@@ -7674,9 +7799,17 @@ static void svcCallback()
 
 	for (i = 0x100000; i < 0x0600000; i+=4)
 	{
+		#ifdef LSB_FIRST
 		unsigned short rom16 = *((unsigned short *)(Neo68KROMActive + i + 1));
+		#else
+		unsigned short rom16 = swapWord(*((unsigned short *)(Neo68KROMActive + i + 1)));
+		#endif
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 10, 11, 8, 9, 6, 7, 4, 5, 3, 2, 1, 0);
+		#ifdef LSB_FIRST
 		*((unsigned short *)(Neo68KROMActive + i + 1)) = rom16;
+		#else
+		*((unsigned short *)(Neo68KROMActive + i + 1)) = swapWord(rom16);
+		#endif
 	}
 
 	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
@@ -7941,7 +8074,11 @@ static void svcplusCallback()
 		dst = NULL;
 	}
 
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0xf8016)) = 0x33c1; // Patch protected address
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0xf8016)) = 0xc133; // Patch protected address
+	#endif
 
 	lans2004_sx_decode();
 	svcboot_decode();
@@ -8012,7 +8149,11 @@ static void svcplusaCallback()
 		dst = NULL;
 	}
 
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0xf8016)) = 0x33c1; // Patch protected address
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0xf8016)) = 0xc133; // Patch protected address
+	#endif
 
 	svcboot_sx_decode();
 	svcboot_decode();
@@ -8093,11 +8234,19 @@ static void svcsplusCallback()
 
 	memcpy (Neo68KROMActive, Neo68KROMActive + 0x600000, 0x100000);
 
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0x9e90)) = 0x000f; // Enable S. Plus
 	*((unsigned short*)(Neo68KROMActive + 0x9e92)) = 0xc9c0;
 	*((unsigned short*)(Neo68KROMActive + 0xa10c)) = 0x4eb9; // Enable boss icons
 	*((unsigned short*)(Neo68KROMActive + 0xa10e)) = 0x000e;
 	*((unsigned short*)(Neo68KROMActive + 0xa110)) = 0x9750;
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0x9e90)) = 0x0f00; // Enable S. Plus
+	*((unsigned short*)(Neo68KROMActive + 0x9e92)) = 0xc0c9;
+	*((unsigned short*)(Neo68KROMActive + 0xa10c)) = 0xb94e; // Enable boss icons
+	*((unsigned short*)(Neo68KROMActive + 0xa10e)) = 0x0e00;
+	*((unsigned short*)(Neo68KROMActive + 0xa110)) = 0x5097;
+	#endif
 
 	svcsplus_sx_decode();
 	svcboot_decode();
@@ -8377,9 +8526,16 @@ void kf2k3pcb_bios_decode()
 				  j ^= address[((i >> 1) & 0x38) | (i & 7)];
 
 				     dst[i]  = src[j];
+
+		#ifdef LSB_FIRST
 		if (dst[i] & 0x0004) dst[i] ^= 0x0001;
 		if (dst[i] & 0x0010) dst[i] ^= 0x0002;
 		if (dst[i] & 0x0020) dst[i] ^= 0x0008;
+		#else
+		if (swapWord(dst[i]) & 0x0004) dst[i] ^= 0x0100;
+		if (swapWord(dst[i]) & 0x0010) dst[i] ^= 0x0200;
+		if (swapWord(dst[i]) & 0x0020) dst[i] ^= 0x0800;
+		#endif
 	}
 
 	memcpy (src, dst, 0x80000);
@@ -8400,9 +8556,17 @@ static void kf2k3pcbCallback()
 		Neo68KROMActive[i] ^= ~Neo68KROMActive[0x7fffe0 + (i & 0x1f)];
 
 	for (i = 0x100000; i < 0x700000; i += 4) {
+		#ifdef LSB_FIRST
 		unsigned short rom16 = *((unsigned short *)(Neo68KROMActive + i + 1));
+		#else
+		unsigned short rom16 = swapWord(*((unsigned short *)(Neo68KROMActive + i + 1)));
+		#endif
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 4, 5, 6, 7, 8, 9, 10, 11, 3, 2, 1, 0);
+		#ifdef LSB_FIRST
 		*((unsigned short *)(Neo68KROMActive + i + 1)) = rom16;
+		#else
+		*((unsigned short *)(Neo68KROMActive + i + 1)) = swapWord(rom16);
+		#endif
 	}
 
 	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
@@ -8501,9 +8665,17 @@ static void kof2003Callback()
 		Neo68KROMActive[i] ^= ~Neo68KROMActive[0x7fffe0 + (i & 0x1f)];
 
 	for (i = 0x100000; i < 0x800000; i += 4) {
+		#ifdef LSB_FIRST
 		unsigned short rom16 = *((unsigned short *)(Neo68KROMActive + i + 1));
+		#else
+		unsigned short rom16 = swapWord(*((unsigned short *)(Neo68KROMActive + i + 1)));
+		#endif
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 5, 4, 7, 6, 9, 8, 11, 10, 3, 2, 1, 0);
+		#ifdef LSB_FIRST
 		*((unsigned short *)(Neo68KROMActive + i + 1)) = rom16;
+		#else
+		*((unsigned short *)(Neo68KROMActive + i + 1)) = swapWord(rom16);
+		#endif
 	}
 
 	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
@@ -8595,9 +8767,17 @@ static void kof2003hCallback()
 		Neo68KROMActive[i] ^= ~Neo68KROMActive[0x7fffe0 + (i & 0x1f)];
 
 	for (i = 0x100000; i < 0x800000; i += 4) {
+		#ifdef LSB_FIRST
 		unsigned short rom16 = *((unsigned short *)(Neo68KROMActive + i + 1));
+		#else
+		unsigned short rom16 = swapWord(*((unsigned short *)(Neo68KROMActive + i + 1)));
+		#endif
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 10, 11, 8, 9, 6, 7, 4, 5, 3, 2, 1, 0);
+		#ifdef LSB_FIRST
 		*((unsigned short *)(Neo68KROMActive + i + 1)) = rom16;
+		#else
+		*((unsigned short *)(Neo68KROMActive + i + 1)) = swapWord(rom16);
+		#endif
 	}
 
 	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
@@ -8782,14 +8962,22 @@ static void kf2k3blaCallback()
 	}
 
 	// patched by Altera protection chip
+	#ifdef LSB_FIRST
 	*((unsigned short*)(Neo68KROMActive + 0x0f38ac)) = 0x4e75;
+	#else
+	*((unsigned short*)(Neo68KROMActive + 0x0f38ac)) = 0x754e;
+	#endif
 
 	lans2004_sx_decode();
 }
 
 void __fastcall kf2k3blaWriteWordBankswitch(unsigned int sekAddress, unsigned short wordValue)
 {
+	#ifdef LSB_FIRST
 	*((unsigned short*)(PVCRAM + (sekAddress & 0x1ffe))) = wordValue;
+	#else
+	*((unsigned short*)(PVCRAM + (sekAddress & 0x1ffe))) = swapWord(wordValue);
+	#endif
 
 	if (sekAddress == 0x2ffff2)
 	{
@@ -12371,9 +12559,15 @@ static void cthd2k3aCallback()
 	}
 	
 	unsigned short *Rom = (unsigned short*)Neo68KROMActive;
+	#ifdef LSB_FIRST
 	Rom[0xed00e / 2] = 0x4e71;
 	Rom[0xed394 / 2] = 0x4e71;
 	Rom[0xa2b7e / 2] = 0x4e71;
+	#else
+	Rom[0xed00e / 2] = 0x714e;
+	Rom[0xed394 / 2] = 0x714e;
+	Rom[0xa2b7e / 2] = 0x714e;
+	#endif
 	
 	// Text ROM
 	for (i = 0; i < 0x8000; i++) {

@@ -107,11 +107,21 @@ void __fastcall NeoPalWriteWord(unsigned int nAddress, unsigned short wordValue)
 	nAddress &= 0x1FFF;
 	nAddress >>= 1;
 
+	#ifdef LSB_FIRST
 	((unsigned short*)NeoPalSrc[nNeoPaletteBank])[nAddress] = wordValue;		// write word
+	#else
+	((unsigned short*)NeoPalSrc[nNeoPaletteBank])[nAddress] = swapWord(wordValue);		// write word
+	#endif
 
+	#ifdef LSB_FIRST
 	if (NeoPaletteCopy[nNeoPaletteBank][nAddress] != wordValue) {
 		NeoPaletteCopy[nNeoPaletteBank][nAddress] = wordValue;
 		NeoPaletteData[nNeoPaletteBank][nAddress] = CalcCol(wordValue);
 	}
+	#else
+	if (NeoPaletteCopy[nNeoPaletteBank][nAddress] != swapWord(wordValue)) {
+		NeoPaletteCopy[nNeoPaletteBank][nAddress] = swapWord(wordValue);
+		NeoPaletteData[nNeoPaletteBank][nAddress] = CalcCol(wordValue);
+	}
+	#endif
 }
-

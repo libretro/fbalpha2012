@@ -1,4 +1,4 @@
-#include "m6809.h"
+#include "m6809/m6809.h"
 
 typedef unsigned char (*pReadByteHandler)(unsigned short a);
 typedef void (*pWriteByteHandler)(unsigned short a, unsigned char d);

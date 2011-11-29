@@ -89,10 +89,10 @@ static inline uint64_t _byteswap_uint64(uint64_t x)
 #endif
 
 // sek.cpp
-#include "sek.h"
+#include "../cpu/sek.h"
 
 // zet.cpp
-#include "zet.h"
+#include "../cpu/zet.h"
 
 typedef union
 {

@@ -1,0 +1,155 @@
+/*
+   Hyllian and DOLLS! Retro Shader
+
+   WIP Version - 2011-jul-05
+   
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+/*
+	VERTEX_SHADER
+*/
+void main_vertex
+(
+	float4 position	: POSITION,
+	float4 color	: COLOR,
+	float2 texCoord : TEXCOORD0,
+
+	uniform float4x4 modelViewProj,
+
+	out float4 oPosition	: POSITION,
+	out float4 oColor	: COLOR,
+	out float2 otexCoord	: TEXCOORD
+)
+{
+	oPosition = mul(modelViewProj, position);
+	oColor = color;
+	otexCoord = texCoord;
+}
+
+/*
+	FRAGMENT SHADER
+*/
+
+
+
+struct output
+{
+	float4 color	: COLOR;
+};
+
+struct input
+{
+	float2 video_size;
+	float2 texture_size;
+	float2 output_size;
+};
+
+      
+
+
+output main_fragment(float2 texCoord: TEXCOORD0, uniform sampler2D decal : TEXUNIT0, uniform input IN)
+{
+
+	float2 ps = float2(0.9999/IN.texture_size.x, 0.9999/IN.texture_size.y);
+	half2 dx = half2(ps.x, 0.0);
+	half2 dy = half2(0.0, ps.y);
+
+	float2 pixcoord = texCoord/ps;
+	float2 fp	= frac(pixcoord);
+	float2 d11	= texCoord-fp*ps;
+
+
+	// Reading the texels
+	half3 E = pow(tex2D(decal, d11).xyz, float3(2.4));
+
+
+	half3 E0 = E*128.0 / 157.0;
+	half3 E1 = E*132.0 / 157.0;
+	half3 E2 = E*154.0 / 157.0;
+	half3 E3 = E*180.0 / 157.0;
+	half3 E4 = E*0.35;
+	half3 E5 = E*121.0 / 157.0;
+	half3 E6 = E*131.0 / 157.0;
+	half3 E7 = E*130.0 / 157.0;
+	half3 E8 = E*152.0 / 157.0;
+	half3 E9 = E*0.35;
+	half3 E10 = E*137.0 / 157.0;
+	half3 E11 = E*151.0 / 157.0;
+	half3 E12 = E*152.0 / 157.0;
+	half3 E13 = E*166.0 / 157.0;
+	half3 E14 = E*0.35;
+	half3 E15 = E*159.0 / 157.0;
+	half3 E16 = E*160.0 / 157.0;
+	half3 E17 = E*174.0 / 157.0;
+	half3 E18 = E*179.0 / 157.0;
+	half3 E19 = E*0.35;
+	half3 E20 = E*0.35;
+	half3 E21 = E*0.35;
+	half3 E22 = E*0.35;
+	half3 E23 = E*0.35;
+	half3 E24 = E*0.35;
+
+	
+	float3 res;
+
+	if (fp.x < 0.2)
+		{ 
+                  if (fp.y < 0.2) res = E0;
+                  else if ((fp.y > 0.2) && (fp.y < 0.4)) res = E5;
+		  else if ((fp.y > 0.4) && (fp.y < 0.6)) res = E10;
+		  else if ((fp.y > 0.6) && (fp.y < 0.8)) res = E15;
+		  else res = E20;
+                }
+	else if ((fp.x > 0.2) && (fp.x < 0.4))
+		{
+                  if (fp.y < 0.2) res = E1;
+                  else if ((fp.y > 0.2) && (fp.y < 0.4)) res = E6;
+		  else if ((fp.y > 0.4) && (fp.y < 0.6)) res = E11;
+		  else if ((fp.y > 0.6) && (fp.y < 0.8)) res = E16;
+		  else res = E21;
+		}
+	else if ((fp.x > 0.4) && (fp.x < 0.6))
+		{
+                  if (fp.y < 0.2) res = E2;
+                  else if ((fp.y > 0.2) && (fp.y < 0.4)) res = E7;
+		  else if ((fp.y > 0.4) && (fp.y < 0.6)) res = E12;
+		  else if ((fp.y > 0.6) && (fp.y < 0.8)) res = E17;
+		  else res = E22;
+		}
+	else if ((fp.x > 0.6) && (fp.x < 0.8))
+		{
+                  if (fp.y < 0.2) res = E3;
+                  else if ((fp.y > 0.2) && (fp.y < 0.4)) res = E8;
+		  else if ((fp.y > 0.4) && (fp.y < 0.6)) res = E13;
+		  else if ((fp.y > 0.6) && (fp.y < 0.8)) res = E18;
+		  else res = E23;
+		}
+	else
+		{
+                  if (fp.y < 0.2) res = E4;
+                  else if ((fp.y > 0.2) && (fp.y < 0.4)) res = E9;
+		  else if ((fp.y > 0.4) && (fp.y < 0.6)) res = E14;
+		  else if ((fp.y > 0.6) && (fp.y < 0.8)) res = E19;
+		  else res = E24;
+		}
+
+	
+	// Product interpolation
+	output OUT;
+	OUT.color = float4(clamp( pow(res, float3(1.0 / 2.2)), 0.0, 1.0 ), 1.0); 
+	return OUT;
+}

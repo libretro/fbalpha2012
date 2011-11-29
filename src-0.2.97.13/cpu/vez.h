@@ -1,6 +1,6 @@
 // Nec V20/V30/V33 interface
 
-#include "necintrf.h"
+#include "nec/necintrf.h"
 
 struct VezContext {
 	nec_Regs reg;

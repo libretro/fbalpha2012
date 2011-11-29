@@ -1,10 +1,10 @@
 #include "burnint.h"
 #include "burn_sound.h"
 #include "burn_ym3812.h"
-#include "m6809_intf.h"
-#include "hd6309_intf.h"
-#include "m6800_intf.h"
-#include "m6502_intf.h"
+#include "../../cpu/m6809_intf.h"
+#include "../../cpu/hd6309_intf.h"
+#include "../../cpu/m6800_intf.h"
+#include "../../cpu/m6502_intf.h"
 
 // Timer Related
 

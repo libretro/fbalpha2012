@@ -1,4 +1,4 @@
-#include "hd6309.h"
+#include "hd6309/hd6309.h"
 
 typedef unsigned char (*pReadByteHandler)(unsigned short a);
 typedef void (*pWriteByteHandler)(unsigned short a, unsigned char d);

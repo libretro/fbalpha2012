@@ -1,5 +1,5 @@
 #include "tiles_generic.h"
-#include "m6502.h"
+#include "../../cpu/m6502/m6502.h"
 #include "burn_ym2151.h"
 
 unsigned char *Drv68KRom = NULL;

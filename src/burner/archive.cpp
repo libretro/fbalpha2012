@@ -10,7 +10,7 @@
 */
 
 #include "burner.h"
-#include "../File_Extractor/fex/fex.h"
+#include "fex/fex.h"
 
 static File_Extractor* fex = NULL;
 static fex_err_t err = NULL;

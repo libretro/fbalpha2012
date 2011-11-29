@@ -1,11 +1,11 @@
 #include "burnint.h"
-#include "vez.h"
-#include "sh2.h"
-#include "m6502.h"
-#include "m6809_intf.h"
-#include "hd6309_intf.h"
-#include "m6800_intf.h"
-#include "s2650_intf.h"
+#include "../cpu/vez.h"
+#include "../cpu/sh2/sh2.h"
+#include "../cpu/m6502/m6502.h"
+#include "../cpu/m6809_intf.h"
+#include "../cpu/hd6309_intf.h"
+#include "../cpu/m6800_intf.h"
+#include "../cpu/s2650_intf.h"
 
 // A hiscore.dat support module for FBA - written by Treble Winner, Feb 2009
 // At some point we really need a CPU interface to track CPU types and numbers,

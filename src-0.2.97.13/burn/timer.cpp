@@ -1,12 +1,12 @@
 // Timers (for Yamaha FM cips and generic)
 #include "burnint.h"
 #include "timer.h"
-#include "m6809_intf.h"
-#include "hd6309_intf.h"
-#include "m6800_intf.h"
-#include "m6502_intf.h"
-#include "sh2.h"
-#include "h6280_intf.h"
+#include "../cpu/m6809_intf.h"
+#include "../cpu/hd6309_intf.h"
+#include "../cpu/m6800_intf.h"
+#include "../cpu/m6502_intf.h"
+#include "../cpu/sh2/sh2.h"
+#include "../cpu/h6280_intf.h"
 
 #define MAX_TIMER_VALUE ((1 << 30) - 65536)
 

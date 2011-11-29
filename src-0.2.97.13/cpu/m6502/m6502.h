@@ -13,7 +13,7 @@
 /*************************************************************/
 #ifndef M6502_H
 #define M6502_H
-#include "m6502_intf.h"
+#include "../m6502_intf.h"
 
 
                                /* Compilation options:       */

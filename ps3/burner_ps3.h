@@ -167,8 +167,6 @@ int mediaExit();
 int mediaReInitAudio();
 
 // misc_win32.cpp
-void createNeedDir();
-bool directoryExists(const char* dirname);
 void pathCheck(char * path);
 int directLoadGame(const char * name);
 int findRom(int i, struct ArcEntry* list, int count);

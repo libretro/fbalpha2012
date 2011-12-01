@@ -77,7 +77,6 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	if (ConfigGameLoad(true))
 		loadDefaultInput();			// load default input mapping
 
-	InputMake();
 	GameInpDefault();
 
 
@@ -113,7 +112,6 @@ int BurnerDrvInit(int nDrvNum, bool bRestore)
 	bSaveRAM = false;
 	if (bRestore)
 	{
-		StatedAuto(0);
 		bSaveRAM = true;
 	}
 
@@ -139,7 +137,6 @@ int BurnerDrvExit()
 
 			if (bSaveRAM)
 			{
-				StatedAuto(1); // Save NV (or full) RAM
 				bSaveRAM = false;
 			}
 

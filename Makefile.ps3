@@ -137,7 +137,7 @@ PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
                                         $(BURN_DIR)/toaplan/d_zerowing.cpp $(BURN_DIR)/toaplan/toa_bcu2.cpp $(BURN_DIR)/toaplan/toa_extratext.cpp $(BURN_DIR)/toaplan/toa_gp9001.cpp $(BURN_DIR)/toaplan/toa_palette.cpp \
                                         $(BURN_DIR)/toaplan/toaplan.cpp $(BURN_DIR)/toaplan/toaplan1.cpp \
                                         \
-                                        $(PS3_DIR)/audit.cpp $(PS3_DIR)/barchive.cpp $(PS3_DIR)/config.cpp $(PS3_DIR)/drv.cpp $(PS3_DIR)/inpd.cpp $(PS3_DIR)/media.cpp $(PS3_DIR)/menu.cpp $(PS3_DIR)/misc_win32.cpp $(PS3_DIR)/miscpaths.cpp $(PS3_DIR)/stated.cpp $(PS3_DIR)/audit_ps3.cpp \
+                                        $(PS3_DIR)/audit.cpp $(PS3_DIR)/barchive.cpp $(PS3_DIR)/drv.cpp $(PS3_DIR)/inpd.cpp $(PS3_DIR)/media.cpp $(PS3_DIR)/menu.cpp $(PS3_DIR)/misc_win32.cpp $(PS3_DIR)/audit_ps3.cpp \
                                         $(BURNER_DIR)/archive.cpp $(BURNER_DIR)/cong.cpp $(BURNER_DIR)/dat.cpp $(BURNER_DIR)/dynhuff.cpp $(BURNER_DIR)/gamc.cpp $(BURNER_DIR)/gami.cpp $(BURNER_DIR)/ips.cpp \
                                         $(PS3_DIR)/main.cpp $(BURNER_DIR)/state.cpp $(BURNER_DIR)/statec.cpp $(BURNER_DIR)/tracklst.cpp \
                                         \
@@ -165,7 +165,7 @@ PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
                                         \
                                         $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
                                         \
-                                        $(PS3_DIR)/audio_driver.cpp $(PS3_DIR)/input_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp $(PS3_DIR)/vid_interface_ps3.cpp \
+                                        $(PS3_DIR)/audio_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp $(PS3_DIR)/vid_interface_ps3.cpp \
                                         \
                                         $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
                                         $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \

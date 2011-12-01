@@ -161,6 +161,24 @@ static int romsfound_count;
 
 extern int GameStatus;
 
+int StatedLoad(int nSlot)
+{
+	int ret;
+	char szChoice[MAX_PATH];
+	sprintf(szChoice, "%s%s.%d.fs", SAVESTATES_DIR, BurnDrvGetTextA(DRV_NAME), nSlot);
+	ret = BurnStateLoad(szChoice, 1, &DrvInitCallback);
+	return ret;
+}
+
+int StatedSave(int nSlot)
+{
+	int ret;
+	char szChoice[MAX_PATH];
+	sprintf(szChoice, "%s%s.%d.fs", SAVESTATES_DIR, BurnDrvGetTextA(DRV_NAME), nSlot);
+	ret = BurnStateSave(szChoice, 1);
+	return ret;
+}
+
 // DIP Switch Handler Code
 
 static void InpDIPSWGetOffset()

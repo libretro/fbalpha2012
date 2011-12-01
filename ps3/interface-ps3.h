@@ -15,8 +15,6 @@ extern bool bInputOkay;
 int InputInit();
 int InputExit();
 int InputPrepare(void);
-void InputMake(void);
-void InputMake_Analog(void);
 
 // Audio
 extern int		nAudSampleRate;		// sample rate

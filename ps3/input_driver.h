@@ -1,6 +1,8 @@
 #ifndef INPUT_DRIVER_H
 #define INPUT_DRIVER_H
 
+#include <cell/pad.h>
+#include <sys/cdefs.h>
 #include "inp_keys.h"		// Key codes
 
 #define LIST_DEVICES

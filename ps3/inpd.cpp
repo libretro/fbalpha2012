@@ -71,27 +71,6 @@ static int GameInpConfig(int nPlayer, int nPcDev, int nAnalog)
 	return 0;
 }
 
-static int DeleteInput(unsigned int i)
-{
-	return 0;
-}
-
-// List item(s) deleted; find out which one(s)
-static int ListItemDelete()
-{
-	return 0;
-}
-
-static int InitAnalogOptions(int nGi, int nPci)
-{
-	return 0;
-}
-
-int UsePreset(bool bMakeDefault)
-{
-	return 0;
-}
-
 // ==> default input mapping, added by regret
 const char* defaultInpFilename = DEFAULT_INP_FILENAME;
 const char* defaultNeoInpFilename = DEFAULT_NEO_INP_FILENAME;

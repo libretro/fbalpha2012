@@ -61,6 +61,58 @@ static int __cdecl DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	return nRet;
 }
 
+// Media init / exit
+static int mediaInit(void)
+{
+	if (!bInputOkay)
+		InputInit();		// Init Input
+
+	nAppVirtualFps = nBurnFPS;
+
+	char * szName;
+	BurnDrvGetArchiveName(&szName, 0);
+	char  * vendetta_hack = strstr(szName,"vendetta");
+
+	if (!bAudOkay || vendetta_hack || bAudReinit)
+	{
+		if(vendetta_hack && bAudSetSampleRate == 48010)
+		{
+			// If Vendetta is not played with sound samplerate at 44KHz, then
+			// slo-mo Vendetta happens - so we set sound samplerate at 44KHz
+			// and then resample to 48Khz for this game. Possibly more games 
+			// are like this, so check for more
+			audio_init(SAMPLERATE_44KHZ);
+			bAudReinit = true;
+		}
+		else
+		{
+			audio_init(bAudSetSampleRate);
+			bAudReinit = false;
+		}
+	}
+
+	// Assume no sound
+	nBurnSoundRate = 0;					
+	pBurnSoundOut = NULL;
+
+	if (bAudOkay)
+	{
+		nBurnSoundRate = nAudSampleRate;
+		nBurnSoundLen = nAudSegLen;
+	}
+
+	return 0;
+}
+
+//forward declarations
+int VidReinit(void);
+
+// simply reinit screen, added by regret
+void simpleReinitScrn(void)
+{
+	VidReinit();
+}
+
 //#define NEED_MEDIA_REINIT
 // no need to reinit media when init a driver, modified by regret
 int BurnerDrvInit(int nDrvNum, bool bRestore)

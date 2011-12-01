@@ -97,6 +97,18 @@ typedef std::basic_string<char> tstring;
  #define MAX_PATH (260)
 #endif
 
+// media.cpp
+
+#define InputInit() bInputOkay = true;
+#define InputExit() bInputOkay = false;
+
+#define mediaExit() \
+	nBurnSoundRate = 0; \
+	pBurnSoundOut = NULL; \
+	audio_exit(); \
+	VidExit(); \
+	InputExit();
+
 // ---------------------------------------------------------------------------
 // from burn
 extern int bsavedecryptedcs;
@@ -160,11 +172,6 @@ enum FBAPopupType { MT_NONE = 0, MT_ERROR, MT_WARNING, MT_INFO };
 int FBAPopupDisplay(int nFlags);
 int FBAPopupAddText(int nFlags, char* pszFormat, ...);
 int FBAPopupDestroyText();
-
-// media.cpp
-int mediaInit();
-int mediaExit();
-int mediaReInitAudio();
 
 // misc_win32.cpp
 void pathCheck(char * path);

@@ -2221,7 +2221,6 @@ void StretchMenu()
 	cellDbgFontDraw();
 }
 
-
 void InGameFrameMove()
 {
 	int nRet = 0;
@@ -2583,6 +2582,7 @@ void InGameFrameMove()
 	old_state = new_state;
 
 }
+
  
 void FrameMove()
 { 

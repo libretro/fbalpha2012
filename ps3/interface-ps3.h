@@ -12,8 +12,6 @@ extern bool bInputOkay;
 
 // Input
 
-int InputInit();
-int InputExit();
 int InputPrepare(void);
 
 // Audio

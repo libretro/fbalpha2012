@@ -865,7 +865,6 @@ int  main(int argc, char **argv)
 		{
 			case MENU:	
 				psglClearUI();
-				psglRenderMenu(1920, 1080);
 				RomMenu();
 				FrameMove();
 #ifdef CELL_DEBUG_CONSOLE

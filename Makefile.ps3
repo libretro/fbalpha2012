@@ -70,7 +70,7 @@ PPU_CFLAGS              +=  $(DEFINES) $(INCDIRS)
 PPU_CXXFLAGS            +=  $(DEFINES) $(INCDIRS)
 PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
                             $(PS3_DIR)/cellframework2/input/pad_input.c \
-			    $(PS3_DIR)/vid_psgl.cpp \
+			    $(PS3_DIR)/vid_interface_ps3.cpp \
 			    $(BURN_DIR)/cps3/cps3run.cpp \
 			    $(CPU_DIR)/sh2/sh2.cpp $(BURN_DIR)/8255ppi.cpp $(BURN_DIR)/ay8910.c $(BURN_DIR)/burn.cpp \
 			    $(BURN_DIR)/burn_gun.cpp $(BURN_DIR)/burn_led.cpp $(BURN_DIR)/burn_sound_c.cpp \
@@ -165,8 +165,7 @@ PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
                                         \
                                         $(CPU_DIR)/z80/z80.cpp $(CPU_DIR)/z80/z80daisy.cpp \
                                         \
-                                        $(PS3_DIR)/audio_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp $(PS3_DIR)/vid_interface_ps3.cpp \
-                                        \
+                                        $(PS3_DIR)/audio_driver.cpp $(INTERFACE_DIR)/vid_filter.cpp \
                                         $(FEX_DIR)/7z_C/7zAlloc.c $(FEX_DIR)/7z_C/7zBuf.c $(FEX_DIR)/7z_C/7zCrc.c $(FEX_DIR)/7z_C/7zDecode.c $(FEX_DIR)/7z_C/7zExtract.c $(FEX_DIR)/7z_C/7zHeader.c $(FEX_DIR)/7z_C/7zIn.c $(FEX_DIR)/7z_C/7zItem.c $(FEX_DIR)/7z_C/7zStream.c \
                                         $(FEX_DIR)/7z_C/Bcj2.c $(FEX_DIR)/7z_C/Bra86.c $(FEX_DIR)/7z_C/Lzma2Dec.c $(FEX_DIR)/7z_C/LzmaDec.c \
                                         \

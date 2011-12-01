@@ -27,7 +27,6 @@ extern void psglRenderPaused(void);
 extern void psglRenderAlpha(void);
 extern void CalculateViewports(void);
 extern void psglRender(void);
-extern void psglRenderMenu(int width, int height);
 extern void setlinear(unsigned int smooth);
 bool LoadMenuTexture(enum menu_type type, const char * path);
 

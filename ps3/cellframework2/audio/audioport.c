@@ -6,10 +6,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define resampler_s16_to_float(out, in, samples) \
-   for (uint32_t i = 0; i < samples; i++) \
-      out[i] = (float)in[i]/0x8000;
+#include <altivec.h>
 
 typedef struct fifo_buffer fifo_buffer_t;
 
@@ -145,6 +142,36 @@ static void fifo_read(fifo_buffer_t* buffer, void* in_buf, uint32_t size)
 	buffer->first = (buffer->first + size) % buffer->bufsize;
 }
 
+static void audio_convert_s16_to_float_C(float *out, const int16_t *in, size_t samples)
+{
+   for (size_t i = 0; i < samples; i++)
+      out[i] = (float)in[i] / 0x8000;
+}
+
+static void audio_convert_s16_to_float_altivec(float *out, const int16_t *in, size_t samples)
+{
+   // Unaligned loads/store is a bit expensive, so we optimize for the good path (very likely).
+   if (((uintptr_t)out & 15) + ((uintptr_t)in & 15) == 0)
+   {
+      size_t i;
+      for (i = 0; i + 8 <= samples; i += 8, in += 8, out += 8)
+      {
+         vector signed short input = vec_ld(0, in);
+         vector signed int hi = vec_unpackh(input);
+         vector signed int lo = vec_unpackl(input);
+         vector float out_hi = vec_ctf(hi, 15);
+         vector float out_lo = vec_ctf(lo, 15);
+
+         vec_st(out_hi, 0, out);
+         vec_st(out_lo, 16, out);
+      }
+
+      audio_convert_s16_to_float_C(out, in, samples - i);
+   }
+   else
+      audio_convert_s16_to_float_C(out, in, samples);
+}
+
 static uint32_t resampler_cb(void *userdata, float **data)
 {
 	audioport_t *port = userdata;
@@ -163,7 +190,7 @@ static uint32_t resampler_cb(void *userdata, float **data)
 	if (has_read < CELL_AUDIO_BLOCK_SAMPLES_X2 * 2)
 		memset(port->re_pull_buffer + has_read, 0, (CELL_AUDIO_BLOCK_SAMPLES_X2 - has_read) * sizeof(int16_t));
 
-	resampler_s16_to_float(port->re_buffer, port->re_pull_buffer, CELL_AUDIO_BLOCK_SAMPLES_X2);
+	audio_convert_s16_to_float_altivec(port->re_buffer, port->re_pull_buffer, CELL_AUDIO_BLOCK_SAMPLES_X2);
 
 	*data = port->re_buffer;
 	return CELL_AUDIO_BLOCK_SAMPLES;
@@ -309,6 +336,8 @@ static void resampler_event_loop(audioport_t *port, sys_event_queue_t id)
 	port->re_pull_buffer = NULL;
 }
 
+
+
 static void* event_loop(void *data)
 {
 	audioport_t *port = data;
@@ -342,7 +371,7 @@ static void* event_loop(void *data)
 			if (has_read < CELL_AUDIO_BLOCK_SAMPLES_X2)
 				memset(in_buf + has_read, 0, (CELL_AUDIO_BLOCK_SAMPLES_X2 - has_read) * sizeof(int16_t));
 
-			resampler_s16_to_float(conv_buf, in_buf, CELL_AUDIO_BLOCK_SAMPLES_X2);
+			audio_convert_s16_to_float_altivec(conv_buf, in_buf, CELL_AUDIO_BLOCK_SAMPLES_X2);
 
 			sys_event_queue_receive(id, &event, SYS_NO_TIMEOUT);
 			cellAudioAddData(port->audio_port, conv_buf, CELL_AUDIO_BLOCK_SAMPLES, 1.0);

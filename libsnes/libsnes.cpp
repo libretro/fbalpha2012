@@ -66,6 +66,12 @@ static bool init_input();
 void snes_init()
 {
    BurnLibInit();
+
+   if (environ_cb)
+   {
+      bool need_fullpath = true;
+      environ_cb(SNES_ENVIRONMENT_SET_NEED_FULLPATH, &need_fullpath);
+   }
 }
 
 void snes_term()
@@ -367,7 +373,6 @@ static bool fba_init(unsigned driver)
       unsigned pitch = 2048;
       environ_cb(SNES_ENVIRONMENT_SET_PITCH, &pitch);
    }
-
 
    return true;
 }

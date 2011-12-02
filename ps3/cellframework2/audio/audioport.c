@@ -489,11 +489,7 @@ static int32_t audioport_write(cell_audio_handle_t handle, const int16_t *data, 
 			data += to_write >> 1;
 		}
 		else
-		{
-			sys_lwmutex_lock(&port->cond_lock, SYS_NO_TIMEOUT);
 			sys_lwcond_wait(&port->cond, 0);
-			sys_lwmutex_unlock(&port->cond_lock);
-		}
 	}while(bytes);
 
 	return ret;

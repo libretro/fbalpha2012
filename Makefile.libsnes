@@ -15,16 +15,27 @@ ifeq ($(platform), unix)
    TARGET := libsnes.so
    fpic := -fPIC
    SHARED := -shared
+   ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), osx)
    TARGET := libsnes.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
+   ENDIANNESS_DEFINES := -DLSB_FIRST
+else ifeq ($(platform), ps3)
+   TARGET := libsnes.a
+   SHARED := -shared, -Wl, --version-script=libsnes/link.T
+   CC = ppu-lv2-gcc
+   CXX = ppu-lv2-g++
+   AR = ppu-lv2-ar
+   ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
+   PLATFORM_DEFINES := -D__CELLOS_LV2 -DSN_TARGET_PS3
 else
    TARGET := snes.dll
    CC = gcc
    CXX = g++
    SHARED := -shared
    LDFLAGS += -static-libgcc -static-libstdc++
+   ENDIANNESS_DEFINES := -DLSB_FIRST
 endif
 
 all: $(TARGET)
@@ -56,14 +67,14 @@ FBA_COBJ := $(FBA_CSRCS:.c=.o)
 
 OBJS := $(FBA_COBJ) $(FBA_CXXOBJ)
 
-FBA_DEFINES := -DNDEBUG -DNO_ASMCORE -DNO_AUTOFIRE -DNO_CHEATSEARCH -DNO_COMBO -DUSE_SPEEDHACKS -DNO_PNG -DOLD_AUDIOCORE=0 -D__LIBSNES__ -DLSB_FIRST -DTIXML_USE_TICPP
+FBA_DEFINES := -DNO_ASMCORE -DNO_AUTOFIRE -DNO_CHEATSEARCH -DNO_COMBO -DUSE_SPEEDHACKS -DNO_PNG -DOLD_AUDIOCORE=0 -D__LIBSNES__ $(ENDIANNESS_DEFINES) $(PLATFORM_DEFINES) -DTIXML_USE_TICPP
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -g
 CXXFLAGS += -O0 -g
 else
-CFLAGS += -O3
-CXXFLAGS += -O3
+CFLAGS += -O3 -DNDEBUG
+CXXFLAGS += -O3 -DNDEBUG
 endif
 
 CFLAGS += -std=gnu99 $(fpic) -Wno-write-strings $(FBA_DEFINES)
@@ -74,7 +85,11 @@ INCDIRS := -I$(FBA_BURN_DIR) -I$(FBA_BURN_DIR)/burner -I$(MAIN_FBA_DIR)/cpu -I$(
 
 $(TARGET): $(OBJS)
 	@echo "LD $@"
+ifeq ($(platform), ps3)
+	$(AR) rcs $@ $(OBJECTS)
+else
 	@$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS)
+endif
 
 %.o: %.cpp
 	@echo "CXX $<"

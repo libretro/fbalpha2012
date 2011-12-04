@@ -61,7 +61,7 @@ static void Cps1TileLine(int y,int sx)
 	#ifdef LSB_FIRST
 	if(nBgHi) CpstPmsk=*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a&0x180)>>7]);
 	#else
-	if(nBgHi) CpstPmsk=swapWOrd(*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a&0x180)>>7]));
+	if(nBgHi) CpstPmsk=swapWord(*(unsigned short *)(CpsSaveReg[0] + MaskAddr[(a&0x180)>>7]));
 	#endif
     if(CpstOneDoX[nBgHi]()) nKnowBlank=t;
   }

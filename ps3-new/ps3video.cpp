@@ -659,8 +659,6 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 	else
 		linesize = width << 1;
 
-
-	glUnmapBuffer(GL_TEXTURE_REFERENCE_BUFFER_SCE);
 	if (fbo_enable)
 	{
 

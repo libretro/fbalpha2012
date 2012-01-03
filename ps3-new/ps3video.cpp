@@ -314,6 +314,7 @@ static int32_t ps3graphics_psgl_init(bool scaleEnable, uint32_t scaleFactor)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ALLOCATION_HINT_SCE,GL_TEXTURE_TILED_GPU_SCE);
 
 	ps3graphics_set_smooth(m_smooth, 0);
 	ps3graphics_set_smooth(m_smooth2, 1);
@@ -528,6 +529,7 @@ void ps3graphics_set_fbo_scale(uint32_t enable, unsigned scale)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ALLOCATION_HINT_SCE,GL_TEXTURE_TILED_GPU_SCE);
 
 		glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo);
 		glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_tex, 0);
@@ -1140,12 +1142,14 @@ void ps3graphics_set_smooth(uint32_t smooth, unsigned index)
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_smooth ? GL_LINEAR : GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_smooth ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ALLOCATION_HINT_SCE,GL_TEXTURE_TILED_GPU_SCE);
 	}
 	else if (fbo_tex)
 	{
 		glBindTexture(GL_TEXTURE_2D, fbo_tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ALLOCATION_HINT_SCE,GL_TEXTURE_TILED_GPU_SCE);
 		glBindTexture(GL_TEXTURE_2D, tex);
 	}
 }

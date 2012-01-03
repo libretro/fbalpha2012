@@ -138,7 +138,7 @@ int ProgressUpdateBurner(char const * pszText)
 	cellDbgFontDraw();
 	cellDbgFontPrintf(0.75f, 0.92f + 0.025f, 0.75f, 0xFFFF7F7f ,"%ld total memory",mem_info.total_user_memory );     
 	cellDbgFontDraw();
-	psglSwap();
+	_jsPlatformSwapBuffers(psgl_device);
 	cellSysutilCheckCallback();
 }
 
@@ -149,7 +149,7 @@ void UpdateConsole(const char * text)
 
 	cellDbgFontPuts(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, text);
 	cellDbgFontDraw();
-	psglSwap();
+	_jsPlatformSwapBuffers(psgl_device);
 	cellSysutilCheckCallback();
 }
 
@@ -160,7 +160,7 @@ void UpdateConsoleXY(const char * text, float X, float Y)
 
 	cellDbgFontPuts(X, Y, 0.75f, 0xFFFFFFFF, text);
 	cellDbgFontDraw();
-	psglSwap();
+	_jsPlatformSwapBuffers(psgl_device);
 	cellSysutilCheckCallback();
 }
 void InpDIPSWResetDIPs (void) { }
@@ -1019,7 +1019,7 @@ void emulator_save_settings(uint64_t filetosave)
 					/* OSK Util gets updated */
 					glClear(GL_COLOR_BUFFER_BIT);
 					ps3graphics_draw_menu(1920, 1080);
-					psglSwap();
+					_jsPlatformSwapBuffers(psgl_device);
 					cell_console_poll();
 					cellSysutilCheckCallback();
 				}
@@ -1043,7 +1043,7 @@ void emulator_save_settings(uint64_t filetosave)
 						/* OSK Util gets updated */
 						glClear(GL_COLOR_BUFFER_BIT);
 						ps3graphics_draw_menu(1920, 1080);
-						psglSwap();
+						_jsPlatformSwapBuffers(psgl_device);
 						cell_console_poll();
 						cellSysutilCheckCallback();
 					}
@@ -1092,7 +1092,7 @@ void emulator_save_settings(uint64_t filetosave)
 					/* OSK Util gets updated */
 					glClear(GL_COLOR_BUFFER_BIT);
 					ps3graphics_draw_menu(1920, 1080);
-					psglSwap();
+					_jsPlatformSwapBuffers(psgl_device);
 					cell_console_poll();
 					cellSysutilCheckCallback();
 				}
@@ -1116,7 +1116,7 @@ void emulator_save_settings(uint64_t filetosave)
 						/* OSK Util gets updated */
 						glClear(GL_COLOR_BUFFER_BIT);
 						ps3graphics_draw_menu(1920, 1080);
-						psglSwap();
+						_jsPlatformSwapBuffers(psgl_device);
 						cell_console_poll();
 						cellSysutilCheckCallback();
 					}
@@ -1418,7 +1418,7 @@ static void emulator_start(void)
 		}
 		else
 			special_action_msg_expired = 0;
-		psglSwap();
+		_jsPlatformSwapBuffers(psgl_device);
 		cell_console_poll();
 		cellSysutilCheckCallback();
 	}while(is_running);
@@ -1482,7 +1482,7 @@ void emulator_toggle_sound(uint64_t soundmode)
 
 			do{
 				glClear(GL_COLOR_BUFFER_BIT);
-				psglSwap();
+				_jsPlatformSwapBuffers(psgl_device);
 				cell_console_poll();
 				cellSysutilCheckCallback();
 			}while(dialog_is_running && is_running);
@@ -1671,7 +1671,7 @@ static void ingame_menu(void)
 								stuck_in_loop = 0;
 							}
 
-							psglSwap();
+							_jsPlatformSwapBuffers(psgl_device);
 							cellSysutilCheckCallback();
 							old_state = state;
 						}while(stuck_in_loop && is_ingame_menu_running);
@@ -1692,7 +1692,7 @@ static void ingame_menu(void)
 							}
 
 							ps3graphics_draw(width, height, pBurnDraw, drv_flags);
-							psglSwap();
+							_jsPlatformSwapBuffers(psgl_device);
 							cellSysutilCheckCallback();
 							old_state = state;
 						}
@@ -1838,7 +1838,7 @@ static void ingame_menu(void)
 			cellDbgFontPrintf (0.09f,   0.90f,   0.98f,      LIGHTBLUE,           comment);
 		}
 		cellDbgFontDraw();
-		psglSwap();
+		_jsPlatformSwapBuffers(psgl_device);
 		old_state = state;
 		cellSysutilCheckCallback();
 	}while(is_ingame_menu_running);

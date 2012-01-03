@@ -147,6 +147,11 @@ unsigned int BurnDrvGetIndexByName(const char* name)
 	return ret;
 }
 
+extern "C" const char * BurnGetFullName(int index)
+{
+	return (char*)pDriver[index]->szFullNameW;
+}
+
 int BurnGetArchiveName(char** pszName, unsigned int i, bool ext, unsigned int type)
 {
 	if (pszName == NULL)

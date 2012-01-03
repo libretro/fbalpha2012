@@ -75,6 +75,8 @@ extern void (__cdecl *BurnProcessCombo)();
 extern unsigned int nCurrentFrame;
 extern int nTransWidth, nTransHeight;
 
+extern "C" const char * BurnGetFullName(int index);
+
 #define GetCurrentFrame() nCurrentFrame
 
 #define BurnTransferClear() memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));

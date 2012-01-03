@@ -103,9 +103,9 @@ static void emulator_load_current_save_state_slot(void)
 	int ret = BurnStateLoad(szChoice, 1, &DrvInitCallback);
 
 	if(ret)
-		snprintf(msg, sizeof(msg), "Loaded save state slot #%d", Settings.CurrentSaveStateSlot);
-	else
 		snprintf(msg, sizeof(msg), "Can't load from save state slot #%d", Settings.CurrentSaveStateSlot);
+	else
+		snprintf(msg, sizeof(msg), "Loaded save state slot #%d", Settings.CurrentSaveStateSlot);
 
 	set_text_message(msg, 60);
 }

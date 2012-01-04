@@ -701,8 +701,6 @@ extern int nBurnPitch;
 
 void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flags)
 {
-	uint8_t *texture;
-
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, tex);
 

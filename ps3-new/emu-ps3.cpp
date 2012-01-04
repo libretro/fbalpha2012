@@ -23,6 +23,7 @@
 
 // Driver Init module
 #include "burner.h"
+#include "burnint.h"
 #include "tracklst.h"
 #ifndef NO_IPS
 //#include "patch.h"
@@ -43,6 +44,7 @@ static uint8_t * g_fba_frame;
 static int16_t * g_audio_buf;
 static uint32_t audio_samples;
 
+extern struct BurnDriver* pDriver[];
 int nAudSegLen;
 
 struct cell_audio_params params;
@@ -1382,7 +1384,7 @@ int VidRecalcPal()
 
 static void emulator_start(void)
 {
-	uint32_t width_tmp, height_tmp;
+	uint32_t width_tmp, height_tmp, current_selected_game_index;
 
 	ps3graphics_set_orientation(Settings.Orientation);
 
@@ -1414,13 +1416,17 @@ static void emulator_start(void)
 
 	pBurnSoundOut = g_audio_buf;
 
+	current_selected_game_index = nBurnDrvSelect;
+
+	printf("nBurnDrvSelect: %d\n", current_selected_game_index);
+
 	do{
 
 		if(Settings.Throttled)
 			audio_driver->write(audio_handle, pBurnSoundOut, audio_samples);
 
 		nCurrentFrame++;
-		BurnDrvFrame();
+		pDriver[current_selected_game_index]->Frame();
 		InputMake();
 		ps3graphics_draw(width, height, pBurnDraw, drv_flags);
 		if(frame_count < special_action_msg_expired)

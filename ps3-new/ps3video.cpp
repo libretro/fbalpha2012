@@ -701,7 +701,6 @@ extern int nBurnPitch;
 
 void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flags)
 {
-	int linesize;
 	uint8_t *texture;
 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -709,17 +708,12 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 
 	frame_count++;
 
-	if(drv_flags & BDF_ORIENTATION_VERTICAL)
-		linesize = height << 1;
-	else
-		linesize = width << 1;
-
 	if (fbo_enable)
 	{
 
 		glBindFramebufferOES(GL_FRAMEBUFFER_OES, fbo);
-		glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, height * nBurnPitch, screen);
-		glTextureReferenceSCE(GL_TEXTURE_2D, 1, width, height, 0, SCREEN_RENDER_PIXEL_FORMAT, linesize, 0);
+		glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, width * nBurnPitch, screen);
+		glTextureReferenceSCE(GL_TEXTURE_2D, 1, width, height, 0, SCREEN_RENDER_PIXEL_FORMAT, nBurnPitch, 0);
 
 		fbo_vp_width = width * fbo_scale;
 		fbo_vp_height = height * fbo_scale;
@@ -797,8 +791,8 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 	}
 	else
 	{
-		glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, height * nBurnPitch, screen);
-		glTextureReferenceSCE(GL_TEXTURE_2D, 1, width, height, 0, SCREEN_RENDER_PIXEL_FORMAT, linesize, 0);
+		glBufferSubData(GL_TEXTURE_REFERENCE_BUFFER_SCE, 0, width * nBurnPitch, screen);
+		glTextureReferenceSCE(GL_TEXTURE_2D, 1, width, height, 0, SCREEN_RENDER_PIXEL_FORMAT, nBurnPitch, 0);
 
 		cgGLSetStateMatrixParameter(_cgpModelViewProj[0], CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
 		cgGLSetParameter2f(_cgpVideoSize[0], width, height);

@@ -1382,6 +1382,8 @@ int VidRecalcPal()
 
 static void emulator_start(void)
 {
+	uint32_t width_tmp, height_tmp;
+
 	ps3graphics_set_orientation(Settings.Orientation);
 
 	BurnDrvGetVisibleSize(&width, &height);
@@ -1397,9 +1399,15 @@ static void emulator_start(void)
 
 	drv_flags = BurnDrvGetFlags();
 	if (drv_flags & BDF_ORIENTATION_VERTICAL)
-		nBurnPitch = height << 1;
+	{
+		nBurnPitch = height * sizeof(uint16_t);
+		width_tmp = height;
+		height_tmp = width;
+		width = width_tmp;
+		height = height_tmp;
+	}
 	else
-		nBurnPitch = width << 1;
+		nBurnPitch = width * sizeof(uint16_t);
 
 	//memset(g_fba_frame, 0, 1024*1024);
 	//g_fba_frame += nBurnPitch;

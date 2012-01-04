@@ -216,10 +216,44 @@ static int __cdecl DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	return nRet;
 }
 
-//forward declarations
-// simply reinit screen, added by regret
+static unsigned int HighCol15(int r, int g, int b, int  /* i */)
+{
+	unsigned int t = 0;
+	t |= (r << 7) & 0x7c00;
+	t |= (g << 2) & 0x03e0;
+	t |= (b >> 3) & 0x001f;
+	return t;
+}
+
 void simpleReinitScrn(void)
 {
+	uint32_t width_tmp, height_tmp;
+
+	ps3graphics_set_orientation(Settings.Orientation);
+
+	BurnDrvGetVisibleSize(&width, &height);
+
+	if (ps3graphics_calculate_aspect_ratio_before_game_load())
+		ps3graphics_set_aspect_ratio(Settings.PS3KeepAspect, width, height, 1);
+
+	VidRecalcPal();
+
+	drv_flags = BurnDrvGetFlags();
+	if (drv_flags & BDF_ORIENTATION_VERTICAL)
+	{
+		nBurnPitch = height * sizeof(uint16_t);
+		width_tmp = height;
+		height_tmp = width;
+		width = width_tmp;
+		height = height_tmp;
+	}
+	else
+		nBurnPitch = width * sizeof(uint16_t);
+
+	pBurnDraw = (uint8_t*)g_fba_frame;
+	nBurnBpp = 2;
+	BurnHighCol = HighCol15;
+	nBurnLayer = 0xff;
 }
 
 //#define NEED_MEDIA_REINIT
@@ -1368,14 +1402,6 @@ int emulator_audio_init(int samplerate)
 	return 0;
 }
 
-static unsigned int HighCol15(int r, int g, int b, int  /* i */)
-{
-	unsigned int t = 0;
-	t |= (r << 7) & 0x7c00;
-	t |= (g << 2) & 0x03e0;
-	t |= (b >> 3) & 0x001f;
-	return t;
-}
 
 int VidRecalcPal()
 {
@@ -1384,33 +1410,13 @@ int VidRecalcPal()
 
 static void emulator_start(void)
 {
-	uint32_t width_tmp, height_tmp, current_selected_game_index;
+	uint32_t current_selected_game_index;
 
-	ps3graphics_set_orientation(Settings.Orientation);
-
-	BurnDrvGetVisibleSize(&width, &height);
-
-	if (ps3graphics_calculate_aspect_ratio_before_game_load())
-		ps3graphics_set_aspect_ratio(Settings.PS3KeepAspect, width, height, 1);
+	simpleReinitScrn();
 
 	if(Settings.Throttled)
 		audio_driver->unpause(audio_handle);
 	
-	VidRecalcPal();
-
-
-	drv_flags = BurnDrvGetFlags();
-	if (drv_flags & BDF_ORIENTATION_VERTICAL)
-	{
-		nBurnPitch = height * sizeof(uint16_t);
-		width_tmp = height;
-		height_tmp = width;
-		width = width_tmp;
-		height = height_tmp;
-	}
-	else
-		nBurnPitch = width * sizeof(uint16_t);
-
 	//memset(g_fba_frame, 0, 1024*1024);
 	//g_fba_frame += nBurnPitch;
 
@@ -2160,10 +2166,6 @@ int main(int argc, char **argv)
 
 	BurnExtLoadOneRom = archiveLoadOneFile;
 	g_fba_frame = (uint8_t*)realloc(g_fba_frame, 1024*1024);
-	pBurnDraw = (uint8_t*)g_fba_frame;
-	nBurnBpp = 2;
-	BurnHighCol = HighCol15;
-	nBurnLayer = 0xff;
 
 	/* char * szName; 
 	   BurnDrvGetArchiveName(&szName, 0);

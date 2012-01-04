@@ -79,12 +79,21 @@ enum
    ASPECT_RATIO_CUSTOM
 };
 
+enum
+{
+	NORMAL,
+	VERTICAL,
+	FLIPPED,
+	FLIPPED_ROTATED
+};
+
 enum menu_type
 {
 	TEXTURE_BACKDROP,
 	TEXTURE_MENU
 };
 
+#define MAX_ORIENTATION FLIPPED_ROTATED
 #define LAST_ASPECT_RATIO ASPECT_RATIO_CUSTOM
 
 /* constructor/destructor */
@@ -141,6 +150,10 @@ void ps3graphics_set_smooth(uint32_t smooth, unsigned index);
 void ps3graphics_set_triple_buffering(uint32_t triple_buffering);
 void ps3graphics_set_vsync(uint32_t vsync);
 uint32_t ps3graphics_set_text_message_speed(uint32_t value);
+
+/* orientation */
+void ps3graphics_set_orientation(unsigned orientation);
+unsigned ps3graphics_get_orientation_name (void);
 
 /* libdbgfont */
 void ps3graphics_init_dbgfont (void);

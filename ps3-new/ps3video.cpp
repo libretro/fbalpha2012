@@ -53,6 +53,7 @@ static GLuint tex;
 static GLuint tex_menu;
 static GLuint tex_backdrop;
 static GLuint vbo[2];
+static unsigned m_orientation;
 
 static GLfloat m_left, m_right, m_bottom, m_top, m_zNear, m_zFar;
 static char curFragmentShaderPath[3][MAX_PATH_LENGTH];
@@ -77,8 +78,36 @@ static CGparameter _cgp_vertex_timer[3];
 PSGLdevice* psgl_device;
 static PSGLcontext* psgl_context;
 static CellVideoOutState m_stored_video_state;
-//snes_tracker_t *tracker; // State tracker
-//static std::vector<lookup_texture> lut_textures; // Lookup textures in use.
+/*snes_tracker_t *tracker;*/
+/*static std::vector<lookup_texture> lut_textures;*/
+
+static GLfloat texcoords[] = {
+	0, 1,		/* top-left*/
+	0, 0,		/* bottom-left*/
+	1, 0,		/* bottom-right*/
+	1, 1		/* top-right*/
+};
+
+static GLfloat texcoords_vertical[] = {
+	1, 1,		/* top-right*/
+	0, 1,		/* top-left*/
+	0, 0,		/* bottom-left*/
+	1, 0		/* bottom-right*/
+};
+
+static GLfloat texcoords_flipped[] = {
+	1, 0,		/* bottom-right*/
+	1, 1,		/* top-right*/
+	0, 1,		/* top-left*/
+	0, 0		/* bottom-left*/
+};
+
+static GLfloat texcoords_flipped_rotated[] = {
+	0, 0,		/* bottom-left*/
+	1, 0,		/* bottom-right*/
+	1, 1,		/* top-right*/
+	0, 1		/* top-left*/
+};
 
 /******************************************************************************* 
 	Calculate macros
@@ -183,7 +212,7 @@ static void init_fbo_memb()
 		_fragmentProgram[i] = NULL;
 	}
 
-	//tracker = NULL;
+	/*tracker = NULL;*/
 }
 
 void ps3graphics_psgl_init_device(uint32_t resolutionId, uint16_t pal60Hz, uint16_t tripleBuffering)
@@ -229,7 +258,7 @@ void ps3graphics_psgl_init_device(uint32_t resolutionId, uint16_t pal60Hz, uint1
 
 	if (resolutionId)
 	{
-		//Resolution setting
+		/*Resolution setting*/
 		CellVideoOutResolution resolution;
 		cellVideoOutGetResolution(resolutionId, &resolution);
 		
@@ -241,7 +270,7 @@ void ps3graphics_psgl_init_device(uint32_t resolutionId, uint16_t pal60Hz, uint1
 
 	psgl_device = psglCreateDeviceExtended(&params);
 
-	// Get the dimensions of the screen in question, and do stuff with it :)
+	/* Get the dimensions of the screen in question, and do stuff with it :)*/
 	psglGetDeviceDimensions(psgl_device, &gl_width, &gl_height); 
 
 	if (m_viewport_width == 0)
@@ -249,7 +278,7 @@ void ps3graphics_psgl_init_device(uint32_t resolutionId, uint16_t pal60Hz, uint1
 	if (m_viewport_height == 0)
 		m_viewport_height = gl_height;
 
-	// Create a context and bind it to the current display.
+	/* Create a context and bind it to the current display.*/
 	psgl_context = psglCreateContext();
 
 	psglMakeCurrent(psgl_context, psgl_device);
@@ -286,6 +315,50 @@ static int32_t ps3graphics_init_cg()
 	return CELL_OK;
 }
 
+unsigned ps3graphics_get_orientation_name (void)
+{
+	return m_orientation;
+}
+
+void ps3graphics_set_orientation(unsigned orientation)
+{
+	GLfloat vertex_buf[128];
+	GLfloat vertexes[] = {
+		0, 0,
+		0, 0,
+		1, 0,
+		1, 1,
+		0, 1,
+		0, 0,
+	};
+
+	memcpy(vertex_buf, vertexes, 12 * sizeof(GLfloat));
+	m_orientation = orientation;
+
+	switch(orientation)
+	{
+		case NORMAL:
+			memcpy(vertex_buf + 32, texcoords, 8 * sizeof(GLfloat));
+			memcpy(vertex_buf + 32 * 3, texcoords, 8 * sizeof(GLfloat));
+			break;
+		case VERTICAL:
+			memcpy(vertex_buf + 32, texcoords_vertical, 8 * sizeof(GLfloat));
+			memcpy(vertex_buf + 32 * 3, texcoords_vertical, 8 * sizeof(GLfloat));
+			break;
+		case FLIPPED:
+			memcpy(vertex_buf + 32, texcoords_flipped, 8 * sizeof(GLfloat));
+			memcpy(vertex_buf + 32 * 3, texcoords_flipped, 8 * sizeof(GLfloat));
+			break;
+		case FLIPPED_ROTATED:
+			memcpy(vertex_buf + 32, texcoords_flipped_rotated, 8 * sizeof(GLfloat));
+			memcpy(vertex_buf + 32 * 3, texcoords_flipped_rotated, 8 * sizeof(GLfloat));
+			break;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buf), vertex_buf, GL_STREAM_DRAW);
+}
+
 static int32_t ps3graphics_psgl_init(bool scaleEnable, uint32_t scaleFactor)
 {
 	glDisable(GL_DEPTH_TEST);
@@ -319,31 +392,13 @@ static int32_t ps3graphics_psgl_init(bool scaleEnable, uint32_t scaleFactor)
 	ps3graphics_set_smooth(m_smooth, 0);
 	ps3graphics_set_smooth(m_smooth2, 1);
 
-	// PSGL doesn't clear the screen on startup, so let's do that here.
+	/* PSGL doesn't clear the screen on startup, so let's do that here.*/
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	psglSwap();
 
-	// Use some initial values for the screen quad.
-	GLfloat vertexes[] = {
-	0, 0, 0,
-	0, 1, 0,
-	1, 1, 0,
-	1, 0, 0,
-	0, 1,
-	0, 0,
-	1, 0,
-	1, 1,
-	};
-
-	GLfloat vertex_buf[128];
-	__builtin_memcpy(vertex_buf, vertexes, 12 * sizeof(GLfloat));
-	__builtin_memcpy(vertex_buf + 32, vertexes + 12, 8 * sizeof(GLfloat));
-	__builtin_memcpy(vertex_buf + 32 * 3, vertexes + 12, 8 * sizeof(GLfloat));
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buf), vertex_buf, GL_STREAM_DRAW);
+	ps3graphics_set_orientation(NORMAL);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -362,7 +417,7 @@ static void ps3graphics_get_all_available_resolutions()
 		CELL_VIDEO_OUT_RESOLUTION_1280x1080, CELL_VIDEO_OUT_RESOLUTION_1440x1080,
 		CELL_VIDEO_OUT_RESOLUTION_1600x1080, CELL_VIDEO_OUT_RESOLUTION_1080};
 
-	// Provide future expandability of the videomode array
+	/* Provide future expandability of the videomode array*/
 	uint16_t num_videomodes = sizeof(videomode)/sizeof(uint32_t);
 
 	uint32_t resolution_count = 0;
@@ -387,8 +442,8 @@ static void ps3graphics_get_all_available_resolutions()
 		}
 	}
 
-	// In case we didn't specify a resolution - make the last resolution
-	// that was added to the list (the highest resolution) the default resolution
+	/* In case we didn't specify a resolution - make the last resolution*/
+	/* that was added to the list (the highest resolution) the default resolution*/
 	if (m_currentResolutionPos > num_videomodes || defaultresolution)
 		m_currentResolutionPos = m_supportedResolutions_count-1;
 }
@@ -463,10 +518,10 @@ static void ps3graphics_psgl_deinit_device()
 	psglDestroyContext(psgl_context);
 	psglDestroyDevice(psgl_device);
 	#if(CELL_SDK_VERSION > 0x340000)
-	//FIXME: It will crash here for 1.92 - termination of the PSGL library - works fine for 3.41
+	/*FIXME: It will crash here for 1.92 - termination of the PSGL library - works fine for 3.41*/
 	psglExit();
 	#else
-	//for 1.92
+	/*for 1.92*/
 	gl_width = 0;
 	gl_height = 0;
 	psgl_context = NULL;
@@ -616,7 +671,7 @@ static void dprintf_noswap(float x, float y, float scale, const char* fmt, ...)
 	Draw functions
 ********************************************************************************/
 
-// Set state uniforms.
+/* Set state uniforms.*/
 #if 0
 static void ps3graphics_update_state_uniforms(unsigned index)
 {
@@ -690,7 +745,7 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 
 		texture_backdrop(0);
 
-		//ps3graphics_update_state_uniforms(0);
+		/*ps3graphics_update_state_uniforms(0);*/
 
 		glDrawArrays(GL_QUADS, 0, 4);
 
@@ -717,7 +772,7 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 
 		texture_backdrop(1);
 
-		//ps3graphics_update_state_uniforms(1);
+		/*ps3graphics_update_state_uniforms(1);*/
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		GLfloat fbo_tex_coord[8] = {0};
@@ -760,7 +815,7 @@ void ps3graphics_draw(int width, int height, uint8_t * screen, uint32_t drv_flag
 
 		texture_backdrop(0);
 
-		//ps3graphics_update_state_uniforms(0);
+		/*ps3graphics_update_state_uniforms(0);*/
 
 		glDrawArrays(GL_QUADS, 0, 4); 
 		write_fps();
@@ -800,7 +855,7 @@ void ps3graphics_draw_menu(int width, int height)
 	cgGLSetTextureParameter(param, tex_menu);
 	cgGLEnableTextureParameter(param);
 
-	// Set up texture coord array (TEXCOORD1).
+	/* Set up texture coord array (TEXCOORD1).*/
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, (void*)(128 * 3));
@@ -808,7 +863,7 @@ void ps3graphics_draw_menu(int width, int height)
 
 	glDrawArrays(GL_QUADS, 0, 4); 
 
-	// EnableTextureParameter might overwrite bind in TEXUNIT0.
+	/* EnableTextureParameter might overwrite bind in TEXUNIT0.*/
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	cgGLBindProgram(_vertexProgram[0]);
@@ -990,13 +1045,13 @@ static CGprogram load_shader_from_source(CGcontext cgtx, CGprofile target, const
 
 int32_t ps3graphics_load_fragment_shader(const char * shaderPath, unsigned index)
 {
-	// store the current path
+	/* store the current path*/
 	strcpy(curFragmentShaderPath[index], shaderPath);
 
 	_vertexProgram[index] = load_shader_from_source(_cgContext, CG_PROFILE_SCE_VP_RSX, shaderPath, "main_vertex");
 	_fragmentProgram[index] = load_shader_from_source(_cgContext, CG_PROFILE_SCE_FP_RSX, shaderPath, "main_fragment");
 
-	// bind and enable the vertex and fragment programs
+	/* bind and enable the vertex and fragment programs*/
 	cgGLEnableProfile(CG_PROFILE_SCE_VP_RSX);
 	cgGLEnableProfile(CG_PROFILE_SCE_FP_RSX);
 	cgGLBindProgram(_vertexProgram[index]);
@@ -1064,7 +1119,7 @@ uint32_t ps3graphics_get_viewport_height(void)
 
 int ps3graphics_get_aspect_ratio_int(bool orientation)
 {
-	//orientation true is aspect_y, false is aspect_x
+	/*orientation true is aspect_y, false is aspect_x*/
 	if(orientation)
 		return aspect_y;
 	else
@@ -1306,7 +1361,6 @@ static int img_free(void *ptr, void * a)
 
 static bool ps3graphics_load_jpeg(const char * path, uint32_t * width, uint32_t * height, uint8_t *data)
 {
-	// More Holy shit
 	CtrlMallocArg              MallocArg;
 	CtrlFreeArg                FreeArg;
 	CellJpgDecMainHandle       mHandle = NULL;
@@ -1408,7 +1462,6 @@ error:
 
 static bool ps3graphics_load_png(const char * path, unsigned * width, unsigned * height, uint8_t *data)
 {
-	// Holy shit, Sony!
 	CtrlMallocArg              MallocArg;
 	CtrlFreeArg                FreeArg;
 	CellPngDecMainHandle       mHandle = NULL;
@@ -1503,13 +1556,13 @@ static void ps3graphics_setup_texture(GLuint tex, unsigned width, unsigned heigh
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_ARGB_SCE, width, height, 0,
 			GL_ARGB_SCE, GL_UNSIGNED_INT_8_8_8_8, decode_buffer);
 
-	// Set up texture coord array (TEXCOORD1).
+	/* Set up texture coord array (TEXCOORD1).*/
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, (void*)(128 * 3));
 	glClientActiveTexture(GL_TEXTURE0);
 
-	// Go back to old stuff.
+	/* Go back to old stuff.*/
 	glBindTexture(GL_TEXTURE_2D, tex);
 }
 

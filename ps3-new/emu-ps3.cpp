@@ -798,6 +798,7 @@ int InputPrepare(void)
 	keybinds[0x428b		][1] = 3;
 	keybinds[0x428c		][0] = CTRL_R3_MASK;
 	keybinds[0x428c		][1] = 3;
+
 	return ret;
 }
 
@@ -1410,7 +1411,9 @@ int VidRecalcPal()
 
 static void emulator_start(void)
 {
-	uint32_t current_selected_game_index;
+	uint32_t controls, current_selected_game_index;
+
+	controls = InputPrepare();
 
 	simpleReinitScrn();
 
@@ -1433,7 +1436,10 @@ static void emulator_start(void)
 
 		nCurrentFrame++;
 		pDriver[current_selected_game_index]->Frame();
-		InputMake();
+		if(!controls)
+			InputMake();
+		else
+			InputMake_Analog();
 		ps3graphics_draw(width, height, pBurnDraw, drv_flags);
 		if(frame_count < special_action_msg_expired)
 		{
@@ -2189,7 +2195,6 @@ int main(int argc, char **argv)
 				MenuMainLoop();
 				break;
 			case MODE_EMULATION:
-				InputPrepare();
 				if(ingame_menu_item != 0)
 					is_ingame_menu_running = 1;
 

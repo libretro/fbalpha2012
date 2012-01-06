@@ -49,8 +49,8 @@ MACHINE* Machine = &machine;
 
 typedef struct
 {
-	INT16 wave;		/* wavetable number */
-	INT16 FN;		/* f-number */
+	short wave;		/* wavetable number */
+	short FN;		/* f-number */
 	INT8 OCT;		/* octave */
 	INT8 PRVB;		/* pseudo-reverb */
 	INT8 LD;		/* level direct */
@@ -246,11 +246,11 @@ static void ymf278b_envelope_next(YMF278BSlot *slot, float clock_ratio)
 	}
 }
 
-void ymf278b_pcm_update(int num, INT16 **outputs, int length)
+void ymf278b_pcm_update(int num, short **outputs, int length)
 {
 	int i, j;
 	YMF278BSlot *slot = NULL;
-	INT16 sample = 0;
+	short sample = 0;
 	const UINT8 *rombase;
 	INT32 mix[44100*2];
 	INT32 *mixp;

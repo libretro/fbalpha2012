@@ -505,7 +505,6 @@ void YMZ280BWriteRegister(unsigned char nValue)
 #endif
 						}
 
-#if 0
 						if (nInterpolation < 3) {
 							YMZ280BChannelInfo[nWriteChannel].nFractionalPosition = 0;
 							YMZ280BChannelInfo[nWriteChannel].nPreviousOutput = YMZ280BChannelInfo[nWriteChannel].nSample;
@@ -515,19 +514,6 @@ void YMZ280BWriteRegister(unsigned char nValue)
 							YMZ280BChannelData[nWriteChannel][0] = YMZ280BChannelInfo[nWriteChannel].nSample;
 							YMZ280BChannelInfo[nWriteChannel].nBufPos = 1;
 						}
-#else
-						YMZ280BChannelInfo[nWriteChannel].nSample = 0;
-
-						if (nInterpolation < 3) {
-							YMZ280BChannelInfo[nWriteChannel].nFractionalPosition = 0;
-							YMZ280BChannelInfo[nWriteChannel].nPreviousOutput = 0;
-							YMZ280BChannelInfo[nWriteChannel].nOutput = 0;
-						} else {
-							YMZ280BChannelInfo[nWriteChannel].nFractionalPosition = 0x03000000;
-							YMZ280BChannelData[nWriteChannel][3] = 0;
-							YMZ280BChannelInfo[nWriteChannel].nBufPos = 1;
-						}
-#endif
 					}
 				}
 

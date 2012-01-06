@@ -239,7 +239,7 @@ void simpleReinitScrn(void)
 	VidRecalcPal();
 
 	drv_flags = BurnDrvGetFlags();
-	if (drv_flags & BDF_ORIENTATION_VERTICAL)
+	if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
 	{
 		nBurnPitch = height * sizeof(uint16_t);
 		width_tmp = height;
@@ -1424,6 +1424,7 @@ static void emulator_start(void)
 	//g_fba_frame += nBurnPitch;
 
 	pBurnSoundOut = g_audio_buf;
+	nBurnSoundRate = 48000;
 
 	current_selected_game_index = nBurnDrvSelect;
 

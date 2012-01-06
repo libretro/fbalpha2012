@@ -45,6 +45,7 @@ INCDIRS                 =       -I$(PS3_DIR)/fba		\
                                 -I$(SRC_DIR)/burner            \
                                 -I$(SRC_DIR)/generated \
                                 -I$(SRC_DIR)/cpu/m6809 \
+				-I$(FEX_DIR)/fex \
                                         -I$(SRC_DIR)/cpu/m6805 \
                                         -I$(SRC_DIR)/cpu/m6800 \
                                         -I$(SRC_DIR)/cpu/nec           \

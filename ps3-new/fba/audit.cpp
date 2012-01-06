@@ -12,6 +12,16 @@
 #include "burner.h"
 #include "seldef.h"
 
+#include <string>
+#include <set>
+#include <map>
+#include <vector>
+
+using std::string;
+using std::set;
+using std::map;
+using std::vector;
+
 static char* auditState = NULL;
 
 // variable definitions

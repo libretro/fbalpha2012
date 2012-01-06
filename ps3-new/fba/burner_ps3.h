@@ -18,25 +18,6 @@
 #include <math.h>
 #include <sysutil/sysutil_sysparam.h>
  
-// ---------------------------------------------------------------------------
-// use STL
-#include <string>
-#include <list>
-#include <set>
-#include <map>
-#include <string>
-#include <vector>
-#include <hash_map>
-#include <fstream>
-
-using std::string;
-using std::list;
-using std::set;
-using std::map;
-using std::vector;
-using std::multimap;
-using std::ofstream;
- 
 extern int custom_aspect_ratio_mode;
 
 #define DEFAULT_INP_FILENAME "/dev_hdd0/game/FBAN00000/USRDIR/config/presets/default.ini"
@@ -67,7 +48,6 @@ extern int custom_aspect_ratio_mode;
 #define GAMEOVERS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/gameovers/"
 #define BOSSES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/bosses/"
 #define ICONS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/icons/"
-typedef std::basic_string<char> tstring;
 
 #ifndef MAX_PATH
  #define MAX_PATH (260)

@@ -6,7 +6,7 @@
 
 #include "blargg_common.h"
 #include "Data_Reader.h"
-#include "zlib.h"
+#include <zlib.h>
 
 class Zlib_Inflater {
 public:

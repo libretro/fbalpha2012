@@ -45,7 +45,7 @@ void Zlib_Inflater::end()
 	buf.clear();
 
 	static z_stream const empty = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	memcpy( &zbuf, &empty, sizeof zbuf );
+	memcpy( &zbuf, &empty, sizeof(zbuf));
 }
 
 Zlib_Inflater::Zlib_Inflater()

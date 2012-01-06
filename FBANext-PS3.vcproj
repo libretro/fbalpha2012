@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-g"
-				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;USE_BPP_RENDERING=32;NO_AUTOFIRE;NO_MACROS"
+				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan;utils\File_Extractor\fex;utils\File_Extractor\7z_C;utils\zlib;&quot;ps3-new\&quot;;&quot;ps3-new\conf&quot;;&quot;ps3-new\fba&quot;"
+				PreprocessorDefinitions="SN_TARGET_PS3;_DEBUG;__GCC__;__CELL_ASSERT__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;USE_BPP_RENDERING=16;NO_AUTOFIRE;NO_MACROS;NO_PNG;NO_LAYER_ENABLE_TOGGLE;NO_SPRITE_ENABLE_TOGGLE"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>
@@ -57,7 +57,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="-fno-exceptions"
-				AdditionalDependencies="&quot;$(SN_PS3_PATH)\ppu\lib\sn\libsn.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGL.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGLU.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGLcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libm.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libusbd_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libfs_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libdbgfont.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libresc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_cmd.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_sys_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysmodule_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libaudio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpthread.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libperf.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\librtc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libcgc.a&quot;"
+				AdditionalDependencies="&quot;$(SN_PS3_PATH)\ppu\lib\sn\libsn.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGL.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGLU.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\debug\libPSGLcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libm.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libusbd_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libfs_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_game_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_screenshot_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpngdec_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libjpgdec_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libdbgfont.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libresc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_cmd.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_sys_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysmodule_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libaudio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpthread.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libperf.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\librtc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libnet_stub.a&quot;"
 				OutputFile="$(OutDir)/$(ProjectName).ppu.elf"
 				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=""
@@ -111,8 +111,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-O3 -ffast-math -funroll-loops"
-				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan"
-				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;USE_BPP_RENDERING=32;&quot;INLINE=static __inline&quot;;NO_AUTOFIRE;NO_MACROS"
+				AdditionalIncludeDirectories="&quot;$(SN_PS3_PATH)\ppu\include\sn&quot;;&quot;$(SCE_PS3_ROOT)\target\ppu\include&quot;;&quot;$(SCE_PS3_ROOT)\target\common\include&quot;;src\burn;src\burner;src\generated;src\cpu\m6809;src\cpu\m6805;src\cpu\m6800;src\cpu\nec;src\cpu\hd6309;src\cpu\arm7;src\cpu\i8039;src\cpu\konami;src\cpu\m68k;src\cpu\m6502;src\cpu\z80;src\cpu\sh2;src\cpu\s2650;src\burner\PS3;src\interface;src\interface\PS3;src\libs\zlib;src\burn\capcom;src\burn\cave;src\burn\neogeo;src\burn\psikyo;src\burn\sega;src\burn\toaplan;utils\File_Extractor\7z_C;utils\File_Extractor\fex;utils\zlib;&quot;ps3-new\&quot;;&quot;ps3-new\conf&quot;;&quot;ps3-new\fba&quot;"
+				PreprocessorDefinitions="SN_TARGET_PS3;NDEBUG;__GCC__;NO_ASMCORE;NO_COMBO;NO_CHEATSEARCH;WORDS_BIGENDIAN;USE_SPEEDHACKS;PSGL;USE_BPP_RENDERING=16;&quot;INLINE=static __inline&quot;;NO_AUTOFIRE;NO_MACROS;NO_PNG;NO_LAYER_ENABLE_TOGGLE;NO_SPRITE_ENABLE_TOGGLE"
 				ProgramDataBaseFileName=""
 				CompileAs="0"
 			/>
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="-fno-exceptions"
-				AdditionalDependencies="&quot;$(SCE_PS3_ROOT)\target\ppu\lib\libm.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGL.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGLU.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGLcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libm.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\librtc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libfs_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libdbgfont.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libresc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysmodule_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_cmd.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_sys_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libaudio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpthread.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libcgc.a&quot;"
+				AdditionalDependencies="&quot;$(SCE_PS3_ROOT)\target\ppu\lib\libm.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGL.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGLU.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\PSGL\RSX\opt\libPSGLcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\librtc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libfs_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_game_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysutil_screenshot_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpngdec_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libjpgdec_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libdbgfont.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libresc_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libsysmodule_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_cmd.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libgcm_sys_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libaudio_stub.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libpthread.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libcgc.a&quot; &quot;$(SCE_PS3_ROOT)\target\ppu\lib\libnet_stub.a&quot;"
 				OutputFile="$(OutDir)/$(ProjectName).ppu.elf"
 				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=""
@@ -1817,109 +1817,57 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="libs"
+					Name="utils"
 					>
 					<Filter
 						Name="File_Extractor"
 						>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zAlloc.c"
+							RelativePath=".\utils\File_Extractor\fex\Binary_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zBuf.c"
+							RelativePath=".\utils\File_Extractor\fex\blargg_common.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zCrc.c"
+							RelativePath=".\utils\File_Extractor\fex\blargg_errors.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zDecode.c"
+							RelativePath=".\utils\File_Extractor\fex\Data_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zExtract.c"
+							RelativePath=".\utils\File_Extractor\fex\fex.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zHeader.c"
+							RelativePath=".\utils\File_Extractor\fex\File_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zIn.c"
+							RelativePath=".\utils\File_Extractor\fex\Gzip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zItem.c"
+							RelativePath=".\utils\File_Extractor\fex\Gzip_Reader.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\7zStream.c"
+							RelativePath=".\utils\File_Extractor\fex\Rar_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\Bcj2.c"
+							RelativePath=".\utils\File_Extractor\fex\Zip7_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Binary_Extractor.cpp"
+							RelativePath=".\utils\File_Extractor\fex\Zip_Extractor.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\src\libs\File_Extractor\fex\blargg_common.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\blargg_errors.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\Bra86.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Data_Reader.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\fex.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\File_Extractor.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Extractor.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Gzip_Reader.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\Lzma2Dec.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\7z_C\LzmaDec.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Rar_Extractor.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Zip7_Extractor.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Zip_Extractor.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\libs\File_Extractor\fex\Zlib_Inflater.cpp"
+							RelativePath=".\utils\File_Extractor\fex\Zlib_Inflater.cpp"
 							>
 						</File>
 					</Filter>
@@ -1927,44 +1875,468 @@
 						Name="zlib"
 						>
 						<File
-							RelativePath=".\src\libs\zlib\adler32.c"
+							RelativePath=".\utils\zlib\adler32.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\compress.c"
+							RelativePath=".\utils\zlib\compress.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\crc32.c"
+							RelativePath=".\utils\zlib\crc32.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\deflate.c"
+							RelativePath=".\utils\zlib\deflate.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\inffast.c"
+							RelativePath=".\utils\zlib\inffast.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\inflate.c"
+							RelativePath=".\utils\zlib\inflate.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\inftrees.c"
+							RelativePath=".\utils\zlib\inftrees.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\trees.c"
+							RelativePath=".\utils\zlib\trees.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\uncompr.c"
+							RelativePath=".\utils\zlib\uncompr.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\libs\zlib\zutil.c"
+							RelativePath=".\utils\zlib\zutil.c"
 							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="7z_C"
+						>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zAlloc.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zBuf.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zCrc.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zDecode.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zExtract.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zHeader.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zIn.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zItem.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\7zStream.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\Bcj2.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\Bra86.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\Lzma2Dec.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\utils\File_Extractor\7z_C\LzmaDec.c"
+							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 				</Filter>
@@ -2007,28 +2379,240 @@
 						RelativePath=".\src\burner\statec.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="cellemuframework"
+					>
+					<File
+						RelativePath=".\ps3-new\emu-ps3.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ps3-new\menu.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ps3-new\ps3input.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ps3-new\ps3video.cpp"
+						>
+					</File>
 					<Filter
-						Name="PS3"
+						Name="cellframework2"
+						>
+						<Filter
+							Name="audio"
+							>
+							<File
+								RelativePath=".\ps3-new\cellframework2\audio\audioport.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\ps3-new\cellframework2\audio\buffer.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\ps3-new\cellframework2\audio\librsound.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\ps3-new\cellframework2\audio\resampler.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\ps3-new\cellframework2\audio\rsound.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+						<Filter
+							Name="fileio"
+							>
+							<File
+								RelativePath=".\ps3-new\cellframework2\fileio\file_browser.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+						<Filter
+							Name="input"
+							>
+							<File
+								RelativePath=".\ps3-new\cellframework2\input\mouse_input.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath=".\ps3-new\cellframework2\input\pad_input.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+						<Filter
+							Name="utility"
+							>
+							<File
+								RelativePath=".\ps3-new\cellframework2\utility\oskutil.c"
+								>
+								<FileConfiguration
+									Name="PS3 Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="PS3 Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="1"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="conf"
 						>
 						<File
-							RelativePath=".\src\burner\PS3\audit.cpp"
+							RelativePath=".\ps3-new\conf\config_file.c"
 							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\audit_ps3.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\barchive.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\config.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\config_file.c"
-							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="PS3 Release|Win32"
 								>
@@ -2039,81 +2623,45 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath=".\src\burner\PS3\drv.cpp"
+							RelativePath=".\ps3-new\conf\snes_state.c"
 							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\inpd.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\main.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\media.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\menu.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\misc_win32.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\miscpaths.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\src\burner\PS3\stated.cpp"
-							>
+							<FileConfiguration
+								Name="PS3 Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="PS3 Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
-				</Filter>
-				<Filter
-					Name="interface"
-					>
-					<File
-						RelativePath=".\src\interface\PS3\audio_driver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\interface\PS3\input_driver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\src\interface\PS3\vid_interface_ps3.cpp"
-						>
-					</File>
 					<Filter
-						Name="PS3"
+						Name="fba"
 						>
 						<File
-							RelativePath=".\src\interface\PS3\vid_psgl.cpp"
+							RelativePath=".\ps3-new\fba\audit.cpp"
 							>
 						</File>
-						<Filter
-							Name="cellframework2"
+						<File
+							RelativePath=".\ps3-new\fba\audit_ps3.cpp"
 							>
-							<Filter
-								Name="audio"
-								>
-								<File
-									RelativePath=".\src\interface\PS3\cellframework2\audio\audioport.c"
-									>
-								</File>
-							</Filter>
-							<Filter
-								Name="input"
-								>
-								<File
-									RelativePath=".\src\interface\PS3\cellframework2\input\pad_input.c"
-									>
-								</File>
-							</Filter>
-						</Filter>
+						</File>
+						<File
+							RelativePath=".\ps3-new\fba\barchive.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ps3-new\fba\inpd.cpp"
+							>
+						</File>
 					</Filter>
 				</Filter>
 			</Filter>

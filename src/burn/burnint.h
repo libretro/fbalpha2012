@@ -28,48 +28,13 @@
 #if defined (_XBOX)
 #include <PPCINTRINSICS.h>
 #define swapWord(i) _byteswap_ushort(i) // swap intrinsics are faster on Xbox 360
-#elif defined (SN_TARGET_PS3)
-#ifdef __SNC__
-#include <ppu_intrinsics.h>
-#else
-#define __sthbrx(base, value) do {			\
-    typedef  struct {char a[2];} halfwordsize;		\
-    halfwordsize *ptrp = (halfwordsize*)(void*)(base);		\
-    __asm__ ("sthbrx %1,%y0"				\
-	   : "=Z" (*ptrp)				\
-	   : "r" (value));				\
-   } while (0)
-
-#define __stwbrx(base, value) do {		\
-    typedef  struct {char a[4];} wordsize;	\
-    wordsize *ptrp = (wordsize*)(void*)(base);		\
-    __asm__ ("stwbrx %1,%y0"			\
-	   : "=Z" (*ptrp)			\
-	   : "r" (value));			\
-   } while (0)
-#endif
-#define swapWord(i) _byteswap_ushort(i)
-static inline uint16_t _byteswap_ushort(uint16_t x)
-{
-        uint16_t t;
-	asm("sthbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
-        return t;
-}
-#else
-#define swapWord(i)((((i) & 0xff) <<  8) | (((i) & 0xff00) >> 8))
-#endif
-
-#if defined  (_XBOX)
 #define swapLong(i) _byteswap_ulong(i) // swap intrinsics are faster on Xbox 360
 #elif defined (SN_TARGET_PS3)
-#define swapLong(i) _byteswap_ulong(i)
-static inline uint32_t _byteswap_ulong(uint32_t x)
-{
-	uint32_t t;
-	asm("stwbrx     %1,%y0" : "=Z"(*&t) : "r"(x));
-	return t;
-}
+#include <ppu_intrinsics.h>
+#define swapWord(i) ({uint16_t t; __sthbrx(&t, i); t;})
+#define swapLong(i) ({uint32_t t; __stwbrx(&t, i); t;})
 #else
+#define swapWord(i)((((i) & 0xff) <<  8) | (((i) & 0xff00) >> 8))
 #define swapLong(i)		((((i) & 0xFF000000) >> 24) | \
 						(((i) & 0x00FF0000) >> 8)  | \
 						(((i) & 0x0000FF00) << 8)  | \

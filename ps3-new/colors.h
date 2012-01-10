@@ -1,10 +1,10 @@
 /******************************************************************************* 
- * colors.h - Genesis Plus GX PS3
+ * colors.h - FBA Next Slim PS3
  *
  *  Created on: Oct 10, 2010
 ********************************************************************************/
 
-// define some colours for dbgfont output (remember it uses ABGR colour format)
+/* define some colours for dbgfont output (remember it uses ABGR colour format)*/
 #define WHITE			0xffffffffu
 #define RED			0xff0000ffu
 #define GREEN			0xff00ff00u

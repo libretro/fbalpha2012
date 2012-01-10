@@ -40,36 +40,37 @@ INTERFACE_DIR		= $(SRC_DIR)/interface
 
 REVISION_NO = 487
 
-INCDIRS                 =       -I$(PS3_DIR)/fba		\
-				-I$(SRC_DIR)/burn              \
-                                -I$(SRC_DIR)/burner            \
+INCDIRS                 =       -I$(PS3_DIR)/fba \
+				-I$(SRC_DIR)/burn \
+                                -I$(SRC_DIR)/burner \
                                 -I$(SRC_DIR)/generated \
                                 -I$(SRC_DIR)/cpu/m6809 \
 				-I$(FEX_DIR)/fex \
-                                        -I$(SRC_DIR)/cpu/m6805 \
-                                        -I$(SRC_DIR)/cpu/m6800 \
-                                        -I$(SRC_DIR)/cpu/nec           \
-                                        -I$(SRC_DIR)/cpu/hd6309        \
-                                        -I$(SRC_DIR)/cpu/arm7  \
-                                        -I$(SRC_DIR)/cpu/i8039 \
-                                        -I$(SRC_DIR)/cpu/konami        \
-                                        -I$(SRC_DIR)/cpu/m68k  \
-                                        -I$(SRC_DIR)/cpu/m6502 \
-                                        -I$(SRC_DIR)/cpu/z80           \
-                                        -I$(SRC_DIR)/cpu/sh2           \
-                                        -I$(SRC_DIR)/cpu/s2650 \
-                                        -I$(PS3_DIR) \
-                                        -I$(PS3_DIR)/cellframework2     \
-                                        -I$(UTILS_DIR)/zlib  \
-                                        -I$(UTILS_DIR)/File_Extractor  \
-                                        -I$(SRC_DIR)/burn/capcom       \
-                                        -I$(SRC_DIR)/burn/cave \
-                                        -I$(SRC_DIR)/burn/neogeo       \
-                                        -I$(SRC_DIR)/burn/psikyo       \
-                                        -I$(SRC_DIR)/burn/sega \
-                                        -I$(SRC_DIR)/burn/toaplan \
+				-I$(SRC_DIR)/cpu/m6805 \
+				-I$(SRC_DIR)/cpu/m6800 \
+				-I$(SRC_DIR)/cpu/nec \
+				-I$(SRC_DIR)/cpu/hd6309 \
+				-I$(SRC_DIR)/cpu/arm7 \
+				-I$(SRC_DIR)/cpu/i8039 \
+				-I$(SRC_DIR)/cpu/konami \
+				-I$(SRC_DIR)/cpu/m68k \
+				-I$(SRC_DIR)/cpu/m6502 \
+				-I$(SRC_DIR)/cpu/z80 \
+				-I$(SRC_DIR)/cpu/sh2 \
+				-I$(SRC_DIR)/cpu/s2650 \
+				-I$(PS3_DIR) \
+				-I$(PS3_DIR)/cellframework2 \
+				-I$(UTILS_DIR)/zlib \
+				-I$(UTILS_DIR)/File_Extractor \
+				-I$(SRC_DIR)/burn/capcom \
+				-I$(SRC_DIR)/burn/cave \
+				-I$(SRC_DIR)/burn/neogeo \
+				-I$(SRC_DIR)/burn/psikyo \
+				-I$(SRC_DIR)/burn/sega \
+				-I$(SRC_DIR)/burn/toaplan
                                         
 DEFINES += -DSN_TARGET_PS3 -DNO_ASMCORE -DNO_COMBO -DNO_AUTOFIRE -DNO_CHEATSEARCH -DWORDS_BIGENDIAN -DUSE_SPEEDHACKS -DPSGL -DNO_PNG -DNO_CHEATS -DUSE_BPP_RENDERING=16 -DNO_SPRITE_ENABLE_TOGGLE -DNO_LAYER_ENABLE_TOGGLE -DNO_MACROS $(CELL_DEBUG_DEFINES)
+
 ifeq ($(CELL_BUILD_TOOLS),SNC)
 DEFINES                 +=  -Xbranchless=1 -Xfastmath=1 -Xassumecorrectsign=1 -Xassumecorrectalignment=1  -Xunroll=1 -Xunrollssa=30 -Xautovecreg=1
 else
@@ -83,7 +84,7 @@ PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
 				$(PS3_DIR)/cellframework2/audio/buffer.c \
 				$(PS3_DIR)/cellframework2/audio/rsound.c \
 				$(PS3_DIR)/cellframework2/audio/librsound.c \
-                            $(PS3_DIR)/cellframework2/input/pad_input.c \
+				$(PS3_DIR)/cellframework2/input/pad_input.c \
 			    $(PS3_DIR)/cellframework2/fileio/file_browser.c \
 			    $(PS3_DIR)/cellframework2/utility/oskutil.c \
 			    $(PS3_DIR)/ps3video.cpp \

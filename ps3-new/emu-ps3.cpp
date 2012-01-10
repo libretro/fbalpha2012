@@ -132,7 +132,7 @@ int ProgressUpdateBurner(char const * pszText)
 	sys_memory_get_user_memory_size(&mem_info);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	ps3graphics_draw_menu(1920, 1080);
+	ps3graphics_draw_menu();
 
 	cellDbgFontPrintf(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, "%s",  pszText);	 
 	cellDbgFontDraw();
@@ -147,7 +147,7 @@ int ProgressUpdateBurner(char const * pszText)
 void UpdateConsole(const char * text)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	ps3graphics_draw_menu(1920, 1080);
+	ps3graphics_draw_menu();
 
 	cellDbgFontPuts(0.38f, 0.5f, 0.75f, 0xFFFFFFFF, text);
 	cellDbgFontDraw();
@@ -158,7 +158,7 @@ void UpdateConsole(const char * text)
 void UpdateConsoleXY(const char * text, float X, float Y)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	ps3graphics_draw_menu(1920, 1080);
+	ps3graphics_draw_menu();
 
 	cellDbgFontPuts(X, Y, 0.75f, 0xFFFFFFFF, text);
 	cellDbgFontDraw();
@@ -1057,7 +1057,7 @@ void emulator_save_settings(uint64_t filetosave)
 				{
 					/* OSK Util gets updated */
 					glClear(GL_COLOR_BUFFER_BIT);
-					ps3graphics_draw_menu(1920, 1080);
+					ps3graphics_draw_menu();
 					_jsPlatformSwapBuffers(psgl_device);
 					cell_console_poll();
 					cellSysutilCheckCallback();
@@ -1081,7 +1081,7 @@ void emulator_save_settings(uint64_t filetosave)
 					{
 						/* OSK Util gets updated */
 						glClear(GL_COLOR_BUFFER_BIT);
-						ps3graphics_draw_menu(1920, 1080);
+						ps3graphics_draw_menu();
 						_jsPlatformSwapBuffers(psgl_device);
 						cell_console_poll();
 						cellSysutilCheckCallback();
@@ -1131,7 +1131,7 @@ void emulator_save_settings(uint64_t filetosave)
 				{
 					/* OSK Util gets updated */
 					glClear(GL_COLOR_BUFFER_BIT);
-					ps3graphics_draw_menu(1920, 1080);
+					ps3graphics_draw_menu();
 					_jsPlatformSwapBuffers(psgl_device);
 					cell_console_poll();
 					cellSysutilCheckCallback();
@@ -1155,7 +1155,7 @@ void emulator_save_settings(uint64_t filetosave)
 					{
 						/* OSK Util gets updated */
 						glClear(GL_COLOR_BUFFER_BIT);
-						ps3graphics_draw_menu(1920, 1080);
+						ps3graphics_draw_menu();
 						_jsPlatformSwapBuffers(psgl_device);
 						cell_console_poll();
 						cellSysutilCheckCallback();
@@ -2167,8 +2167,6 @@ int main(int argc, char **argv)
 	cellSysutilEnableBgmPlayback();
 #endif
 
-	MenuInit();
-
 	BurnLibInit();
 
 	BurnExtLoadOneRom = archiveLoadOneFile;
@@ -2186,6 +2184,7 @@ int main(int argc, char **argv)
 	 */
 
 	emulator_audio_init(samples);
+	menu_init();
 
 	do
 	{
@@ -2193,7 +2192,7 @@ int main(int argc, char **argv)
 		{
 			case MODE_MENU:
 				ps3graphics_set_orientation(NORMAL);
-				MenuMainLoop();
+				menu_loop();
 				break;
 			case MODE_EMULATION:
 				if(ingame_menu_item != 0)

@@ -74,6 +74,5 @@
 	snprintf (output, sizeof(output), "%s/%s%s", basedir.c_str(), fname_without_path_extension, extension); \
 }
 
-
 #define FILEBROWSER_DELAY         100000
 #endif

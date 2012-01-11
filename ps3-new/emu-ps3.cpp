@@ -813,9 +813,7 @@ static void InputMake(void)
 	uint64_t pausemenu_condition = ArcadeJoystick ? (CTRL_SELECT(new_state_p1) && CTRL_START(new_state_p1)) : (CTRL_L2(new_state_p1) && CTRL_R2(new_state_p1) && CTRL_R1(new_state_p1));
 
 	if (pausemenu_condition)
-	{
 		ingame_menu_enable(true);
-	}
 
 	for (uint32_t i = 0; i < controller_binds_count; i++, pgi++)
 	{
@@ -823,37 +821,19 @@ static void InputMake(void)
 		{
 			case GIT_CONSTANT: // Constant value
 				pgi->Input.nVal = pgi->Input.Constant;
-				*(pgi->Input.pVal) = pgi->Input.nVal;
 				break;
 			case GIT_SWITCH:
 				// Digital input
 				uint64_t mask = keybinds[pgi->Input.Switch][0];
 				int player = keybinds[pgi->Input.Switch][1];
 				uint64_t state = cell_pad_input_poll_device(player);
+				bool s = mask & state;
 
-				uint64_t s = mask & state;
-
-				if (pgi->nType & BIT_GROUP_ANALOG)
-				{
-					// Set analog controls to full
-					if (s)
-						pgi->Input.nVal = 0xFFFF;
-					else
-						pgi->Input.nVal = 0x0001;
-					*((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
-				}
-				else
-				{
-					// Binary controls
-					if (s)
-						pgi->Input.nVal = 1;
-					else
-						pgi->Input.nVal = 0;
-					*(pgi->Input.pVal) = pgi->Input.nVal;
-				}
-
+				// Binary controls
+				pgi->Input.nVal = s;
 				break;
 		}
+		*(pgi->Input.pVal) = pgi->Input.nVal;
 	}
 }
 

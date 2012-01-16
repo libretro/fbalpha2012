@@ -62,11 +62,7 @@ enum {
 
 float Emulator_GetFontSize(void);
 bool Emulator_IsROMLoaded(void);
-void Emulator_StopROMRunning(void);
-void Emulator_StartROMRunning(uint32_t set_is_running);
 void Emulator_SetExtraCartPaths(void);
-bool Emulator_ROMRunning(void);
-void Emulator_RequestLoadROM(const char * rom);
 void emulator_toggle_sound(uint64_t soundmode);
 void emulator_implementation_set_texture(const char * fname);
 void emulator_save_settings(uint64_t filetosave);
@@ -75,7 +71,9 @@ void emulator_set_controls(const char * config_file, int mapping_enum, const cha
 void emulator_implementation_set_shader_preset(const char * fname);
 void set_text_message(const char * message, uint32_t speed);
 int emulator_audio_init(int samplerate);
+void emulator_implementation_set_gameaware(const char * fname);
 
+extern char current_rom[MAX_PATH_LENGTH];
 extern char contentInfoPath[MAX_PATH_LENGTH];
 extern char usrDirPath[MAX_PATH_LENGTH];
 extern char DEFAULT_PRESET_FILE[MAX_PATH_LENGTH];
@@ -93,5 +91,7 @@ extern oskutil_params oskutil_handle;
 extern struct cell_audio_params params;
 extern int mode_switch;
 extern uint32_t special_action_msg_expired;
+extern uint32_t emulator_initialized;
+extern uint32_t is_running;
 
 #endif /* FBA_NEXT_SLIM_H_ */

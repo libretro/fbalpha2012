@@ -77,12 +77,11 @@ struct SSettings Settings;
 
 int mode_switch = MODE_MENU;				/* mode the main loop is in*/
 
-static uint32_t is_running;				/* is the ROM currently running in the emulator?*/
+uint32_t is_running;					/* is the ROM currently running in the emulator?*/
 static bool is_ingame_menu_running;			/* is the ingame menu currently running?*/
 static bool return_to_MM = false;			/* launch multiMAN on exit if ROM is passed*/
-static uint32_t emulator_initialized = 0;		/* is the emulator loaded?*/
-bool need_load_rom = true;				/* need to load the current rom*/
-char * current_rom = NULL;				/* filename of the current rom being emulated*/
+uint32_t emulator_initialized = 0;			/* is the emulator loaded?*/
+char current_rom[MAX_PATH_LENGTH];			/* filename of the current rom being emulated*/
 bool dialog_is_running;
 char special_action_msg[256];				
 uint32_t special_action_msg_expired;			/* time at which the message no longer needs to be overlaid onscreen*/
@@ -260,6 +259,8 @@ void simpleReinitScrn(void)
 // no need to reinit media when init a driver, modified by regret
 int BurnerDrvInit(int nDrvNum, bool bRestore)
 {
+	emulator_initialized = 1;
+
 	BurnerDrvExit(); // Make sure exited
 
 	nBurnDrvSelect = nDrvNum; // Set the driver number
@@ -586,7 +587,7 @@ static void special_actions(int specialbuttonmap)
 	{
 		if(specialbuttonmap & BTN_EXITTOMENU)
 		{
-			Emulator_StopROMRunning();
+			is_running = 0;
 			mode_switch = MODE_MENU;
 			set_text_message("", 15);
 		}
@@ -635,15 +636,6 @@ static void special_actions(int specialbuttonmap)
 		}
 	}
 }
-
-#define special_button_mappings(controllerno, specialbuttonmap, condition) \
-	if(condition) \
-	{ \
-		if(specialbuttonmap <= BTN_LASTGAMEBUTTON) \
-			input.pad[controllerno] |=  specialbuttonmap; \
-		else \
-			special_action_to_execute = specialbuttonmap; \
-	}
 
 //returns 1 if input has analog controls, else returns 0;
 int InputPrepare(void)
@@ -963,7 +955,7 @@ float Emulator_GetFontSize(void)
 
 bool Emulator_IsROMLoaded(void)
 {
-	return current_rom != NULL && need_load_rom == false;
+	return current_rom != NULL;
 }
 
 void emulator_save_settings(uint64_t filetosave)
@@ -1271,32 +1263,6 @@ int directLoadGame(const char * name)
 	return RomOK;
 }
 
-void Emulator_RequestLoadROM(const char* rom)
-{
-	if (current_rom == NULL || strcmp(rom, current_rom) != 0)
-	{
-		if (current_rom != NULL)
-			free(current_rom);
-
-		current_rom = strdup(rom);
-		directLoadGame(current_rom);
-	}
-
-	need_load_rom = false;
-}
-
-void Emulator_StopROMRunning(void)
-{
-	is_running = 0;
-}
-
-void Emulator_StartROMRunning(uint32_t set_is_running)
-{
-	if(set_is_running)
-		is_running = 1;
-	mode_switch = MODE_EMULATION;
-}
-
 static void sysutil_exit_callback (uint64_t status, uint64_t param, void *userdata)
 {
 	(void) param;
@@ -1308,7 +1274,7 @@ static void sysutil_exit_callback (uint64_t status, uint64_t param, void *userda
 			mode_switch = MODE_EXIT;
 			menu_is_running = 0;
 			is_ingame_menu_running = 0;
-			Emulator_StopROMRunning();
+			is_running = 0;
 			return_to_MM = false;
 			break;
 		case CELL_SYSUTIL_DRAWING_BEGIN:
@@ -1546,7 +1512,7 @@ static void ingame_menu(void)
 				is_running = 1;
 				ingame_menu_item = 0;
 				is_ingame_menu_running = 0;
-				Emulator_StartROMRunning(0);
+				mode_switch = MODE_EMULATION;
 			}
 			switch(ingame_menu_item)
 			{
@@ -1557,7 +1523,7 @@ static void ingame_menu(void)
 						is_running = 1;
 						ingame_menu_item = 0;
 						is_ingame_menu_running = 0;
-						Emulator_StartROMRunning(0);
+						mode_switch = MODE_EMULATION;
 					}
 
 					if(CTRL_LEFT(button_was_pressed) || CTRL_LSTICK_LEFT(button_was_pressed))
@@ -1582,7 +1548,7 @@ static void ingame_menu(void)
 						is_running = 1;
 						ingame_menu_item = 0;
 						is_ingame_menu_running = 0;
-						Emulator_StartROMRunning(0);
+						mode_switch = MODE_EMULATION;
 					}
 
 					if(CTRL_LEFT(button_was_pressed) || CTRL_LSTICK_LEFT(button_was_pressed))
@@ -1688,7 +1654,7 @@ static void ingame_menu(void)
 						is_running = 0;
 						ingame_menu_item = MENU_ITEM_FRAME_ADVANCE;
 						is_ingame_menu_running = 0;
-						Emulator_StartROMRunning(0);
+						mode_switch = MODE_EMULATION;
 					}
 					ingame_menu_reset_entry_colors (ingame_menu_item);
 					strcpy(comment,"Press 'CROSS', 'L2' or 'R2' button to step one frame.\nNOTE: Pressing the button rapidly will advance the frame more slowly\nand prevent buttons from being input.");
@@ -1746,7 +1712,7 @@ static void ingame_menu(void)
 						is_running = 1;
 						ingame_menu_item = 0;
 						is_ingame_menu_running = 0;
-						Emulator_StartROMRunning(0);
+						mode_switch = MODE_EMULATION;
 					} 
 					ingame_menu_reset_entry_colors (ingame_menu_item);
 					strcpy(comment,"Press 'CROSS' to return back to the game.");
@@ -1757,7 +1723,7 @@ static void ingame_menu(void)
 						is_running = 1;
 						ingame_menu_item = 0;
 						is_ingame_menu_running = 0;
-						Emulator_StartROMRunning(0);
+						mode_switch = MODE_EMULATION;
 					} 
 					ingame_menu_reset_entry_colors (ingame_menu_item);
 					strcpy(comment,"Press 'CROSS' to reset the game.");
@@ -2188,8 +2154,10 @@ int main(int argc, char **argv)
 				break;
 #ifdef MULTIMAN_SUPPORT
 			case MODE_MULTIMAN_STARTUP:
-				Emulator_StartROMRunning(1);
-				Emulator_RequestLoadROM(MULTIMAN_GAME_TO_BOOT);
+				is_running = 1;
+				mode_switch = MODE_EMULATION;
+				snprintf(current_rom, sizeof(current_rom), MULTIMAN_GAME_TO_BOOT);
+				directLoadGame(current_rom);
 				break;
 #endif
 			case MODE_EXIT:

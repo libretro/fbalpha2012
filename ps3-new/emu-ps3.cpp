@@ -34,7 +34,7 @@
 #define SAMPLERATE_44KHZ 44100
 #define SAMPLERATE_48KHZ 48010
 
-SYS_PROCESS_PARAM(1001, 0x10000);
+SYS_PROCESS_PARAM(1001, 0x80000);
 
 int		bDrvOkay = 0; // 1 if the Driver has been inited okay, and it's okay to use the BurnDrv functions
 static bool	bSaveRAM = false;

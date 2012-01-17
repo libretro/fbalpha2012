@@ -43,6 +43,7 @@ static bool	bSaveRAM = false;
 static uint8_t * g_fba_frame;
 static int16_t * g_audio_buf;
 static uint32_t audio_samples;
+uint32_t g_do_reset;
 
 extern struct BurnDriver* pDriver[];
 int nAudSegLen;
@@ -819,7 +820,7 @@ static void InputMake(void)
 				uint64_t mask = keybinds[pgi->Input.Switch][0];
 				int player = keybinds[pgi->Input.Switch][1];
 				uint64_t state = cell_pad_input_poll_device(player);
-				bool s = mask & state;
+				bool s = mask & state | g_do_reset;
 
 				// Binary controls
 				pgi->Input.nVal = s;
@@ -827,6 +828,8 @@ static void InputMake(void)
 		}
 		*(pgi->Input.pVal) = pgi->Input.nVal;
 	}
+
+	g_do_reset = 0;
 }
 
 static void InputMake_Analog(void)
@@ -861,8 +864,8 @@ static void InputMake_Analog(void)
 			int player_b = keybinds[pgi->Input.Slider.SliderAxis[1]][1];
 			uint64_t state_b = cell_pad_input_poll_device(player_b);
 
-			uint32_t s = mask_a & state_a;
-			uint32_t s2 = mask_b & state_b;
+			uint32_t s = mask_a & state_a | g_do_reset;
+			uint32_t s2 = mask_b & state_b | g_do_reset;
 			// Get states of the two keys
 			if (s)
 				nAdd -= 0x100;
@@ -946,6 +949,8 @@ static void InputMake_Analog(void)
 				}
 		}
 	}
+
+	g_do_reset = 0;
 }
 
 float Emulator_GetFontSize(void)
@@ -1720,6 +1725,7 @@ static void ingame_menu(void)
 				case MENU_ITEM_RESET:
 					if(CTRL_CROSS(button_was_pressed))
 					{
+						g_do_reset = 1;
 						is_running = 1;
 						ingame_menu_item = 0;
 						is_ingame_menu_running = 0;

@@ -33,6 +33,8 @@ filebrowser_t tmpBrowser;			/* tmp file browser->for everything else*/
 uint32_t set_shader = 0;
 static uint32_t currently_selected_controller_menu = 0;
 
+extern uint32_t g_do_reset;
+
 #include "menu/menu-entries.h"
 
 static menu menu_filebrowser = {
@@ -1132,6 +1134,7 @@ static void select_rom(void)
 			}
 			else
 			{
+				g_do_reset = 1;
 			}
 
 			menu_is_running = 0;

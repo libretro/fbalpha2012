@@ -153,7 +153,7 @@ int BurnTransferInit();
 // Plotting pixels
 
 #if USE_BPP_RENDERING == 16
-#define PutPix(pPix, c) *((uint16_t*)(pPix)) = (uint16_t)(c);
+#define PutPix(pPix, c) *((uint16_t*)pPix) = (uint16_t)(c);
 #else
 static inline void PutPix(uint8_t* pPix, uint32_t c)
 {

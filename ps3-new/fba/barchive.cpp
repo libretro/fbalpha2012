@@ -305,29 +305,19 @@ int BArchiveOpen(bool bootApp)
 
 		bFound = false;
 
-		for (int d = 0; d < DIRS_MAX; d++)
-		{
-			if (!_tcsicmp(szAppRomPaths[d], ""))
-				continue; // skip empty path
+		// check the archived rom file, modified by regret
+		sprintf(szFullName, "%s%hs", szAppRomPaths, szName);
 
-			// check the archived rom file, modified by regret
-			sprintf(szFullName, "%s%hs", szAppRomPaths[d], szName);
+		checkvalue = archiveCheck(szFullName,  0  );
 
-			checkvalue = archiveCheck(szFullName,  0  );
-			if (checkvalue == ARC_NONE)
-				continue;
+		bFound = true;
 
-			bFound = true;
+		szBArchiveName[z] = (char*)malloc(MAX_PATH * sizeof(char));
 
-			szBArchiveName[z] = (char*)malloc(MAX_PATH * sizeof(char));
-			if (!szBArchiveName[z])
-				continue;
-
-			strcpy(szBArchiveName[z], szFullName);
-			if (!bootApp)
-				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_FOUND), szName, szBArchiveName[z]);
-			z++;
-		}
+		strcpy(szBArchiveName[z], szFullName);
+		if (!bootApp)
+			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_FOUND), szName, szBArchiveName[z]);
+		z++;
 
 		if (!bootApp && !bFound)
 			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NOTFOUND), szName);

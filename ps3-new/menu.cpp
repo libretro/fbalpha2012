@@ -1130,6 +1130,7 @@ static void select_rom(void)
 			if (strcmp(rom_path_temp, current_rom) != 0)
 			{
 				snprintf(current_rom, sizeof(current_rom), "%s/%s", FILEBROWSER_GET_CURRENT_DIRECTORY_NAME(browser), FILEBROWSER_GET_CURRENT_FILENAME(browser));
+				snprintf(szAppRomPaths, sizeof(szAppRomPaths), "%s/", FILEBROWSER_GET_CURRENT_DIRECTORY_NAME(browser));
 				directLoadGame(current_rom);
 			}
 			else

@@ -94,7 +94,7 @@ static uint64_t keybinds[1024][2] = {0};
 
 static int width, height;
 
-char szAppRomPaths[DIRS_MAX][MAX_PATH] = { { ROMS_DIR }};
+char szAppRomPaths[MAX_PATH];
 
 static void emulator_load_current_save_state_slot(void)
 {
@@ -256,8 +256,6 @@ void simpleReinitScrn(void)
 	nBurnLayer = 0xff;
 }
 
-//#define NEED_MEDIA_REINIT
-// no need to reinit media when init a driver, modified by regret
 int BurnerDrvInit(int nDrvNum, bool bRestore)
 {
 	emulator_initialized = 1;
@@ -1017,7 +1015,6 @@ void emulator_save_settings(uint64_t filetosave)
 			config_set_string(currentconfig, "GenesisPlus::GameGenieROMPath", Settings.GameGenieROMPath);
 			config_set_string(currentconfig, "GenesisPlus::SKROMPath", Settings.SKROMPath);
 			config_set_string(currentconfig, "GenesisPlus::SKupmemROMPath", Settings.SKUpmemROMPath);
-			config_set_string(currentconfig, "rompath", szAppRomPaths[0]);
 
 			config_file_write(currentconfig, filepath);
 			emulator_set_controls(filepath, WRITE_CONTROLS, "Default");
@@ -1230,9 +1227,6 @@ static void emulator_init_settings(void)
 	char tmp_str[256];
 	if (config_get_char_array(currentconfig,"PS3General::GameAwareShaderPath", tmp_str, sizeof(tmp_str)))
 		config_get_char_array(currentconfig, "PS3General::GameAwareShaderPath", Settings.GameAwareShaderPath, sizeof(Settings.GameAwareShaderPath));
-
-	/* emulator-specific settings */
-	init_setting_char("rompath", szAppRomPaths[0], ROMS_DIR);
 
 	if(config_file_newly_created)
 		emulator_set_controls(SYS_CONFIG_FILE_, SET_ALL_CONTROLS_TO_DEFAULT, "Default");
@@ -1932,7 +1926,7 @@ static void get_path_settings(bool multiman_support)
 		snprintf(SHADERS_DIR_PATH, sizeof(SHADERS_DIR_PATH), "%s/shaders", usrDirPath);
 		snprintf(DEFAULT_SHADER_FILE, sizeof(DEFAULT_SHADER_FILE), "%s/shaders/stock.cg", usrDirPath);
 		snprintf(DEFAULT_MENU_SHADER_FILE_, sizeof(DEFAULT_MENU_SHADER_FILE_), "%s/shaders/Borders/Menu/border-only.cg", usrDirPath);
-		snprintf(SYS_CONFIG_FILE_, sizeof(SYS_CONFIG_FILE_), "%s/genesisplus.conf", usrDirPath);
+		snprintf(SYS_CONFIG_FILE_, sizeof(SYS_CONFIG_FILE_), "%s/fbanext-slim.cfg", usrDirPath);
 		snprintf(CONFIGURATION_FILE, sizeof(CONFIGURATION_FILE), "%s/config.bin", usrDirPath);
 		snprintf(BIOS_FILE, sizeof(BIOS_FILE), "%s/bios.bin", usrDirPath);
 	}

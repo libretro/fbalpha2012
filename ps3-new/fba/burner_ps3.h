@@ -27,43 +27,12 @@ extern int custom_aspect_ratio_mode;
 #define DEFAULT_MENU_SHADER_FILE "/dev_hdd0/game/FBAN00000/USRDIR/shaders/Borders/Menu/border-only.cg"
 #define GAME_INPUT_DIR "/dev_hdd0/game/FBAN00000/USRDIR/config/games/"
 
-#define SHADER_DIRECTORY "/dev_hdd0/game/FBAN00000/USRDIR/shaders/"
-#define DEFAULT_SHADER "/dev_hdd0/game/FBAN00000/USRDIR/shaders/stock.cg"
-#define SYS_CONFIG_FILE "/dev_hdd0/game/FBAN00000/USRDIR/fbanext-ps3.cfg"
 #define DAT_FILE "/dev_hdd0/game/FBAN00000/USRDIR/clrmame.dat"
-#define MULTIMAN_SELF "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF"
-#define PREVIEWS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/previews/"
 #define CHEATS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/cheats/"
-#define ROMS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/roms/"
-#define SAVESTATES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/savestates/"
-//redundant
-#define SCREENSHOTS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/screenshots/"
-#define RECORDINGS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/recordings/"
-#define SKINS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/skins/"
-#define SCORES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/scores/"
-#define SELECTS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/selects/"
-#define IPS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/ips/"
-#define TITLES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/titles/"
-#define FLYERS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/flyers/"
-#define GAMEOVERS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/gameovers/"
-#define BOSSES_DIR "/dev_hdd0/game/FBAN00000/USRDIR/bosses/"
-#define ICONS_DIR "/dev_hdd0/game/FBAN00000/USRDIR/icons/"
 
 #ifndef MAX_PATH
  #define MAX_PATH (260)
 #endif
-
-// media.cpp
-
-#define InputInit() bInputOkay = true;
-#define InputExit() bInputOkay = false;
-
-#define mediaExit() \
-	nBurnSoundRate = 0; \
-	pBurnSoundOut = NULL; \
-	audio_exit(); \
-	VidExit(); \
-	InputExit();
 
 // ---------------------------------------------------------------------------
 // from burn
@@ -224,7 +193,7 @@ extern char szMiscPaths[PATH_SUM][MAX_PATH];
 const char * getMiscPath(unsigned int dirType);
 const char * getMiscArchiveName(unsigned int dirType);
 
-extern char szAppRomPaths[DIRS_MAX][MAX_PATH];
+extern char szAppRomPaths[MAX_PATH];
 
 // memcard.cpp
 extern int nMemoryCardStatus;	// & 1 = file selected, & 2 = inserted

@@ -1,4 +1,5 @@
 #include "libsnes.hpp"
+#include "archive.h"
 #include "burner.h"
 #include "inp_keys.h"
 #include "state.h"
@@ -106,6 +107,132 @@ int QuoteRead(char **, char **, char*) { return 1; }
 char *LabelCheck(char *, char *) { return 0; }
 const int nConfigMinVersion = 0x020921;
 //////////////
+
+static int find_rom_by_crc(unsigned crc, const ArcEntry *list, unsigned elems)
+{
+   for (unsigned i = 0; i < elems; i++)
+   {
+      if (list[i].nCrc == crc)
+         return i;
+   }
+
+   return -1;
+}
+
+static void free_archive_list(ArcEntry *list, unsigned count)
+{
+   if (list)
+   {
+      for (unsigned i = 0; i < count; i++)
+         free(list[i].szName);
+      free(list);
+   }
+}
+
+static int archive_load_rom(uint8_t *dest, int *wrote, int i)
+{
+   if (i < 0 || i >= g_rom_count)
+      return 1;
+
+   int archive = g_find_list[i].nArchive;
+
+   if (archiveOpen(g_find_list_path[archive].c_str()))
+      return 1;
+
+   BurnRomInfo ri = {0};
+   BurnDrvGetRomInfo(&ri, i);
+
+   if (archiveLoadFile(dest, ri.nLen, g_find_list[i].nPos, wrote))
+   {
+      archiveClose();
+      return 1;
+   }
+
+   archiveClose();
+   return 0;
+}
+
+// This code is very confusing. The original code is even more confusing :(
+static bool open_archive()
+{
+   // FBA wants some roms ... Figure out how many.
+   g_rom_count = 0;
+   while (!BurnDrvGetRomInfo(0, g_rom_count))
+      g_rom_count++;
+
+   g_find_list_path.clear();
+
+   // Check if we have said archives.
+   // Check if archives are found. These are relative to g_rom_dir.
+   char *rom_name;
+   for (unsigned index = 0; index < 32; index++)
+   {
+      if (BurnDrvGetArchiveName(&rom_name, index, false, 0))
+         continue;
+
+      char path[1024];
+      snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);
+
+      int ret = archiveCheck(path, 0);
+      if (ret == ARC_NONE)
+         continue;
+
+      g_find_list_path.push_back(path);
+   }
+
+   memset(g_find_list, 0, sizeof(g_find_list));
+
+   for (unsigned z = 0; z < g_find_list_path.size(); z++)
+   {
+      if (archiveOpen(g_find_list_path[z].c_str()))
+         continue;
+
+      ArcEntry *list;
+      int count;
+      archiveGetList(&list, &count);
+
+      // Try to map the ROMs FBA wants to ROMs we find inside our pretty archives ...
+      for (unsigned i = 0; i < g_rom_count; i++)
+      {
+         if (g_find_list[i].nState == STAT_OK)
+            continue;
+
+         BurnRomInfo ri = {0};
+         BurnDrvGetRomInfo(&ri, i);
+
+         int index = find_rom_by_crc(ri.nCrc, list, count);
+         if (index < 0)
+            continue;
+
+         // Yay, we found it!
+         g_find_list[i].nArchive = z;
+         g_find_list[i].nPos = index;
+         g_find_list[i].nState = STAT_OK;
+
+         // Sanity checking ...
+         //if (!(ri.nType & BRF_OPT) && ri.nCrc)
+         //   nTotalSize += ri.nLen;
+
+         if (list[index].nLen == ri.nLen)
+         {
+            if (ri.nCrc && list[index].nCrc != ri.nCrc)
+               g_find_list[i].nState = STAT_CRC;
+         }
+         else if (list[index].nLen < ri.nLen)
+            g_find_list[i].nState = STAT_SMALL;
+         else if (list[index].nLen > ri.nLen)
+            g_find_list[i].nState = STAT_LARGE;
+      }
+
+
+      free_archive_list(list, count);
+
+      archiveClose();
+   }
+
+   BurnExtLoadRom = archive_load_rom;
+   return true;
+}
 
 void snes_init()
 {
@@ -279,6 +406,9 @@ void snes_cheat_set(unsigned, bool, const char*) {}
 static bool fba_init(unsigned driver)
 {
    nBurnDrvActive = driver;
+
+   if (!open_archive())
+      return false;
 
    nFMInterpolation = 3;
    nInterpolation = 3;

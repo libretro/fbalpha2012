@@ -2,6 +2,7 @@
 #define ARCHIVE_H__
 
 #include <stdint.h>
+#include <stddef.h>
 
 struct ArcEntry { char* szName; unsigned int nLen; unsigned int nCrc; };
 

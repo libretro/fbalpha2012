@@ -1154,30 +1154,6 @@ void emulator_save_settings(uint64_t filetosave)
 	}
 }
 
-static void emulator_shutdown(void)
-{
-	emulator_save_settings(CONFIG_FILE);
-#ifdef MULTIMAN_SUPPORT
-	if(return_to_MM)
-	{
-		if(audio_handle)
-		{
-			audio_driver->free(audio_handle);
-			audio_handle = NULL; 
-		}
-		cellSysmoduleUnloadModule(CELL_SYSMODULE_AVCONF_EXT);
-		sys_spu_initialize(6, 0);
-		char multiMAN[512];
-		snprintf(multiMAN, sizeof(multiMAN), "%s", "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF");
-		sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);		
-		sys_process_exit(0);
-	}
-	else
-#endif
-		sys_process_exit(0);
-}
-
-
 static void emulator_init_settings(void)
 {
 	bool config_file_newly_created = false;
@@ -1352,53 +1328,6 @@ int emulator_audio_init(int samplerate)
 int VidRecalcPal()
 {
 	return BurnRecalcPal();
-}
-
-static void emulator_start(void)
-{
-	uint32_t controls, current_selected_game_index;
-
-	controls = InputPrepare();
-
-	simpleReinitScrn();
-
-	if(Settings.Throttled)
-		audio_driver->unpause(audio_handle);
-	
-	//memset(g_fba_frame, 0, 1024*1024);
-	//g_fba_frame += nBurnPitch;
-
-	pBurnSoundOut = g_audio_buf;
-	nBurnSoundRate = 48000;
-
-	current_selected_game_index = nBurnDrvSelect;
-
-	printf("nBurnDrvSelect: %d\n", current_selected_game_index);
-
-	do{
-
-		if(Settings.Throttled)
-			audio_driver->write(audio_handle, pBurnSoundOut, audio_samples);
-
-		nCurrentFrame++;
-		pDriver[current_selected_game_index]->Frame();
-		if(!controls)
-			InputMake();
-		else
-			InputMake_Analog();
-		ps3graphics_draw(width, height, pBurnDraw, drv_flags);
-		if(frame_count < special_action_msg_expired)
-		{
-			cellDbgFontPrintf (0.09f, 0.90f, 1.51f, BLUE,	special_action_msg);
-			cellDbgFontPrintf (0.09f, 0.90f, 1.50f, WHITE,	special_action_msg);
-			cellDbgFontDraw();
-		}
-		else
-			special_action_msg_expired = 0;
-		_jsPlatformSwapBuffers(psgl_device);
-		cell_console_poll();
-		cellSysutilCheckCallback();
-	}while(is_running);
 }
 
 static void cb_dialog_ok(int button_type, void *userdata)
@@ -2132,36 +2061,102 @@ int main(int argc, char **argv)
 	emulator_audio_init(samples);
 	menu_init();
 
-	do
+begin_loop:
+
+	if (mode_switch == MODE_EMULATION)
 	{
-		switch(mode_switch)
-		{
-			case MODE_MENU:
-				ps3graphics_set_orientation(NORMAL);
-				menu_loop();
-				break;
-			case MODE_EMULATION:
-				if(ingame_menu_item != 0)
-					is_ingame_menu_running = 1;
+		if(ingame_menu_item != 0)
+			is_ingame_menu_running = 1;
 
-				emulator_start();
+		/* EMULATOR START - BOF */
 
-				if(Settings.Throttled)
-					audio_driver->pause(audio_handle);
+		uint32_t controls, current_selected_game_index;
 
-				if(is_ingame_menu_running)
-					ingame_menu();
-				break;
+		controls = InputPrepare();
+
+		simpleReinitScrn();
+
+		if(Settings.Throttled)
+			audio_driver->unpause(audio_handle);
+
+		//memset(g_fba_frame, 0, 1024*1024);
+		//g_fba_frame += nBurnPitch;
+
+		pBurnSoundOut = g_audio_buf;
+		nBurnSoundRate = 48000;
+
+		current_selected_game_index = nBurnDrvSelect;
+
+		printf("nBurnDrvSelect: %d\n", current_selected_game_index);
+
+		do{
+
+			if(Settings.Throttled)
+				audio_driver->write(audio_handle, pBurnSoundOut, audio_samples);
+
+			nCurrentFrame++;
+			pDriver[current_selected_game_index]->Frame();
+			if(!controls)
+				InputMake();
+			else
+				InputMake_Analog();
+			ps3graphics_draw(width, height, pBurnDraw, drv_flags);
+			if(frame_count < special_action_msg_expired)
+			{
+				cellDbgFontPrintf (0.09f, 0.90f, 1.51f, BLUE,	special_action_msg);
+				cellDbgFontPrintf (0.09f, 0.90f, 1.50f, WHITE,	special_action_msg);
+				cellDbgFontDraw();
+			}
+			else
+				special_action_msg_expired = 0;
+			_jsPlatformSwapBuffers(psgl_device);
+			cell_console_poll();
+			cellSysutilCheckCallback();
+		}while(is_running);
+
+		/* EMULATOR START - EOF */
+
+		if(Settings.Throttled)
+			audio_driver->pause(audio_handle);
+
+		if(is_ingame_menu_running)
+			ingame_menu();
+	}
+	else if(mode_switch == MODE_MENU)
+	{
+		ps3graphics_set_orientation(NORMAL);
+		menu_loop();
+	}
 #ifdef MULTIMAN_SUPPORT
-			case MODE_MULTIMAN_STARTUP:
-				is_running = 1;
-				mode_switch = MODE_EMULATION;
-				snprintf(current_rom, sizeof(current_rom), MULTIMAN_GAME_TO_BOOT);
-				directLoadGame(current_rom);
-				break;
+	else if(mode_switch == MODE_MULTIMAN_STARTUP)
+	{
+		is_running = 1;
+	mode_switch = MODE_EMULATION;
+	snprintf(current_rom, sizeof(current_rom), MULTIMAN_GAME_TO_BOOT);
+	directLoadGame(current_rom);
+	}
 #endif
-			case MODE_EXIT:
-				emulator_shutdown();
+	else
+		goto begin_shutdown;
+
+	goto begin_loop;
+
+begin_shutdown:
+	emulator_save_settings(CONFIG_FILE);
+#ifdef MULTIMAN_SUPPORT
+	if(return_to_MM)
+	{
+		if(audio_handle)
+		{
+			audio_driver->free(audio_handle);
+			audio_handle = NULL; 
 		}
-	}while(1);
+		cellSysmoduleUnloadModule(CELL_SYSMODULE_AVCONF_EXT);
+		sys_spu_initialize(6, 0);
+		char multiMAN[512];
+		snprintf(multiMAN, sizeof(multiMAN), "%s", "/dev_hdd0/game/BLES80608/USRDIR/RELOAD.SELF");
+		sys_game_process_exitspawn2((char*) multiMAN, NULL, NULL, NULL, 0, 2048, SYS_PROCESS_PRIMARY_STACK_SIZE_64K);
+	}
+#endif
+	sys_process_exit(0);
 }

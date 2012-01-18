@@ -202,7 +202,10 @@ static bool open_archive()
 
          int index = find_rom_by_crc(ri.nCrc, list, count);
          if (index < 0)
-            continue;
+         {
+            archiveClose();
+            return false;
+         }
 
          // Yay, we found it!
          g_find_list[i].nArchive = z;

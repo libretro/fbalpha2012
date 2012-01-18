@@ -37,18 +37,12 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[1024];
 static unsigned g_rom_count;
 
-#define AUDIO_SEGMENT_LENGTH 534
+#define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];
 static uint16_t g_fba_frame_conv[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
-
-TCHAR szAppHiscorePath[MAX_PATH];
-TCHAR szAppSamplesPath[MAX_PATH];
-TCHAR szAppBurnVer[16];
-
-extern INT32 BurnGetZipName(char** pszNam, UINT32 i);
 
 // libsnes globals
 
@@ -73,6 +67,11 @@ static char g_basename[1024];
 static void poll_input();
 static bool init_input();
 
+// FBA stubs
+TCHAR szAppHiscorePath[MAX_PATH];
+TCHAR szAppSamplesPath[MAX_PATH];
+TCHAR szAppBurnVer[16];
+
 CDEmuStatusValue CDEmuStatus;
 
 const char* isowavLBAToMSF(const int LBA) { return ""; }
@@ -86,6 +85,27 @@ INT32 CDEmuLoadSector(INT32 LBA, char* pBuffer) { return 0; }
 UINT8* CDEmuReadTOC(INT32 track) { return 0; }
 UINT8* CDEmuReadQChannel() { return 0; }
 INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
+void InpDIPSWResetDIPs (void) {}
+int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
+void Reinitialise(void) {}
+
+// Non-idiomatic (OutString should be to the left to match strcpy())
+// Looks broken to not check nOutSize.
+char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int /*nOutSize*/)
+{
+	if (pszOutString)
+   {
+		strcpy(pszOutString, pszInString);
+		return pszOutString;
+	}
+
+	return (char*)pszInString;
+}
+
+int QuoteRead(char **, char **, char*) { return 1; }
+char *LabelCheck(char *, char *) { return 0; }
+const int nConfigMinVersion = 0x020921;
+//////////////
 
 void snes_init()
 {
@@ -108,24 +128,15 @@ static bool g_reset;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
-void InpDIPSWResetDIPs (void) {}
-int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0;}
-
-char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int /*nOutSize*/)
-{
-	if (pszOutString) {
-		strcpy(pszOutString, pszInString);
-		return pszOutString;
-	}
-
-	return (char*)pszInString;
-}
-
 // Copy stuff :o
 static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
 {
    for (unsigned y = 0; y < height; y++)
-      memcpy(g_fba_frame_conv + y * 1024, g_fba_frame + y * (pitch >> 1), width * sizeof(uint16_t));
+   {
+      memcpy(g_fba_frame_conv + y * 1024,
+            g_fba_frame + y * (pitch >> 1),
+            width * sizeof(uint16_t));
+   }
 
    video_cb(g_fba_frame_conv, width, height);
 }
@@ -133,7 +144,11 @@ static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
 static inline void blit_flipped(unsigned width, unsigned height, unsigned pitch)
 {
    for (unsigned y = 0; y < height; y++)
-      memcpy(g_fba_frame_conv + (height - 1 - y) * 1024, g_fba_frame + y * (pitch >> 1), width * sizeof(uint16_t));
+   {
+      memcpy(g_fba_frame_conv + (height - 1 - y) * 1024,
+            g_fba_frame + y * (pitch >> 1),
+            width * sizeof(uint16_t));
+   }
 
    video_cb(g_fba_frame_conv, width, height);
 }
@@ -165,7 +180,6 @@ static inline void blit_vertical_flipped(unsigned width, unsigned height, unsign
 
    video_cb(g_fba_frame_conv, width, height);
 }
-
 
 void snes_run()
 {
@@ -264,8 +278,6 @@ void snes_cheat_set(unsigned, bool, const char*) {}
 
 static bool fba_init(unsigned driver)
 {
-   char * romname;
-
    nBurnDrvActive = driver;
 
    nFMInterpolation = 3;
@@ -354,9 +366,9 @@ void snes_set_cartridge_basename(const char *basename)
          *split = '\0';
    }
 
-   fprintf(stderr, "PATH:     %s\n", g_rom_name);
-   fprintf(stderr, "DIR:      %s\n", g_rom_dir);
-   fprintf(stderr, "BASENAME: %s\n", g_basename);
+   //fprintf(stderr, "PATH:     %s\n", g_rom_name);
+   //fprintf(stderr, "DIR:      %s\n", g_rom_dir);
+   //fprintf(stderr, "BASENAME: %s\n", g_basename);
 }
 
 bool snes_load_cartridge_bsx_slotted(
@@ -396,10 +408,6 @@ unsigned snes_library_revision_minor() { return 3; }
 
 const char *snes_library_id() { return "FBANext/libsnes"; }
 void snes_set_controller_port_device(bool, unsigned) {}
-
-// Stub
-void Reinitialise(void)
-{}
 
 // Input stuff.
 
@@ -672,11 +680,11 @@ static void poll_input()
    for (int i = 0; i < controller_binds_count; i++, pgi++)
    {
       int nAdd = 0;
-      if ((pgi->nInput & GIT_GROUP_SLIDER) == 0) {                           // not a slider
+      if ((pgi->nInput & GIT_GROUP_SLIDER) == 0)                           // not a slider
          continue;
-      }
 
-      if (pgi->nInput == GIT_KEYSLIDER) {
+      if (pgi->nInput == GIT_KEYSLIDER)
+      {
          // Get states of the two keys
          if (input_cb(0, SNES_DEVICE_JOYPAD, 0,
                   keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]][0]))
@@ -693,7 +701,8 @@ static void poll_input()
       nAdd *= pgi->Input.Slider.nSliderSpeed;
       nAdd /= 0x100;
 
-      if (pgi->Input.Slider.nSliderCenter) {                                          // Attact to center
+      if (pgi->Input.Slider.nSliderCenter)
+      {                                          // Attact to center
          int v = pgi->Input.Slider.nSliderValue - 0x8000;
          v *= (pgi->Input.Slider.nSliderCenter - 1);
          v /= pgi->Input.Slider.nSliderCenter;
@@ -703,12 +712,10 @@ static void poll_input()
 
       pgi->Input.Slider.nSliderValue += nAdd;
       // Limit slider
-      if (pgi->Input.Slider.nSliderValue < 0x0100) {
+      if (pgi->Input.Slider.nSliderValue < 0x0100)
          pgi->Input.Slider.nSliderValue = 0x0100;
-      }
-      if (pgi->Input.Slider.nSliderValue > 0xFF00) {
+      if (pgi->Input.Slider.nSliderValue > 0xFF00)
          pgi->Input.Slider.nSliderValue = 0xFF00;
-      }
    }
 
    pgi = GameInp;
@@ -789,10 +796,4 @@ static void poll_input()
       }
    }
 }
-#undef _B
-
-// Stubs
-int QuoteRead(char **, char **, char*) { return 1; }
-char *LabelCheck(char *, char *) { return 0; }
-const int nConfigMinVersion = 0x020921;
 

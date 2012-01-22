@@ -1,5 +1,8 @@
 #include "sys16.h"
 
+#if defined (SN_TARGET_PS3)
+#include "ps3opts.h"
+#endif
 
 #if defined (_XBOX)
 #include <xtl.h>

@@ -5,6 +5,10 @@
 #include "neogeo.h"
 #include "bitswap.h"
 
+#ifdef SN_TARGET_PS3
+#include "ps3opts.h"
+#endif
+
 
 static struct BurnRomInfo emptyRomDesc[] = {
 	{ "", 0, 0, 0 },

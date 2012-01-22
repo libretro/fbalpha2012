@@ -2,6 +2,7 @@
 // CPS (palette)
 #ifdef SN_TARGET_PS3
 #include "highcol.h"
+#include "ps3opts.h"
 #endif
 
 static unsigned char* CpsPalSrc = NULL;			// Copy of current input palette

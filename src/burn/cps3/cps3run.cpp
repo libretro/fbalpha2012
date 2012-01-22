@@ -21,6 +21,7 @@ Port to FBA by OopsWare
 #include "sh2.h"
 #ifdef SN_TARGET_PS3
 #include "highcol.h"
+#include "ps3opts.h"
 #endif
 
 #define BE_GFX		1 // Big-endian?!

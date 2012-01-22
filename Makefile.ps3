@@ -80,7 +80,8 @@ endif
 
 PPU_CFLAGS              +=  $(DEFINES) $(INCDIRS)
 PPU_CXXFLAGS            +=  $(DEFINES) $(INCDIRS)
-PPU_SRCS                +=  $(PS3_DIR)/cellframework2/audio/audioport.c \
+PPU_SRCS                +=  $(PS3_DIR)/ps3memcpy.s \
+				$(PS3_DIR)/cellframework2/audio/audioport.c \
 				$(PS3_DIR)/cellframework2/audio/buffer.c \
 				$(PS3_DIR)/cellframework2/audio/rsound.c \
 				$(PS3_DIR)/cellframework2/audio/librsound.c \

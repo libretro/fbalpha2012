@@ -5,6 +5,10 @@
 #include "burn_ym2203.h"
 #include "msm6295.h"
 
+#ifdef SN_TARGET_PS3
+#include "ps3opts.h"
+#endif
+
 static int Footchmp;
 static int YesnoDip;
 static int MjnquestInput;

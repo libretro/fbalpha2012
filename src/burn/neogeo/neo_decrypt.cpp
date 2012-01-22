@@ -60,6 +60,9 @@ analyzed, quickly leading to the algorithm.
 #include "neogeo.h"
 #include "bitswap.h"
 
+#ifdef SN_TARGET_PS3
+#include "ps3opts.h"
+#endif
 
 const unsigned char *type0_t03;
 const unsigned char *type0_t12;

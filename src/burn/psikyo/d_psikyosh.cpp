@@ -16,6 +16,10 @@
 #include "sh2.h"
 #endif
 
+#ifdef SN_TARGET_PS3
+#include "ps3opts.h"
+#endif
+
 static unsigned char *AllMem;
 static unsigned char *MemEnd;
 static unsigned char *AllRam;

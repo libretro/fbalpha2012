@@ -1,6 +1,10 @@
 // CPS - Run
 #include "cps.h"
 
+#ifdef SN_TARGET_PS3
+#include "ps3opts.h"
+#endif
+
 // Inputs:
 unsigned char CpsReset = 0;
 unsigned char Cpi01A = 0, Cpi01C = 0, Cpi01E = 0;

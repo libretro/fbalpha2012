@@ -91,16 +91,16 @@ int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { re
 void Reinitialise(void) {}
 
 // Non-idiomatic (OutString should be to the left to match strcpy())
-// Looks broken to not check nOutSize.
+// Seems broken to not check nOutSize.
 char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int /*nOutSize*/)
 {
-	if (pszOutString)
+   if (pszOutString)
    {
-		strcpy(pszOutString, pszInString);
-		return pszOutString;
-	}
+      strcpy(pszOutString, pszInString);
+      return pszOutString;
+   }
 
-	return (char*)pszInString;
+   return (char*)pszInString;
 }
 
 int QuoteRead(char **, char **, char*) { return 1; }
@@ -434,16 +434,16 @@ static bool fba_init(unsigned driver)
 
 static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 {
-	unsigned int t = 0;
-	t |= (r << 7) & 0x7c00;
-	t |= (g << 2) & 0x03e0;
-	t |= (b >> 3) & 0x001f;
-	return t;
+   unsigned int t = 0;
+   t |= (r << 7) & 0x7c00;
+   t |= (g << 2) & 0x03e0;
+   t |= (b >> 3) & 0x001f;
+   return t;
 }
 
 int VidRecalcPal()
 {
-	return BurnRecalcPal();
+   return BurnRecalcPal();
 }
 
 static void init_video()
@@ -600,7 +600,7 @@ void snes_set_controller_port_device(bool, unsigned) {}
 #define P4_FIRE5 0x4284
 #define P4_FIRE6 0x4285
 
-static unsigned char keybinds[0x5000][2] = {0}; 
+static unsigned char keybinds[0x5000][2]; 
 #define _B(x) SNES_DEVICE_ID_JOYPAD_##x
 #define RESET_BIND 12
 #define SERVICE_BIND 13

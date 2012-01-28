@@ -535,7 +535,7 @@ unsigned snes_get_memory_size(unsigned) { return 0; }
 unsigned snes_library_revision_major() { return 1; }
 unsigned snes_library_revision_minor() { return 3; }
 
-const char *snes_library_id() { return "FBANext/libsnes"; }
+const char *snes_library_id() { return "FBAlpha/libsnes"; }
 void snes_set_controller_port_device(bool, unsigned) {}
 
 // Input stuff.

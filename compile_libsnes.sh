@@ -1,6 +1,6 @@
 #!/bin/sh
+
 FORMAT=libsnes
-START_DIR=`pwd`
 
 #******************
 # PROGRAM FUNCTIONS
@@ -8,18 +8,26 @@ START_DIR=`pwd`
 
 function clean()
 {
-	make -f Makefile.libsnes clean
+   cd src-0.2.97.21/libsnes
+   sh generate_files.sh
+   cd ..
+	make -f makefile.libsnes clean
 }
-
 
 function make_libsnes()
 {
-	make -f Makefile.libsnes
+   cd src-0.2.97.21/libsnes
+   sh generate_files.sh
+   cd ..
+	make -f makefile.libsnes
 }
 
 function make_debug()
 {
-	make -f Makefile.libsnes DEBUG=1
+   cd src-0.2.97.21/libsnes
+   sh generate_files.sh
+   cd ..
+	make -f makefile.libsnes DEBUG=1
 }
 
 #******************
@@ -96,9 +104,9 @@ else
 			echo ""
 			echo "*************************************"
 			echo "DOING:"
-			display_make_
+			display_make
 			echo "*************************************"
-			make_libsnes
+			make_debug
 		fi
 	done
 fi

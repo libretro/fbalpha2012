@@ -1,7 +1,7 @@
 #!/bin/bash
 
-mkdir generated
 cd ../src
+mkdir generated
 
 #generate gamelist.txt and generated/driverlist.h
 echo ""

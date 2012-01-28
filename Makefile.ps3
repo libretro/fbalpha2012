@@ -226,6 +226,8 @@ ifeq ($(MULTIMAN_SUPPORT),1)
 else
 		$(MAKE_FSELF_NPDRM) $(PPU_TARGET) ps3-new/pkg/USRDIR/EBOOT.BIN
 endif
+		git submodule init
+		git submodule update
 		$(MAKE_PACKAGE_NPDRM) ps3-new/pkg/package.conf ps3-new/pkg
 
 #massively reduced filesize using MKSELF_GEOHOT - use this for normal jailbreak builds
@@ -236,6 +238,8 @@ ifeq ($(MULTIMAN_SUPPORT),1)
 else
 		$(MKSELF) $(PPU_TARGET) ps3-new/pkg/USRDIR/EBOOT.BIN FBAN00000
 endif
+		git submodule init
+		git submodule update
 		$(PYTHONBIN) $(MKPKG_PSLIGHT) --contentid IV0002-FBAN00000_00-FBANEXT000000001 ps3-new/pkg/ fbanext-ps3-r$(REVISION_NO)-fw3.41.pkg
 
 #use this to create a PKG for use with Geohot CFW 3.55
@@ -246,5 +250,7 @@ ifeq ($(MULTIMAN_SUPPORT),1)
 else
 		$(MKSELF) $(PPU_TARGET) ps3-new/pkg/USRDIR/EBOOT.BIN  FBAN00000
 endif
+		git submodule init
+		git submodule update
 		$(PYTHONBIN) $(MKPKG_PSLIGHT) --contentid IV0002-FBAN00000_00-FBANEXT000000001 ps3-new/pkg/ fbanext-ps3-r$(REVISION_NO)-cfw3.55.pkg
 		$(PKG_FINALIZE) fbanext-ps3-r$(REVISION_NO)-cfw3.55.pkg

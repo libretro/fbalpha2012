@@ -29,6 +29,20 @@ else ifeq ($(platform), ps3)
    AR = ppu-lv2-ar
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -D__CELLOS_LV2 -DSN_TARGET_PS3
+else ifeq ($(platform), xenon)
+   TARGET := libsnes.a
+   CC = xenon-gcc
+   CXX = xenon-g++
+   AR = xenon-ar
+   ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
+   PLATFORM_DEFINES := -D__LIBXENON__ -m32 -D__ppc__
+else ifeq ($(platform), wii)
+   TARGET := libsnes.a
+   CC = powerpc-eabi-gcc
+   CXX = powerpc-eabi-g++
+   AR = powerpc-eabi-ar
+   ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
+   PLATFORM_DEFINES := -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float -D__ppc__
 else
    TARGET := snes.dll
    CC = gcc
@@ -203,6 +217,10 @@ INCDIRS := -I$(FBA_BURNER_DIR)/win32 \
 $(TARGET): $(OBJS)
 	@echo "LD $@"
 ifeq ($(platform), ps3)
+	@$(AR) rcs $@ $(OBJECTS)
+else ifeq ($(platform), xenon)
+	@$(AR) rcs $@ $(OBJECTS)
+else ifeq ($(platform), wii)
 	@$(AR) rcs $@ $(OBJECTS)
 else
 	@$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS)

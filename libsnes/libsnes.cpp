@@ -1,5 +1,4 @@
 #include "libsnes.hpp"
-#include "archive.h"
 #include "burner.h"
 #include "inp_keys.h"
 #include "state.h"
@@ -108,7 +107,7 @@ char *LabelCheck(char *, char *) { return 0; }
 const int nConfigMinVersion = 0x020921;
 //////////////
 
-static int find_rom_by_crc(unsigned crc, const ArcEntry *list, unsigned elems)
+static int find_rom_by_crc(unsigned crc, const ZipEntry *list, unsigned elems)
 {
    for (unsigned i = 0; i < elems; i++)
    {
@@ -119,7 +118,7 @@ static int find_rom_by_crc(unsigned crc, const ArcEntry *list, unsigned elems)
    return -1;
 }
 
-static void free_archive_list(ArcEntry *list, unsigned count)
+static void free_archive_list(ZipEntry *list, unsigned count)
 {
    if (list)
    {
@@ -136,19 +135,19 @@ static int archive_load_rom(uint8_t *dest, int *wrote, int i)
 
    int archive = g_find_list[i].nArchive;
 
-   if (archiveOpen(g_find_list_path[archive].c_str()))
+   if (ZipOpen(g_find_list_path[archive].c_str()) != 0)
       return 1;
 
    BurnRomInfo ri = {0};
    BurnDrvGetRomInfo(&ri, i);
 
-   if (archiveLoadFile(dest, ri.nLen, g_find_list[i].nPos, wrote))
+   if (ZipLoadFile(dest, ri.nLen, wrote, g_find_list[i].nPos) != 0)
    {
-      archiveClose();
+      ZipClose();
       return 1;
    }
 
-   archiveClose();
+   ZipClose();
    return 0;
 }
 
@@ -171,11 +170,11 @@ static bool open_archive()
          continue;
 
       char path[1024];
-      snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);
+      snprintf(path, sizeof(path), "%s/%s.zip", g_rom_dir, rom_name);
 
-      int ret = archiveCheck(path, 0);
-      if (ret == ARC_NONE)
-         continue;
+      if (ZipOpen(path) != 0)
+         return false;
+      ZipClose();
 
       g_find_list_path.push_back(path);
    }
@@ -184,12 +183,12 @@ static bool open_archive()
 
    for (unsigned z = 0; z < g_find_list_path.size(); z++)
    {
-      if (archiveOpen(g_find_list_path[z].c_str()))
+      if (ZipOpen(g_find_list_path[z].c_str()) != 0)
          continue;
 
-      ArcEntry *list;
+      ZipEntry *list = NULL;
       int count;
-      archiveGetList(&list, &count);
+      ZipGetList(&list, &count);
 
       // Try to map the ROMs FBA wants to ROMs we find inside our pretty archives ...
       for (unsigned i = 0; i < g_rom_count; i++)
@@ -203,7 +202,7 @@ static bool open_archive()
          int index = find_rom_by_crc(ri.nCrc, list, count);
          if (index < 0)
          {
-            archiveClose();
+            ZipClose();
             return false;
          }
 
@@ -211,10 +210,6 @@ static bool open_archive()
          g_find_list[i].nArchive = z;
          g_find_list[i].nPos = index;
          g_find_list[i].nState = STAT_OK;
-
-         // Sanity checking ...
-         //if (!(ri.nType & BRF_OPT) && ri.nCrc)
-         //   nTotalSize += ri.nLen;
 
          if (list[index].nLen == ri.nLen)
          {
@@ -229,8 +224,7 @@ static bool open_archive()
 
 
       free_archive_list(list, count);
-
-      archiveClose();
+      ZipClose();
    }
 
    BurnExtLoadRom = archive_load_rom;

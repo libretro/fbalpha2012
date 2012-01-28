@@ -9,21 +9,6 @@
 #include <string>
 #include <ctype.h>
 
-// FBA cruft.
-
-unsigned ArcadeJoystick;
-
-int bDrvOkay;
-int bRunPause;
-bool bAlwaysProcessKeyboardInput;
-
-struct ROMFIND
-{
-	unsigned int nState;
-	int nArchive;
-	int nPos;
-};
-
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 #define STAT_NOFIND	0
@@ -31,6 +16,13 @@ static unsigned int BurnDrvGetIndexByName(const char* name);
 #define STAT_CRC	   2
 #define STAT_SMALL	3
 #define STAT_LARGE	4
+
+struct ROMFIND
+{
+	unsigned int nState;
+	int nArchive;
+	int nPos;
+};
 
 static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[1024];
@@ -67,6 +59,15 @@ static void poll_input();
 static bool init_input();
 
 // FBA stubs
+unsigned ArcadeJoystick;
+
+int bDrvOkay;
+int bRunPause;
+bool bAlwaysProcessKeyboardInput;
+
+bool bDoIpsPatch;
+void IpsApplyPatches(UINT8 *, char *) {}
+
 TCHAR szAppHiscorePath[MAX_PATH];
 TCHAR szAppSamplesPath[MAX_PATH];
 TCHAR szAppBurnVer[16];

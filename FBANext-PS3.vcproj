@@ -2396,6 +2396,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ps3-new\ps3memcpy.s"
+						>
+					</File>
+					<File
 						RelativePath=".\ps3-new\ps3video.cpp"
 						>
 					</File>

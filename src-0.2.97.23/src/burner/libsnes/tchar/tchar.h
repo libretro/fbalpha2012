@@ -19,9 +19,13 @@ typedef struct { int x, y, width, height; } RECT;
 #define bprintf(...) {}
 #define _strnicmp(s1, s2, n) strncasecmp(s1, s2, n)
 #define _stricmp(x, y) strcasecmp(x,y)
+
+#ifdef _MSC_VER
 #define strncasecmp(s1, s2, n) _strnicmp(s1, s2, n)
 #define strcasecmp(x, y) _stricmp(x, y)
 #define snprintf _snprintf
+#endif
+
 #define _T(x) x
 #define _tcstol strtol
 #define _tfopen fopen

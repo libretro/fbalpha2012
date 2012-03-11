@@ -49,7 +49,12 @@ void snes_set_input_state(snes_input_state_t cb) { input_cb = cb; }
 
 // SSNES extension.
 static snes_environment_t environ_cb;
-void snes_set_environment(snes_environment_t cb) { environ_cb = cb; }
+void snes_set_environment(snes_environment_t cb)
+{
+   environ_cb = cb;
+   bool dummy = true;
+   cb(SNES_ENVIRONMENT_SET_BATCH_LOAD, &dummy);
+}
 
 static char g_rom_name[1024];
 static char g_rom_dir[1024];
@@ -176,7 +181,7 @@ static bool open_archive()
 
       char path[1024];
 #ifdef _XBOX
-	  snprintf(path, sizeof(path), "%s\\%s", g_rom_dir, rom_name);
+      snprintf(path, sizeof(path), "%s\\%s", g_rom_dir, rom_name);
 #else
       snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);
 #endif

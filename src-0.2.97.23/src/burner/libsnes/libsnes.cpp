@@ -22,6 +22,7 @@ struct ROMFIND
 	unsigned int nState;
 	int nArchive;
 	int nPos;
+   BurnRomInfo ri;
 };
 
 static std::vector<std::string> g_find_list_path;
@@ -107,7 +108,7 @@ char *LabelCheck(char *, char *) { return 0; }
 const int nConfigMinVersion = 0x020921;
 //////////////
 
-static int find_rom_by_crc(unsigned crc, const ZipEntry *list, unsigned elems)
+static int find_rom_by_crc(uint32_t crc, const ZipEntry *list, unsigned elems)
 {
    for (unsigned i = 0; i < elems; i++)
    {
@@ -154,12 +155,12 @@ static int archive_load_rom(uint8_t *dest, int *wrote, int i)
 // This code is very confusing. The original code is even more confusing :(
 static bool open_archive()
 {
+   memset(g_find_list, 0, sizeof(g_find_list));
+
    // FBA wants some roms ... Figure out how many.
    g_rom_count = 0;
-   while (!BurnDrvGetRomInfo(0, g_rom_count))
+   while (!BurnDrvGetRomInfo(&g_find_list[g_rom_count].ri, g_rom_count))
       g_rom_count++;
-
-   fprintf(stderr, "[FBA] Rom count: %u\n", g_rom_count);
 
    g_find_list_path.clear();
 
@@ -186,12 +187,13 @@ static bool open_archive()
       g_find_list_path.push_back(path);
    }
 
-   memset(g_find_list, 0, sizeof(g_find_list));
-
    for (unsigned z = 0; z < g_find_list_path.size(); z++)
    {
       if (ZipOpen((char*)g_find_list_path[z].c_str()) != 0)
-         continue;
+      {
+         fprintf(stderr, "[FBA] Failed to open archive %s\n", g_find_list_path[z].c_str());
+         return false;
+      }
 
       ZipEntry *list = NULL;
       int count;
@@ -203,36 +205,40 @@ static bool open_archive()
          if (g_find_list[i].nState == STAT_OK)
             continue;
 
-         BurnRomInfo ri = {0};
-         BurnDrvGetRomInfo(&ri, i);
-
-         int index = find_rom_by_crc(ri.nCrc, list, count);
-         if (index < 0)
+         if (g_find_list[i].ri.nType == 0 || g_find_list[i].ri.nLen == 0)
          {
-            ZipClose();
-            fprintf(stderr, "[FBA] Cannot find rom with CRC 0x%08x\n", (unsigned)ri.nCrc);
-            return false;
+            g_find_list[i].nState = STAT_OK;
+            continue;
          }
+
+         int index = find_rom_by_crc(g_find_list[i].ri.nCrc, list, count);
+         if (index < 0)
+            continue;
 
          // Yay, we found it!
          g_find_list[i].nArchive = z;
          g_find_list[i].nPos = index;
          g_find_list[i].nState = STAT_OK;
 
-         if (list[index].nLen == ri.nLen)
-         {
-            if (ri.nCrc && list[index].nCrc != ri.nCrc)
-               g_find_list[i].nState = STAT_CRC;
-         }
-         else if (list[index].nLen < ri.nLen)
+         if (list[index].nLen < g_find_list[i].ri.nLen)
             g_find_list[i].nState = STAT_SMALL;
-         else if (list[index].nLen > ri.nLen)
+         else if (list[index].nLen > g_find_list[i].ri.nLen)
             g_find_list[i].nState = STAT_LARGE;
       }
 
-
       free_archive_list(list, count);
       ZipClose();
+   }
+
+   // Going over every rom to see if they are properly loaded before we continue ...
+   for (unsigned i = 0; i < g_rom_count; i++)
+   {
+      if (g_find_list[i].nState != STAT_OK)
+      {
+         fprintf(stderr, "[FBA] ROM index %i was not found ... CRC: 0x%08x\n",
+               i, g_find_list[i].ri.nCrc);
+         return false;
+      }
    }
 
    BurnExtLoadRom = archive_load_rom;
@@ -369,6 +375,7 @@ static int burn_read_state_cb(BurnArea *pba)
 static int burn_dummy_state_cb(BurnArea *pba)
 {
    state_size += pba->nLen;
+   return 0;
 }
 
 unsigned snes_serialize_size()

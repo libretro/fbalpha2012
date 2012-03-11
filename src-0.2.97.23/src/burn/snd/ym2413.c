@@ -30,7 +30,11 @@ to do:
 #include "state.h"
 #include "ym2413.h"
 
+#ifdef _MSC_VER
+#define MAME_INLINE static _inline
+#else
 #define MAME_INLINE static inline
+#endif
 
 #ifndef PI
 #define PI 3.14159265358979323846

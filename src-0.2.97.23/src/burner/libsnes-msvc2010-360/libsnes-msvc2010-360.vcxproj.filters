@@ -1517,5 +1517,17 @@
     <ClCompile Include="..\..\intf\interface.cpp">
       <Filter>Source Files\intf</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cpu\m68k\m68kops.c">
+      <Filter>Source Files\cpu\m68k</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpu\m68k\m68kopac.c">
+      <Filter>Source Files\cpu\m68k</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpu\m68k\m68kopdm.c">
+      <Filter>Source Files\cpu\m68k</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpu\m68k\m68kopnz.c">
+      <Filter>Source Files\cpu\m68k</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

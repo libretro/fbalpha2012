@@ -175,7 +175,11 @@ static bool open_archive()
       fprintf(stderr, "[FBA] Archive: %s\n", rom_name);
 
       char path[1024];
+#ifdef _XBOX
+	  snprintf(path, sizeof(path), "%s\\%s", g_rom_dir, rom_name);
+#else
       snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);
+#endif
 
       if (ZipOpen(path) != 0)
       {
@@ -548,7 +552,7 @@ unsigned snes_get_memory_size(unsigned) { return 0; }
 unsigned snes_library_revision_major() { return 1; }
 unsigned snes_library_revision_minor() { return 3; }
 
-const char *snes_library_id() { return "FBAlpha/libsnes"; }
+const char *snes_library_id() { return "FB Alpha"; }
 void snes_set_controller_port_device(bool, unsigned) {}
 
 // Input stuff.

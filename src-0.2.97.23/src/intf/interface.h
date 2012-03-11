@@ -67,7 +67,11 @@ struct CDEmuDo {
 	const TCHAR*	 szModuleName;
 };
 
+#ifdef __LIBSNES__
+#include "cd/cd_interface.h"
+#else
 #include "cd_interface.h"
+#endif
 
 InterfaceInfo* CDEmuGetInfo();
 

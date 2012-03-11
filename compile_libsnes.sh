@@ -8,26 +8,26 @@ FORMAT=libsnes
 
 function clean()
 {
-   cd src-0.2.97.21/libsnes
+   cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
-   cd ..
+   cd ../../..
 	make -f makefile.libsnes clean
 }
 
 function make_libsnes()
 {
-   cd src-0.2.97.21/libsnes
+   cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
-   cd ..
-	make -f makefile.libsnes
+   cd ../../..
+	make -f makefile.libsnes -j4
 }
 
 function make_debug()
 {
-   cd src-0.2.97.21/libsnes
+   cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
-   cd ..
-	make -f makefile.libsnes DEBUG=1
+   cd ../../..
+	make -f makefile.libsnes -j4 DEBUG=1
 }
 
 #******************

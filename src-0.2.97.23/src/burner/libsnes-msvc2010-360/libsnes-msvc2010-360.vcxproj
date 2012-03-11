@@ -653,7 +653,14 @@
     </ClCompile>
     <ClCompile Include="..\..\cpu\m6809\m6809.cpp" />
     <ClCompile Include="..\..\cpu\m6809_intf.cpp" />
-    <ClCompile Include="..\..\cpu\m68k\m68kcpu.c" />
+    <ClCompile Include="..\..\cpu\m68k\m68kcpu.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="..\..\cpu\m68k\m68kdasm.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
@@ -994,9 +1001,10 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1014,9 +1022,10 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1035,9 +1044,10 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1060,8 +1070,9 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1082,8 +1093,9 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1104,8 +1116,9 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;_LIB;%(PreprocessorDefinitions);NO_ASMCORE;NO_AUTOFIRE;NO_CHEATSEARCH;NO_COMBO;USE_SPEEDHACKS;NO_PNG;__LIBSNES__;NO_INTERFACES;INLINE=__inline static</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\libsnes;$(SolutionDir)\..\..\burner;$(SolutionDir)\..\..\burn;$(SolutionDir)\..\..\burn\devices;$(SolutionDir)\..\..\burn\snd;$(SolutionDir)\..\..\cpu\;$(SolutionDir)\..\..\cpu\arm;$(SolutionDir)\..\..\cpu\arm7;$(SolutionDir)\..\..\cpu\h6280;$(SolutionDir)\..\..\cpu\hd6309;$(SolutionDir)\..\..\cpu\i8039;$(SolutionDir)\..\..\cpu\konami;$(SolutionDir)\..\..\cpu\m6502;$(SolutionDir)\..\..\cpu\m6800;$(SolutionDir)\..\..\cpu\m6805;$(SolutionDir)\..\..\cpu\m6809;$(SolutionDir)\..\..\cpu\m68k;$(SolutionDir)\..\..\cpu\nec;$(SolutionDir)\..\..\cpu\s2650;$(SolutionDir)\..\..\cpu\sh2;$(SolutionDir)\..\..\cpu\z80;$(SolutionDir)\..\..\intf\input;$(SolutionDir)\..\..\dep\libs\zlib;$(SolutionDir)\..\..\..\generated</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

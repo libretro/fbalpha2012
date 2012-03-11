@@ -129,15 +129,6 @@
     <Filter Include="Source Files\burn\snd">
       <UniqueIdentifier>{aa239b2a-4448-46ed-aa06-51a84303473a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\dep">
-      <UniqueIdentifier>{55c5c534-8ab3-43f0-ba73-9946fd39c7f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\dep\libs">
-      <UniqueIdentifier>{cd14059b-c720-48b1-a442-a5c52b0645a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\dep\libs\zlib">
-      <UniqueIdentifier>{37311b12-6cb2-4088-ae52-e9204b297269}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\intf">
       <UniqueIdentifier>{ca2aa46c-c42b-4c6e-b166-166bb16cba71}</UniqueIdentifier>
     </Filter>
@@ -148,27 +139,6 @@
     </ClCompile>
     <ClCompile Include="..\libsnes\neocdlist.cpp">
       <Filter>Source Files\burner\libsnes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\un7z.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sshot.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\dat.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\conc.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cong.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\misc.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\image.cpp">
-      <Filter>Source Files\burner</Filter>
     </ClCompile>
     <ClCompile Include="..\zipfn.cpp">
       <Filter>Source Files\burner</Filter>
@@ -186,9 +156,6 @@
       <Filter>Source Files\burner</Filter>
     </ClCompile>
     <ClCompile Include="..\statec.cpp">
-      <Filter>Source Files\burner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unzip.c">
       <Filter>Source Files\burner</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\zet.cpp">
@@ -233,23 +200,8 @@
     <ClCompile Include="..\..\cpu\arm7\arm7.cpp">
       <Filter>Source Files\cpu\arm7</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpu\arm7\arm7core.c">
-      <Filter>Source Files\cpu\arm7</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\arm7\arm7exec.c">
-      <Filter>Source Files\cpu\arm7</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\hd6309\6309tbl.c">
-      <Filter>Source Files\cpu\hd6309</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cpu\hd6309\hd6309.cpp">
       <Filter>Source Files\cpu\hd6309</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\hd6309\6309ops.c">
-      <Filter>Source Files\cpu\hd6309</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\h6280\tblh6280.c">
-      <Filter>Source Files\cpu\h6280</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\h6280\h6280.cpp">
       <Filter>Source Files\cpu\h6280</Filter>
@@ -260,79 +212,25 @@
     <ClCompile Include="..\..\cpu\i8039\i8039.cpp">
       <Filter>Source Files\cpu\i8039</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpu\konami\konamtbl.c">
-      <Filter>Source Files\cpu\konami</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cpu\konami\konami.cpp">
       <Filter>Source Files\cpu\konami</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\konami\konamops.c">
-      <Filter>Source Files\cpu\konami</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m68k\m68kmake.c">
-      <Filter>Source Files\cpu\m68k</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m68k\m68k_in.c">
-      <Filter>Source Files\cpu\m68k</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\m68k\m68kcpu.c">
       <Filter>Source Files\cpu\m68k</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpu\m68k\m68kdasm.c">
-      <Filter>Source Files\cpu\m68k</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6502\tn2a03.c">
-      <Filter>Source Files\cpu\m6502</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cpu\m6502\m6502.cpp">
-      <Filter>Source Files\cpu\m6502</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6502\t65c02.c">
-      <Filter>Source Files\cpu\m6502</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6502\t65sc02.c">
-      <Filter>Source Files\cpu\m6502</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6502\t6502.c">
-      <Filter>Source Files\cpu\m6502</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6502\tdeco16.c">
       <Filter>Source Files\cpu\m6502</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\m6800\m6800.cpp">
       <Filter>Source Files\cpu\m6800</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpu\m6800\6800ops.c">
-      <Filter>Source Files\cpu\m6800</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6800\6800tbl.c">
-      <Filter>Source Files\cpu\m6800</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cpu\m6805\m6805.cpp">
-      <Filter>Source Files\cpu\m6805</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6805\6805ops.c">
       <Filter>Source Files\cpu\m6805</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\m6809\m6809.cpp">
       <Filter>Source Files\cpu\m6809</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpu\m6809\6809ops.c">
-      <Filter>Source Files\cpu\m6809</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\m6809\6809tbl.c">
-      <Filter>Source Files\cpu\m6809</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cpu\nec\v25.cpp">
-      <Filter>Source Files\cpu\nec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\nec\necinstr.c">
-      <Filter>Source Files\cpu\nec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\nec\v25instr.c">
-      <Filter>Source Files\cpu\nec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\cpu\nec\v25sfr.c">
       <Filter>Source Files\cpu\nec</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cpu\nec\nec.cpp">
@@ -1615,51 +1513,6 @@
     </ClCompile>
     <ClCompile Include="..\..\burn\snd\ymdeltat.c">
       <Filter>Source Files\burn\snd</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\zutil.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\adler32.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\compress.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\crc32.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\deflate.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\gzclose.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\gzlib.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\gzread.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\gzwrite.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\infback.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\inffast.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\inflate.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\inftrees.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\trees.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dep\libs\zlib\uncompr.c">
-      <Filter>Source Files\dep\libs\zlib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\intf\interface.cpp">
       <Filter>Source Files\intf</Filter>

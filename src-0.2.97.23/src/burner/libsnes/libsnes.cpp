@@ -159,6 +159,8 @@ static bool open_archive()
    while (!BurnDrvGetRomInfo(0, g_rom_count))
       g_rom_count++;
 
+   fprintf(stderr, "[FBA] Rom count: %u\n", g_rom_count);
+
    g_find_list_path.clear();
 
    // Check if we have said archives.
@@ -166,16 +168,19 @@ static bool open_archive()
    char *rom_name;
    for (unsigned index = 0; index < 32; index++)
    {
-      //if (BurnDrvGetArchiveName(&rom_name, index, false, 0))
-      //   continue;
       if (BurnDrvGetZipName(&rom_name, index))
          continue;
+
+      fprintf(stderr, "[FBA] Archive: %s\n", rom_name);
 
       char path[1024];
       snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);
 
       if (ZipOpen(path) != 0)
+      {
+         fprintf(stderr, "[FBA] Failed to find archive: %s\n", path);
          return false;
+      }
       ZipClose();
 
       g_find_list_path.push_back(path);
@@ -205,6 +210,7 @@ static bool open_archive()
          if (index < 0)
          {
             ZipClose();
+            fprintf(stderr, "[FBA] Cannot find rom with CRC 0x%08x\n", (unsigned)ri.nCrc);
             return false;
          }
 

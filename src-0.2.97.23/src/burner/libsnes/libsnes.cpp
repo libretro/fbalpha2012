@@ -51,9 +51,11 @@ void snes_set_input_state(snes_input_state_t cb) { input_cb = cb; }
 static snes_environment_t environ_cb;
 void snes_set_environment(snes_environment_t cb)
 {
+	int dummy;
    environ_cb = cb;
-   bool dummy = true;
+   dummy = 1;
    cb(SNES_ENVIRONMENT_SET_BATCH_LOAD, &dummy);
+   cb(SNES_ENVIRONMENT_SET_ROM_FORMATS, "zip|ZIP");
 }
 
 static char g_rom_name[1024];

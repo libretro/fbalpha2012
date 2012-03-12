@@ -51,7 +51,7 @@ void snes_set_input_state(snes_input_state_t cb) { input_cb = cb; }
 static snes_environment_t environ_cb;
 void snes_set_environment(snes_environment_t cb)
 {
-	int dummy;
+	bool dummy;
    environ_cb = cb;
    dummy = 1;
    cb(SNES_ENVIRONMENT_SET_BATCH_LOAD, &dummy);

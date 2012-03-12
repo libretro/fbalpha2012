@@ -113,7 +113,6 @@ char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int /*nOutSize*/
 int QuoteRead(char **, char **, char*) { return 1; }
 char *LabelCheck(char *, char *) { return 0; }
 const int nConfigMinVersion = 0x020921;
-//////////////
 
 static int find_rom_by_crc(uint32_t crc, const ZipEntry *list, unsigned elems)
 {
@@ -621,7 +620,7 @@ void snes_set_controller_port_device(bool, unsigned) {}
 #define P4_FIRE6 0x4285
 
 static unsigned char keybinds[0x5000][2]; 
-#define _B(x) SNES_DEVICE_ID_JOYPAD_##x
+#define _BIND(x) SNES_DEVICE_ID_JOYPAD_##x
 #define RESET_BIND 12
 #define SERVICE_BIND 13
 static bool init_input()
@@ -653,89 +652,79 @@ static bool init_input()
    keybinds[P1_SERVICE	][0] = SERVICE_BIND;
    keybinds[P1_SERVICE	][1] = 0;
 
-   keybinds[P1_COIN	][0] = _B(SELECT);
+   keybinds[P1_COIN	][0] = _BIND(SELECT);
    keybinds[P1_COIN	][1] = 0;
-   keybinds[P1_START	][0] = _B(START);
+   keybinds[P1_START	][0] = _BIND(START);
    keybinds[P1_START	][1] = 0;
-   keybinds[P1_UP		][0] = _B(UP);
-   keybinds[P1_UP		][1] = 0;
-   keybinds[P1_DOWN	][0] = _B(DOWN);
+   keybinds[P1_UP	][0] = _BIND(UP);
+   keybinds[P1_UP	][1] = 0;
+   keybinds[P1_DOWN	][0] = _BIND(DOWN);
    keybinds[P1_DOWN	][1] = 0;
-   keybinds[P1_LEFT	][0] = _B(LEFT);
+   keybinds[P1_LEFT	][0] = _BIND(LEFT);
    keybinds[P1_LEFT	][1] = 0;
-   keybinds[P1_RIGHT	][0] = _B(RIGHT);
+   keybinds[P1_RIGHT	][0] = _BIND(RIGHT);
    keybinds[P1_RIGHT	][1] = 0;
-   keybinds[P1_FIRE1	][0] = _B(Y);
+   keybinds[P1_FIRE1	][0] = _BIND(Y);
    keybinds[P1_FIRE1	][1] = 0;
-   keybinds[P1_FIRE2	][0] = _B(X);
+   keybinds[P1_FIRE2	][0] = _BIND(X);
    keybinds[P1_FIRE2	][1] = 0;
-   keybinds[P1_FIRE3	][0] = _B(L);
+   keybinds[P1_FIRE3	][0] = _BIND(L);
    keybinds[P1_FIRE3	][1] = 0;
-   keybinds[P1_FIRE4	][0] = _B(B);
+   keybinds[P1_FIRE4	][0] = _BIND(B);
    keybinds[P1_FIRE4	][1] = 0;
-   keybinds[P1_FIRE5	][0] = _B(A);
+   keybinds[P1_FIRE5	][0] = _BIND(A);
    keybinds[P1_FIRE5	][1] = 0;
 
    if(boardrom && (strcmp(boardrom,"neogeo") == 0))
    {
-      keybinds[P1_FIRE6][0] = _B(Y);
+      keybinds[P1_FIRE6][0] = _BIND(Y);
       keybinds[P1_FIRE6][1] = 0;
-      keybinds[P1_FIRED][0] = _B(X);
+      keybinds[P1_FIRED][0] = _BIND(X);
       keybinds[P1_FIRED][1] = 0;
    }
    else
    {
-      keybinds[P1_FIRE6	][0] = _B(R);
+      keybinds[P1_FIRE6	][0] = _BIND(R);
       keybinds[P1_FIRE6	][1] = 0;
    }
-#if 0
-   keybinds[0x88		][0] = L2;
-   keybinds[0x88		][1] = 0;
-   keybinds[0x8A		][0] = R2;
-   keybinds[0x8A		][1] = 0;
-   keybinds[0x3b		][0] = L3;
-   keybinds[0x3b		][1] = 0;
-   keybinds[0x21		][0] = R2;
-   keybinds[0x21		][1] = 0;
-#endif
 
-   keybinds[P2_COIN	][0] = _B(SELECT);
+   keybinds[P2_COIN	][0] = _BIND(SELECT);
    keybinds[P2_COIN	][1] = 1;
-   keybinds[P2_START	][0] = _B(START);
+   keybinds[P2_START	][0] = _BIND(START);
    keybinds[P2_START	][1] = 1;
-   keybinds[P2_UP		][0] = _B(UP);
-   keybinds[P2_UP		][1] = 1;
-   keybinds[P2_DOWN	][0] = _B(DOWN);
+   keybinds[P2_UP	][0] = _BIND(UP);
+   keybinds[P2_UP	][1] = 1;
+   keybinds[P2_DOWN	][0] = _BIND(DOWN);
    keybinds[P2_DOWN	][1] = 1;
-   keybinds[P2_LEFT	][0] = _B(LEFT);
+   keybinds[P2_LEFT	][0] = _BIND(LEFT);
    keybinds[P2_LEFT	][1] = 1;
-   keybinds[P2_RIGHT	][0] = _B(RIGHT);
+   keybinds[P2_RIGHT	][0] = _BIND(RIGHT);
    keybinds[P2_RIGHT	][1] = 1;
-   keybinds[P2_FIRE1	][0] = _B(Y);
+   keybinds[P2_FIRE1	][0] = _BIND(Y);
 
    if (boardrom && (strcmp(boardrom, "neogeo") == 0))
    {
-      keybinds[P2_FIRE3][0] = _B(Y);
+      keybinds[P2_FIRE3][0] = _BIND(Y);
       keybinds[P2_FIRE3][1] = 1;
-      keybinds[P2_FIRE4][0] = _B(X);
+      keybinds[P2_FIRE4][0] = _BIND(X);
       keybinds[P2_FIRE4][1] = 1;
-      keybinds[P2_FIRE1][0] = _B(B);
+      keybinds[P2_FIRE1][0] = _BIND(B);
       keybinds[P2_FIRE1][1] = 1;
-      keybinds[P2_FIRE2][0] = _B(A);
+      keybinds[P2_FIRE2][0] = _BIND(A);
       keybinds[P2_FIRE2][1] = 1;
    }
    else
    {
       keybinds[P2_FIRE1	][1] = 1;
-      keybinds[P2_FIRE2	][0] = _B(X);
+      keybinds[P2_FIRE2	][0] = _BIND(X);
       keybinds[P2_FIRE2	][1] = 1;
-      keybinds[P2_FIRE3	][0] = _B(L);
+      keybinds[P2_FIRE3	][0] = _BIND(L);
       keybinds[P2_FIRE3	][1] = 1;
-      keybinds[P2_FIRE4	][0] = _B(B);
+      keybinds[P2_FIRE4	][0] = _BIND(B);
       keybinds[P2_FIRE4	][1] = 1;
-      keybinds[P2_FIRE5	][0] = _B(A);
+      keybinds[P2_FIRE5	][0] = _BIND(A);
       keybinds[P2_FIRE5	][1] = 1;
-      keybinds[P2_FIRE6	][0] = _B(R);
+      keybinds[P2_FIRE6	][0] = _BIND(R);
       keybinds[P2_FIRE6	][1] = 1;
    }
 
@@ -750,29 +739,29 @@ static bool init_input()
    keybinds[0x408c		][1] = 1;
 #endif
 
-   keybinds[P3_COIN	][0] = _B(SELECT);
+   keybinds[P3_COIN	][0] = _BIND(SELECT);
    keybinds[P3_COIN	][1] = 2;
-   keybinds[P3_START	][0] = _B(START);
+   keybinds[P3_START	][0] = _BIND(START);
    keybinds[P3_START	][1] = 2;
-   keybinds[P3_UP		][0] = _B(UP);
-   keybinds[P3_UP		][1] = 2;
-   keybinds[P3_DOWN	][0] = _B(DOWN);
+   keybinds[P3_UP	][0] = _BIND(UP);
+   keybinds[P3_UP	][1] = 2;
+   keybinds[P3_DOWN	][0] = _BIND(DOWN);
    keybinds[P3_DOWN	][1] = 2;
-   keybinds[P3_LEFT	][0] = _B(LEFT);
+   keybinds[P3_LEFT	][0] = _BIND(LEFT);
    keybinds[P3_LEFT	][1] = 2;
-   keybinds[P3_RIGHT	][0] = _B(RIGHT);
+   keybinds[P3_RIGHT	][0] = _BIND(RIGHT);
    keybinds[P3_RIGHT	][1] = 2;
-   keybinds[P3_FIRE1	][0] = _B(Y);
+   keybinds[P3_FIRE1	][0] = _BIND(Y);
    keybinds[P3_FIRE1	][1] = 2;
-   keybinds[P3_FIRE2	][0] = _B(X);
+   keybinds[P3_FIRE2	][0] = _BIND(X);
    keybinds[P3_FIRE2	][1] = 2;
-   keybinds[P3_FIRE3	][0] = _B(L);
+   keybinds[P3_FIRE3	][0] = _BIND(L);
    keybinds[P3_FIRE3	][1] = 2;
-   keybinds[P3_FIRE4	][0] = _B(B);
+   keybinds[P3_FIRE4	][0] = _BIND(B);
    keybinds[P3_FIRE4	][1] = 2;
-   keybinds[P3_FIRE5	][0] = _B(A);
+   keybinds[P3_FIRE5	][0] = _BIND(A);
    keybinds[P3_FIRE5	][1] = 2;
-   keybinds[P3_FIRE6	][0] = _B(R);
+   keybinds[P3_FIRE6	][0] = _BIND(R);
    keybinds[P3_FIRE6	][1] = 2;
 #if 0
    keybinds[0x4188		][0] = L2;
@@ -785,29 +774,29 @@ static bool init_input()
    keybinds[0x418c		][1] = 2;
 #endif
 
-   keybinds[P4_COIN	][0] = _B(SELECT);
+   keybinds[P4_COIN	][0] = _BIND(SELECT);
    keybinds[P4_COIN	][1] = 3;
-   keybinds[P4_START	][0] = _B(START);
+   keybinds[P4_START	][0] = _BIND(START);
    keybinds[P4_START	][1] = 3;
-   keybinds[P4_UP		][0] = _B(UP);
-   keybinds[P4_UP		][1] = 3;
-   keybinds[P4_DOWN	][0] = _B(DOWN);
+   keybinds[P4_UP	][0] = _BIND(UP);
+   keybinds[P4_UP	][1] = 3;
+   keybinds[P4_DOWN	][0] = _BIND(DOWN);
    keybinds[P4_DOWN	][1] = 3;
-   keybinds[P4_LEFT	][0] = _B(LEFT);
+   keybinds[P4_LEFT	][0] = _BIND(LEFT);
    keybinds[P4_LEFT	][1] = 3;
-   keybinds[P4_RIGHT	][0] = _B(RIGHT);
+   keybinds[P4_RIGHT	][0] = _BIND(RIGHT);
    keybinds[P4_RIGHT	][1] = 3;
-   keybinds[P4_FIRE1	][0] = _B(Y);
+   keybinds[P4_FIRE1	][0] = _BIND(Y);
    keybinds[P4_FIRE1	][1] = 3;
-   keybinds[P4_FIRE2	][0] = _B(X);
+   keybinds[P4_FIRE2	][0] = _BIND(X);
    keybinds[P4_FIRE2	][1] = 3;
-   keybinds[P4_FIRE3	][0] = _B(L);
+   keybinds[P4_FIRE3	][0] = _BIND(L);
    keybinds[P4_FIRE3	][1] = 3;
-   keybinds[P4_FIRE4	][0] = _B(B);
+   keybinds[P4_FIRE4	][0] = _BIND(B);
    keybinds[P4_FIRE4	][1] = 3;
-   keybinds[P4_FIRE5	][0] = _B(A);
+   keybinds[P4_FIRE5	][0] = _BIND(A);
    keybinds[P4_FIRE5	][1] = 3;
-   keybinds[P4_FIRE6	][0] = _B(R);
+   keybinds[P4_FIRE6	][0] = _BIND(R);
    keybinds[P4_FIRE6	][1] = 3;
 #if 0
    keybinds[0x4288		][0] = L2;
@@ -896,10 +885,10 @@ static void poll_input()
             else if (id == SERVICE_BIND)
             {
                state =
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _B(START)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _B(SELECT)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _B(L)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _B(R));
+                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(START)) &&
+                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(SELECT)) &&
+                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(L)) &&
+                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(R));
             }
             else if (port < 2)
                state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);

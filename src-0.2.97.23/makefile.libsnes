@@ -55,11 +55,12 @@ else ifeq ($(platform), xenon)
    PLATFORM_DEFINES := -D__LIBXENON__ -m32 -D__ppc__
 else ifeq ($(platform), wii)
    TARGET := libsnes.a
-   CC = powerpc-eabi-gcc
-   CXX = powerpc-eabi-g++
-   AR = powerpc-eabi-ar
+   CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc
+   CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++
+   AR = $(DEVKITPPC)/bin/powerpc-eabi-ar
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
-   PLATFORM_DEFINES := -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float -D__ppc__
+   PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
+   ZLIB_INTERNAL = 1
 else
    TARGET := snes.dll
    CC = gcc
@@ -157,9 +158,6 @@ FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
 
 FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
 
-ifeq ($(ZLIB_INTERNAL), 0)
-FBA_SRC_DIRS += $(FBA_LIB_DIRS)
-endif
 
 FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXSRCS += $(LIBSNES_DIR)/libsnes.cpp $(LIBSNES_DIR)/neocdlist.cpp
@@ -177,9 +175,15 @@ FBA_DEFINES := -DNO_ASMCORE \
 	-DNO_PNG \
 	-DOLD_AUDIOCORE=0 \
 	-D__LIBSNES__ \
+	-DNO_INTERFACES \
 	$(ENDIANNESS_DEFINES) \
 	$(PLATFORM_DEFINES) \
-	-DTIXML_USE_TICPP
+	-DINLINE="static inline"
+
+ifeq ($(ZLIB_INTERNAL), 0)
+FBA_SRC_DIRS += $(FBA_LIB_DIRS)
+FBA_DEFINES += -D__LIBSNES_USE_ZLIB__ -DUSE_INTERNAL_ZLIB
+endif
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -g

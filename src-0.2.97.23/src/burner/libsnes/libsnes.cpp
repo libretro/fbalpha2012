@@ -55,7 +55,7 @@ void snes_set_environment(snes_environment_t cb)
    environ_cb = cb;
    dummy = 1;
    cb(SNES_ENVIRONMENT_SET_BATCH_LOAD, &dummy);
-   cb(SNES_ENVIRONMENT_SET_ROM_FORMATS, "zip|ZIP");
+   cb(SNES_ENVIRONMENT_SET_ROM_FORMATS, (void*)"zip|ZIP");
 }
 
 static char g_rom_name[1024];
@@ -216,7 +216,7 @@ static bool open_archive()
          if (g_find_list[i].nState == STAT_OK)
             continue;
 
-         if (g_find_list[i].ri.nType == 0 || g_find_list[i].ri.nLen == 0)
+         if (g_find_list[i].ri.nType == 0 || g_find_list[i].ri.nLen == 0 || g_find_list[i].ri.nCrc == 0)
          {
             g_find_list[i].nState = STAT_OK;
             continue;

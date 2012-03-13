@@ -20,6 +20,8 @@ FBA_CPU_DIR := $(MAIN_FBA_DIR)/cpu
 FBA_LIB_DIR := $(MAIN_FBA_DIR)/dep/libs
 FBA_INTERFACE_DIR := $(MAIN_FBA_DIR)/intf
 
+EXTERNAL_ZLIB = 0
+
 ifeq ($(platform), unix)
    TARGET := libsnes.so
    fpic := -fPIC
@@ -37,7 +39,7 @@ else ifeq ($(platform), ps3)
    AR = ppu-lv2-ar
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -D__CELLOS_LV2
-   ZLIB_INTERNAL = 1
+   EXTERNAL_ZLIB = 1
 else ifeq ($(platform), sncps3)
    TARGET := libsnes.a
    CC = ps3ppusnc
@@ -45,7 +47,7 @@ else ifeq ($(platform), sncps3)
    AR = ps3snarl
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
    PLATFORM_DEFINES += -D__CELLOS_LV2__ -DSN_TARGET_PS3
-   ZLIB_INTERNAL = 1
+   EXTERNAL_ZLIB = 1
 else ifeq ($(platform), xenon)
    TARGET := libsnes.a
    CC = xenon-gcc
@@ -60,7 +62,7 @@ else ifeq ($(platform), wii)
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
-   ZLIB_INTERNAL = 1
+   EXTERNAL_ZLIB = 1
 else
    TARGET := snes.dll
    CC = gcc
@@ -111,7 +113,7 @@ BURN_BLACKLIST := $(FBA_BURN_DIR)/zet_c68k.cpp \
 	$(FBA_CPU_DIR)/nec/necinstr.c \
 	$(FBA_BURN_DIR)/drv/capcom/ctv_make.cpp
 
-ifeq ($(ZLIB_INTERNAL), 1)
+ifeq ($(EXTERNAL_ZLIB), 1)
 BURN_BLACKLIST += $(FBA_BURNER_DIR)/unzip.c \
 		$(FBA_BURNER_DIR)/ioapi.c	
 endif
@@ -182,9 +184,10 @@ FBA_DEFINES := -DNO_ASMCORE \
 	$(PLATFORM_DEFINES) \
 	-DINLINE="static inline"
 
-ifeq ($(ZLIB_INTERNAL), 0)
+ifeq ($(EXTERNAL_ZLIB), 1)
+FBA_DEFINES += -DEXTERNAL_ZLIB
+else
 FBA_SRC_DIRS += $(FBA_LIB_DIRS)
-FBA_DEFINES += -D__LIBSNES_USE_ZLIB__ -DUSE_INTERNAL_ZLIB
 endif
 
 ifeq ($(DEBUG), 1)

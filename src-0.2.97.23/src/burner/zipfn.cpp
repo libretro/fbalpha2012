@@ -19,7 +19,7 @@ static INT32 nCurrFile = 0; // The current file we are pointing to
 static _7z_file* _7ZipFile = NULL;
 #endif
 
-#ifdef __LIBSNES_USE_ZLIB__
+#ifdef EXTERNAL_ZLIB
 /* crc32.c -- compute the CRC-32 of a data stream
  * Copyright (C) 1995-2002 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h 

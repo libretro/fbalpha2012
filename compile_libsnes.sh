@@ -6,7 +6,7 @@ FORMAT=libsnes
 # PROGRAM FUNCTIONS
 #******************
 
-function clean()
+clean()
 {
    cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
@@ -14,7 +14,7 @@ function clean()
 	make -f makefile.libsnes clean
 }
 
-function make_libsnes()
+make_libsnes()
 {
    cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
@@ -22,7 +22,7 @@ function make_libsnes()
 	make -f makefile.libsnes -j4
 }
 
-function make_debug()
+make_debug()
 {
    cd src-0.2.97.23/src/burner/libsnes
    sh generate_files.sh
@@ -34,7 +34,7 @@ function make_debug()
 # DISPLAY FUNCTIONS
 #******************
 
-function title()
+title()
 {
 	echo ""
 	echo "***********************"
@@ -42,29 +42,29 @@ function title()
 	echo "***********************"
 }
 
-function display_clean()
+display_clean()
 {
 	echo "clean          Clean the object files"
 }
 
-function display_make()
+display_make()
 {
 	echo "make           Compile libsnes library"
 }
 
-function display_make_debug()
+display_make_debug()
 {
 	echo "make_debug     Compile DEBUG libsnes library"
 }
 
-function display_all_options()
+display_all_options()
 {
 	display_clean
 	display_make
 	display_make_debug
 }
 
-function display_usage()
+display_usage()
 {
 	echo "Usage: compile_libsnes.sh [options]"
 	echo "Options:"

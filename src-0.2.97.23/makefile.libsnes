@@ -122,24 +122,27 @@ FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/snd \
 	$(FBA_BURN_DRIVERS_DIR)/capcom \
 	$(FBA_BURN_DRIVERS_DIR)/cave \
-	$(FBA_BURN_DRIVERS_DIR)/dataeast \
 	$(FBA_BURN_DRIVERS_DIR)/cps3 \
+	$(FBA_BURN_DRIVERS_DIR)/dataeast \
 	$(FBA_BURN_DRIVERS_DIR)/galaxian \
-	$(FBA_BURN_DRIVERS_DIR)/konami \
 	$(FBA_BURN_DRIVERS_DIR)/irem \
+	$(FBA_BURN_DRIVERS_DIR)/konami \
 	$(FBA_BURN_DRIVERS_DIR)/megadrive \
-	$(FBA_BURN_DRIVERS_DIR)/misc \
 	$(FBA_BURN_DRIVERS_DIR)/neogeo \
+	$(FBA_BURN_DRIVERS_DIR)/pce \
 	$(FBA_BURN_DRIVERS_DIR)/pgm \
+	$(FBA_BURN_DRIVERS_DIR)/pre90s \
 	$(FBA_BURN_DRIVERS_DIR)/psikyo \
+	$(FBA_BURN_DRIVERS_DIR)/pst90s \
 	$(FBA_BURN_DRIVERS_DIR)/sega \
+	$(FBA_BURN_DRIVERS_DIR)/snes \
 	$(FBA_BURN_DRIVERS_DIR)/taito \
-	$(FBA_BURN_DRIVERS_DIR)/toaplan \
-	$(FBA_BURN_DRIVERS_DIR)/pre90s
+	$(FBA_BURN_DRIVERS_DIR)/toaplan
 
 FBA_CPU_DIRS := $(FBA_CPU_DIR) \
-	$(FBA_CPU_DIR)/arm7 \
 	$(FBA_CPU_DIR)/arm \
+	$(FBA_CPU_DIR)/arm7 \
+	$(FBA_CPU_DIR)/h6280 \
 	$(FBA_CPU_DIR)/hd6309 \
 	$(FBA_CPU_DIR)/i8039 \
 	$(FBA_CPU_DIR)/konami \
@@ -151,8 +154,7 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/nec \
 	$(FBA_CPU_DIR)/s2650 \
 	$(FBA_CPU_DIR)/sh2 \
-	$(FBA_CPU_DIR)/z80 \
-	$(FBA_CPU_DIR)/h6280
+	$(FBA_CPU_DIR)/z80
 
 FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
 

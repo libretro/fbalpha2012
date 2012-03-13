@@ -162,6 +162,11 @@ FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
 
 FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
 
+ifeq ($(EXTERNAL_ZLIB), 1)
+FBA_DEFINES += -DEXTERNAL_ZLIB
+else
+FBA_SRC_DIRS += $(FBA_LIB_DIRS)
+endif
 
 FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXSRCS += $(LIBSNES_DIR)/libsnes.cpp $(LIBSNES_DIR)/neocdlist.cpp
@@ -183,12 +188,6 @@ FBA_DEFINES := -DNO_ASMCORE \
 	$(ENDIANNESS_DEFINES) \
 	$(PLATFORM_DEFINES) \
 	-DINLINE="static inline"
-
-ifeq ($(EXTERNAL_ZLIB), 1)
-FBA_DEFINES += -DEXTERNAL_ZLIB
-else
-FBA_SRC_DIRS += $(FBA_LIB_DIRS)
-endif
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -g

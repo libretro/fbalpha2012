@@ -34,17 +34,17 @@ else ifeq ($(platform), osx)
    ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), ps3)
    TARGET := libsnes.a
-   CC = ppu-lv2-gcc
-   CXX = ppu-lv2-g++
-   AR = ppu-lv2-ar
+   CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
+   CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
+   AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -D__CELLOS_LV2
    EXTERNAL_ZLIB = 1
 else ifeq ($(platform), sncps3)
    TARGET := libsnes.a
-   CC = ps3ppusnc
-   CXX = ps3ppusnc
-   AR = ps3snarl
+   CXX	= $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
+   CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
+   AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN
    PLATFORM_DEFINES += -D__CELLOS_LV2__ -DSN_TARGET_PS3
    EXTERNAL_ZLIB = 1

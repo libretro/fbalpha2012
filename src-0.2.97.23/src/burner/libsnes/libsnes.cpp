@@ -93,7 +93,44 @@ INT32 CDEmuLoadSector(INT32 LBA, char* pBuffer) { return 0; }
 UINT8* CDEmuReadTOC(INT32 track) { return 0; }
 UINT8* CDEmuReadQChannel() { return 0; }
 INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
-void InpDIPSWResetDIPs (void) {}
+
+static int nDIPOffset;
+
+static void InpDIPSWGetOffset (void)
+{
+	BurnDIPInfo bdi;
+	nDIPOffset = 0;
+
+	for(int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
+	{
+		if (bdi.nFlags == 0xF0)
+		{
+			nDIPOffset = bdi.nInput;
+			break;
+		}
+	}
+}
+
+void InpDIPSWResetDIPs (void)
+{
+	int i = 0;
+	BurnDIPInfo bdi;
+	struct GameInp * pgi = NULL;
+
+	InpDIPSWGetOffset();
+
+	while (BurnDrvGetDIPInfo(&bdi, i) == 0)
+	{
+		if (bdi.nFlags == 0xFF)
+		{
+			pgi = GameInp + bdi.nInput + nDIPOffset;
+			if (pgi)
+				pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);	
+		}
+		i++;
+	}
+}
+
 int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
 void Reinitialise(void) {}
 

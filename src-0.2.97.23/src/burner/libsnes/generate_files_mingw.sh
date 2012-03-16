@@ -64,7 +64,7 @@ perl dep/scripts/toa_gp9001_func.pl -o generated/toa_gp9001_func.h
 
 echo ""
 echo "7) pgm_sprite_create.cpp"
-gcc -o pgm_sprite_create.exe burn/drv/pgm/pgm_sprite_create.cpp
+g++ -o pgm_sprite_create.exe burn/drv/pgm/pgm_sprite_create.cpp
 `pwd`/pgm_sprite_create.exe > burn/drv/pgm/pgm_sprite.h
 
 #compile m68kmakeecho 
@@ -80,7 +80,7 @@ echo "9) Create m68kops.h with m68kmake"
 #compile ctv_make
 echo ""
 echo "10) compile ctvmake"
-gcc -o  ctvmake.exe burn/drv/capcom/ctv_make.cpp
+g++ -o  ctvmake.exe burn/drv/capcom/ctv_make.cpp
 
 #create ctv.h
 echo ""

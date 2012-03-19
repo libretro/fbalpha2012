@@ -1,0 +1,39 @@
+This list contains all games supported by FB Alpha.
+
+32 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
+
+  name		  status  full name						  parent	  year	  company	  hardware	  remarks
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+
+| jojobaner1	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| jojoba	| 1999	| Capcom	| CPS-3		| 					|
+| jojobane	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| jojoba	| 1999	| Capcom	| CPS-3		| 					|
+| jojobar1	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| jojoba	| 1999	| Capcom	| CPS-3		| 					|
+| jojobanr1	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| jojoba	| 1999	| Capcom	| CPS-3		| 					|
+| jojoba	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| 		| 1999	| Capcom	| CPS-3		| 					|
+| jojoban	|  	| JoJo's Bizarre Adventure: Heritage for the Future / Jo| jojoba	| 1999	| Capcom	| CPS-3		| 					|
+| jojonr2	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Asia 981202,| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojonr1	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Asia 990108,| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojon		|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Asia 990128,| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojojr2	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Japan 981202| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojojr1	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Japan 990108| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojoj		|  	| JoJo's Venture / JoJo no Kimyouna Bouken (Japan 990128| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojor2	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (USA 981202)	| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojor1	|  	| JoJo's Venture / JoJo no Kimyouna Bouken (USA 990108)	| jojo		| 1998	| Capcom	| CPS-3		| 					|
+| jojo		|  	| JoJo's Venture / JoJo no Kimyouna Bouken (USA 990128)	| 		| 1998	| Capcom	| CPS-3		| 					|
+| redearthr1	|  	| Red Earth / War-Zard (Euro 961023)			| redearth	| 1996	| Capcom	| CPS-3		| 					|
+| redearth	|  	| Red Earth / War-Zard (Euro 961121)			| 		| 1996	| Capcom	| CPS-3		| 					|
+| sfiii2n	|  	| Street Fighter III 2nd Impact: Giant Attack (Asia 9709| sfiii2	| 1997	| Capcom	| CPS-3		| 					|
+| sfiii2j	|  	| Street Fighter III 2nd Impact: Giant Attack (Japan 970| sfiii2	| 1997	| Capcom	| CPS-3		| 					|
+| sfiii2	|  	| Street Fighter III 2nd Impact: Giant Attack (USA 97093| 		| 1997	| Capcom	| CPS-3		| 					|
+| sfiii3r1	|  	| Street Fighter III 3rd Strike: Fight for the Future (E| sfiii3	| 1999	| Capcom	| CPS-3		| 					|
+| sfiii3	|  	| Street Fighter III 3rd Strike: Fight for the Future (E| 		| 1999	| Capcom	| CPS-3		| 					|
+| sfiii3nr1	|  	| Street Fighter III 3rd Strike: Fight for the Future (J| sfiii3	| 1999	| Capcom	| CPS-3		| 					|
+| sfiii3n	|  	| Street Fighter III 3rd Strike: Fight for the Future (J| sfiii3	| 1999	| Capcom	| CPS-3		| 					|
+| sfiii3ur1	|  	| Street Fighter III 3rd Strike: Fight for the Future (U| sfiii3	| 1999	| Capcom	| CPS-3		| 					|
+| sfiii3u	|  	| Street Fighter III 3rd Strike: Fight for the Future (U| sfiii3	| 1999	| Capcom	| CPS-3		| 					|
+| sfiiin	|  	| Street Fighter III: New Generation (Asia 970204, NO CD| sfiii		| 1997	| Capcom	| CPS-3		| 					|
+| sfiiih	|  	| Street Fighter III: New Generation (Hispanic 970204)	| sfiii		| 1997	| Capcom	| CPS-3		| 					|
+| sfiiij	|  	| Street Fighter III: New Generation (Japan 970204)	| sfiii		| 1997	| Capcom	| CPS-3		| 					|
+| sfiii		|  	| Street Fighter III: New Generation (USA 970204)	| 		| 1997	| Capcom	| CPS-3		| 					|
+| warzardr1	|  	| War-Zard / Red Earth (Japan 961023)			| redearth	| 1996	| Capcom	| CPS-3		| 					|
+| warzard	|  	| War-Zard / Red Earth (Japan 961121)			| redearth	| 1996	| Capcom	| CPS-3		| 					|
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+

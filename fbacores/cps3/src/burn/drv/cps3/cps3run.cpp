@@ -17,11 +17,18 @@ Port to FBA by OopsWare
 
 **********************************************************************/
 
+// SekMemory types:
+#define SM_READ  (1)
+#define SM_WRITE (2)
+#define SM_FETCH (4)
+#define SM_ROM (SM_READ | SM_FETCH)
+#define SM_RAM (SM_READ | SM_WRITE | SM_FETCH)
+
 #include "cps3.h"
-#include "sh2.h"
+
+#include "../../cpu/sh2/sh2.cpp"
 
 #define	BE_GFX		1
-//#define	FAST_BOOT	1
 #define SPEED_HACK	1		// Default should be 1, if not FPS would drop.
 
 static UINT8 *Mem = NULL, *MemEnd = NULL;
@@ -129,10 +136,9 @@ UINT32 cps3_flash_read(flash_chip * chip, UINT32 addr)
 	case FM_READID:
 		
 		switch (addr & 0x7fffff) {
-			case 0:	return 0x04040404;	//(c->maker_id << 0) | (c->maker_id << 8) | (c->maker_id << 16) | (c->maker_id << 24);
-			case 4: return 0xadadadad;	//(c->device_id << 0) | (c->device_id << 8) | (c->device_id << 16) | (c->device_id << 24);
+			case 0:	return 0x04040404;
+			case 4: return 0xadadadad;
 			case 8: return 0x00000000;
-			//case 12: return (c->flash_master_lock) ? 0x01010101 : 0x00000000
 		}
 		return 0;
 
@@ -143,15 +149,12 @@ UINT32 cps3_flash_read(flash_chip * chip, UINT32 addr)
 
 	case FM_NORMAL:
 	default:
-		//
 		return 0;
 	}
 }
 
 void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 {
-	bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
-	
 	switch( chip->flash_mode )	{
 	case FM_NORMAL:
 	case FM_READSTATUS:
@@ -175,8 +178,6 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 				chip->flash_mode = FM_READAMDID1;
 			break;
 		default:
-			//logerror( "Unknown flash mode byte %x\n", data & 0xff );
-			//bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
 			break;
 		}	
 		break;
@@ -184,7 +185,6 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 		if ((addr & 0xffff) == (0x2aa <<2) && (data & 0xff) == 0x55 ) {
 			chip->flash_mode = FM_READAMDID2;
 		} else {
-			//logerror( "unexpected %08x=%02x in FM_READAMDID1\n", address, data & 0xff );
 			chip->flash_mode = FM_NORMAL;
 		}
 		break;
@@ -195,10 +195,7 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 			chip->flash_mode = FM_ERASEAMD1;
 		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xa0) {
 			chip->flash_mode = FM_BYTEPROGRAM;
-		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xf0) {
-			chip->flash_mode = FM_NORMAL;
 		} else {
-			// logerror( "unexpected %08x=%02x in FM_READAMDID2\n", address, data & 0xff );
 			chip->flash_mode = FM_NORMAL;
 		}
 		break;				
@@ -273,41 +270,22 @@ static INT32 last_normal_byte = 0;
 static UINT32 process_byte( UINT8 real_byte, UINT32 destination, INT32 max_length )
 {
 	UINT8 * dest = (UINT8 *) RamCRam;
-	//printf("process byte for destination %08x\n", destination);
 	destination &= 0x7fffff;
 
 	if (real_byte&0x40) {
 		INT32 tranfercount = 0;
-		//printf("Set RLE Mode\n");
 		INT32 cps3_rle_length = (real_byte&0x3f)+1;
-		//printf("RLE Operation (length %08x\n", cps3_rle_length );
 		while (cps3_rle_length) {
-#if BE_GFX
 			dest[((destination+tranfercount)&0x7fffff)] = (last_normal_byte&0x3f);
-#else
-			dest[((destination+tranfercount)&0x7fffff)^3] = (last_normal_byte&0x3f);
-#endif
-			//cps3_char_ram_dirty[((destination+tranfercount)&0x7fffff)/0x100] = 1;
-			//cps3_char_ram_is_dirty = 1;
-			//printf("RLE WRite Byte %08x, %02x\n", destination+tranfercount, real_byte);
-
 			tranfercount++;
 			cps3_rle_length--;
 			max_length--;
 			if ((destination+tranfercount) > 0x7fffff)  return max_length;
-	//      if (max_length==0) return max_length; // this is meant to abort the transfer if we exceed dest length,, not working
 		}
 		return tranfercount;
 	} else {
-		//printf("Write Normal Data\n");
-#if BE_GFX
 		dest[(destination&0x7fffff)] = real_byte;
-#else
-		dest[(destination&0x7fffff)^3] = real_byte;
-#endif
 		last_normal_byte = real_byte;
-		//cps3_char_ram_dirty[(destination&0x7fffff)/0x100] = 1;
-		//cps3_char_ram_is_dirty = 1;
 		return 1;
 	}
 }
@@ -327,7 +305,6 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 			current_byte &= 0x7f;
 
 			real_byte = sourcedata[ (chardma_table_address+current_byte*2+0) ^ 0 ];
-			//if (real_byte&0x80) return;
 			length_processed = process_byte( real_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
@@ -335,7 +312,6 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 			if (length_remaining<=0) return; // if we've expired, exit
 
 			real_byte = sourcedata[ (chardma_table_address+current_byte*2+1) ^ 0 ];
-			//if (real_byte&0x80) return;
 			length_processed = process_byte( real_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
@@ -364,14 +340,7 @@ static UINT32 ProcessByte8(UINT8 b, UINT32 dst_offset)
  		INT32 rle=(b+1)&0xff;
 
  		for(INT32 i=0;i<rle;++i) {
-#if BE_GFX
 			destRAM[(dst_offset&0x7fffff)] = lastb;
-#else
-			destRAM[(dst_offset&0x7fffff)^3] = lastb;
-#endif
-			//cps3_char_ram_dirty[(dst_offset&0x7fffff)/0x100] = 1;
-			//cps3_char_ram_is_dirty = 1;
-
 			dst_offset++;
  			++l;
  		}
@@ -380,13 +349,7 @@ static UINT32 ProcessByte8(UINT8 b, UINT32 dst_offset)
  	} else {
  		lastb2=lastb;
  		lastb=b;
-#if BE_GFX
 		destRAM[(dst_offset&0x7fffff)] = b;
-#else
-		destRAM[(dst_offset&0x7fffff)^3] = b;
-#endif
-		//cps3_char_ram_dirty[(dst_offset&0x7fffff)/0x100] = 1;
-		//cps3_char_ram_is_dirty = 1;
  		return 1;
  	}
 }
@@ -449,7 +412,6 @@ static void cps3_process_character_dma(UINT32 address)
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00600000:
-			//bprintf(PRINT_NORMAL, _T("Character DMA (alt) start %08x to %08x with %d\n"), real_source, real_destination, real_length);
 			/* 8bpp DMA decompression
 			   - this is used on SFIII NG Sean's Stage ONLY */
 			cps3_do_alt_char_dma( real_source, real_destination, real_length );
@@ -458,12 +420,9 @@ static void cps3_process_character_dma(UINT32 address)
 		case 0x00000000:
 			// Red Earth need this. 8192 byte trans to 0x00003000 (from 0x007ec000???)
 			// seems some stars(6bit alpha) without compress
-			//bprintf(PRINT_NORMAL, _T("Character DMA (redearth) start %08x to %08x with %d\n"), real_source, real_destination, real_length);
 			memcpy( (UINT8 *)RamCRam + real_destination, RomUser + real_source, real_length );
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
-		default:
-			bprintf(PRINT_NORMAL, _T("Character DMA Unknown DMA List Command Type %08x\n"), dat1);
 		}
 	}
 }
@@ -516,22 +475,10 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 	switch (addr) {
 	
 	// redearth will read this !!!
-#if 0
-	case 0x040c0000:
-		return RamVReg[0] >> 16;
-	case 0x040c0002:
-		return RamVReg[0] & 0xffff;
-	case 0x040c0004:
-		return RamVReg[1] >> 16;
-	case 0x040c0006:
-		return RamVReg[1] & 0xffff;
-#else
 	case 0x040c0000:
 	case 0x040c0002:
 	case 0x040c0004:
 	case 0x040c0006:
-		return 0;
-#endif
 	// cps3_vbl_r
 	case 0x040c000c:
 	case 0x040c000e:
@@ -565,8 +512,7 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 			} else
 			if (addr == 0x202)
 				return cps3_current_eeprom_read;
-		} else
-		bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %8x\n"), addr);
+		}
 	}
 	return 0;
 }
@@ -575,14 +521,9 @@ UINT32 __fastcall cps3ReadLong(UINT32 addr)
 {
 	addr &= 0xc7ffffff;
 		
-	switch (addr) {
-	case 0x04200000:
-		bprintf(PRINT_NORMAL, _T("GFX Read Flash ID, cram bank %04x gfx flash bank: %04x\n"), cram_bank, gfxflash_bank);
+	if (addr == 0x04200000)
 		return 0x0404adad;
-
-	default:
-		bprintf(PRINT_NORMAL, _T("Attempt to read long value of location %8x\n"), addr);
-	}
+		
 	return 0;
 }
 
@@ -590,26 +531,19 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 {
 	addr &= 0xc7ffffff;
 	
-	switch (addr) {
-	
-	// cps3_ss_bank_base_w
-	case 0x05050020: ss_bank_base = ( ss_bank_base  & 0x00ffffff ) | (data << 24); break;
-	case 0x05050021: ss_bank_base = ( ss_bank_base  & 0xff00ffff ) | (data << 16); break;
-	case 0x05050022: ss_bank_base = ( ss_bank_base  & 0xffff00ff ) | (data <<  8); break;
-	case 0x05050023: ss_bank_base = ( ss_bank_base  & 0xffffff00 ) | (data <<  0); break;
+	switch (addr)
+	{
+		// cps3_ss_bank_base_w
+		case 0x05050020: ss_bank_base = ( ss_bank_base  & 0x00ffffff ) | (data << 24); break;
+		case 0x05050021: ss_bank_base = ( ss_bank_base  & 0xff00ffff ) | (data << 16); break;
+		case 0x05050022: ss_bank_base = ( ss_bank_base  & 0xffff00ff ) | (data <<  8); break;
+		case 0x05050023: ss_bank_base = ( ss_bank_base  & 0xffffff00 ) | (data <<  0); break;
 
-	// cps3_ss_pal_base_w
-	case 0x05050024: ss_pal_base = ( ss_pal_base & 0x00ff ) | (data << 8); break;
-	case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
-	case 0x05050026: break;
-	case 0x05050027: break;
-
-	default:
-		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
-			// VideoReg
-
-		} else
-			bprintf(PRINT_NORMAL, _T("Attempt to write byte value   %02x to location %8x\n"), data, addr);
+				 // cps3_ss_pal_base_w
+		case 0x05050024: ss_pal_base = ( ss_pal_base & 0x00ff ) | (data << 8); break;
+		case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
+		case 0x05050026:
+		case 0x05050027: break;
 	}
 }
 
@@ -617,166 +551,146 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 {
 	addr &= 0xc7ffffff;
 	
-	switch (addr) {
-	
-	case 0x040c0084: break;
-	case 0x040c0086:
-		if (cram_bank != data) {
-			cram_bank = data & 7;
-			//bprintf(PRINT_NORMAL, _T("CRAM bank set to %d\n"), data);
-			Sh2MapMemory(((UINT8 *)RamCRam) + (cram_bank << 20), 0x04100000, 0x041fffff, SM_RAM);
-		}
-		break;
+	switch (addr)
+	{
 
-	case 0x040c0088:
-	//case 0x040c008a:
-		gfxflash_bank = data - 2;
-		//bprintf(PRINT_NORMAL, _T("gfxflash bank set to %04x\n"), data);
-		break;
-	
-	// cps3_characterdma_w
-	//case 0x040c0094:
-	case 0x040c0096: 
-		chardma_source = data; 
-		break;
-	case 0x040c0098:
-	//case 0x040c009a:
-		if (data & 0x0040)
-			cps3_process_character_dma( chardma_source | ((data & 0x003f) << 16) );
-		break;
+		case 0x040c0084: break;
+		case 0x040c0086:
+				 if (cram_bank != data) {
+					 cram_bank = data & 7;
+					 Sh2MapMemory(((UINT8 *)RamCRam) + (cram_bank << 20), 0x04100000, 0x041fffff, SM_RAM);
+				 }
+				 break;
 
-	// cps3_palettedma_w
-	case 0x040c00a0: paldma_source = (paldma_source & 0x0000ffff) | (data << 16); break;
-	case 0x040c00a2: paldma_source = (paldma_source & 0xffff0000) | (data <<  0); break;
-	case 0x040c00a4: paldma_dest = (paldma_dest & 0x0000ffff) | (data << 16); break;
-	case 0x040c00a6: paldma_dest = (paldma_dest & 0xffff0000) | (data <<  0); break;
-	case 0x040c00a8: paldma_fade = (paldma_fade & 0x0000ffff) | (data << 16); break;
-	case 0x040c00aa: paldma_fade = (paldma_fade & 0xffff0000) | (data <<  0); break;
-	case 0x040c00ac: paldma_length = data; break;
-	case 0x040c00ae:
-		//bprintf(PRINT_NORMAL, _T("palettedma [%04x]  from %08x to %08x fade %08x size %d\n"), data, (paldma_source << 1), paldma_dest, paldma_fade, paldma_length);
-		if (data & 0x0002) {
-			for (UINT32 i=0; i<paldma_length; i++) {
-				UINT16 * src = (UINT16 *)RomUser;
-				UINT16 coldata = src[(paldma_source - 0x200000 + i)];
-				
+		case 0x040c0088:
+				 gfxflash_bank = data - 2;
+				 break;
+
+				 // cps3_characterdma_w
+		case 0x040c0096: 
+				 chardma_source = data; 
+				 break;
+		case 0x040c0098:
+				 if (data & 0x0040)
+					 cps3_process_character_dma( chardma_source | ((data & 0x003f) << 16) );
+				 break;
+
+				 // cps3_palettedma_w
+		case 0x040c00a0: paldma_source = (paldma_source & 0x0000ffff) | (data << 16); break;
+		case 0x040c00a2: paldma_source = (paldma_source & 0xffff0000) | (data <<  0); break;
+		case 0x040c00a4: paldma_dest = (paldma_dest & 0x0000ffff) | (data << 16); break;
+		case 0x040c00a6: paldma_dest = (paldma_dest & 0xffff0000) | (data <<  0); break;
+		case 0x040c00a8: paldma_fade = (paldma_fade & 0x0000ffff) | (data << 16); break;
+		case 0x040c00aa: paldma_fade = (paldma_fade & 0xffff0000) | (data <<  0); break;
+		case 0x040c00ac: paldma_length = data; break;
+		case 0x040c00ae:
+				 if (data & 0x0002) {
+					 for (UINT32 i=0; i<paldma_length; i++) {
+						 UINT16 * src = (UINT16 *)RomUser;
+						 UINT16 coldata = src[(paldma_source - 0x200000 + i)];
+
 #ifdef LSB_FIRST
-				coldata = (coldata << 8) | (coldata >> 8);
+						 coldata = (coldata << 8) | (coldata >> 8);
 #endif
 
-				UINT32 r = (coldata & 0x001F) >>  0;
-				UINT32 g = (coldata & 0x03E0) >>  5;
-				UINT32 b = (coldata & 0x7C00) >> 10;
-				if (paldma_fade!=0) {
-					INT32 fade;
-					fade = (paldma_fade & 0x3f000000)>>24; r = (r*fade)>>5; if (r>0x1f) r = 0x1f;
-					fade = (paldma_fade & 0x003f0000)>>16; g = (g*fade)>>5; if (g>0x1f) g = 0x1f;
-					fade = (paldma_fade & 0x0000003f)>> 0; b = (b*fade)>>5; if (b>0x1f) b = 0x1f;
-					coldata = (r << 0) | (g << 5) | (b << 10);
-				}
-				
-				r = r << 3;
-				g = g << 3;
-				b = b << 3;
+						 UINT32 r = (coldata & 0x001F) >>  0;
+						 UINT32 g = (coldata & 0x03E0) >>  5;
+						 UINT32 b = (coldata & 0x7C00) >> 10;
+						 if (paldma_fade!=0) {
+							 INT32 fade;
+							 fade = (paldma_fade & 0x3f000000)>>24; r = (r*fade)>>5; if (r>0x1f) r = 0x1f;
+							 fade = (paldma_fade & 0x003f0000)>>16; g = (g*fade)>>5; if (g>0x1f) g = 0x1f;
+							 fade = (paldma_fade & 0x0000003f)>> 0; b = (b*fade)>>5; if (b>0x1f) b = 0x1f;
+							 coldata = (r << 0) | (g << 5) | (b << 10);
+						 }
 
-				RamPal[(paldma_dest + i) ^ 1] = coldata;
-				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
-			}
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
-		}
-		break;
-	
-	case 0x04200554:
-	case 0x04200aaa:
-		// gfx flash command 
-		// "0xaa 0x55 0x90" set flash to get id 
-		// "0xaa 0x55 0xf0" set flash to normal read
-		break;
-	
-	// cps3_ss_bank_base_w
-	case 0x05050020: ss_bank_base = ( ss_bank_base  & 0x0000ffff ) | (data << 16); break;
-	case 0x05050022: ss_bank_base = ( ss_bank_base  & 0xffff0000 ) | (data <<  0); break;
+						 r = r << 3;
+						 g = g << 3;
+						 b = b << 3;
 
-	// cps3_ss_pal_base_w
-	case 0x05050024: ss_pal_base = data; break;
-	case 0x05050026: break;
-			
-	case 0x05100000:
-		Sh2SetIRQLine(12, SH2_IRQSTATUS_NONE);
-		break;
-	case 0x05110000:
-		Sh2SetIRQLine(10, SH2_IRQSTATUS_NONE);
-		break;
+						 RamPal[(paldma_dest + i) ^ 1] = coldata;
+						 Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
+					 }
+					 Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+				 }
+				 break;
 
-	case 0x05140000:
-	case 0x05140002:
-		// cd-rom read
-		
-		break;
-			
-	default:
-		if ((addr >= 0x040c0000) && (addr < 0x040c0100)) {
-			// 0x040C0000 ~ 0x040C001f : cps3_unk_vidregs
-			// 0x040C0020 ~ 0x040C002b : tilemap20_regs_base
-			// 0x040C0030 ~ 0x040C003b : tilemap30_regs_base
-			// 0x040C0040 ~ 0x040C004b : tilemap40_regs_base
-			// 0x040C0050 ~ 0x040C005b : tilemap50_regs_base
-			// 0x040C0060 ~ 0x040C007f : cps3_fullscreenzoom
+		case 0x04200554:
+		case 0x04200aaa:
+				 // gfx flash command 
+				 // "0xaa 0x55 0x90" set flash to get id 
+				 // "0xaa 0x55 0xf0" set flash to normal read
+				 break;
 
-			addr &= 0xff;
+				 // cps3_ss_bank_base_w
+		case 0x05050020: ss_bank_base = ( ss_bank_base  & 0x0000ffff ) | (data << 16); break;
+		case 0x05050022: ss_bank_base = ( ss_bank_base  & 0xffff0000 ) | (data <<  0); break;
+
+				 // cps3_ss_pal_base_w
+		case 0x05050024: ss_pal_base = data; break;
+		case 0x05050026: break;
+
+		case 0x05100000:
+				 Sh2SetIRQLine(12, SH2_IRQSTATUS_NONE);
+				 break;
+		case 0x05110000:
+				 Sh2SetIRQLine(10, SH2_IRQSTATUS_NONE);
+				 break;
+
+		case 0x05140000:
+		case 0x05140002:
+				 // cd-rom read
+
+				 break;
+
+		default:
+				 if ((addr >= 0x040c0000) && (addr < 0x040c0100)) {
+					 // 0x040C0000 ~ 0x040C001f : cps3_unk_vidregs
+					 // 0x040C0020 ~ 0x040C002b : tilemap20_regs_base
+					 // 0x040C0030 ~ 0x040C003b : tilemap30_regs_base
+					 // 0x040C0040 ~ 0x040C004b : tilemap40_regs_base
+					 // 0x040C0050 ~ 0x040C005b : tilemap50_regs_base
+					 // 0x040C0060 ~ 0x040C007f : cps3_fullscreenzoom
+
+					 addr &= 0xff;
 #ifdef LSB_FIRST
-			((UINT16 *)RamVReg)[ (addr >> 1) ^ 1 ] = data;
+					 ((UINT16 *)RamVReg)[ (addr >> 1) ^ 1 ] = data;
 #else
-			((UINT16 *)RamVReg)[ (addr >> 1) ] = data;
+					 ((UINT16 *)RamVReg)[ (addr >> 1) ] = data;
 #endif
-			
-		} else
-		if ((addr >= 0x05000000) && (addr < 0x05001000)) {
-			
-			
-		} else 
-		if ((addr >= 0x05001000) && (addr < 0x05001204)) {
-			// EEPROM
-			addr -= 0x05001000;
-			if ((addr>=0x080) && (addr<0x100))
-#ifdef LSB_FIRST
-			EEPROM[((addr-0x080) >> 1) ^ 1] = data;
-#else
-			EEPROM[((addr-0x080) >> 1)] = data;
-#endif
-		} else
-		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
-			// unknow i/o
 
-		} else
-				
-		bprintf(PRINT_NORMAL, _T("Attempt to write word value %04x to location %8x\n"), data, addr);
+				 } else
+					 if ((addr >= 0x05000000) && (addr < 0x05001000)) {
+
+
+					 } else 
+						 if ((addr >= 0x05001000) && (addr < 0x05001204)) {
+							 // EEPROM
+							 addr -= 0x05001000;
+							 if ((addr>=0x080) && (addr<0x100))
+#ifdef LSB_FIRST
+								 EEPROM[((addr-0x080) >> 1) ^ 1] = data;
+#else
+							 EEPROM[((addr-0x080) >> 1)] = data;
+#endif
+						 } else
+							 if ((addr >= 0x05050000) && (addr < 0x05060000)) {
+								 // unknow i/o
+
+							 }
 	}
 }
 
 void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 {
-	addr &= 0xc7ffffff;
-	
-	switch (addr) {
-	case 0x07ff000c:
-	case 0x07ff0048:
-		// some unknown data write by DMA 0 while bootup
-		break;
-
-	default:
-		bprintf(PRINT_NORMAL, _T("Attempt to write long value %8x to location %8x\n"), data, addr);
-	}
 }
 
 void __fastcall cps3C0WriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3C0WriteWord(UINT32 addr, UINT16 data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
@@ -786,14 +700,12 @@ void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
 		*(UINT32 *)(RamC000_D + (addr & 0x3ff)) = data ^ cps3_mask(addr, cps3_key1, cps3_key2);
 		return ;
 	}
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
 }
 
 // If fastboot != 1 
 
 UINT8 __fastcall cps3RomReadByte(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 #ifdef LSB_FIRST
 	addr ^= 0x03;
@@ -803,7 +715,6 @@ UINT8 __fastcall cps3RomReadByte(UINT32 addr)
 
 UINT16 __fastcall cps3RomReadWord(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 #ifdef LSB_FIRST
 	addr ^= 0x02;
@@ -813,7 +724,6 @@ UINT16 __fastcall cps3RomReadWord(UINT32 addr)
 
 UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read long value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 	
 	UINT32 retvalue = cps3_flash_read(&main_flash, addr);
@@ -824,29 +734,24 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		if ( main_flash.flash_mode == FM_NORMAL )
 			retvalue = *(UINT32 *)(RomGame + (addr & 0x00ffffff));
-		bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
 	}
 	return retvalue;
 }
 
 void __fastcall cps3RomWriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteWord(UINT32 addr, UINT16 data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
 {
-//	bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
 	addr &= 0x00ffffff;
 	cps3_flash_write(&main_flash, addr, data);
 	
 	if ( main_flash.flash_mode == FM_NORMAL ) {
-		bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
 		*(UINT32 *)(RomGame + addr) = data;
 		*(UINT32 *)(RomGame_D + addr) = data ^ cps3_mask(addr + 0x06000000, cps3_key1, cps3_key2);
 	}
@@ -854,7 +759,6 @@ void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
 
 UINT8 __fastcall cps3RomReadByteSpe(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read byte value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 #ifdef LSB_FIRST
 	addr ^= 0x03;
@@ -864,7 +768,6 @@ UINT8 __fastcall cps3RomReadByteSpe(UINT32 addr)
 
 UINT16 __fastcall cps3RomReadWordSpe(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read word value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 #ifdef LSB_FIRST
 	addr ^= 0x02;
@@ -874,7 +777,6 @@ UINT16 __fastcall cps3RomReadWordSpe(UINT32 addr)
 
 UINT32 __fastcall cps3RomReadLongSpe(UINT32 addr)
 {
-//	bprintf(PRINT_NORMAL, _T("Rom Attempt to read long value of location %8x\n"), addr);
 	addr &= 0xc7ffffff;
 	
 	UINT32 retvalue = cps3_flash_read(&main_flash, addr);
@@ -888,28 +790,21 @@ UINT32 __fastcall cps3RomReadLongSpe(UINT32 addr)
 
 UINT8 __fastcall cps3VidReadByte(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
-//	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT16 __fastcall cps3VidReadWord(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
-//	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT32 __fastcall cps3VidReadLong(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
-//	addr &= 0xc7ffffff;
 	return 0;
 }
 
 void __fastcall cps3VidWriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
@@ -934,21 +829,11 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 			
 		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
 	
-	} else
-	bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %4x to location %8x\n"), data, addr);
+	}
 }
 
 void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 {
-	addr &= 0xc7ffffff;
-	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
-
-		if ( data != 0 )
-			bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
-		
-		
-	} else 
-	bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
 }
 
 
@@ -968,12 +853,10 @@ UINT8 __fastcall cps3RamReadByte(UINT32 addr)
 
 UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 {
-	//bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
 	addr &= 0x7ffff;
 
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address) {
-			bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
 			Sh2BurnUntilInt(0);
 		}
 	
@@ -999,8 +882,6 @@ UINT32 __fastcall cps3RamReadLong(UINT32 addr)
 static void Cps3PatchRegion()
 {
 	if ( cps3_region_address ) {
-
-		bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
 
 #ifdef LSB_FIRST
 		RomBios[cps3_region_address] = (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x7f);
@@ -1141,8 +1022,6 @@ INT32 cps3Init()
 		Sh2MapMemory(RomBios,		0x00000000, 0x0007ffff, SM_ROM);	// BIOS
 		Sh2MapMemory(RamMain,		0x02000000, 0x0207ffff, SM_RAM);	// Main RAM
 		Sh2MapMemory((UINT8 *) RamSpr,	0x04000000, 0x0407ffff, SM_RAM);
-//		Sh2MapMemory(RamCRam,		0x04100000, 0x041fffff, SM_RAM);	// map this while reset
-//		Sh2MapMemory(RamGfx,		0x04200000, 0x043fffff, SM_WRITE);
 		Sh2MapMemory((UINT8 *) RamSS,	0x05040000, 0x0504ffff, SM_RAM);	// 'SS' RAM (Score Screen) (text tilemap + toles)
 		
 		Sh2SetReadByteHandler (0, cps3ReadByte);
@@ -1358,8 +1237,6 @@ static void cps3_drawgfxzoom_1(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 	UINT8 * src = (UINT8 *) RamCRam;
 	dst += (drawline * 1024 + x);
 
-#if BE_GFX
-
 	if ( flipy ) {
 		src += code * 256 + 16 * (15 - (drawline - y));
 		if ( flipx ) {
@@ -1435,94 +1312,12 @@ static void cps3_drawgfxzoom_1(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			if ( src[15] ) dst[15] = src[15] | pal;
 		}
 	}
-	
-#else
-
-	if ( flipy ) {
-		src += code * 256 + 16 * (15 - (drawline - y));
-		if ( flipx ) {
-			if ( src[ 3] ) dst[15] = src[ 3] | pal;
-			if ( src[ 2] ) dst[14] = src[ 2] | pal;
-			if ( src[ 1] ) dst[13] = src[ 1] | pal;
-			if ( src[ 0] ) dst[12] = src[ 0] | pal;
-			if ( src[ 7] ) dst[11] = src[ 7] | pal;
-			if ( src[ 6] ) dst[10] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 9] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 8] = src[ 4] | pal;
-			if ( src[11] ) dst[ 7] = src[11] | pal;
-			if ( src[10] ) dst[ 6] = src[10] | pal;
-			if ( src[ 9] ) dst[ 5] = src[ 9] | pal;
-			if ( src[ 8] ) dst[ 4] = src[ 8] | pal;
-			if ( src[15] ) dst[ 3] = src[15] | pal;
-			if ( src[14] ) dst[ 2] = src[14] | pal;
-			if ( src[13] ) dst[ 1] = src[13] | pal;
-			if ( src[12] ) dst[ 0] = src[12] | pal;
-		} else {
-			if ( src[ 3] ) dst[ 0] = src[ 3] | pal;
-			if ( src[ 2] ) dst[ 1] = src[ 2] | pal;
-			if ( src[ 1] ) dst[ 2] = src[ 1] | pal;
-			if ( src[ 0] ) dst[ 3] = src[ 0] | pal;
-			if ( src[ 7] ) dst[ 4] = src[ 7] | pal;
-			if ( src[ 6] ) dst[ 5] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 6] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 7] = src[ 4] | pal;
-			if ( src[11] ) dst[ 8] = src[11] | pal;
-			if ( src[10] ) dst[ 9] = src[10] | pal;
-			if ( src[ 9] ) dst[10] = src[ 9] | pal;
-			if ( src[ 8] ) dst[11] = src[ 8] | pal;
-			if ( src[15] ) dst[12] = src[15] | pal;
-			if ( src[14] ) dst[13] = src[14] | pal;
-			if ( src[13] ) dst[14] = src[13] | pal;
-			if ( src[12] ) dst[15] = src[12] | pal;
-		}
-	} else {
-		src += code * 256 + 16 * (drawline - y);
-		if ( flipx ) {
-			if ( src[ 3] ) dst[15] = src[ 3] | pal;
-			if ( src[ 2] ) dst[14] = src[ 2] | pal;
-			if ( src[ 1] ) dst[13] = src[ 1] | pal;
-			if ( src[ 0] ) dst[12] = src[ 0] | pal;
-			if ( src[ 7] ) dst[11] = src[ 7] | pal;
-			if ( src[ 6] ) dst[10] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 9] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 8] = src[ 4] | pal;
-			if ( src[11] ) dst[ 7] = src[11] | pal;
-			if ( src[10] ) dst[ 6] = src[10] | pal;
-			if ( src[ 9] ) dst[ 5] = src[ 9] | pal;
-			if ( src[ 8] ) dst[ 4] = src[ 8] | pal;
-			if ( src[15] ) dst[ 3] = src[15] | pal;
-			if ( src[14] ) dst[ 2] = src[14] | pal;
-			if ( src[13] ) dst[ 1] = src[13] | pal;
-			if ( src[12] ) dst[ 0] = src[12] | pal;
-		} else {
-			if ( src[ 3] ) dst[ 0] = src[ 3] | pal;
-			if ( src[ 2] ) dst[ 1] = src[ 2] | pal;
-			if ( src[ 1] ) dst[ 2] = src[ 1] | pal;
-			if ( src[ 0] ) dst[ 3] = src[ 0] | pal;
-			if ( src[ 7] ) dst[ 4] = src[ 7] | pal;
-			if ( src[ 6] ) dst[ 5] = src[ 6] | pal;
-			if ( src[ 5] ) dst[ 6] = src[ 5] | pal;
-			if ( src[ 4] ) dst[ 7] = src[ 4] | pal;
-			if ( src[11] ) dst[ 8] = src[11] | pal;
-			if ( src[10] ) dst[ 9] = src[10] | pal;
-			if ( src[ 9] ) dst[10] = src[ 9] | pal;
-			if ( src[ 8] ) dst[11] = src[ 8] | pal;
-			if ( src[15] ) dst[12] = src[15] | pal;
-			if ( src[14] ) dst[13] = src[14] | pal;
-			if ( src[13] ) dst[14] = src[13] | pal;
-			if ( src[12] ) dst[15] = src[12] | pal;
-		}
-	}
-
-#endif
 }
 
 static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 sx, INT32 sy, INT32 scalex, INT32 scaley, INT32 alpha)
 {
-	//if (!scalex || !scaley) return;
-
 	UINT8 * source_base = (UINT8 *) RamCRam + code * 256;
-	
+
 	INT32 sprite_screen_height = (scaley * 16 + 0x8000) >> 16;
 	INT32 sprite_screen_width  = (scalex * 16 + 0x8000) >> 16;	
 	if (sprite_screen_width && sprite_screen_height) {
@@ -1533,103 +1328,87 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 		INT32 ex = sx + sprite_screen_width;
 		INT32 ey = sy + sprite_screen_height;
 
-		INT32 x_index_base;
-		INT32 y_index;
+		INT32 x_index_base = 0;
+		INT32 y_index = 0;
 
 		if( flipx )	{
 			x_index_base = (sprite_screen_width - 1) * dx;
 			dx = -dx;
-		} else
-			x_index_base = 0;
+		}
 
 		if( flipy )	{
 			y_index = (sprite_screen_height - 1) * dy;
 			dy = -dy;
-		} else 
-			y_index = 0;
+		}
 
-		{
-			if( sx < 0)
-			{ /* clip left */
-				INT32 pixels = 0-sx;
-				sx += pixels;
-				x_index_base += pixels*dx;
-			}
-			if( sy < 0 )
-			{ /* clip top */
-				INT32 pixels = 0-sy;
-				sy += pixels;
-				y_index += pixels*dy;
-			}
-			if( ex > cps3_gfx_max_x+1 )
-			{ /* clip right */
-				INT32 pixels = ex-cps3_gfx_max_x-1;
-				ex -= pixels;
-			}
-			if( ey > cps3_gfx_max_y+1 )
-			{ /* clip bottom */
-				INT32 pixels = ey-cps3_gfx_max_y-1;
-				ey -= pixels;
-			}
+		if( sx < 0)
+		{ /* clip left */
+			INT32 pixels = 0-sx;
+			sx += pixels;
+			x_index_base += pixels*dx;
+		}
+		if( sy < 0 )
+		{ /* clip top */
+			INT32 pixels = 0-sy;
+			sy += pixels;
+			y_index += pixels*dy;
+		}
+		if( ex > cps3_gfx_max_x+1 )
+		{ /* clip right */
+			INT32 pixels = ex-cps3_gfx_max_x-1;
+			ex -= pixels;
+		}
+		if( ey > cps3_gfx_max_y+1 )
+		{ /* clip bottom */
+			INT32 pixels = ey-cps3_gfx_max_y-1;
+			ey -= pixels;
 		}
 
 		if( ex > sx ) {
 			switch( alpha ) {
-			case 0:
-				for( INT32 y=sy; y<ey; y++ ) {
-					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
-					INT32 x_index = x_index_base;
-					for(INT32 x=sx; x<ex; x++ ) {
-#if BE_GFX
-						UINT8 c = source[ (x_index>>16) ];
-#else
-						UINT8 c = source[ (x_index>>16) ^ 3 ];
-#endif
-						if( c )	dest[x] = pal | c;
-						x_index += dx;
-					}
-					y_index += dy;
-				}
-				break;
-			case 6:
-				for( INT32 y=sy; y<ey; y++ ) {
-					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
-					INT32 x_index = x_index_base;
-					for(INT32 x=sx; x<ex; x++ ) {
-#if BE_GFX
-						UINT8 c = source[ (x_index>>16)];
-#else
-						UINT8 c = source[ (x_index>>16) ^ 3 ];
-#endif
-						dest[x] |= ((c&0x0000f) << 13);
-						x_index += dx;
-					}
-					y_index += dy;
-				}
-				break;
-			case 8:
-				for( INT32 y=sy; y<ey; y++ ) {
-					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
-					INT32 x_index = x_index_base;
-					for(INT32 x=sx; x<ex; x++ ) {
-#if BE_GFX
-						UINT8 c = source[ (x_index>>16) ];
-#else
-						UINT8 c = source[ (x_index>>16) ^ 3 ];
-#endif
-
-						if (c) {
-							dest[x] |= 0x8000;
-							if (pal&0x10000) dest[x] |= 0x10000;
+				case 0:
+					for( INT32 y=sy; y<ey; y++ ) {
+						UINT8 * source = source_base + (y_index>>16) * 16;
+						UINT32 * dest = RamScreen + y * 512 * 2;
+						INT32 x_index = x_index_base;
+						for(INT32 x=sx; x<ex; x++ ) {
+							UINT8 c = source[ (x_index>>16) ];
+							if( c )	dest[x] = pal | c;
+							x_index += dx;
 						}
-						x_index += dx;
+						y_index += dy;
 					}
-					y_index += dy;
-				}
-				break;
+					break;
+				case 6:
+					for( INT32 y=sy; y<ey; y++ ) {
+						UINT8 * source = source_base + (y_index>>16) * 16;
+						UINT32 * dest = RamScreen + y * 512 * 2;
+						INT32 x_index = x_index_base;
+						for(INT32 x=sx; x<ex; x++ ) {
+							UINT8 c = source[ (x_index>>16)];
+							dest[x] |= ((c&0x0000f) << 13);
+							x_index += dx;
+						}
+						y_index += dy;
+					}
+					break;
+				case 8:
+					for( INT32 y=sy; y<ey; y++ ) {
+						UINT8 * source = source_base + (y_index>>16) * 16;
+						UINT32 * dest = RamScreen + y * 512 * 2;
+						INT32 x_index = x_index_base;
+						for(INT32 x=sx; x<ex; x++ ) {
+							UINT8 c = source[ (x_index>>16) ];
+
+							if (c) {
+								dest[x] |= 0x8000;
+								if (pal&0x10000) dest[x] |= 0x10000;
+							}
+							x_index += dx;
+						}
+						y_index += dy;
+					}
+					break;
 			}
 		}
 	}
@@ -1643,47 +1422,42 @@ static void cps3_draw_tilemapsprite_line(INT32 drawline, UINT32 * regs )
 
 	if (!(regs[1]&0x00008000)) return;
 
-	{
-		UINT32 mapbase =  (regs[2]&0x007f0000)>>16;
-		UINT32 linebase=  (regs[2]&0x7f000000)>>24;
-		INT32 linescroll_enable = (regs[1]&0x00004000);
+	UINT32 mapbase =  (regs[2]&0x007f0000)>>16;
+	UINT32 linebase=  (regs[2]&0x7f000000)>>24;
+	INT32 linescroll_enable = (regs[1]&0x00004000);
 
-		INT32 scrollx;
-		INT32 tileline = (line/16)+1;
-		INT32 tilesubline = line % 16;
+	INT32 scrollx;
+	INT32 tileline = (line/16)+1;
+	INT32 tilesubline = line % 16;
 
-		mapbase = mapbase << 10;
-		linebase = linebase << 10;
+	mapbase = mapbase << 10;
+	linebase = linebase << 10;
 
-		if (!linescroll_enable)	{
-			scrollx =  (regs[0]&0xffff0000)>>16;
-		} else {
-			scrollx =  (regs[0]&0xffff0000)>>16;
-			scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
-		}
+	scrollx =  (regs[0]&0xffff0000)>>16;
+	if (linescroll_enable)
+		scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
 
-		if (drawline>cps3_gfx_max_y+4) return;
+	if (drawline>cps3_gfx_max_y+4) return;
 
-		for (INT32 x=0;x<(cps3_gfx_max_x/16)+2;x++) {
+	for (INT32 x=0;x<(cps3_gfx_max_x/16)+2;x++) {
 
-			UINT32 dat;
-			INT32 tileno;
-			INT32 colour;
-			INT32 bpp;
-			INT32 xflip,yflip;
+		UINT32 dat;
+		INT32 tileno;
+		INT32 colour;
+		INT32 bpp;
+		INT32 xflip,yflip;
 
-			dat = RamSpr[mapbase+((tileline&63)*64)+((x+scrollx/16)&63)];
-			tileno = (dat & 0xffff0000)>>17;
-			colour = (dat & 0x000001ff)>>0;
-			bpp = (dat & 0x0000200)>>9;
-			yflip  = (dat & 0x00000800)>>11;
-			xflip  = (dat & 0x00001000)>>12;
+		dat = RamSpr[mapbase+((tileline&63)*64)+((x+scrollx/16)&63)];
+		tileno = (dat & 0xffff0000)>>17;
+		colour = (dat & 0x000001ff)>>0;
+		bpp = (dat & 0x0000200)>>9;
+		yflip  = (dat & 0x00000800)>>11;
+		xflip  = (dat & 0x00001000)>>12;
 
-			if (!bpp) colour <<= 8;
-			else colour <<= 6;
+		if (!bpp) colour <<= 8;
+		else colour <<= 6;
 
-			cps3_drawgfxzoom_1(tileno,colour,xflip,yflip,(x*16)-scrollx%16,drawline-tilesubline, drawline);
-		}
+		cps3_drawgfxzoom_1(tileno,colour,xflip,yflip,(x*16)-scrollx%16,drawline-tilesubline, drawline);
 	}
 }
 
@@ -1743,7 +1517,7 @@ static void DrvDraw()
 	
 	// Draw Sprites
 	{
-		for (INT32 i=0x00000/4;i<0x2000/4;i+=4) {
+		for (INT32 i= 0;i<0x2000/4;i+=4) {
 			INT32 xpos		= (RamSpr[i+1]&0x03ff0000)>>16;
 			INT32 ypos		= (RamSpr[i+1]&0x000003ff)>>0;
 
@@ -1979,12 +1753,8 @@ INT32 cps3Frame()
 		WideScreenFrameDelay = 0;
 	}
 	
-//	EEPROM[0x11] = 0x100 + (EEPROM[0x11] & 0xff);
-//	EEPROM[0x29] = 0x100 + (EEPROM[0x29] & 0xff);
-
 	Cps3Input[0] = 0;
 	Cps3Input[1] = 0;
-	//Cps3Input[2] = 0;
 	Cps3Input[3] = 0;
 	for (INT32 i=0; i<16; i++) {
 		Cps3Input[0] |= (Cps3But1[i] & 1) << i;
@@ -2009,8 +1779,6 @@ INT32 cps3Frame()
 	Sh2SetIRQLine(12, SH2_IRQSTATUS_AUTO);
 
 	cps3SndUpdate();
-	
-//	bprintf(0, _T("PC: %08x\n"), Sh2GetPC(0));
 	
 	if (pBurnDraw) DrvDraw();
 
@@ -2075,15 +1843,6 @@ INT32 cps3Scan(INT32 nAction, INT32 *pnMin)
 		ba.nAddress = 0;
 		ba.szName	= "Sprite ROM";
 		BurnAcb(&ba);
-
-/*		// so huge. need not backup it while NOCD
-		// otherwize, need backup gfx also
-		ba.Data		= RomGame;
-		ba.nLen		= 0x1000000;
-		ba.nAddress = 0;
-		ba.szName	= "Game ROM";
-		BurnAcb(&ba);
-*/
 	}
 	
 	if (nAction & ACB_DRIVER_DATA) {
@@ -2106,12 +1865,6 @@ INT32 cps3Scan(INT32 nAction, INT32 *pnMin)
 
 		SCAN_VAR(chardma_source);
 		SCAN_VAR(chardma_table_address);
-		
-		//SCAN_VAR(main_flash);
-		
-		//SCAN_VAR(last_normal_byte);
-		//SCAN_VAR(lastb);
-		//SCAN_VAR(lastb2);
 		
 		SCAN_VAR(cps_int10_cnt);
 				

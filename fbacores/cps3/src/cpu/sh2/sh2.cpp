@@ -3053,19 +3053,13 @@ void Sh2SetIRQLine(const int line, const int state)
 {
 	sh2->irq_line_state[line] = state;
 
-	if( state == SH2_IRQSTATUS_NONE )
-		sh2->pending_irq &= ~(1 << line);
+	sh2->pending_irq |= 1 << line;
+	if(sh2->delay)
+		sh2->test_irq = 1;
 	else
-	{
-		sh2->pending_irq |= 1 << line;
-		if(sh2->delay)
-			sh2->test_irq = 1;
-		else
-			CHECK_PENDING_IRQ(/*"sh2_set_irq_line"*/);
+		CHECK_PENDING_IRQ();
 
-		pSh2Ext->suspend = 0;
-	}
-
+	pSh2Ext->suspend = 0;
 }
 
 unsigned int Sh2GetPC(int)

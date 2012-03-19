@@ -637,11 +637,17 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 
 		case 0x05100000:
 				 if(sh2->irq_line_state[12] != SH2_IRQSTATUS_NONE)
-					 Sh2SetIRQLine(12, SH2_IRQSTATUS_NONE);
+				 {
+					 sh2->irq_line_state[12] = SH2_IRQSTATUS_NONE;
+					 sh2->pending_irq &= ~(1 << 12);
+				 }
 				 break;
 		case 0x05110000:
 				 if(sh2->irq_line_state[10] != SH2_IRQSTATUS_NONE)
-					 Sh2SetIRQLine(10, SH2_IRQSTATUS_NONE);
+				 {
+					 sh2->irq_line_state[10] = SH2_IRQSTATUS_NONE;
+					 sh2->pending_irq &= ~(1 << 10);
+				 }
 				 break;
 
 		case 0x05140000:

@@ -405,23 +405,27 @@ static void cps3_process_character_dma(UINT32 address)
 		switch ( dat1 & 0x00e00000 ) {
 		case 0x00800000:
 			chardma_table_address = real_source;
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00400000:
 			cps3_do_char_dma( real_source, real_destination, real_length );
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00600000:
 			/* 8bpp DMA decompression
 			   - this is used on SFIII NG Sean's Stage ONLY */
 			cps3_do_alt_char_dma( real_source, real_destination, real_length );
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00000000:
 			// Red Earth need this. 8192 byte trans to 0x00003000 (from 0x007ec000???)
 			// seems some stars(6bit alpha) without compress
 			memcpy( (UINT8 *)RamCRam + real_destination, RomUser + real_source, real_length );
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		}
 	}
@@ -611,7 +615,8 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 						 RamPal[(paldma_dest + i) ^ 1] = coldata;
 						 Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
 					 }
-					 Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+					 if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+						 Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 				 }
 				 break;
 
@@ -631,10 +636,12 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 		case 0x05050026: break;
 
 		case 0x05100000:
-				 Sh2SetIRQLine(12, SH2_IRQSTATUS_NONE);
+				 if(sh2->irq_line_state[12] != SH2_IRQSTATUS_NONE)
+					 Sh2SetIRQLine(12, SH2_IRQSTATUS_NONE);
 				 break;
 		case 0x05110000:
-				 Sh2SetIRQLine(10, SH2_IRQSTATUS_NONE);
+				 if(sh2->irq_line_state[10] != SH2_IRQSTATUS_NONE)
+					 Sh2SetIRQLine(10, SH2_IRQSTATUS_NONE);
 				 break;
 
 		case 0x05140000:
@@ -841,7 +848,7 @@ UINT8 __fastcall cps3RamReadByte(UINT32 addr)
 {
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address)
-			Sh2BurnUntilInt(0);
+			pSh2Ext->suspend = 1;
 
 	addr &= 0x7ffff;
 #ifdef LSB_FIRST
@@ -856,9 +863,8 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 	addr &= 0x7ffff;
 
 	if (addr == cps3_speedup_ram_address )
-		if (Sh2GetPC(0) == cps3_speedup_code_address) {
-			Sh2BurnUntilInt(0);
-		}
+		if (Sh2GetPC(0) == cps3_speedup_code_address)
+			pSh2Ext->suspend = 1;
 	
 #ifdef LSB_FIRST
 	return *(UINT16 *)(RamMain + (addr ^ 0x02));
@@ -872,7 +878,7 @@ UINT32 __fastcall cps3RamReadLong(UINT32 addr)
 {
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address)
-			Sh2BurnUntilInt(0);
+			pSh2Ext->suspend = 1;
 		
 	addr &= 0x7ffff;
 	return *(UINT32 *)(RamMain + addr);
@@ -1469,11 +1475,11 @@ static void DrvDraw()
 
 	UINT32 fullscreenzoom = RamVReg[ 6 * 4 + 3 ] & 0xff;
 	UINT32 fullscreenzoomwidecheck = RamVReg[6 * 4 + 1];
-	
+
 	if (((fullscreenzoomwidecheck & 0xffff0000) >> 16) == 0x0265) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);
-		
+
 		if (Width != 496) {
 			BurnDrvSetVisibleSize(496, 224);
 			BurnDrvSetAspect(16, 9);
@@ -1483,7 +1489,7 @@ static void DrvDraw()
 	} else {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);
-		
+
 		if (Width != 384) {
 			BurnDrvSetVisibleSize(384, 224);
 			BurnDrvSetAspect(4, 3);
@@ -1491,30 +1497,18 @@ static void DrvDraw()
 			WideScreenFrameDelay = GetCurrentFrame() + 1;
 		}
 	}
-	
+
 	if (fullscreenzoom > 0x80) fullscreenzoom = 0x80;
 	UINT32 fsz = (fullscreenzoom << (16 - 6));
-	
+
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
-	if (nBurnLayer & 1)
-	{
-		UINT32 * pscr = RamScreen;
-		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
-		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
-			memset(pscr, 0, clrsz);
-	}
-	else
-	{
-		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0);
+	UINT32 * pscr = RamScreen;
+	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
+	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
+		memset(pscr, 0, clrsz);
 
-		INT32 i;
-		for (i = 0; i < 1024 * 448; i++) {
-			RamScreen[i] = 0x20000;
-		}
-	}
-	
 	// Draw Sprites
 	{
 		for (INT32 i= 0;i<0x2000/4;i+=4) {
@@ -1535,13 +1529,13 @@ static void DrvDraw()
 
 			INT32 gscrollx		= (RamVReg[gscroll]&0x03ff0000)>>16;
 			INT32 gscrolly		= (RamVReg[gscroll]&0x000003ff)>>0;
-			
+
 			start = (start * 0x100) >> 2;
 
 			if ((RamSpr[i+0]&0xf0000000) == 0x80000000) break;	
-		
+
 			for (INT32 j=0; j<length; j+=4) {
-				
+
 				UINT32 value1 = (RamSpr[start+j+0]);
 				UINT32 value2 = (RamSpr[start+j+1]);
 				UINT32 value3 = (RamSpr[start+j+2]);
@@ -1568,34 +1562,28 @@ static void DrvDraw()
 
 				if (xsize2==0)
 				{
-					if (nBurnLayer & 1)
+					INT32 tilemapnum = ((value3 & 0x00000030)>>4);
+					INT32 startline;
+					INT32 endline;
+					INT32 height = (value3 & 0x7f000000)>>24;
+					UINT32 * regs;
+
+					regs = RamVReg + 8 + tilemapnum * 4;
+					endline = value2;
+					startline = endline - height;
+
+					startline &=0x3ff;
+					endline &=0x3ff;
+
+					if (bg_drawn[tilemapnum]==0)
 					{
-						INT32 tilemapnum = ((value3 & 0x00000030)>>4);
-						INT32 startline;
-						INT32 endline;
-						INT32 height = (value3 & 0x7f000000)>>24;
-						UINT32 * regs;
-
-						regs = RamVReg + 8 + tilemapnum * 4;
-						endline = value2;
-						startline = endline - height;
-
-						startline &=0x3ff;
-						endline &=0x3ff;
-
-						if (bg_drawn[tilemapnum]==0)
-						{
-							UINT32 srcy = 0;
-							for (INT32 ry = 0; ry < 224; ry++, srcy += fsz) {
-								cps3_draw_tilemapsprite_line( srcy >> 16, regs );
-							}
-						}
-
-						bg_drawn[tilemapnum] = 1;
+						UINT32 srcy = 0;
+						for (INT32 ry = 0; ry < 224; ry++, srcy += fsz)
+							cps3_draw_tilemapsprite_line( srcy >> 16, regs );
 					}
-				} else {
-					if (~nSpriteEnable & 1) continue;
 
+					bg_drawn[tilemapnum] = 1;
+				} else {
 					ysize2 = tilestable[ysize2];
 					xsize2 = tilestable[xsize2];
 
@@ -1648,7 +1636,7 @@ static void DrvDraw()
 								/* use the palette value from the main list or the sublists? */
 								if (whichpal) actualpal = global_pal;
 								else actualpal = pal;
-								
+
 								/* use the bpp value from the main list or the sublists? */
 								INT32 color_granularity;
 								if (whichbpp) {
@@ -1668,9 +1656,9 @@ static void DrvDraw()
 											// fix jojo's title in it's intro ???
 											if ( global_alpha && (global_pal & 0x100))
 												actualpal &= 0x0ffff;
-												
+
 											cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
-											
+
 										} else {
 											cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, 0);
 										}
@@ -1684,7 +1672,7 @@ static void DrvDraw()
 			}
 		}
 	}
-	
+
 	{
 		UINT32 srcx, srcy = 0;
 		UINT32 * srcbitmap;
@@ -1700,36 +1688,37 @@ static void DrvDraw()
 			srcy += fsz;
 		}
 	}
-	
-	if (nBurnLayer & 2)
-	{
-		// bank select? (sfiii2 intro)
-		INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
-		for (INT32 y=0; y<32-4; y++) {
-			for (INT32 x=0; x<64; x++, count++) {
-				UINT32 data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
-				UINT32 tile = (data >> 16) & 0x1ff;
-				INT32 pal = (data & 0x003f) >> 1;
-				INT32 flipx = data & 0x0080;
-				INT32 flipy = data & 0x0040;
-				pal += ss_pal_base << 5;
 
-				if (tile == 0) continue; // ok?
+	// bank select? (sfiii2 intro)
+	INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
+	for (INT32 y=0; y<32-4; y++) {
+		for (INT32 x=0; x<64; x++, count++) {
+			UINT32 data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
+			UINT32 tile = (data >> 16) & 0x1ff;
+			INT32 pal = (data & 0x003f) >> 1;
+			INT32 flipx = data & 0x0080;
+			INT32 flipy = data & 0x0040;
+			pal += ss_pal_base << 5;
 
-				tile+=0x200;
-				cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
-			}
+			if (tile == 0) continue; // ok?
+
+			tile+=0x200;
+			cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
 		}
 	}
 }
 
 static INT32 cps_int10_cnt = 0;
 
+/* SH2 speed formula:
+ * 6250000 * 4 / 60 / 4 */
+#define SH2_SPEED 104166
+
 INT32 cps3Frame()
 {
 	if (cps3_reset)
 		Cps3Reset();
-		
+
 	if (cps3_palette_change) {
 		for(INT32 i=0;i<0x0020000;i++) {
 #ifdef LSB_FIRST
@@ -1747,12 +1736,12 @@ INT32 cps3Frame()
 		}
 		cps3_palette_change = 0;
 	}
-	
+
 	if (WideScreenFrameDelay == GetCurrentFrame()) {
 		BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
 		WideScreenFrameDelay = 0;
 	}
-	
+
 	Cps3Input[0] = 0;
 	Cps3Input[1] = 0;
 	Cps3Input[3] = 0;
@@ -1763,24 +1752,35 @@ INT32 cps3Frame()
 	}
 
 	// Clear Opposites
-	Cps3ClearOpposites(&Cps3Input[0]);
-	Cps3ClearOpposites(&Cps3Input[1]);
+	if ((Cps3Input[0] & 0x03) == 0x03)
+		Cps3Input[0] &= ~0x03;
+	if ((Cps3Input[0] & 0x0c) == 0x0c)
+		Cps3Input[0] &= ~0x0c;
 
-	for (INT32 i=0; i<4; i++) {
+	if ((Cps3Input[1] & 0x03) == 0x03)
+		Cps3Input[1] &= ~0x03;
+	if ((Cps3Input[1] & 0x0c) == 0x0c)
+		Cps3Input[1] &= ~0x0c;
 
-		Sh2Run(6250000 * 4 / 60 / 4);
-		
-		if (cps_int10_cnt >= 2) {
+	for (INT32 i = 0; i < 4; i++)
+	{
+		Sh2Run(SH2_SPEED);
+
+		if (cps_int10_cnt >= 2)
+		{
 			cps_int10_cnt = 0;
-			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
-		} else cps_int10_cnt++;
-
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
+		}
+		else
+			cps_int10_cnt++;
 	}
-	Sh2SetIRQLine(12, SH2_IRQSTATUS_AUTO);
+	if(sh2->irq_line_state[12] != SH2_IRQSTATUS_AUTO)
+		Sh2SetIRQLine(12, SH2_IRQSTATUS_AUTO);
 
 	cps3SndUpdate();
-	
-	if (pBurnDraw) DrvDraw();
+
+	DrvDraw();
 
 	return 0;
 }

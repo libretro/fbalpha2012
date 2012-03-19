@@ -26,20 +26,17 @@ static cps3snd_chip * chip;
 
 UINT8 __fastcall cps3SndReadByte(UINT32 addr)
 {
-	addr &= 0x000003ff;
 	return 0;
 }
 
 UINT16 __fastcall cps3SndReadWord(UINT32 addr)
 {
 	addr &= 0x000003ff;
-	
-	if (addr < 0x200)	{
+
+	if (addr < 0x200)
 		return chip->voice[addr >> 5].regs[(addr>>1) & 0xf];
-	} else
-	if (addr == 0x200)	{
+	else if (addr == 0x200)
 		return chip->key;
-	} else
 
 	return 0;
 }
@@ -57,14 +54,16 @@ void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data)
 {
 	addr &= 0x000003ff;
 	
-	if (addr < 0x200) {
+	if (addr < 0x200)
 		chip->voice[addr >> 5].regs[(addr>>1) & 0xf] = data;
-	} else
-	if (addr == 0x200) {
+	else if (addr == 0x200)
+	{
 		UINT16 key = data;
-		for (INT32 i = 0; i < CPS3_VOICES; i++) {
+		for (INT32 i = 0; i < CPS3_VOICES; i++)
+		{
 			// Key off -> Key on
-			if ((key & (1 << i)) && !(chip->key & (1 << i)))	{
+			if ((key & (1 << i)) && !(chip->key & (1 << i)))
+			{
 				chip->voice[i].frac = 0;
 				chip->voice[i].pos = 0;
 			}
@@ -80,7 +79,8 @@ void __fastcall cps3SndWriteLong(UINT32 addr, UINT32 data)
 INT32 cps3SndInit(UINT8 * sndrom)
 {
 	chip = (cps3snd_chip *)BurnMalloc( sizeof(cps3snd_chip) );
-	if ( chip ) {
+	if ( chip )
+	{
 		memset( chip, 0, sizeof(cps3snd_chip) );
 		chip->rombase = sndrom;
 		
@@ -112,9 +112,10 @@ void cps3SndUpdate()
 	INT8 * base = (INT8 *)chip->rombase;
 	cps3_voice *vptr = &chip->voice[0];
 
-	for(INT32 i=0; i<CPS3_VOICES; i++, vptr++) {
-		if (chip->key & (1 << i)) {
-			
+	for(INT32 i=0; i<CPS3_VOICES; i++, vptr++)
+	{
+		if (chip->key & (1 << i))
+		{
 			UINT32 start = ((vptr->regs[ 3] << 16) | vptr->regs[ 2]) - 0x400000;
 			UINT32 end   = ((vptr->regs[11] << 16) | vptr->regs[10]) - 0x400000;
 			UINT32 loop  = ((vptr->regs[ 9] << 16) | vptr->regs[ 7]) - 0x400000;
@@ -129,16 +130,19 @@ void cps3SndUpdate()
 			/* Go through the buffer and add voice contributions */
 			INT16 * buffer = (INT16 *)pBurnSoundOut;
 
-			for (INT32 j=0; j<nBurnSoundLen; j++) {
+			for (INT32 j=0; j<nBurnSoundLen; j++)
+			{
 				INT32 sample;
 
 				pos += (frac >> 12);
 				frac &= 0xfff;
 
-				if (start + pos >= end) {
-					if (vptr->regs[5]) {
+				if (start + pos >= end)
+				{
+					if (vptr->regs[5])
 						pos = loop - start;
-					} else {
+					else
+					{
 						chip->key &= ~(1 << i);
 						break;
 					}

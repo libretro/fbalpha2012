@@ -11,7 +11,6 @@ typedef void (__fastcall *pSh2WriteWordHandler)(unsigned int a, unsigned short d
 typedef unsigned int (__fastcall *pSh2ReadLongHandler)(unsigned int a);
 typedef void (__fastcall *pSh2WriteLongHandler)(unsigned int a, unsigned int d);
 
-extern int has_sh2;
 void __fastcall Sh2WriteByte(unsigned int a, unsigned char d);
 unsigned char __fastcall Sh2ReadByte(unsigned int a);
 
@@ -19,12 +18,10 @@ int Sh2Init(int nCount);
 int Sh2Exit();
 
 void Sh2Open(const int i);
-void Sh2Close();
-int Sh2GetActive();
 
 void Sh2Reset();
 void Sh2Reset(unsigned int pc, unsigned r15); // hack
-int Sh2Run(int cycles);
+void Sh2Run(int cycles);
 
 int Sh2MapMemory(unsigned char* pMemory, unsigned int nStart, unsigned int nEnd, int nType);
 int Sh2MapHandler(uintptr_t nHandler, unsigned int nStart, unsigned int nEnd, int nType);
@@ -45,11 +42,7 @@ unsigned int Sh2GetPC(int n);
 void Sh2StopRun();
 void Sh2SetVBR(unsigned int i);
 
-void Sh2BurnUntilInt(int);
-
 int Sh2TotalCycles();
-void Sh2NewFrame();
-void Sh2BurnCycles(int cycles);
 
 int Sh2Scan(int);
 

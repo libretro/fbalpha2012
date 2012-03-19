@@ -393,15 +393,6 @@ void Sh2Open(const int i)
 	sh2 = & (pSh2Ext->sh2);
 }
 
-void Sh2Close()
-{
-}
-
-int Sh2GetActive()
-{
-	return 0;
-}
-
 void Sh2Reset(unsigned int pc, unsigned r15)
 {
 	memset(sh2, 0, sizeof(SH2) - 4);
@@ -748,11 +739,7 @@ SH2_INLINE void BRA(UINT32 d)
 	if (disp == -2)
 	{
 		UINT32 next_opcode = RW(sh2->ppc & AM);
-		//UINT32 next_opcode = OPRW(sh2->ppc & AM);
 		
-		/* BRA  $
-         * NOP
-         */
 		if (next_opcode == 0x0009){
 			sh2->sh2_icount %= 3;	/* cycles for BRA $ and NOP taken (3) */
 		}
@@ -1180,10 +1167,6 @@ SH2_INLINE void DT(UINT32 n)
 #if BUSY_LOOP_HACKS
 	{
 		UINT32 next_opcode = RW(sh2->ppc & AM);
-		//UINT32 next_opcode = OPRW(sh2->ppc & AM);
-		/* DT   Rn
-         * BF   $-2
-         */
 		if (next_opcode == 0x8bfd)
 		{
 			while (sh2->r[n] > 1 && sh2->sh2_icount > 4)
@@ -1406,7 +1389,10 @@ SH2_INLINE void MAC_L(UINT32 m, UINT32 n)
 /*  MAC.W   @Rm+,@Rn+ */
 SH2_INLINE void MAC_W(UINT32 m, UINT32 n)
 {{
-	INT32 tempm, tempn, dest, src, ans;
+	INT32 tempm, tempn;
+	INT32 src = 1;
+	INT32 dest = 1;
+	INT32 ans = 1;
 	UINT32 templ;
 
 	tempn = (INT32) RW( sh2->r[n] );
@@ -1417,41 +1403,35 @@ SH2_INLINE void MAC_W(UINT32 m, UINT32 n)
 	tempm = ((INT32) (short) tempn * (INT32) (short) tempm);
 	if ((INT32) sh2->macl >= 0)
 		dest = 0;
-	else
-		dest = 1;
 	if ((INT32) tempm >= 0)
 	{
 		src = 0;
 		tempn = 0;
 	}
 	else
-	{
-		src = 1;
 		tempn = 0xffffffff;
-	}
 	src += dest;
 	sh2->macl += tempm;
 	if ((INT32) sh2->macl >= 0)
 		ans = 0;
-	else
-		ans = 1;
+
 	ans += dest;
 	if (sh2->sr & S)
 	{
 		if (ans == 1)
-			{
-				if (src == 0)
-					sh2->macl = 0x7fffffff;
-				if (src == 2)
-					sh2->macl = 0x80000000;
-			}
+		{
+			if (src == 0)
+				sh2->macl = 0x7fffffff;
+			if (src == 2)
+				sh2->macl = 0x80000000;
+		}
 	}
 	else
 	{
 		sh2->mach += tempn;
 		if (templ > sh2->macl)
 			sh2->mach += 1;
-		}
+	}
 	sh2->sh2_icount -= 2;
 }}
 
@@ -2440,7 +2420,7 @@ SH2_INLINE void op0111(UINT16 opcode)
 
 SH2_INLINE void op1000(UINT16 opcode)
 {
-	switch ( opcode  & (15<<8) )
+	switch (opcode  & 3840)
 	{
 	case  0 << 8: MOVBS4(opcode & 0x0f, Rm); 	break;
 	case  1 << 8: MOVWS4(opcode & 0x0f, Rm); 	break;
@@ -2495,8 +2475,8 @@ SH2_INLINE void op1100(UINT16 opcode)
 	case 11<<8: ORI(opcode & 0xff);			break;
 	case 12<<8: TSTM(opcode & 0xff);		break;
 	case 13<<8: ANDM(opcode & 0xff);		break;
-	case 14<<8: XORM(opcode & 0xff);		break;
-	case 15<<8: ORM(opcode & 0xff);			break;
+	case 3584: XORM(opcode & 0xff);		break;
+	case 3840: ORM(opcode & 0xff);			break;
 	}
 }
 
@@ -2929,7 +2909,7 @@ static UINT32 sh2_internal_r(UINT32 offset, UINT32 /*mem_mask*/)
 
 #if USE_JUMPTABLE
 
-int Sh2Run(int cycles)
+void Sh2Run(int cycles)
 {
 	sh2->sh2_icount = cycles;
 	sh2->sh2_cycles_to_run = cycles;
@@ -2983,16 +2963,14 @@ int Sh2Run(int cycles)
 		}
 		
 		
-	} while( sh2->sh2_icount > 0 );
+	} while( sh2->sh2_icount);
 	
 	sh2->cycle_counts += cycles - (UINT32)sh2->sh2_icount;
-
-	return cycles - sh2->sh2_icount;
 }
 
 #else
 
-int Sh2Run(int cycles)
+void Sh2Run(int cycles)
 {
 	sh2->sh2_icount = cycles;
 	sh2->sh2_cycles_to_run = cycles;
@@ -3022,7 +3000,7 @@ int Sh2Run(int cycles)
 		{
 		case  0: op0000(opcode); break;
 		case  4096: op0001(opcode); break;
-		case  2<<12: op0010(opcode); break;
+		case  8192: op0010(opcode); break;
 		case  3<<12: op0011(opcode); break;
 		case  4<<12: op0100(opcode); break;
 		case  5<<12: op0101(opcode); break;
@@ -3069,18 +3047,16 @@ int Sh2Run(int cycles)
 	sh2->cycle_counts += cycles - (UINT32)sh2->sh2_icount;
 	
 	sh2->sh2_cycles_to_run = sh2->sh2_icount;
-
-	return cycles - sh2->sh2_icount;
 }
 
 void Sh2SetIRQLine(const int line, const int state)
 {
-	if (sh2->irq_line_state[line] == state) return;
 	sh2->irq_line_state[line] = state;
 
-	if( state == SH2_IRQSTATUS_NONE ) {
+	if( state == SH2_IRQSTATUS_NONE )
 		sh2->pending_irq &= ~(1 << line);
-	} else {
+	else
+	{
 		sh2->pending_irq |= 1 << line;
 		if(sh2->delay)
 			sh2->test_irq = 1;
@@ -3102,19 +3078,10 @@ void Sh2SetVBR(unsigned int i)
 	sh2->vbr = i;
 }
 
-void Sh2BurnUntilInt(int)
-{
-	pSh2Ext->suspend = 1;
-}
-
 void Sh2StopRun()
 {
 	sh2->sh2_icount = 0;
 	sh2->sh2_cycles_to_run = 0;
-}
-
-void Sh2NewFrame()
-{
 }
 
 void __fastcall Sh2WriteByte(unsigned int a, unsigned char d)

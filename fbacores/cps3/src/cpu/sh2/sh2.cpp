@@ -31,29 +31,23 @@
 
 #include "sh2.h"
 
-int has_sh2;
-
 #define BUSY_LOOP_HACKS 	1
 #define FAST_OP_FETCH		1
 #define USE_JUMPTABLE		0
 
-#define SH2_INT_15			15
+#define SH2_INT_15		15
 
 #ifndef SH2_INLINE
 #define	SH2_INLINE
 #endif
 
 #if FAST_OP_FETCH
-
-	#define change_pc(newpc)															\
-		sh2->pc = (newpc);																\
-		pSh2Ext->opbase = pSh2Ext->MemMap[ (sh2->pc >> SH2_SHIFT) + SH2_WADD * 2 ];		\
+	#define change_pc(newpc) \
+		sh2->pc = (newpc); \
+		pSh2Ext->opbase = pSh2Ext->MemMap[ (sh2->pc >> SH2_SHIFT) + SH2_WADD * 2 ]; \
 		pSh2Ext->opbase -= (sh2->pc & ~SH2_PAGEM);
-
 #else
-
 	#define change_pc(newpc)	sh2->pc = (newpc);
-
 #endif
 
 #define COMBINE_DATA(varptr)		(*(varptr) = (*(varptr) & mem_mask) | (data & ~mem_mask))
@@ -77,7 +71,6 @@ typedef struct
 	UINT32	r[16];
 	UINT32	ea;
 	UINT32	delay;
-	UINT32	cpu_off;
 	UINT32	dvsr, dvdnth, dvdntl, dvcr;
 	UINT32	pending_irq;
 	UINT32    test_irq;
@@ -91,29 +84,20 @@ typedef struct
 	UINT16 	ocra, ocrb, icr;
 	UINT32 	frc_base;
 
-	int		frt_input;
 	int 	internal_irq_level;
 	int 	internal_irq_vector;
 
-//	emu_timer *timer;
 	UINT32 	timer_cycles;
 	UINT32 	timer_base;
 	int     timer_active;
 	
-//	emu_timer *dma_timer[2];
 	UINT32 	dma_timer_cycles[2];
 	UINT32 	dma_timer_base[2];
 	int     dma_timer_active[2];
 
-//	int     is_slave, cpu_number;
-	
 	UINT32	cycle_counts;
 	UINT32	sh2_cycles_to_run;
 	INT32	sh2_icount;
-	int     sh2_total_cycles;
-	
-	int 	(*irq_callback)(int irqline);
-
 } SH2;
 
 static SH2 * sh2;
@@ -131,8 +115,6 @@ enum {
 	OCFB = 0x00040000,
 	OVF  = 0x00020000
 };
-
-//static TIMER_CALLBACK( sh2_timer_callback );
 
 #define T	0x00000001
 #define S	0x00000002
@@ -152,16 +134,14 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask);
 
 //-- sh2 memory handler for Finalburn Alpha ---------------------
 
-#define SH2_BITS		(16)					// 16 = 0x10000 page size
-#define SH2_PAGE_COUNT  (1 << (32 - SH2_BITS))	// Number of pages
-#define SH2_SHIFT		(SH2_BITS)				// Shift value = page bits
-#define SH2_PAGE_SIZE	(1 << SH2_BITS)			// Page size
-#define SH2_PAGEM		(SH2_PAGE_SIZE - 1)
-#define SH2_WADD		(SH2_PAGE_COUNT)		// Value to add for write section = Number of pages
-#define SH2_MASK		(SH2_WADD - 1)
-
+#define SH2_BITS	(16)					// 16 = 0x10000 page size
+#define SH2_PAGE_COUNT  (65536)					// Number of pages
+#define SH2_SHIFT	(SH2_BITS)				// Shift value = page bits
+#define SH2_PAGE_SIZE	(65536)					// Page size
+#define SH2_PAGEM	(65535)
+#define SH2_WADD	(65536)		// Value to add for write section = Number of pages
+#define SH2_MASK	(65535)
 #define	SH2_MAXHANDLER	(8)
-
 
 typedef struct 
 {
@@ -364,8 +344,6 @@ void __fastcall Sh2EmptyWriteLong(unsigned int, unsigned int) { }
 
 int Sh2Exit()
 {
-	has_sh2 = 0;
-
 	if (Sh2Ext) {
 		free(Sh2Ext);
 		Sh2Ext = NULL;
@@ -377,8 +355,6 @@ int Sh2Exit()
 
 int Sh2Init(int nCount)
 {
-	has_sh2 = 1;
-
 	Sh2Ext = (SH2EXT *)malloc(sizeof(SH2EXT) * nCount);
 	if (Sh2Ext == NULL) {
 		Sh2Exit();
@@ -598,22 +574,22 @@ SH2_INLINE void sh2_exception(/*const char *message,*/ int irqline)
 #define CHECK_PENDING_IRQ(/*message*/)			\
 do {											\
 	int irq = -1;								\
-	if (sh2->pending_irq & (1 <<  0)) irq =	0;	\
-	if (sh2->pending_irq & (1 <<  1)) irq =	1;	\
-	if (sh2->pending_irq & (1 <<  2)) irq =	2;	\
-	if (sh2->pending_irq & (1 <<  3)) irq =	3;	\
-	if (sh2->pending_irq & (1 <<  4)) irq =	4;	\
-	if (sh2->pending_irq & (1 <<  5)) irq =	5;	\
-	if (sh2->pending_irq & (1 <<  6)) irq =	6;	\
-	if (sh2->pending_irq & (1 <<  7)) irq =	7;	\
-	if (sh2->pending_irq & (1 <<  8)) irq =	8;	\
-	if (sh2->pending_irq & (1 <<  9)) irq =	9;	\
-	if (sh2->pending_irq & (1 << 10)) irq = 10;	\
-	if (sh2->pending_irq & (1 << 11)) irq = 11;	\
-	if (sh2->pending_irq & (1 << 12)) irq = 12;	\
-	if (sh2->pending_irq & (1 << 13)) irq = 13;	\
-	if (sh2->pending_irq & (1 << 14)) irq = 14;	\
-	if (sh2->pending_irq & (1 << 15)) irq = 15;	\
+	if (sh2->pending_irq & 1) irq =	0;	\
+	if (sh2->pending_irq & 2) irq =	1;	\
+	if (sh2->pending_irq & 4) irq =	2;	\
+	if (sh2->pending_irq & 8) irq =	3;	\
+	if (sh2->pending_irq & 16) irq =	4;	\
+	if (sh2->pending_irq & 32) irq =	5;	\
+	if (sh2->pending_irq & 64) irq =	6;	\
+	if (sh2->pending_irq & 128) irq =	7;	\
+	if (sh2->pending_irq & 256) irq =	8;	\
+	if (sh2->pending_irq & 512) irq =	9;	\
+	if (sh2->pending_irq & 1024) irq = 10;	\
+	if (sh2->pending_irq & 2048) irq = 11;	\
+	if (sh2->pending_irq & 4096) irq = 12;	\
+	if (sh2->pending_irq & 8192) irq = 13;	\
+	if (sh2->pending_irq & 16384) irq = 14;	\
+	if (sh2->pending_irq & 32768) irq = 15;	\
 	if ((sh2->internal_irq_level != -1) && (sh2->internal_irq_level > irq)) irq = sh2->internal_irq_level; \
 	if (irq >= 0)								\
 		sh2_exception(/*message,*/irq); 			\
@@ -778,9 +754,7 @@ SH2_INLINE void BRA(UINT32 d)
          * NOP
          */
 		if (next_opcode == 0x0009){
-			sh2->sh2_total_cycles += sh2->sh2_icount;
 			sh2->sh2_icount %= 3;	/* cycles for BRA $ and NOP taken (3) */
-			sh2->sh2_total_cycles -= sh2->sh2_icount;
 		}
 	}
 #endif
@@ -1216,7 +1190,6 @@ SH2_INLINE void DT(UINT32 n)
 			{
 				sh2->r[n]--;
 				sh2->sh2_icount -= 4;	/* cycles for DT (1) and BF taken (3) */
-				sh2->sh2_total_cycles += 4;
 			}
 		}
 	}
@@ -1794,11 +1767,6 @@ SH2_INLINE void NEGC(UINT32 m, UINT32 n)
 		sh2->sr &= ~T;
 }
 
-/*  NOP */
-SH2_INLINE void NOP(void)
-{
-}
-
 /*  NOT     Rm,Rn */
 SH2_INLINE void NOT(UINT32 m, UINT32 n)
 {
@@ -2094,13 +2062,9 @@ SH2_INLINE void SUBV(UINT32 m, UINT32 n)
 	else
 		ans = 1;
 	ans += dest;
-	if (src == 1)
-	{
-		if (ans == 1)
-			sh2->sr |= T;
-		else
-			sh2->sr &= ~T;
-	}
+
+	if (src == 1 && ans == 1)
+		sh2->sr |= T;
 	else
 		sh2->sr &= ~T;
 }
@@ -2237,32 +2201,36 @@ SH2_INLINE void op0000(UINT16 opcode)
 {
 	switch (opcode & 0x3F)
 	{
-	case 0x00: NOP();						break;
-	case 0x01: NOP();						break;
+	case 0x00: 
+	case 0x01:
+		break;
 	case 0x02: STCSR(Rn);					break;
 	case 0x03: BSRF(Rn);					break;
 	case 0x04: MOVBS0(Rm, Rn);				break;
 	case 0x05: MOVWS0(Rm, Rn);				break;
 	case 0x06: MOVLS0(Rm, Rn);				break;
 	case 0x07: MULL(Rm, Rn);				break;
-	case 0x08: CLRT();						break;
-	case 0x09: NOP();						break;
+	case 0x08: CLRT();					break;
+	case 0x09: 
+		break;
 	case 0x0a: STSMACH(Rn); 				break;
-	case 0x0b: RTS();						break;
+	case 0x0b: RTS();					break;
 	case 0x0c: MOVBL0(Rm, Rn);				break;
 	case 0x0d: MOVWL0(Rm, Rn);				break;
 	case 0x0e: MOVLL0(Rm, Rn);				break;
 	case 0x0f: MAC_L(Rm, Rn);				break;
 
-	case 0x10: NOP();						break;
-	case 0x11: NOP();						break;
+	case 0x10: 
+	case 0x11: 
+		break;
 	case 0x12: STCGBR(Rn);					break;
-	case 0x13: NOP();						break;
+	case 0x13: 
+		break;
 	case 0x14: MOVBS0(Rm, Rn);				break;
 	case 0x15: MOVWS0(Rm, Rn);				break;
 	case 0x16: MOVLS0(Rm, Rn);				break;
 	case 0x17: MULL(Rm, Rn);				break;
-	case 0x18: SETT();						break;
+	case 0x18: SETT();					break;
 	case 0x19: DIV0U(); 					break;
 	case 0x1a: STSMACL(Rn); 				break;
 	case 0x1b: SLEEP(); 					break;
@@ -2271,8 +2239,9 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x1e: MOVLL0(Rm, Rn);				break;
 	case 0x1f: MAC_L(Rm, Rn);				break;
 
-	case 0x20: NOP();						break;
-	case 0x21: NOP();						break;
+	case 0x20:
+	case 0x21:
+		break;
 	case 0x22: STCVBR(Rn);					break;
 	case 0x23: BRAF(Rn);					break;
 	case 0x24: MOVBS0(Rm, Rn);				break;
@@ -2282,24 +2251,24 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x28: CLRMAC();					break;
 	case 0x29: MOVT(Rn);					break;
 	case 0x2a: STSPR(Rn);					break;
-	case 0x2b: RTE();						break;
+	case 0x2b: RTE();					break;
 	case 0x2c: MOVBL0(Rm, Rn);				break;
 	case 0x2d: MOVWL0(Rm, Rn);				break;
 	case 0x2e: MOVLL0(Rm, Rn);				break;
 	case 0x2f: MAC_L(Rm, Rn);				break;
 
-	case 0x30: NOP();						break;
-	case 0x31: NOP();						break;
-	case 0x32: NOP();						break;
-	case 0x33: NOP();						break;
+	case 0x30: 
+	case 0x31:
+	case 0x32:
+	case 0x33: break;
 	case 0x34: MOVBS0(Rm, Rn);				break;
 	case 0x35: MOVWS0(Rm, Rn);				break;
 	case 0x36: MOVLS0(Rm, Rn);				break;
 	case 0x37: MULL(Rm, Rn);				break;
-	case 0x38: NOP();						break;
-	case 0x39: NOP();						break;
-	case 0x3a: NOP();						break;
-	case 0x3b: NOP();						break;
+	case 0x38: 
+	case 0x39: 
+	case 0x3a: 
+	case 0x3b: break;
 	case 0x3c: MOVBL0(Rm, Rn);				break;
 	case 0x3d: MOVWL0(Rm, Rn);				break;
 	case 0x3e: MOVLL0(Rm, Rn);				break;
@@ -2322,7 +2291,7 @@ SH2_INLINE void op0010(UINT16 opcode)
 	case  0: MOVBS(Rm, Rn); 				break;
 	case  1: MOVWS(Rm, Rn); 				break;
 	case  2: MOVLS(Rm, Rn); 				break;
-	case  3: NOP(); 						break;
+	case  3: break;
 	case  4: MOVBM(Rm, Rn); 				break;
 	case  5: MOVWM(Rm, Rn); 				break;
 	case  6: MOVLM(Rm, Rn); 				break;
@@ -2343,7 +2312,7 @@ SH2_INLINE void op0011(UINT16 opcode)
 	switch (opcode & 15)
 	{
 	case  0: CMPEQ(Rm, Rn); 				break;
-	case  1: NOP(); 						break;
+	case  1: break;
 	case  2: CMPHS(Rm, Rn); 				break;
 	case  3: CMPGE(Rm, Rn); 				break;
 	case  4: DIV1(Rm, Rn);					break;
@@ -2351,7 +2320,7 @@ SH2_INLINE void op0011(UINT16 opcode)
 	case  6: CMPHI(Rm, Rn); 				break;
 	case  7: CMPGT(Rm, Rn); 				break;
 	case  8: SUB(Rm, Rn);					break;
-	case  9: NOP(); 						break;
+	case  9: break;
 	case 10: SUBC(Rm, Rn);					break;
 	case 11: SUBV(Rm, Rn);					break;
 	case 12: ADD(Rm, Rn);					break;
@@ -2377,8 +2346,8 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x09: SHLR2(Rn);					break;
 	case 0x0a: LDSMACH(Rn); 				break;
 	case 0x0b: JSR(Rn); 					break;
-	case 0x0c: NOP();						break;
-	case 0x0d: NOP();						break;
+	case 0x0c: 
+	case 0x0d: break;
 	case 0x0e: LDCSR(Rn);					break;
 	case 0x0f: MAC_W(Rm, Rn);				break;
 
@@ -2386,7 +2355,7 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x11: CMPPZ(Rn);					break;
 	case 0x12: STSMMACL(Rn);				break;
 	case 0x13: STCMGBR(Rn); 				break;
-	case 0x14: NOP();						break;
+	case 0x14: break;
 	case 0x15: CMPPL(Rn);					break;
 	case 0x16: LDSMMACL(Rn);				break;
 	case 0x17: LDCMGBR(Rn); 				break;
@@ -2394,8 +2363,8 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x19: SHLR8(Rn);					break;
 	case 0x1a: LDSMACL(Rn); 				break;
 	case 0x1b: TAS(Rn); 					break;
-	case 0x1c: NOP();						break;
-	case 0x1d: NOP();						break;
+	case 0x1c: 
+	case 0x1d: break;
 	case 0x1e: LDCGBR(Rn);					break;
 	case 0x1f: MAC_W(Rm, Rn);				break;
 
@@ -2411,26 +2380,26 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x29: SHLR16(Rn);					break;
 	case 0x2a: LDSPR(Rn);					break;
 	case 0x2b: JMP(Rn); 					break;
-	case 0x2c: NOP();						break;
-	case 0x2d: NOP();						break;
+	case 0x2c: 
+	case 0x2d: break;
 	case 0x2e: LDCVBR(Rn);					break;
 	case 0x2f: MAC_W(Rm, Rn);				break;
 
-	case 0x30: NOP();						break;
-	case 0x31: NOP();						break;
-	case 0x32: NOP();						break;
-	case 0x33: NOP();						break;
-	case 0x34: NOP();						break;
-	case 0x35: NOP();						break;
-	case 0x36: NOP();						break;
-	case 0x37: NOP();						break;
-	case 0x38: NOP();						break;
-	case 0x39: NOP();						break;
-	case 0x3a: NOP();						break;
-	case 0x3b: NOP();						break;
-	case 0x3c: NOP();						break;
-	case 0x3d: NOP();						break;
-	case 0x3e: NOP();						break;
+	case 0x30: 
+	case 0x31: 
+	case 0x32: 
+	case 0x33: 
+	case 0x34: 
+	case 0x35: 
+	case 0x36: 
+	case 0x37: 
+	case 0x38: 
+	case 0x39: 
+	case 0x3a: 
+	case 0x3b: 
+	case 0x3c: 
+	case 0x3d: 
+	case 0x3e: break;
 	case 0x3f: MAC_W(Rm, Rn);				break;
 
 	}
@@ -2475,19 +2444,19 @@ SH2_INLINE void op1000(UINT16 opcode)
 	{
 	case  0 << 8: MOVBS4(opcode & 0x0f, Rm); 	break;
 	case  1 << 8: MOVWS4(opcode & 0x0f, Rm); 	break;
-	case  2<< 8: NOP(); 				break;
-	case  3<< 8: NOP(); 				break;
+	case  2<< 8: 
+	case  3<< 8: break;
 	case  4<< 8: MOVBL4(Rm, opcode & 0x0f); 	break;
 	case  5<< 8: MOVWL4(Rm, opcode & 0x0f); 	break;
-	case  6<< 8: NOP(); 				break;
-	case  7<< 8: NOP(); 				break;
+	case  6<< 8: 
+	case  7<< 8: break;
 	case  8<< 8: CMPIM(opcode & 0xff);		break;
 	case  9<< 8: BT(opcode & 0xff); 		break;
-	case 10<< 8: NOP(); 				break;
+	case 10<< 8: break;
 	case 11<< 8: BF(opcode & 0xff); 		break;
-	case 12<< 8: NOP(); 				break;
+	case 12<< 8: break;
 	case 13<< 8: BTS(opcode & 0xff);		break;
-	case 14<< 8: NOP(); 				break;
+	case 14<< 8: break;
 	case 15<< 8: BFS(opcode & 0xff);		break;
 	}
 }
@@ -2510,7 +2479,7 @@ SH2_INLINE void op1011(UINT16 opcode)
 
 SH2_INLINE void op1100(UINT16 opcode)
 {
-	switch (opcode & (15<<8))
+	switch (opcode & 3840)
 	{
 	case  0<<8: MOVBSG(opcode & 0xff); 		break;
 	case  1<<8: MOVWSG(opcode & 0xff); 		break;
@@ -2541,11 +2510,6 @@ SH2_INLINE void op1110(UINT16 opcode)
 	MOVI(opcode & 0xff, Rn);
 }
 
-SH2_INLINE void op1111(UINT16 /*opcode*/)
-{
-	NOP();
-}
-
 #endif	// USE_JUMPTABLE
 
 /*****************************************************************************
@@ -2567,9 +2531,7 @@ static void sh2_timer_activate(void)
 	int max_delta = 0xfffff;
 	UINT16 frc;
 
-	//timer_adjust(sh2->timer, attotime_never, 0, attotime_zero);
 	sh2->timer_active = 0;
-//	sh2->timer_cycles = 0;
 
 	frc = sh2->frc;
 	if(!(sh2->m[4] & OCFA)) {
@@ -2975,7 +2937,6 @@ int Sh2Run(int cycles)
 	do
 	{
 		if ( pSh2Ext->suspend ) {
-			sh2->sh2_total_cycles += cycles;
 			sh2->sh2_icount = 0;
 			break;
 		}
@@ -3040,7 +3001,6 @@ int Sh2Run(int cycles)
 	{
 
 		if ( pSh2Ext->suspend ) {
-			sh2->sh2_total_cycles += cycles;
 			sh2->sh2_icount = 0;
 			break;
 		}			
@@ -3060,8 +3020,8 @@ int Sh2Run(int cycles)
 
 		switch (opcode & ( 15 << 12))
 		{
-		case  0<<12: op0000(opcode); break;
-		case  1<<12: op0001(opcode); break;
+		case  0: op0000(opcode); break;
+		case  4096: op0001(opcode); break;
 		case  2<<12: op0010(opcode); break;
 		case  3<<12: op0011(opcode); break;
 		case  4<<12: op0100(opcode); break;
@@ -3075,7 +3035,7 @@ int Sh2Run(int cycles)
 		case 12<<12: op1100(opcode); break;
 		case 13<<12: op1101(opcode); break;
 		case 14<<12: op1110(opcode); break;
-		default: op1111(opcode); break;
+		default: break;
 		}
 
 #endif
@@ -3086,7 +3046,6 @@ int Sh2Run(int cycles)
 			sh2->test_irq = 0;
 		}
 
-		sh2->sh2_total_cycles++;
 		sh2->sh2_icount--;
 		
 		// timer check 
@@ -3150,25 +3109,12 @@ void Sh2BurnUntilInt(int)
 
 void Sh2StopRun()
 {
-	sh2->sh2_total_cycles += sh2->sh2_icount;
 	sh2->sh2_icount = 0;
 	sh2->sh2_cycles_to_run = 0;
 }
 
-int Sh2TotalCycles()
-{
-	return sh2->sh2_total_cycles;
-}
-
 void Sh2NewFrame()
 {
-	sh2->sh2_total_cycles = 0;
-}
-
-void Sh2BurnCycles(int cycles)
-{
-	sh2->sh2_icount -= cycles;
-	sh2->sh2_total_cycles += cycles;
 }
 
 void __fastcall Sh2WriteByte(unsigned int a, unsigned char d)

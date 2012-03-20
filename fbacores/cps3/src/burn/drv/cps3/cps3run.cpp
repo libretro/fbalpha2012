@@ -838,9 +838,8 @@ void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 
 UINT8 __fastcall cps3RamReadByte(UINT32 addr)
 {
-	if (addr == cps3_speedup_ram_address )
-		if (Sh2GetPC(0) == cps3_speedup_code_address)
-			pSh2Ext->suspend = 1;
+	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+		pSh2Ext->suspend = 1;
 
 	addr &= 0x7ffff;
 #ifdef LSB_FIRST
@@ -854,9 +853,8 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 {
 	addr &= 0x7ffff;
 
-	if (addr == cps3_speedup_ram_address )
-		if (Sh2GetPC(0) == cps3_speedup_code_address)
-			pSh2Ext->suspend = 1;
+	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+		pSh2Ext->suspend = 1;
 	
 #ifdef LSB_FIRST
 	return *(UINT16 *)(RamMain + (addr ^ 0x02));
@@ -868,9 +866,8 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 
 UINT32 __fastcall cps3RamReadLong(UINT32 addr)
 {
-	if (addr == cps3_speedup_ram_address )
-		if (Sh2GetPC(0) == cps3_speedup_code_address)
-			pSh2Ext->suspend = 1;
+	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+		pSh2Ext->suspend = 1;
 		
 	addr &= 0x7ffff;
 	return *(UINT32 *)(RamMain + addr);
@@ -1102,6 +1099,7 @@ INT32 cps3Init()
 	pBurnDrvPalette = (UINT32*)Cps3CurPal;
 		
 	Cps3Reset();
+	BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
 	return 0;
 }
 
@@ -1449,36 +1447,11 @@ static void cps3_draw_tilemapsprite_line(INT32 drawline, UINT32 * regs )
 	}
 }
 
-static INT32 WideScreenFrameDelay = 0;
-
 static void DrvDraw()
 {
 	INT32 bg_drawn[4] = { 0, 0, 0, 0 };
 
 	UINT32 fullscreenzoom = RamVReg[ 6 * 4 + 3 ] & 0xff;
-	UINT32 fullscreenzoomwidecheck = RamVReg[6 * 4 + 1];
-
-	if (((fullscreenzoomwidecheck & 0xffff0000) >> 16) == 0x0265) {
-		INT32 Width, Height;
-		BurnDrvGetVisibleSize(&Width, &Height);
-
-		if (Width != 496) {
-			BurnDrvSetVisibleSize(496, 224);
-			BurnDrvSetAspect(16, 9);
-			Reinitialise();
-			WideScreenFrameDelay = GetCurrentFrame() + 1;
-		}
-	} else {
-		INT32 Width, Height;
-		BurnDrvGetVisibleSize(&Width, &Height);
-
-		if (Width != 384) {
-			BurnDrvSetVisibleSize(384, 224);
-			BurnDrvSetAspect(4, 3);
-			Reinitialise();
-			WideScreenFrameDelay = GetCurrentFrame() + 1;
-		}
-	}
 
 	if (fullscreenzoom > 0x80) fullscreenzoom = 0x80;
 	UINT32 fsz = (fullscreenzoom << (16 - 6));
@@ -1589,66 +1562,60 @@ static void DrvDraw()
 
 				if (flipy) ypos2-= ((ysize2*16*yinc)>>16);
 
-				{
-					count = 0;
-					for (xx=0;xx<xsize2+1;xx++) {
-						INT32 current_xpos;
+				count = 0;
+				for (xx=0;xx<xsize2+1;xx++) {
+					INT32 current_xpos;
 
-						if (!flipx) current_xpos = (xpos+xpos2+((xx*16*xinc)>>16)  );
-						else current_xpos = (xpos+xpos2-((xx*16*xinc)>>16));
+					if (!flipx) current_xpos = (xpos+xpos2+((xx*16*xinc)>>16)  );
+					else current_xpos = (xpos+xpos2-((xx*16*xinc)>>16));
 
-						current_xpos += gscrollx;
-						current_xpos += 1;
-						current_xpos &=0x3ff;
-						if (current_xpos&0x200) current_xpos-=0x400;
+					current_xpos += gscrollx;
+					current_xpos += 1;
+					current_xpos &=0x3ff;
+					if (current_xpos&0x200) current_xpos-=0x400;
 
-						for (yy=0;yy<ysize2+1;yy++) {
-							INT32 current_ypos;
-							INT32 actualpal;
+					for (yy=0;yy<ysize2+1;yy++)
+					{
+						INT32 current_ypos;
+						INT32 actualpal;
 
-							if (flipy) current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
-							else current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
+						if (flipy) current_ypos = (ypos+ypos2+((yy*16*yinc)>>16));
+						else current_ypos = (ypos+ypos2-((yy*16*yinc)>>16));
 
-							current_ypos += gscrolly;
-							current_ypos = 0x3ff-current_ypos;
-							current_ypos -= 17;
-							current_ypos &=0x3ff;
+						current_ypos += gscrolly;
+						current_ypos = 0x3ff-current_ypos;
+						current_ypos -= 17;
+						current_ypos &=0x3ff;
 
-							if (current_ypos&0x200) current_ypos-=0x400;
+						if (current_ypos&0x200) current_ypos-=0x400;
 
-							/* use the palette value from the main list or the sublists? */
-							if (whichpal) actualpal = global_pal;
-							else actualpal = pal;
+						/* use the palette value from the main list or the sublists? */
+						if (whichpal) actualpal = global_pal;
+						else actualpal = pal;
 
-							/* use the bpp value from the main list or the sublists? */
-							INT32 color_granularity;
-							if (whichbpp) {
-								if (!global_bpp) color_granularity = 8;
-								else color_granularity = 6;
+						/* use the bpp value from the main list or the sublists? */
+						INT32 color_granularity = 6;
+
+						if((whichbpp && !global_bpp) || !bpp)
+							color_granularity = 8;
+
+						actualpal <<= color_granularity;
+
+						INT32 realtileno = tileno+count;
+
+						if ( realtileno ) {
+							if (global_alpha || alpha) {
+								// fix jojo's title in it's intro ???
+								if ( global_alpha && (global_pal & 0x100))
+									actualpal &= 0x0ffff;
+
+								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
+
 							} else {
-								if (!bpp) color_granularity = 8;
-								else color_granularity = 6;
-							}
-							actualpal <<= color_granularity;
-
-							{
-								INT32 realtileno = tileno+count;
-
-								if ( realtileno ) {
-									if (global_alpha || alpha) {
-										// fix jojo's title in it's intro ???
-										if ( global_alpha && (global_pal & 0x100))
-											actualpal &= 0x0ffff;
-
-										cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
-
-									} else {
-										cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, 0);
-									}
-								}
-								count++;
+								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, 0);
 							}
 						}
+						count++;
 					}
 				}
 			}
@@ -1716,11 +1683,6 @@ INT32 cps3Frame()
 			Cps3CurPal[i] = BurnHighCol(r, g, b, 0);	
 		}
 		cps3_palette_change = 0;
-	}
-
-	if (WideScreenFrameDelay == GetCurrentFrame()) {
-		BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
-		WideScreenFrameDelay = 0;
 	}
 
 	Cps3Input[0] = 0;

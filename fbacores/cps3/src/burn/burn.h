@@ -20,9 +20,6 @@
 extern TCHAR szAppHiscorePath[MAX_PATH];
 extern TCHAR szAppSamplesPath[MAX_PATH];
 
-// Enable the MAME logerror() function in debug builds
-// #define MAME_USE_LOGERROR
-
 // Give access to the CPUID function for various compilers
 #define CPUID(f,ra,rb,rc,rd)
 
@@ -80,14 +77,6 @@ extern UINT32 (__cdecl *BurnHighCol) (INT32 r, INT32 g, INT32 b, INT32 i);
 // ---------------------------------------------------------------------------
 
 extern UINT32 nCurrentFrame;
-
-inline static INT32 GetCurrentFrame() {
-	return nCurrentFrame;
-}
-
-inline static void SetCurrentFrame(const UINT32 n) {
-	nCurrentFrame = n;
-}
 
 // ---------------------------------------------------------------------------
 // Driver info structures
@@ -189,8 +178,6 @@ extern UINT32 *pBurnDrvPalette;
 #define PRINT_IMPORTANT (2)
 #define PRINT_ERROR		(3)
 
-extern INT32 (__cdecl *bprintf) (INT32 nStatus, TCHAR* szFormat, ...);
-
 INT32 BurnLibInit();
 INT32 BurnLibExit();
 
@@ -198,7 +185,6 @@ INT32 BurnDrvInit();
 INT32 BurnDrvExit();
 
 INT32 BurnDrvFrame();
-INT32 BurnDrvRedraw();
 INT32 BurnRecalcPal();
 INT32 BurnDrvGetPaletteEntries();
 

@@ -35,18 +35,6 @@ __extension__ typedef long long				INT64;
 #endif
 #define OSD_CPU_H
 
-/* OPN */
-#define HAS_YM2203  1
-#define HAS_YM2608  1
-#define HAS_YM2610  1
-#define HAS_YM2610B 1
-#define HAS_YM2612  1
-#define HAS_YM3438  1
-/* OPL */
-#define HAS_YM3812  1
-#define HAS_YM3526  1
-#define HAS_Y8950   1
-
 enum {
 	CLEAR_LINE = 0,
 	ASSERT_LINE,
@@ -67,11 +55,6 @@ enum {
   typedef UINT8 (*read8_handler)(UINT32 offset);
   typedef void (*write8_handler)(UINT32 offset, UINT32 data);
 
- #ifdef MAME_USE_LOGERROR
-  void __cdecl logerror(char* szFormat, ...);
- #else
-  #define logerror
- #endif
 #ifdef __cplusplus
  }
 #endif

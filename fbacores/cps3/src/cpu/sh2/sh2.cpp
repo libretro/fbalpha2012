@@ -463,21 +463,6 @@ SH2_INLINE UINT16 RW(UINT32 A)
 	return pSh2Ext->ReadWord[(uintptr_t)pr](A);
 }
 
-SH2_INLINE UINT16 OPRW(UINT32 A)
-{
-
-	unsigned char * pr;
-	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
-	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
-#ifdef LSB_FIRST
-		A ^= 2;
-#endif
-		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
-	}
-	
-	return 0x0000;
-}
-
 SH2_INLINE UINT32 RL(UINT32 A)
 {
 	
@@ -3060,11 +3045,6 @@ void Sh2SetIRQLine(const int line, const int state)
 		CHECK_PENDING_IRQ();
 
 	pSh2Ext->suspend = 0;
-}
-
-unsigned int Sh2GetPC(int)
-{
-	return (sh2->delay) ? (sh2->delay & AM) : (sh2->pc & AM);
 }
 
 void Sh2SetVBR(unsigned int i)

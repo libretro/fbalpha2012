@@ -728,7 +728,7 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 	if ( main_flash.flash_mode == FM_NORMAL )
 		retvalue = *(UINT32 *)(RomGame_D + (addr & 0x00ffffff));
 	
-	UINT32 pc = Sh2GetPC(0);
+	UINT32 pc = (sh2->delay) ? (sh2->delay & AM) : (sh2->pc & AM);
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		if ( main_flash.flash_mode == FM_NORMAL )
 			retvalue = *(UINT32 *)(RomGame + (addr & 0x00ffffff));
@@ -837,7 +837,8 @@ void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 
 UINT8 __fastcall cps3RamReadByte(UINT32 addr)
 {
-	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+	UINT32 pc = (sh2->delay) ? (sh2->delay & AM) : (sh2->pc & AM);
+	if (addr == cps3_speedup_ram_address && pc == cps3_speedup_code_address)
 		pSh2Ext->suspend = 1;
 
 	addr &= 0x7ffff;
@@ -852,7 +853,8 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 {
 	addr &= 0x7ffff;
 
-	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+	UINT32 pc = (sh2->delay) ? (sh2->delay & AM) : (sh2->pc & AM);
+	if (addr == cps3_speedup_ram_address && pc == cps3_speedup_code_address)
 		pSh2Ext->suspend = 1;
 	
 #ifdef LSB_FIRST
@@ -865,7 +867,8 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 
 UINT32 __fastcall cps3RamReadLong(UINT32 addr)
 {
-	if (addr == cps3_speedup_ram_address && Sh2GetPC(0) == cps3_speedup_code_address)
+	UINT32 pc = (sh2->delay) ? (sh2->delay & AM) : (sh2->pc & AM);
+	if (addr == cps3_speedup_ram_address && pc == cps3_speedup_code_address)
 		pSh2Ext->suspend = 1;
 		
 	addr &= 0x7ffff;

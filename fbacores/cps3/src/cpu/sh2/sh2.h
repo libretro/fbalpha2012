@@ -38,7 +38,6 @@ int Sh2SetWriteLongHandler(int i, pSh2WriteLongHandler pHandler);
 
 void Sh2SetIRQLine(const int line, const int state);
 
-unsigned int Sh2GetPC(int n);
 void Sh2StopRun();
 void Sh2SetVBR(unsigned int i);
 

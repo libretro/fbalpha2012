@@ -61,7 +61,7 @@ struct BurnDriver {
 	INT32 (*GetSampleName)(char** pszName, UINT32 i, INT32 nAka);	// Function to get the possible names for each sample
 	INT32 (*GetInputInfo)(struct BurnInputInfo* pii, UINT32 i);	// Function to get the input info for the game
 	INT32 (*GetDIPInfo)(struct BurnDIPInfo* pdi, UINT32 i);		// Function to get the input info for the game
-	INT32 (*Init)(); INT32 (*Exit)(); INT32 (*Frame)(); INT32 (*Redraw)(); INT32 (*AreaScan)(INT32 nAction, INT32* pnMin);
+	INT32 (*Init)(); INT32 (*Exit)(); INT32 (*Frame)(); INT32 (*AreaScan)(INT32 nAction, INT32* pnMin);
 	UINT8* pRecalcPal; UINT32 nPaletteEntries;										// Set to 1 if the palette needs to be fully re-calculated
 	INT32 nWidth, nHeight; INT32 nXAspect, nYAspect;					// Screen width, height, x/y aspect
 };
@@ -90,27 +90,6 @@ INT32 BurnLoadBitField(UINT8* pDest, UINT8* pSrc, INT32 nField, INT32 nSrcLen);
 extern UINT16* pTransDraw;
 
 void BurnTransferClear();
-INT32 BurnTransferCopy(UINT32* pPalette);
-void BurnTransferExit();
-INT32 BurnTransferInit();
-
-// ---------------------------------------------------------------------------
-// Plotting pixels
-
-inline static void PutPix(UINT8* pPix, UINT32 c)
-{
-	if (nBurnBpp >= 4) {
-		*((UINT32*)pPix) = c;
-	} else {
-		if (nBurnBpp == 2) {
-			*((UINT16*)pPix) = (UINT16)c;
-		} else {
-			pPix[0] = (UINT8)(c >>  0);
-			pPix[1] = (UINT8)(c >>  8);
-			pPix[2] = (UINT8)(c >> 16);
-		}
-	}
-}
 
 // ---------------------------------------------------------------------------
 // Setting up cpus for cheats

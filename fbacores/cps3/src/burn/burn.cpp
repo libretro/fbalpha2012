@@ -4,11 +4,6 @@
 #include "burnint.h"
 #include "driverlist.h"
 
-// filler function, used if the application is not printing debug messages
-static INT32 __cdecl BurnbprintfFiller(INT32, TCHAR* , ...) { return 0; }
-// pointer to burner printing function
-INT32 (__cdecl *bprintf)(INT32 nStatus, TCHAR* szFormat, ...) = BurnbprintfFiller;
-
 INT32 nBurnVer = BURN_VERSION;		// Version number of the library
 
 UINT32 nBurnDrvCount = 0;		// Count of game drivers
@@ -591,23 +586,13 @@ extern "C" INT32 BurnDrvFrame()
 	return pDriver[nBurnDrvActive]->Frame();		// Forward to drivers function
 }
 
-// Force redraw of the screen
-extern "C" INT32 BurnDrvRedraw()
-{
-	if (pDriver[nBurnDrvActive]->Redraw) {
-		return pDriver[nBurnDrvActive]->Redraw();	// Forward to drivers function
-	}
-
-	return 1;										// No funtion provide, so simply return
-}
-
 // Refresh Palette
 extern "C" INT32 BurnRecalcPal()
 {
 	if (nBurnDrvActive < nBurnDrvCount) {
 		UINT8* pr = pDriver[nBurnDrvActive]->pRecalcPal;
 		if (pr == NULL) return 1;
-		*pr = 1;									// Signal for the driver to refresh it's palette
+		*pr = 1;	// Signal for the driver to refresh it's palette
 	}
 
 	return 0;
@@ -674,19 +659,6 @@ INT32 BurnClearScreen()
 	return 0;
 }
 
-// Byteswaps an area of memory
-INT32 BurnByteswap(UINT8* pMem, INT32 nLen)
-{
-	nLen >>= 1;
-	for (INT32 i = 0; i < nLen; i++, pMem += 2) {
-		UINT8 t = pMem[0];
-		pMem[0] = pMem[1];
-		pMem[1] = t;
-	}
-
-	return 0;
-}
-
 // Application-defined rom loading function:
 INT32 (__cdecl *BurnExtLoadRom)(UINT8 *Dest, INT32 *pnWrote, INT32 i) = NULL;
 
@@ -703,49 +675,8 @@ static INT32 nTransWidth, nTransHeight;
 
 void BurnTransferClear()
 {
-
 	memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(UINT16));
 }
-
-INT32 BurnTransferCopy(UINT32* pPalette)
-{
-	UINT16* pSrc = pTransDraw;
-	UINT8* pDest = pBurnDraw;
-
-	pBurnDrvPalette = pPalette;
-
-	for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
-	{
-		for (INT32 x = 0; x < nTransWidth; x ++)
-			((UINT16*)pDest)[x] = pPalette[pSrc[x]];
-	}
-
-	return 0;
-}
-
-void BurnTransferExit()
-{
-	if (pTransDraw) {
-		free(pTransDraw);
-		pTransDraw = NULL;
-	}
-}
-
-INT32 BurnTransferInit()
-{
-	BurnDrvGetVisibleSize(&nTransWidth, &nTransHeight);
-
-	pTransDraw = (UINT16*)malloc(nTransWidth * nTransHeight * sizeof(UINT16));
-	if (pTransDraw == NULL) {
-		return 1;
-	}
-
-	BurnTransferClear();
-
-	return 0;
-}
-
-
 
 // ----------------------------------------------------------------------------
 // Savestate support

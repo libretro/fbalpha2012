@@ -119,12 +119,6 @@ static INT32 ConfigParseFile(TCHAR* pszFilename)
 				CheatError(pszFilename, nLine, pCurrentCheat, _T("missing closing bracket"), NULL);
 				break;
 			}
-#if 0
-			if (*s != _T('\0') && *s != _T('{')) {
-				CheatError(pszFilename, nLine, NULL, _T("malformed cheat declaration"), szLine);
-				break;
-			}
-#endif
 			nInside = *s;
 
 			// Link new node into the list
@@ -270,12 +264,6 @@ static INT32 ConfigParseFile(TCHAR* pszFilename)
 		}
 
 		// Line isn't (part of) a valid cheat
-#if 0
-		if (*s) {
-			CheatError(pszFilename, nLine, NULL, _T("rogue line"), szLine);
-			break;
-		}
-#endif
 
 	}
 

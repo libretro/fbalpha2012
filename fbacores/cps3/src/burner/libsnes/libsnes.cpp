@@ -256,6 +256,13 @@ void snes_init()
       bool need_fullpath = true;
       environ_cb(SNES_ENVIRONMENT_SET_NEED_FULLPATH, &need_fullpath);
    }
+   nBurnPitch = 384 * sizeof(uint16_t);
+
+   nBurnLayer = 0xff;
+   pBurnSoundOut = g_audio_buf;
+   nBurnSoundRate = 32000;
+   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+   pBurnDraw = (uint8_t*)g_fba_frame;
 }
 
 void snes_term()
@@ -268,39 +275,22 @@ static bool g_reset;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
-// Copy stuff :o
-static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
-{
-   for (unsigned y = 0; y < height; y++)
-   {
-      memcpy(g_fba_frame_conv + y * 1024,
-            g_fba_frame + y * (pitch >> 1),
-            width * sizeof(uint16_t));
-   }
-
-   video_cb(g_fba_frame_conv, width, height);
-}
-
 void snes_run()
 {
-   int width, height;
-   BurnDrvGetVisibleSize(&width, &height);
-   pBurnDraw = (uint8_t*)g_fba_frame;
-
-   unsigned drv_flags = BurnDrvGetFlags();
-   nBurnPitch = width * sizeof(uint16_t);
-
-   nBurnLayer = 0xff;
-   pBurnSoundOut = g_audio_buf;
-   nBurnSoundRate = 32000;
-   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
    poll_input();
 
    cps3Frame();
 
-   blit_regular(width, height, nBurnPitch);
+   for (unsigned y = 0; y < 224; y++)
+   {
+      memcpy(g_fba_frame_conv + y * 1024,
+            g_fba_frame + y * (nBurnPitch >> 1),
+            384 * sizeof(uint16_t));
+   }
+
+   video_cb(g_fba_frame_conv, 384, 224);
 
    for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
       audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
@@ -773,70 +763,38 @@ static void poll_input()
             *(pgi->Input.pVal) = pgi->Input.nVal;
             break;
          case GIT_SWITCH:
-         {
-            // Digital input
-            unsigned id = keybinds[pgi->Input.Switch.nCode][0];
-            unsigned port = keybinds[pgi->Input.Switch.nCode][1];
+	    {
+		    // Digital input
+		    unsigned id = keybinds[pgi->Input.Switch.nCode][0];
+		    unsigned port = keybinds[pgi->Input.Switch.nCode][1];
 
-            bool state;
-            if (id == RESET_BIND)
-            {
-               state = g_reset;
-               g_reset = false;
-            }
-            else if (id == SERVICE_BIND)
-            {
-               state =
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(START)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(SELECT)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(L)) &&
-                  input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(R));
-            }
-            else if (port < 2)
-               state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
-            else
-               state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);
+		    bool state;
+		    if (id == RESET_BIND)
+		    {
+			    state = g_reset;
+			    g_reset = false;
+		    }
+		    else if (id == SERVICE_BIND)
+		    {
+			    state =
+				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(START)) &&
+				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(SELECT)) &&
+				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(L)) &&
+				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(R));
+		    }
+		    else if (port < 2)
+			    state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);
+		    else
+			    state = input_cb(true, SNES_DEVICE_MULTITAP, port - 1, id);
 
-            if (pgi->nType & BIT_GROUP_ANALOG)
-            {
-               // Set analog controls to full
-               if (state)
-                  pgi->Input.nVal = 0xFFFF;
-               else
-                  pgi->Input.nVal = 0x0001;
-#ifdef LSB_FIRST
-               *(pgi->Input.pShortVal) = pgi->Input.nVal;
-#else
-               *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
-#endif
-            }
-            else
-            {
-               // Binary controls
-               if (state)
-                  pgi->Input.nVal = 1;
-               else
-                  pgi->Input.nVal = 0;
-               *(pgi->Input.pVal) = pgi->Input.nVal;
-            }
-            break;
-         }
-         case GIT_KEYSLIDER:						// Keyboard slider
-         {
-            int nSlider = pgi->Input.Slider.nSliderValue;
-            if (pgi->nType == BIT_ANALOG_REL) {
-               nSlider -= 0x8000;
-               nSlider >>= 4;
-            }
-
-            pgi->Input.nVal = (unsigned short)nSlider;
-#ifdef LSB_FIRST
-            *(pgi->Input.pShortVal) = pgi->Input.nVal;
-#else
-            *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
-#endif
-            break;
-         }
+		    // Binary controls
+		    if (state)
+			    pgi->Input.nVal = 1;
+		    else
+			    pgi->Input.nVal = 0;
+		    *(pgi->Input.pVal) = pgi->Input.nVal;
+		    break;
+	    }
       }
    }
 }

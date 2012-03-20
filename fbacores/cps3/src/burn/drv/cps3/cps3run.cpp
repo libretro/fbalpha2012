@@ -31,6 +31,12 @@ Port to FBA by OopsWare
 #define	BE_GFX		1
 #define SPEED_HACK	1		// Default should be 1, if not FPS would drop.
 
+#define CPS3_GFX_WIDTH	384
+#define CPS3_GFX_WIDTH_MINUS_EIGHT	376
+#define CPS3_GFX_WIDTH_MUL_SEVEN 2688
+#define CPS3_GFX_HEIGHT	224
+#define CPS3_GFX_HEIGHT_MINUS_EIGHT	216
+
 static UINT8 *Mem = NULL, *MemEnd = NULL;
 static UINT8 *RamStart, *RamEnd;
 
@@ -143,9 +149,9 @@ UINT32 cps3_flash_read(flash_chip * chip, UINT32 addr)
 		return 0;
 
 	case FM_ERASEAMD4:
-		chip->status ^= ( 1 << 6 ) | ( 1 << 2 );
+		chip->status ^= 64 | 4;
 	case FM_READSTATUS:
-		return (chip->status << 0) | (chip->status << 8) | (chip->status << 16) | (chip->status << 24);
+		return (chip->status) | (chip->status << 8) | (chip->status << 16) | (chip->status << 24);
 
 	case FM_NORMAL:
 	default:
@@ -583,15 +589,15 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 						 coldata = (coldata << 8) | (coldata >> 8);
 #endif
 
-						 UINT32 r = (coldata & 0x001F) >>  0;
+						 UINT32 r = (coldata & 0x001F);
 						 UINT32 g = (coldata & 0x03E0) >>  5;
 						 UINT32 b = (coldata & 0x7C00) >> 10;
 						 if (paldma_fade!=0) {
 							 INT32 fade;
 							 fade = (paldma_fade & 0x3f000000)>>24; r = (r*fade)>>5; if (r>0x1f) r = 0x1f;
 							 fade = (paldma_fade & 0x003f0000)>>16; g = (g*fade)>>5; if (g>0x1f) g = 0x1f;
-							 fade = (paldma_fade & 0x0000003f)>> 0; b = (b*fade)>>5; if (b>0x1f) b = 0x1f;
-							 coldata = (r << 0) | (g << 5) | (b << 10);
+							 fade = (paldma_fade & 0x0000003f); b = (b*fade)>>5; if (b>0x1f) b = 0x1f;
+							 coldata = (r) | (g << 5) | (b << 10);
 						 }
 
 						 r = r << 3;
@@ -658,25 +664,18 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 					 ((UINT16 *)RamVReg)[ (addr >> 1) ] = data;
 #endif
 
-				 } else
-					 if ((addr >= 0x05000000) && (addr < 0x05001000)) {
-
-
-					 } else 
-						 if ((addr >= 0x05001000) && (addr < 0x05001204)) {
-							 // EEPROM
-							 addr -= 0x05001000;
-							 if ((addr>=0x080) && (addr<0x100))
+				 }
+				 else if ((addr >= 0x05001000) && (addr < 0x05001204))
+				 {
+					 // EEPROM
+					 addr -= 0x05001000;
+					 if ((addr>=0x080) && (addr<0x100))
 #ifdef LSB_FIRST
-								 EEPROM[((addr-0x080) >> 1) ^ 1] = data;
+						 EEPROM[((addr-0x080) >> 1) ^ 1] = data;
 #else
-							 EEPROM[((addr-0x080) >> 1)] = data;
+					 EEPROM[((addr-0x080) >> 1)] = data;
 #endif
-						 } else
-							 if ((addr >= 0x05050000) && (addr < 0x05060000)) {
-								 // unknow i/o
-
-							 }
+				 }
 	}
 }
 
@@ -1099,7 +1098,6 @@ INT32 cps3Init()
 	pBurnDrvPalette = (UINT32*)Cps3CurPal;
 		
 	Cps3Reset();
-	BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
 	return 0;
 }
 
@@ -1120,14 +1118,14 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 	UINT16 * dst = (UINT16 *) pBurnDraw;
 	UINT8 * src = (UINT8 *)RamSS;
 	UINT16 * color = Cps3CurPal + (pal << 4);
-	dst += (y * cps3_gfx_width + x);
+	dst += (y * CPS3_GFX_WIDTH + x);
 	src += code * 64;
 	
 	if ( flipy ) {
-		dst += cps3_gfx_width * 7;
+		dst += CPS3_GFX_WIDTH_MUL_SEVEN;
 #ifdef LSB_FIRST
 		if ( flipx )
-			for(INT32 i=0; i<8; i++, dst-= cps3_gfx_width, src += 8) {
+			for(INT32 i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 2] & 0xf ) dst[7] = color [ src[ 2] & 0xf ];
 				if ( src[ 2] >>  4 ) dst[6] = color [ src[ 2] >>  4 ];
 				if ( src[ 0] & 0xf ) dst[5] = color [ src[ 0] & 0xf ];
@@ -1138,7 +1136,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 				if ( src[ 4] >>  4 ) dst[0] = color [ src[ 4] >>  4 ];
 			}
 		else
-			for(INT32 i=0; i<8; i++, dst-= cps3_gfx_width, src += 8) {
+			for(INT32 i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 2] & 0xf ) dst[0] = color [ src[ 2] & 0xf ];
 				if ( src[ 2] >>  4 ) dst[1] = color [ src[ 2] >>  4 ];
 				if ( src[ 0] & 0xf ) dst[2] = color [ src[ 0] & 0xf ];
@@ -1151,7 +1149,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 		
 	} else {
 		if ( flipx )
-			for(INT32 i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
+			for(INT32 i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 2] & 0xf ) dst[7] = color [ src[ 2] & 0xf ];
 				if ( src[ 2] >>  4 ) dst[6] = color [ src[ 2] >>  4 ];
 				if ( src[ 0] & 0xf ) dst[5] = color [ src[ 0] & 0xf ];
@@ -1162,7 +1160,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 				if ( src[ 4] >>  4 ) dst[0] = color [ src[ 4] >>  4 ];
 			}
 		else
-			for(INT32 i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
+			for(INT32 i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 2] & 0xf ) dst[0] = color [ src[ 2] & 0xf ];
 				if ( src[ 2] >>  4 ) dst[1] = color [ src[ 2] >>  4 ];
 				if ( src[ 0] & 0xf ) dst[2] = color [ src[ 0] & 0xf ];
@@ -1175,7 +1173,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 	}
 #else
 		if ( flipx )
-			for(int i=0; i<8; i++, dst-= cps3_gfx_width, src += 8) {
+			for(int i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
 				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
 				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
@@ -1186,7 +1184,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
 			}
 		else
-			for(int i=0; i<8; i++, dst-= cps3_gfx_width, src += 8) {
+			for(int i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 1] & 0xf ) dst[0] = color [ src[ 1] & 0xf ];
 				if ( src[ 1] >>  4 ) dst[1] = color [ src[ 1] >>  4 ];
 				if ( src[ 3] & 0xf ) dst[2] = color [ src[ 3] & 0xf ];
@@ -1199,7 +1197,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 
 	} else {
 		if ( flipx )
-			for(int i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
+			for(int i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
 				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
 				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
@@ -1210,7 +1208,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
 			}
 		else
-			for(int i=0; i<8; i++, dst+= cps3_gfx_width, src += 8) {
+			for(int i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
 				if ( src[ 1 ] & 0xf ) dst[0] = color [ src[ 1 ] & 0xf ];
 				if ( src[ 1 ] >>  4 ) dst[1] = color [ src[ 1 ] >>  4 ];
 				if ( src[ 3 ] & 0xf ) dst[2] = color [ src[ 3 ] & 0xf ];
@@ -1454,10 +1452,10 @@ static void DrvDraw()
 	UINT32 fullscreenzoom = RamVReg[ 6 * 4 + 3 ] & 0xff;
 
 	if (fullscreenzoom > 0x80) fullscreenzoom = 0x80;
-	UINT32 fsz = (fullscreenzoom << (16 - 6));
+	UINT32 fsz = (fullscreenzoom << 10);
 
-	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
-	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
+	cps3_gfx_max_x = ((CPS3_GFX_WIDTH * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
+	cps3_gfx_max_y = ((CPS3_GFX_HEIGHT * fsz) >> 16) - 1;	// 224
 
 	UINT32 * pscr = RamScreen;
 	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
@@ -1629,7 +1627,7 @@ static void DrvDraw()
 	for (INT32 rendery=0; rendery<224; rendery++) {
 		srcbitmap = RamScreen + (srcy >> 16) * 1024;
 		srcx=0;
-		for (INT32 renderx=0; renderx<cps3_gfx_width; renderx++, dstbitmap ++) {
+		for (INT32 renderx=0; renderx < CPS3_GFX_WIDTH; renderx++, dstbitmap ++) {
 			*dstbitmap = Cps3CurPal[ srcbitmap[srcx>>16] ];
 			srcx += fsz;
 		}
@@ -1650,7 +1648,7 @@ static void DrvDraw()
 			if (tile == 0) continue; // ok?
 
 			tile+=0x200;
-			if (!(((x*8) > (cps3_gfx_width - 8)) || ((y*8) > (cps3_gfx_height - 8))))
+			if (!(((x*8) > CPS3_GFX_WIDTH_MINUS_EIGHT) || ((y*8) > CPS3_GFX_HEIGHT_MINUS_EIGHT)))
 				cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
 		}
 	}

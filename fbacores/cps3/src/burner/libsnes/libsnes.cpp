@@ -34,8 +34,7 @@ static unsigned g_rom_count;
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
-static uint16_t g_fba_frame[1024 * 1024];
-static uint16_t g_fba_frame_conv[1024 * 1024];
+static uint8_t * g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 
 // libsnes globals
@@ -44,6 +43,7 @@ static snes_video_refresh_t video_cb;
 static snes_audio_sample_t audio_cb;
 static snes_input_poll_t poll_cb;
 static snes_input_state_t input_cb;
+static snes_audio_sample_batch_t audio_batch_cb;
 void snes_set_video_refresh(snes_video_refresh_t cb) { video_cb = cb; }
 void snes_set_audio_sample(snes_audio_sample_t cb) { audio_cb = cb; }
 void snes_set_input_poll(snes_input_poll_t cb) { poll_cb = cb; }
@@ -250,13 +250,16 @@ static bool open_archive()
 void snes_init()
 {
    BurnLibInit();
+   g_fba_frame = (uint8_t*)realloc(g_fba_frame, 1024*1024);
+   nBurnPitch = 384 * sizeof(uint16_t);
 
    if (environ_cb)
    {
       bool need_fullpath = true;
       environ_cb(SNES_ENVIRONMENT_SET_NEED_FULLPATH, &need_fullpath);
+      environ_cb(SNES_ENVIRONMENT_GET_AUDIO_BATCH_CB, &audio_batch_cb);
+      environ_cb(SNES_ENVIRONMENT_SET_PITCH, &nBurnPitch);
    }
-   nBurnPitch = 384 * sizeof(uint16_t);
 
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
@@ -278,22 +281,19 @@ void snes_reset() { g_reset = true; }
 void snes_run()
 {
    nCurrentFrame++;
+   nBurnPitch = 384 * sizeof(uint16_t);
 
    poll_input();
 
    cps3Frame();
 
-   for (unsigned y = 0; y < 224; y++)
-   {
-      memcpy(g_fba_frame_conv + y * 1024,
-            g_fba_frame + y * (nBurnPitch >> 1),
-            384 * sizeof(uint16_t));
-   }
+   video_cb((uint16_t*)pBurnDraw, 384, 224);
 
-   video_cb(g_fba_frame_conv, 384, 224);
-
-   for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
-      audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
+   if (audio_batch_cb)
+	audio_batch_cb(g_audio_buf, AUDIO_SEGMENT_LENGTH);
+   else
+	   for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
+		   audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
 }
 
 static uint8_t *write_state_ptr;

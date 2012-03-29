@@ -291,9 +291,9 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 		UINT8 current_byte = sourcedata[ real_source ^ 0 ];
 		real_source++;
 
+		UINT32 length_processed;
 		if (current_byte & 0x80) {
 			UINT8 real_byte;
-			UINT32 length_processed;
 			current_byte &= 0x7f;
 
 			real_byte = sourcedata[ (chardma_table_address+current_byte*2+0) ^ 0 ];
@@ -307,16 +307,13 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 			length_processed = process_byte( real_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
-			if (real_destination>0x7fffff) return;
-			if (length_remaining<=0) return;  // if we've expired, exit
 		} else {
-			UINT32 length_processed;
 			length_processed = process_byte( current_byte, real_destination, length_remaining );
 			length_remaining -= length_processed; // subtract the number of bytes the operation has taken
 			real_destination += length_processed; // add it onto the destination
+		}
 			if (real_destination>0x7fffff) return;
 			if (length_remaining<=0) return;  // if we've expired, exit
-		}
 	}
 }
 
@@ -355,7 +352,7 @@ static void cps3_do_alt_char_dma(UINT32 src, UINT32 real_dest, UINT32 real_lengt
 	lastb=0xfffe;
 	lastb2=0xffff;
 
-	while(1) {
+	do{
 		UINT8 ctrl=px[ src ^ 0 ];
  		++src;
 
@@ -378,7 +375,7 @@ static void cps3_do_alt_char_dma(UINT32 src, UINT32 real_dest, UINT32 real_lengt
 			if((ds-start)>=real_length)
 				return;
  		}
-	}
+	}while(1);
 }
 
 static void cps3_process_character_dma(UINT32 address)
@@ -397,29 +394,23 @@ static void cps3_process_character_dma(UINT32 address)
 		switch ( dat1 & 0x00e00000 ) {
 		case 0x00800000:
 			chardma_table_address = real_source;
-			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
-				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00400000:
 			cps3_do_char_dma( real_source, real_destination, real_length );
-			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
-				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00600000:
 			/* 8bpp DMA decompression
 			   - this is used on SFIII NG Sean's Stage ONLY */
 			cps3_do_alt_char_dma( real_source, real_destination, real_length );
-			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
-				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		case 0x00000000:
 			// Red Earth need this. 8192 byte trans to 0x00003000 (from 0x007ec000???)
 			// seems some stars(6bit alpha) without compress
 			memcpy( (UINT8 *)RamCRam + real_destination, RomUser + real_source, real_length );
-			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
-				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
 		}
+			if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
+				Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 	}
 }
 

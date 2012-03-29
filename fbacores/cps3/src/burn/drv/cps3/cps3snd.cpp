@@ -152,8 +152,16 @@ void cps3SndUpdate()
 				sample = base[(start + pos) ^ 1];
 				frac += step;
 
+#if 0
+/* Experimental Altivec */
+				vector signed short vec0 = { buffer[0], buffer[1] };
+				vector signed short vec1 = { vol_l, vol_r };
+				vector signed short vec2 = { sample, sample };
+				vector signed short vec3 = vec_mradds(vec1, vec2, vec0);
+				buffer[0] = vec3[0];
+				buffer[1] = vec3[1];
+#else
 				INT32 sample_l;
-
 				sample_l = ((sample * vol_r) >> 8) + buffer[0];
 				if (sample_l > 32767)		buffer[0] = 32767;
 				else if (sample_l < -32768)	buffer[0] = -32768;
@@ -163,6 +171,7 @@ void cps3SndUpdate()
 				if (sample_l > 32767)		buffer[1] = 32767;
 				else if (sample_l < -32768)	buffer[1] = -32768;
 				else 						buffer[1] = sample_l;
+#endif
 
 				buffer += 2;
 			}

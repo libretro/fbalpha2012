@@ -1115,108 +1115,77 @@ INT32 cps3Exit()
 	return 0;
 }
 
-
-static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x_new, INT32 y_new)
-{
-}
-
-
-static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 sx, INT32 sy, INT32 scalex, INT32 scaley, INT32 alpha)
+static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 sx, INT32 sy, INT32 sprite_screen_width, INT32 sprite_screen_height, INT32 alpha)
 {
 	UINT8 * source_base = (UINT8 *) RamCRam + code * 256;
 
-	INT32 sprite_screen_height = (scaley * 16 + 0x8000) >> 16;
-	INT32 sprite_screen_width  = (scalex * 16 + 0x8000) >> 16;	
-	if (sprite_screen_width && sprite_screen_height) {
-		// compute sprite increment per screen pixel
-		INT32 dx = 1048576 / sprite_screen_width;
-		INT32 dy = 1048576 / sprite_screen_height;
+	// compute sprite increment per screen pixel
+	INT32 dx = 1048576 / sprite_screen_width;
+	INT32 dy = 1048576 / sprite_screen_height;
 
-		INT32 ex = sx + sprite_screen_width;
-		INT32 ey = sy + sprite_screen_height;
+	INT32 ex = sx + sprite_screen_width;
+	INT32 ey = sy + sprite_screen_height;
 
-		INT32 x_index_base = 0;
-		INT32 y_index = 0;
+	INT32 x_index_base = 0;
+	INT32 y_index = 0;
 
-		if( flipx )	{
-			x_index_base = (sprite_screen_width - 1) * dx;
-			dx = -dx;
-		}
+	if( flipx )	{
+		x_index_base = (sprite_screen_width - 1) * dx;
+		dx = -dx;
+	}
 
-		if( flipy )	{
-			y_index = (sprite_screen_height - 1) * dy;
-			dy = -dy;
-		}
+	if( flipy )	{
+		y_index = (sprite_screen_height - 1) * dy;
+		dy = -dy;
+	}
 
-		if( sx < 0)
-		{ /* clip left */
-			INT32 pixels = 0-sx;
-			sx += pixels;
-			x_index_base += pixels*dx;
-		}
-		if( sy < 0 )
-		{ /* clip top */
-			INT32 pixels = 0-sy;
-			sy += pixels;
-			y_index += pixels*dy;
-		}
-		if( ex > cps3_gfx_max_x+1 )
-		{ /* clip right */
-			INT32 pixels = ex-cps3_gfx_max_x-1;
-			ex -= pixels;
-		}
-		if( ey > cps3_gfx_max_y+1 )
-		{ /* clip bottom */
-			INT32 pixels = ey-cps3_gfx_max_y-1;
-			ey -= pixels;
-		}
+	if( sx < 0)
+	{ /* clip left */
+		INT32 pixels = 0-sx;
+		sx += pixels;
+		x_index_base += pixels*dx;
+	}
+	if( sy < 0 )
+	{ /* clip top */
+		INT32 pixels = 0-sy;
+		sy += pixels;
+		y_index += pixels*dy;
+	}
+	if( ex > cps3_gfx_max_x+1 )
+	{ /* clip right */
+		INT32 pixels = ex-cps3_gfx_max_x-1;
+		ex -= pixels;
+	}
+	if( ey > cps3_gfx_max_y+1 )
+	{ /* clip bottom */
+		INT32 pixels = ey-cps3_gfx_max_y-1;
+		ey -= pixels;
+	}
 
-		if( ex > sx ) {
-			switch( alpha ) {
-				case 0:
-					for( INT32 y=sy; y<ey; y++ ) {
-						UINT8 * source = source_base + (y_index>>16) * 16;
-						UINT32 * dest = RamScreen + y * 1024;
-						INT32 x_index = x_index_base;
-						for(INT32 x=sx; x<ex; x++ ) {
-							UINT8 c = source[ (x_index>>16) ];
-							if( c )	dest[x] = pal | c;
-							x_index += dx;
-						}
-						y_index += dy;
+	if( ex > sx )
+	{
+		for( INT32 y=sy; y<ey; y++ )
+		{
+			UINT8 * source = source_base + (y_index>>16) * 16;
+			UINT32 * dest = RamScreen + y * 1024;
+			INT32 x_index = x_index_base;
+			for(INT32 x = sx; x < ex; x++ )
+			{
+				UINT8 c = source[ (x_index>>16) ];
+				if( c && (!alpha || alpha == 8))
+				{
+					if(!alpha) dest[x] = pal | c;
+					else if(alpha == 8)
+					{
+						dest[x] |= 0x8000;
+						if (pal&0x10000) dest[x] |= 0x10000;
 					}
-					break;
-				case 6:
-					for( INT32 y=sy; y<ey; y++ ) {
-						UINT8 * source = source_base + (y_index>>16) * 16;
-						UINT32 * dest = RamScreen + y * 1024;
-						INT32 x_index = x_index_base;
-						for(INT32 x=sx; x<ex; x++ ) {
-							UINT8 c = source[ (x_index>>16)];
-							dest[x] |= ((c&0x0000f) << 13);
-							x_index += dx;
-						}
-						y_index += dy;
-					}
-					break;
-				case 8:
-					for( INT32 y=sy; y<ey; y++ ) {
-						UINT8 * source = source_base + (y_index>>16) * 16;
-						UINT32 * dest = RamScreen + y * 1024;
-						INT32 x_index = x_index_base;
-						for(INT32 x=sx; x<ex; x++ ) {
-							UINT8 c = source[ (x_index>>16) ];
-
-							if (c) {
-								dest[x] |= 0x8000;
-								if (pal&0x10000) dest[x] |= 0x10000;
-							}
-							x_index += dx;
-						}
-						y_index += dy;
-					}
-					break;
+				}
+				else if(alpha == 6)
+					dest[x] |= ((c&0x0000f) << 13);
+				x_index += dx;
 			}
+			y_index += dy;
 		}
 	}
 }
@@ -1455,17 +1424,21 @@ static void DrvDraw()
 
 						INT32 realtileno = tileno+count;
 
-						if ( realtileno ) {
-							if (global_alpha || alpha) {
+						if ( realtileno )
+						{
+							if (global_alpha || alpha)
+							{
 								// fix jojo's title in it's intro ???
 								if ( global_alpha && (global_pal & 0x100))
 									actualpal &= 0x0ffff;
-
-								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, color_granularity);
-
-							} else {
-								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos,xinc,yinc, 0);
 							}
+							else
+								color_granularity = 0;
+
+							INT32 sprite_screen_height = ((xinc << 4) + 0x8000) >> 16;
+							INT32 sprite_screen_width  = ((yinc << 4) + 0x8000) >> 16;	
+							if (sprite_screen_width && sprite_screen_height)
+								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos, sprite_screen_width, sprite_screen_height, color_granularity);
 						}
 						count++;
 					}

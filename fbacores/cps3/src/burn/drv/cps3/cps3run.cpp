@@ -287,7 +287,7 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 	UINT8 * sourcedata = RomUser;
 	INT32 length_remaining = real_length;
 	last_normal_byte = 0;
-	while (length_remaining) {
+	do{
 		UINT8 current_byte = sourcedata[ real_source ^ 0 ];
 		real_source++;
 
@@ -314,7 +314,7 @@ static void cps3_do_char_dma( UINT32 real_source, UINT32 real_destination, UINT3
 		}
 			if (real_destination>0x7fffff) return;
 			if (length_remaining<=0) return;  // if we've expired, exit
-	}
+	}while (length_remaining);
 }
 
 static UINT16 lastb;
@@ -396,7 +396,8 @@ static void cps3_process_character_dma(UINT32 address)
 			chardma_table_address = real_source;
 			break;
 		case 0x00400000:
-			cps3_do_char_dma( real_source, real_destination, real_length );
+			if(real_length)
+				cps3_do_char_dma( real_source, real_destination, real_length );
 			break;
 		case 0x00600000:
 			/* 8bpp DMA decompression

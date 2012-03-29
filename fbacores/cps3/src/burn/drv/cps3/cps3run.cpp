@@ -1116,199 +1116,10 @@ INT32 cps3Exit()
 }
 
 
-static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x, INT32 y)
+static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x_new, INT32 y_new)
 {
-	UINT16 * dst = (UINT16 *) pBurnDraw;
-	UINT8 * src = (UINT8 *)RamSS;
-	UINT16 * color = Cps3CurPal + (pal << 4);
-	dst += (y * CPS3_GFX_WIDTH + x);
-	src += code * 64;
-	
-	if ( flipy ) {
-		dst += CPS3_GFX_WIDTH_MUL_SEVEN;
-#ifdef LSB_FIRST
-		if ( flipx )
-			for(INT32 i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 2] & 0xf ) dst[7] = color [ src[ 2] & 0xf ];
-				if ( src[ 2] >>  4 ) dst[6] = color [ src[ 2] >>  4 ];
-				if ( src[ 0] & 0xf ) dst[5] = color [ src[ 0] & 0xf ];
-				if ( src[ 0] >>  4 ) dst[4] = color [ src[ 0] >>  4 ];
-				if ( src[ 6] & 0xf ) dst[3] = color [ src[ 6] & 0xf ];
-				if ( src[ 6] >>  4 ) dst[2] = color [ src[ 6] >>  4 ];
-				if ( src[ 4] & 0xf ) dst[1] = color [ src[ 4] & 0xf ];
-				if ( src[ 4] >>  4 ) dst[0] = color [ src[ 4] >>  4 ];
-			}
-		else
-			for(INT32 i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 2] & 0xf ) dst[0] = color [ src[ 2] & 0xf ];
-				if ( src[ 2] >>  4 ) dst[1] = color [ src[ 2] >>  4 ];
-				if ( src[ 0] & 0xf ) dst[2] = color [ src[ 0] & 0xf ];
-				if ( src[ 0] >>  4 ) dst[3] = color [ src[ 0] >>  4 ];
-				if ( src[ 6] & 0xf ) dst[4] = color [ src[ 6] & 0xf ];
-				if ( src[ 6] >>  4 ) dst[5] = color [ src[ 6] >>  4 ];
-				if ( src[ 4] & 0xf ) dst[6] = color [ src[ 4] & 0xf ];
-				if ( src[ 4] >>  4 ) dst[7] = color [ src[ 4] >>  4 ];
-			}
-		
-	} else {
-		if ( flipx )
-			for(INT32 i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 2] & 0xf ) dst[7] = color [ src[ 2] & 0xf ];
-				if ( src[ 2] >>  4 ) dst[6] = color [ src[ 2] >>  4 ];
-				if ( src[ 0] & 0xf ) dst[5] = color [ src[ 0] & 0xf ];
-				if ( src[ 0] >>  4 ) dst[4] = color [ src[ 0] >>  4 ];
-				if ( src[ 6] & 0xf ) dst[3] = color [ src[ 6] & 0xf ];
-				if ( src[ 6] >>  4 ) dst[2] = color [ src[ 6] >>  4 ];
-				if ( src[ 4] & 0xf ) dst[1] = color [ src[ 4] & 0xf ];
-				if ( src[ 4] >>  4 ) dst[0] = color [ src[ 4] >>  4 ];
-			}
-		else
-			for(INT32 i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 2] & 0xf ) dst[0] = color [ src[ 2] & 0xf ];
-				if ( src[ 2] >>  4 ) dst[1] = color [ src[ 2] >>  4 ];
-				if ( src[ 0] & 0xf ) dst[2] = color [ src[ 0] & 0xf ];
-				if ( src[ 0] >>  4 ) dst[3] = color [ src[ 0] >>  4 ];
-				if ( src[ 6] & 0xf ) dst[4] = color [ src[ 6] & 0xf ];
-				if ( src[ 6] >>  4 ) dst[5] = color [ src[ 6] >>  4 ];
-				if ( src[ 4] & 0xf ) dst[6] = color [ src[ 4] & 0xf ];
-				if ( src[ 4] >>  4 ) dst[7] = color [ src[ 4] >>  4 ];
-			}
-	}
-#else
-		if ( flipx )
-			for(int i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
-			}
-		else
-			for(int i=0; i<8; i++, dst-= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 1] & 0xf ) dst[0] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[1] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[2] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[3] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[4] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[5] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[6] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[7] = color [ src[ 7] >>  4 ];
-			}
-
-	} else {
-		if ( flipx )
-			for(int i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
-				if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
-				if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
-				if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
-				if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
-				if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
-				if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
-				if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
-			}
-		else
-			for(int i=0; i<8; i++, dst+= CPS3_GFX_WIDTH, src += 8) {
-				if ( src[ 1 ] & 0xf ) dst[0] = color [ src[ 1 ] & 0xf ];
-				if ( src[ 1 ] >>  4 ) dst[1] = color [ src[ 1 ] >>  4 ];
-				if ( src[ 3 ] & 0xf ) dst[2] = color [ src[ 3 ] & 0xf ];
-				if ( src[ 3 ] >>  4 ) dst[3] = color [ src[ 3 ] >>  4 ];
-				if ( src[ 5 ] & 0xf ) dst[4] = color [ src[ 5 ] & 0xf ];
-				if ( src[ 5 ] >>  4 ) dst[5] = color [ src[ 5 ] >>  4 ];
-				if ( src[ 7 ] & 0xf ) dst[6] = color [ src[ 7 ] & 0xf ];
-				if ( src[ 7 ] >>  4 ) dst[7] = color [ src[ 7 ] >>  4 ];
-			}
-	}
-
-#endif
-	
 }
 
-static void cps3_drawgfxzoom_1(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x, INT32 y, INT32 drawline)
-{
-	UINT32 * dst = RamScreen;
-	UINT8 * src = (UINT8 *) RamCRam;
-	dst += (drawline * 1024 + x);
-
-	if ( flipy ) {
-		src += code * 256 + 16 * (15 - (drawline - y));
-		if ( flipx ) {
-			if ( src[ 0] ) dst[15] = src[ 0] | pal;
-			if ( src[ 1] ) dst[14] = src[ 1] | pal;
-			if ( src[ 2] ) dst[13] = src[ 2] | pal;
-			if ( src[ 3] ) dst[12] = src[ 3] | pal;
-			if ( src[ 4] ) dst[11] = src[ 4] | pal;
-			if ( src[ 5] ) dst[10] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 9] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 8] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 7] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 6] = src[ 9] | pal;
-			if ( src[10] ) dst[ 5] = src[10] | pal;
-			if ( src[11] ) dst[ 4] = src[11] | pal;
-			if ( src[12] ) dst[ 3] = src[12] | pal;
-			if ( src[13] ) dst[ 2] = src[13] | pal;
-			if ( src[14] ) dst[ 1] = src[14] | pal;
-			if ( src[15] ) dst[ 0] = src[15] | pal;
-		} else {
-			if ( src[ 0] ) dst[ 0] = src[ 0] | pal;
-			if ( src[ 1] ) dst[ 1] = src[ 1] | pal;
-			if ( src[ 2] ) dst[ 2] = src[ 2] | pal;
-			if ( src[ 3] ) dst[ 3] = src[ 3] | pal;
-			if ( src[ 4] ) dst[ 4] = src[ 4] | pal;
-			if ( src[ 5] ) dst[ 5] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 6] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 7] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 8] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 9] = src[ 9] | pal;
-			if ( src[10] ) dst[10] = src[10] | pal;
-			if ( src[11] ) dst[11] = src[11] | pal;
-			if ( src[12] ) dst[12] = src[12] | pal;
-			if ( src[13] ) dst[13] = src[13] | pal;
-			if ( src[14] ) dst[14] = src[14] | pal;
-			if ( src[15] ) dst[15] = src[15] | pal;
-		}
-	} else {
-		src += code * 256 + 16 * (drawline - y);
-		if ( flipx ) {
-			if ( src[ 0] ) dst[15] = src[ 0] | pal;
-			if ( src[ 1] ) dst[14] = src[ 1] | pal;
-			if ( src[ 2] ) dst[13] = src[ 2] | pal;
-			if ( src[ 3] ) dst[12] = src[ 3] | pal;
-			if ( src[ 4] ) dst[11] = src[ 4] | pal;
-			if ( src[ 5] ) dst[10] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 9] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 8] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 7] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 6] = src[ 9] | pal;
-			if ( src[10] ) dst[ 5] = src[10] | pal;
-			if ( src[11] ) dst[ 4] = src[11] | pal;
-			if ( src[12] ) dst[ 3] = src[12] | pal;
-			if ( src[13] ) dst[ 2] = src[13] | pal;
-			if ( src[14] ) dst[ 1] = src[14] | pal;
-			if ( src[15] ) dst[ 0] = src[15] | pal;
-		} else {
-			if ( src[ 0] ) dst[ 0] = src[ 0] | pal;
-			if ( src[ 1] ) dst[ 1] = src[ 1] | pal;
-			if ( src[ 2] ) dst[ 2] = src[ 2] | pal;
-			if ( src[ 3] ) dst[ 3] = src[ 3] | pal;
-			if ( src[ 4] ) dst[ 4] = src[ 4] | pal;
-			if ( src[ 5] ) dst[ 5] = src[ 5] | pal;
-			if ( src[ 6] ) dst[ 6] = src[ 6] | pal;
-			if ( src[ 7] ) dst[ 7] = src[ 7] | pal;
-			if ( src[ 8] ) dst[ 8] = src[ 8] | pal;
-			if ( src[ 9] ) dst[ 9] = src[ 9] | pal;
-			if ( src[10] ) dst[10] = src[10] | pal;
-			if ( src[11] ) dst[11] = src[11] | pal;
-			if ( src[12] ) dst[12] = src[12] | pal;
-			if ( src[13] ) dst[13] = src[13] | pal;
-			if ( src[14] ) dst[14] = src[14] | pal;
-			if ( src[15] ) dst[15] = src[15] | pal;
-		}
-	}
-}
 
 static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 sx, INT32 sy, INT32 scalex, INT32 scaley, INT32 alpha)
 {
@@ -1444,7 +1255,47 @@ static void cps3_draw_tilemapsprite_line(INT32 drawline, UINT32 * regs )
 		if (!bpp)
 			colour <<= 2;
 
-		cps3_drawgfxzoom_1(tileno,colour,xflip,yflip,(x*16)-scrollx%16,drawline-tilesubline, drawline);
+		UINT32 * dst = RamScreen;
+		UINT8 * src = (UINT8 *) RamCRam;
+		dst += (drawline * 1024 + ((x<<4) - scrollx % 16));
+		int const val = yflip ? (15 - (drawline - (drawline-tilesubline))) : (drawline - (drawline-tilesubline));
+
+		src += tileno * 256 + 16 * val;
+		if ( xflip ) {
+			if ( src[ 0] ) dst[15] = src[ 0] | colour;
+			if ( src[ 1] ) dst[14] = src[ 1] | colour;
+			if ( src[ 2] ) dst[13] = src[ 2] | colour;
+			if ( src[ 3] ) dst[12] = src[ 3] | colour;
+			if ( src[ 4] ) dst[11] = src[ 4] | colour;
+			if ( src[ 5] ) dst[10] = src[ 5] | colour;
+			if ( src[ 6] ) dst[ 9] = src[ 6] | colour;
+			if ( src[ 7] ) dst[ 8] = src[ 7] | colour;
+			if ( src[ 8] ) dst[ 7] = src[ 8] | colour;
+			if ( src[ 9] ) dst[ 6] = src[ 9] | colour;
+			if ( src[10] ) dst[ 5] = src[10] | colour;
+			if ( src[11] ) dst[ 4] = src[11] | colour;
+			if ( src[12] ) dst[ 3] = src[12] | colour;
+			if ( src[13] ) dst[ 2] = src[13] | colour;
+			if ( src[14] ) dst[ 1] = src[14] | colour;
+			if ( src[15] ) dst[ 0] = src[15] | colour;
+		} else {
+			if ( src[ 0] ) dst[ 0] = src[ 0] | colour;
+			if ( src[ 1] ) dst[ 1] = src[ 1] | colour;
+			if ( src[ 2] ) dst[ 2] = src[ 2] | colour;
+			if ( src[ 3] ) dst[ 3] = src[ 3] | colour;
+			if ( src[ 4] ) dst[ 4] = src[ 4] | colour;
+			if ( src[ 5] ) dst[ 5] = src[ 5] | colour;
+			if ( src[ 6] ) dst[ 6] = src[ 6] | colour;
+			if ( src[ 7] ) dst[ 7] = src[ 7] | colour;
+			if ( src[ 8] ) dst[ 8] = src[ 8] | colour;
+			if ( src[ 9] ) dst[ 9] = src[ 9] | colour;
+			if ( src[10] ) dst[10] = src[10] | colour;
+			if ( src[11] ) dst[11] = src[11] | colour;
+			if ( src[12] ) dst[12] = src[12] | colour;
+			if ( src[13] ) dst[13] = src[13] | colour;
+			if ( src[14] ) dst[14] = src[14] | colour;
+			if ( src[15] ) dst[15] = src[15] | colour;
+		}
 	}
 }
 
@@ -1639,20 +1490,86 @@ static void DrvDraw()
 
 	// bank select? (sfiii2 intro)
 	INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
-	for (INT32 y=0; y<32-4; y++) {
-		for (INT32 x=0; x<64; x++, count++) {
+	for (INT32 y=0; y<32-4; y++)
+	{
+		for (INT32 x=0; x<64; x++, count++)
+		{
 			UINT32 data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
 			UINT32 tile = (data >> 16) & 0x1ff;
+			if (tile == 0) continue; // ok?
 			INT32 pal = (data & 0x003f) >> 1;
 			INT32 flipx = data & 0x0080;
 			INT32 flipy = data & 0x0040;
 			pal += ss_pal_base << 5;
 
-			if (tile == 0) continue; // ok?
 
 			tile+=0x200;
-			if (!(((x*8) > CPS3_GFX_WIDTH_MINUS_EIGHT) || ((y*8) > CPS3_GFX_HEIGHT_MINUS_EIGHT)))
-				cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
+			INT32 x_new = x << 3;
+			INT32 y_new = y << 3;
+			if (!(((x_new) > CPS3_GFX_WIDTH_MINUS_EIGHT) || ((y_new) > CPS3_GFX_HEIGHT_MINUS_EIGHT)))
+			{
+				UINT32 code = tile;
+
+
+				UINT16 * dst = (UINT16 *) pBurnDraw;
+				UINT8 * src = (UINT8 *)RamSS;
+				UINT16 * color = Cps3CurPal + (pal << 4);
+				dst += (y_new * CPS3_GFX_WIDTH + x_new);
+				src += code * 64;
+
+				int addval = CPS3_GFX_WIDTH;
+				if(flipy)
+				{
+					addval = -(CPS3_GFX_WIDTH);
+					dst += CPS3_GFX_WIDTH_MUL_SEVEN;
+				}
+
+
+				if ( flipx )
+					for(INT32 i=0; i<8; i++, dst += addval, src += 8) {
+#ifdef LSB_FIRST
+						if ( src[ 2] & 0xf ) dst[7] = color [ src[ 2] & 0xf ];
+						if ( src[ 2] >>  4 ) dst[6] = color [ src[ 2] >>  4 ];
+						if ( src[ 0] & 0xf ) dst[5] = color [ src[ 0] & 0xf ];
+						if ( src[ 0] >>  4 ) dst[4] = color [ src[ 0] >>  4 ];
+						if ( src[ 6] & 0xf ) dst[3] = color [ src[ 6] & 0xf ];
+						if ( src[ 6] >>  4 ) dst[2] = color [ src[ 6] >>  4 ];
+						if ( src[ 4] & 0xf ) dst[1] = color [ src[ 4] & 0xf ];
+						if ( src[ 4] >>  4 ) dst[0] = color [ src[ 4] >>  4 ];
+#else
+						if ( src[ 1] & 0xf ) dst[7] = color [ src[ 1] & 0xf ];
+						if ( src[ 1] >>  4 ) dst[6] = color [ src[ 1] >>  4 ];
+						if ( src[ 3] & 0xf ) dst[5] = color [ src[ 3] & 0xf ];
+						if ( src[ 3] >>  4 ) dst[4] = color [ src[ 3] >>  4 ];
+						if ( src[ 5] & 0xf ) dst[3] = color [ src[ 5] & 0xf ];
+						if ( src[ 5] >>  4 ) dst[2] = color [ src[ 5] >>  4 ];
+						if ( src[ 7] & 0xf ) dst[1] = color [ src[ 7] & 0xf ];
+						if ( src[ 7] >>  4 ) dst[0] = color [ src[ 7] >>  4 ];
+#endif
+					}
+				else
+					for(INT32 i=0; i<8; i++, dst += addval, src += 8) {
+#ifdef LSB_FIRST
+						if ( src[ 2] & 0xf ) dst[0] = color [ src[ 2] & 0xf ];
+						if ( src[ 2] >>  4 ) dst[1] = color [ src[ 2] >>  4 ];
+						if ( src[ 0] & 0xf ) dst[2] = color [ src[ 0] & 0xf ];
+						if ( src[ 0] >>  4 ) dst[3] = color [ src[ 0] >>  4 ];
+						if ( src[ 6] & 0xf ) dst[4] = color [ src[ 6] & 0xf ];
+						if ( src[ 6] >>  4 ) dst[5] = color [ src[ 6] >>  4 ];
+						if ( src[ 4] & 0xf ) dst[6] = color [ src[ 4] & 0xf ];
+						if ( src[ 4] >>  4 ) dst[7] = color [ src[ 4] >>  4 ];
+#else
+						if ( src[ 1] & 0xf ) dst[0] = color [ src[ 1] & 0xf ];
+						if ( src[ 1] >>  4 ) dst[1] = color [ src[ 1] >>  4 ];
+						if ( src[ 3] & 0xf ) dst[2] = color [ src[ 3] & 0xf ];
+						if ( src[ 3] >>  4 ) dst[3] = color [ src[ 3] >>  4 ];
+						if ( src[ 5] & 0xf ) dst[4] = color [ src[ 5] & 0xf ];
+						if ( src[ 5] >>  4 ) dst[5] = color [ src[ 5] >>  4 ];
+						if ( src[ 7] & 0xf ) dst[6] = color [ src[ 7] & 0xf ];
+						if ( src[ 7] >>  4 ) dst[7] = color [ src[ 7] >>  4 ];
+#endif
+					}
+			}
 		}
 	}
 }

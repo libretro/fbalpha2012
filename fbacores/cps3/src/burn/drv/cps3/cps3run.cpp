@@ -1115,159 +1115,6 @@ INT32 cps3Exit()
 	return 0;
 }
 
-static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 sx, INT32 sy, INT32 sprite_screen_width, INT32 sprite_screen_height, INT32 alpha)
-{
-	UINT8 * source_base = (UINT8 *) RamCRam + code * 256;
-
-	// compute sprite increment per screen pixel
-	INT32 dx = 1048576 / sprite_screen_width;
-	INT32 dy = 1048576 / sprite_screen_height;
-
-	INT32 ex = sx + sprite_screen_width;
-	INT32 ey = sy + sprite_screen_height;
-
-	INT32 x_index_base = 0;
-	INT32 y_index = 0;
-
-	if( flipx )	{
-		x_index_base = (sprite_screen_width - 1) * dx;
-		dx = -dx;
-	}
-
-	if( flipy )	{
-		y_index = (sprite_screen_height - 1) * dy;
-		dy = -dy;
-	}
-
-	if( sx < 0)
-	{ /* clip left */
-		INT32 pixels = 0-sx;
-		sx += pixels;
-		x_index_base += pixels*dx;
-	}
-	if( sy < 0 )
-	{ /* clip top */
-		INT32 pixels = 0-sy;
-		sy += pixels;
-		y_index += pixels*dy;
-	}
-	if( ex > cps3_gfx_max_x+1 )
-	{ /* clip right */
-		INT32 pixels = ex-cps3_gfx_max_x-1;
-		ex -= pixels;
-	}
-	if( ey > cps3_gfx_max_y+1 )
-	{ /* clip bottom */
-		INT32 pixels = ey-cps3_gfx_max_y-1;
-		ey -= pixels;
-	}
-
-	if( ex > sx )
-	{
-		for( INT32 y=sy; y<ey; y++ )
-		{
-			UINT8 * source = source_base + (y_index>>16) * 16;
-			UINT32 * dest = RamScreen + y * 1024;
-			INT32 x_index = x_index_base;
-			for(INT32 x = sx; x < ex; x++ )
-			{
-				UINT8 c = source[ (x_index>>16) ];
-				if( c && (!alpha || alpha == 8))
-				{
-					if(!alpha) dest[x] = pal | c;
-					else if(alpha == 8)
-					{
-						dest[x] |= 0x8000;
-						if (pal&0x10000) dest[x] |= 0x10000;
-					}
-				}
-				else if(alpha == 6)
-					dest[x] |= ((c&0x0000f) << 13);
-				x_index += dx;
-			}
-			y_index += dy;
-		}
-	}
-}
-
-static void cps3_draw_tilemapsprite_line(INT32 drawline, UINT32 * regs )
-{
-	INT32 scrolly =  ((regs[0]&0x0000ffff))+4;
-	INT32 line = drawline + scrolly;
-	line &= 0x3ff;
-
-	UINT32 mapbase =  (regs[2]&0x007f0000)>>16;
-	UINT32 linebase=  (regs[2]&0x7f000000)>>24;
-	INT32 linescroll_enable = (regs[1]&0x00004000);
-
-	INT32 scrollx =  (regs[0]&0xffff0000)>>16;
-	INT32 tileline = (line/16)+1;
-	INT32 tilesubline = line % 16;
-
-	mapbase = mapbase << 10;
-	linebase = linebase << 10;
-
-	if (linescroll_enable)
-		scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
-
-	for (INT32 x=0; x < (cps3_gfx_max_x/16)+2;x++)
-	{
-		UINT32 dat = RamSpr[mapbase+((tileline&63)*64)+((x+scrollx/16)&63)];
-		INT32 tileno = (dat & 0xffff0000)>>17;
-		INT32 colour = (dat & 0x000001ff);
-		INT32 bpp = (dat & 0x0000200)>>9;
-		INT32 yflip  = (dat & 0x00000800)>>11;
-		INT32 xflip  = (dat & 0x00001000)>>12;
-
-		colour <<= 6;
-
-		if (!bpp)
-			colour <<= 2;
-
-		UINT32 * dst = RamScreen;
-		UINT8 * src = (UINT8 *) RamCRam;
-		dst += (drawline * 1024 + ((x<<4) - scrollx % 16));
-		int const val = yflip ? (15 - (drawline - (drawline-tilesubline))) : (drawline - (drawline-tilesubline));
-
-		src += tileno * 256 + 16 * val;
-		if ( xflip ) {
-			if ( src[ 0] ) dst[15] = src[ 0] | colour;
-			if ( src[ 1] ) dst[14] = src[ 1] | colour;
-			if ( src[ 2] ) dst[13] = src[ 2] | colour;
-			if ( src[ 3] ) dst[12] = src[ 3] | colour;
-			if ( src[ 4] ) dst[11] = src[ 4] | colour;
-			if ( src[ 5] ) dst[10] = src[ 5] | colour;
-			if ( src[ 6] ) dst[ 9] = src[ 6] | colour;
-			if ( src[ 7] ) dst[ 8] = src[ 7] | colour;
-			if ( src[ 8] ) dst[ 7] = src[ 8] | colour;
-			if ( src[ 9] ) dst[ 6] = src[ 9] | colour;
-			if ( src[10] ) dst[ 5] = src[10] | colour;
-			if ( src[11] ) dst[ 4] = src[11] | colour;
-			if ( src[12] ) dst[ 3] = src[12] | colour;
-			if ( src[13] ) dst[ 2] = src[13] | colour;
-			if ( src[14] ) dst[ 1] = src[14] | colour;
-			if ( src[15] ) dst[ 0] = src[15] | colour;
-		} else {
-			if ( src[ 0] ) dst[ 0] = src[ 0] | colour;
-			if ( src[ 1] ) dst[ 1] = src[ 1] | colour;
-			if ( src[ 2] ) dst[ 2] = src[ 2] | colour;
-			if ( src[ 3] ) dst[ 3] = src[ 3] | colour;
-			if ( src[ 4] ) dst[ 4] = src[ 4] | colour;
-			if ( src[ 5] ) dst[ 5] = src[ 5] | colour;
-			if ( src[ 6] ) dst[ 6] = src[ 6] | colour;
-			if ( src[ 7] ) dst[ 7] = src[ 7] | colour;
-			if ( src[ 8] ) dst[ 8] = src[ 8] | colour;
-			if ( src[ 9] ) dst[ 9] = src[ 9] | colour;
-			if ( src[10] ) dst[10] = src[10] | colour;
-			if ( src[11] ) dst[11] = src[11] | colour;
-			if ( src[12] ) dst[12] = src[12] | colour;
-			if ( src[13] ) dst[13] = src[13] | colour;
-			if ( src[14] ) dst[14] = src[14] | colour;
-			if ( src[15] ) dst[15] = src[15] | colour;
-		}
-	}
-}
-
 static void DrvDraw()
 {
 	INT32 bg_drawn[4] = { 0, 0, 0, 0 };
@@ -1356,7 +1203,83 @@ static void DrvDraw()
 					UINT32 srcy = 0;
 					for (INT32 ry = 0; ry < 224; ry++, srcy += fsz)
 						if (!((srcy >> 16) > cps3_gfx_max_y+4) && (regs[1] & 0x00008000))
-							cps3_draw_tilemapsprite_line( srcy >> 16, regs );
+						{
+							INT32 drawline = srcy >> 16;
+							INT32 scrolly =  ((regs[0]&0x0000ffff))+4;
+							INT32 line = drawline + scrolly;
+							line &= 0x3ff;
+
+							UINT32 mapbase =  (regs[2]&0x007f0000)>>16;
+							UINT32 linebase=  (regs[2]&0x7f000000)>>24;
+							INT32 linescroll_enable = (regs[1]&0x00004000);
+
+							INT32 scrollx =  (regs[0]&0xffff0000)>>16;
+							INT32 tileline = (line/16)+1;
+							INT32 tilesubline = line % 16;
+
+							mapbase = mapbase << 10;
+							linebase = linebase << 10;
+
+							if (linescroll_enable)
+								scrollx+= (RamSpr[linebase+((line+16-4)&0x3ff)]>>16)&0x3ff;
+
+							for (INT32 x=0; x < (cps3_gfx_max_x/16)+2;x++)
+							{
+								UINT32 dat = RamSpr[mapbase+((tileline&63)*64)+((x+scrollx/16)&63)];
+								INT32 tileno = (dat & 0xffff0000)>>17;
+								INT32 colour = (dat & 0x000001ff);
+								INT32 bpp = (dat & 0x0000200)>>9;
+								INT32 yflip  = (dat & 0x00000800)>>11;
+								INT32 xflip  = (dat & 0x00001000)>>12;
+
+								colour <<= 6;
+
+								if (!bpp)
+									colour <<= 2;
+
+								UINT32 * dst = RamScreen;
+								UINT8 * src = (UINT8 *) RamCRam;
+								dst += (drawline * 1024 + ((x<<4) - scrollx % 16));
+								int const val = yflip ? (15 - (drawline - (drawline-tilesubline))) : (drawline - (drawline-tilesubline));
+
+								src += tileno * 256 + 16 * val;
+								if ( xflip ) {
+									if ( src[ 0] ) dst[15] = src[ 0] | colour;
+									if ( src[ 1] ) dst[14] = src[ 1] | colour;
+									if ( src[ 2] ) dst[13] = src[ 2] | colour;
+									if ( src[ 3] ) dst[12] = src[ 3] | colour;
+									if ( src[ 4] ) dst[11] = src[ 4] | colour;
+									if ( src[ 5] ) dst[10] = src[ 5] | colour;
+									if ( src[ 6] ) dst[ 9] = src[ 6] | colour;
+									if ( src[ 7] ) dst[ 8] = src[ 7] | colour;
+									if ( src[ 8] ) dst[ 7] = src[ 8] | colour;
+									if ( src[ 9] ) dst[ 6] = src[ 9] | colour;
+									if ( src[10] ) dst[ 5] = src[10] | colour;
+									if ( src[11] ) dst[ 4] = src[11] | colour;
+									if ( src[12] ) dst[ 3] = src[12] | colour;
+									if ( src[13] ) dst[ 2] = src[13] | colour;
+									if ( src[14] ) dst[ 1] = src[14] | colour;
+									if ( src[15] ) dst[ 0] = src[15] | colour;
+								} else {
+									if ( src[ 0] ) dst[ 0] = src[ 0] | colour;
+									if ( src[ 1] ) dst[ 1] = src[ 1] | colour;
+									if ( src[ 2] ) dst[ 2] = src[ 2] | colour;
+									if ( src[ 3] ) dst[ 3] = src[ 3] | colour;
+									if ( src[ 4] ) dst[ 4] = src[ 4] | colour;
+									if ( src[ 5] ) dst[ 5] = src[ 5] | colour;
+									if ( src[ 6] ) dst[ 6] = src[ 6] | colour;
+									if ( src[ 7] ) dst[ 7] = src[ 7] | colour;
+									if ( src[ 8] ) dst[ 8] = src[ 8] | colour;
+									if ( src[ 9] ) dst[ 9] = src[ 9] | colour;
+									if ( src[10] ) dst[10] = src[10] | colour;
+									if ( src[11] ) dst[11] = src[11] | colour;
+									if ( src[12] ) dst[12] = src[12] | colour;
+									if ( src[13] ) dst[13] = src[13] | colour;
+									if ( src[14] ) dst[14] = src[14] | colour;
+									if ( src[15] ) dst[15] = src[15] | colour;
+								}
+							}
+						}
 				}
 
 				bg_drawn[tilemapnum] = 1;
@@ -1438,7 +1361,83 @@ static void DrvDraw()
 							INT32 sprite_screen_height = ((xinc << 4) + 0x8000) >> 16;
 							INT32 sprite_screen_width  = ((yinc << 4) + 0x8000) >> 16;	
 							if (sprite_screen_width && sprite_screen_height)
-								cps3_drawgfxzoom_2(realtileno,actualpal,flipx,flipy,current_xpos,current_ypos, sprite_screen_width, sprite_screen_height, color_granularity);
+							{
+								UINT32 code = realtileno;
+								UINT32 pal = actualpal;
+								INT32 sx = current_xpos;
+								INT32 sy = current_ypos;
+								INT32 alpha = color_granularity;	
+								UINT8 * source_base = (UINT8 *) RamCRam + code * 256;
+
+								// compute sprite increment per screen pixel
+								INT32 dx = 1048576 / sprite_screen_width;
+								INT32 dy = 1048576 / sprite_screen_height;
+
+								INT32 ex = sx + sprite_screen_width;
+								INT32 ey = sy + sprite_screen_height;
+
+								INT32 x_index_base = 0;
+								INT32 y_index = 0;
+
+								if( flipx )	{
+									x_index_base = (sprite_screen_width - 1) * dx;
+									dx = -dx;
+								}
+
+								if( flipy )	{
+									y_index = (sprite_screen_height - 1) * dy;
+									dy = -dy;
+								}
+
+								if( sx < 0)
+								{ /* clip left */
+									INT32 pixels = 0-sx;
+									sx += pixels;
+									x_index_base += pixels*dx;
+								}
+								if( sy < 0 )
+								{ /* clip top */
+									INT32 pixels = 0-sy;
+									sy += pixels;
+									y_index += pixels*dy;
+								}
+								if( ex > cps3_gfx_max_x+1 )
+								{ /* clip right */
+									INT32 pixels = ex-cps3_gfx_max_x-1;
+									ex -= pixels;
+								}
+								if( ey > cps3_gfx_max_y+1 )
+								{ /* clip bottom */
+									INT32 pixels = ey-cps3_gfx_max_y-1;
+									ey -= pixels;
+								}
+
+								if( ex > sx )
+								{
+									for( INT32 y=sy; y<ey; y++ )
+									{
+										UINT8 * source = source_base + (y_index>>16) * 16;
+										UINT32 * dest = RamScreen + y * 1024;
+										INT32 x_index = x_index_base;
+										for(INT32 x = sx; x < ex; x++ )
+										{
+											UINT8 c = source[ (x_index>>16) ];
+											if( c)
+											{
+												if(!alpha) dest[x] = pal | c;
+												else if(alpha == 8)
+												{
+													dest[x] |= 0x8000;
+													if (pal&0x10000) dest[x] |= 0x10000;
+												}
+											}
+											if(alpha == 6) dest[x] |= ((c&0x0000f) << 13);
+											x_index += dx;
+										}
+										y_index += dy;
+									}
+								}
+							}
 						}
 						count++;
 					}

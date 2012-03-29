@@ -160,7 +160,22 @@ void cps3SndUpdate()
 				vector signed short vec3 = vec_mradds(vec1, vec2, vec0);
 				buffer[0] = vec3[0];
 				buffer[1] = vec3[1];
-#else
+#endif
+
+#if 1
+#define CLAMP16(io) if((int16_t) io != io) io = (io >> 31) ^ 0x7FFF;
+/* Blargg-style clamping - less branching */
+				INT32 sample_l;
+				sample_l = ((sample * vol_r) >> 8) + buffer[0];
+				CLAMP16(sample_l);
+				buffer[0] = sample_l;
+				
+				sample_l = ((sample * vol_l) >> 8) + buffer[1];
+				CLAMP16(sample_l);
+				buffer[1] = sample_l;
+#endif
+#if 0
+/* Original unoptimised code */
 				INT32 sample_l;
 				sample_l = ((sample * vol_r) >> 8) + buffer[0];
 				if (sample_l > 32767)		buffer[0] = 32767;

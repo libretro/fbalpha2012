@@ -60,7 +60,6 @@ static UINT8 *RamC000_D;
 
 static UINT16 *EEPROM;
 
-UINT16 *Cps3CurPal;
 static UINT32 *RamScreen;
 
 UINT8 cps3_reset = 0;
@@ -444,7 +443,6 @@ static INT32 MemIndex()
 	
 	RamEnd		= Next;
 	
-	Cps3CurPal		= (UINT16 *) Next; Next += 0x020001 * sizeof(UINT16); // iq_132 - layer disable
 	RamScreen	= (UINT32 *) Next; Next += (1024) * (224 * 2 + 32) * sizeof(UINT32);
 	
 	MemEnd		= Next;
@@ -592,12 +590,12 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 							 coldata = (r) | (g << 5) | (b << 10);
 						 }
 
-						 r = r << 3;
-						 g = g << 3;
-						 b = b << 3;
+#ifdef LSB_FIRST
+						 RamPal[(paldma_dest + i) ^ 1] = ((((coldata & 0x1f) << 10) | (((coldata & 0x3e0) >> 5) << 5) | (((coldata & 0x7c00) >> 10))) & 0x7fff);
+#else
+						 RamPal[(paldma_dest + i)] = ((((coldata & 0x1f) << 10) | (((coldata & 0x3e0) >> 5) << 5) | (((coldata & 0x7c00) >> 10))) & 0x7fff);
+#endif
 
-						 RamPal[(paldma_dest + i) ^ 1] = coldata;
-						 Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
 					 }
 					 if(sh2->irq_line_state[10] != SH2_IRQSTATUS_AUTO)
 						 Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
@@ -808,17 +806,6 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 #else
 		RamPal[palindex] = data;
 #endif
-
-		INT32 r = (data & 0x001F) << 3;	// Red
-		INT32 g = (data & 0x03E0) >> 2;	// Green
-		INT32 b = (data & 0x7C00) >> 7;	// Blue
-		
-		r |= r >> 5;
-		g |= g >> 5;
-		b |= b >> 5;
-			
-		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
-	
 	}
 }
 
@@ -1090,7 +1077,7 @@ INT32 cps3Init()
 	RamScreen	+= (1024) * 16 + 16; // safe draw	
 	cps3SndInit(RomUser);
 	
-	pBurnDrvPalette = (UINT32*)Cps3CurPal;
+	pBurnDrvPalette = (UINT32*)RamPal;
 		
 	Cps3Reset();
 	return 0;
@@ -1446,7 +1433,7 @@ static void DrvDraw()
 		srcbitmap = RamScreen + (srcy >> 16) * 1024;
 		srcx=0;
 		for (INT32 renderx=0; renderx < CPS3_GFX_WIDTH; renderx++, dstbitmap ++) {
-			*dstbitmap = Cps3CurPal[ srcbitmap[srcx>>16] ];
+			*dstbitmap = RamPal[ srcbitmap[srcx>>16] ];
 			srcx += fsz;
 		}
 		srcy += fsz;
@@ -1477,7 +1464,7 @@ static void DrvDraw()
 
 				UINT16 * dst = (UINT16 *) pBurnDraw;
 				UINT8 * src = (UINT8 *)RamSS;
-				UINT16 * color = Cps3CurPal + (pal << 4);
+				UINT16 * color = RamPal + (pal << 4);
 				dst += (y_new * CPS3_GFX_WIDTH + x_new);
 				src += code * 64;
 
@@ -1549,23 +1536,6 @@ INT32 cps3Frame()
 	if (cps3_reset)
 		Cps3Reset();
 
-	if (cps3_palette_change) {
-		for(INT32 i=0;i<0x0020000;i++) {
-#ifdef LSB_FIRST
-			INT32 data = RamPal[i ^ 1];
-#else
-			INT32 data = RamPal[i];
-#endif
-			INT32 r = (data & 0x001F) << 3;	// Red
-			INT32 g = (data & 0x03E0) >> 2;	// Green
-			INT32 b = (data & 0x7C00) >> 7;	// Blue
-			r |= r >> 5;
-			g |= g >> 5;
-			b |= b >> 5;
-			Cps3CurPal[i] = BurnHighCol(r, g, b, 0);	
-		}
-		cps3_palette_change = 0;
-	}
 
 	Cps3Input[0] = 0;
 	Cps3Input[1] = 0;
@@ -1694,10 +1664,6 @@ INT32 cps3Scan(INT32 nAction, INT32 *pnMin)
 		SCAN_VAR(cps_int10_cnt);
 				
 		if (nAction & ACB_WRITE) {
-			
-			// rebuild current palette
-			cps3_palette_change = 1;
-			
 			// remap RamCRam
 			Sh2MapMemory(((UINT8 *)RamCRam) + (cram_bank << 20), 0x04100000, 0x041fffff, SM_RAM);
 			

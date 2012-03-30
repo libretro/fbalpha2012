@@ -152,17 +152,15 @@ void cps3SndUpdate()
 				sample = base[(start + pos) ^ 1];
 				frac += step;
 
-#if 0
+#ifdef __ALTIVEC__
 /* Experimental Altivec */
 				vector signed short vec0 = { buffer[0], buffer[1] };
 				vector signed short vec1 = { vol_l, vol_r };
-				vector signed short vec2 = { sample, sample };
+				vector signed short vec2 = { sample << 7, sample << 7 };
 				vector signed short vec3 = vec_mradds(vec1, vec2, vec0);
 				buffer[0] = vec3[0];
 				buffer[1] = vec3[1];
-#endif
-
-#if 1
+#else
 #define CLAMP16(io) if((int16_t) io != io) io = (io >> 31) ^ 0x7FFF;
 /* Blargg-style clamping - less branching */
 				INT32 sample_l;

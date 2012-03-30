@@ -1425,7 +1425,7 @@ static void DrvDraw()
 
 	UINT32 srcx, srcy = 0;
 	UINT32 * srcbitmap;
-	UINT16 * dstbitmap = (UINT16 * )pBurnDraw;
+	UINT16 * dstbitmap = pBurnDraw;
 
 	for (INT32 rendery=0; rendery<224; rendery++) {
 		srcbitmap = RamScreen + (srcy >> 16) * 1024;
@@ -1460,7 +1460,7 @@ static void DrvDraw()
 				UINT32 code = tile;
 
 
-				UINT16 * dst = (UINT16 *) pBurnDraw;
+				UINT16 * dst = pBurnDraw;
 				UINT8 * src = (UINT8 *)RamSS;
 				UINT16 * color = RamPal + (pal << 4);
 				dst += (y_new * CPS3_GFX_WIDTH + x_new);

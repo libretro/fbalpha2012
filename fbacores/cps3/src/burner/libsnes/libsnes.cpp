@@ -34,7 +34,7 @@ static unsigned g_rom_count;
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
-static uint8_t * g_fba_frame;
+static uint16_t * g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 
 // libsnes globals
@@ -250,7 +250,7 @@ static bool open_archive()
 void snes_init()
 {
    BurnLibInit();
-   g_fba_frame = (uint8_t*)realloc(g_fba_frame, 1024*1024);
+   g_fba_frame = (uint16_t*)realloc(g_fba_frame, 1024*1024);
    nBurnPitch = 384 * sizeof(uint16_t);
 
    if (environ_cb)
@@ -265,7 +265,7 @@ void snes_init()
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
-   pBurnDraw = (uint8_t*)g_fba_frame;
+   pBurnDraw = g_fba_frame;
 }
 
 void snes_term()
@@ -286,7 +286,7 @@ void snes_run()
 
    cps3Frame();
 
-   video_cb((uint16_t*)pBurnDraw, 384, 224);
+   video_cb(pBurnDraw, 384, 224);
 
    if (audio_batch_cb)
 	audio_batch_cb(g_audio_buf, AUDIO_SEGMENT_LENGTH);

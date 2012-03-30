@@ -152,7 +152,7 @@ extern UINT32 nBurnDrvSelect[8];		// Which games are selected (i.e. loaded but n
 
 extern INT32 nMaxPlayers;
 
-extern UINT8 *pBurnDraw;			// Pointer to correctly sized bitmap
+extern UINT16 *pBurnDraw;			// Pointer to correctly sized bitmap
 extern INT32 nBurnPitch;						// Pitch between each line
 extern INT32 nBurnBpp;						// Bytes per pixel (2, 3, or 4)
 

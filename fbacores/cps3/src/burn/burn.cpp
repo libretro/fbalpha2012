@@ -26,7 +26,7 @@ INT32 nBurnFPS = 6000;
 INT32 nBurnCPUSpeedAdjust = 0x0100;	// CPU speed adjustment (clock * nBurnCPUSpeedAdjust / 0x0100)
 
 // Burn Draw:
-UINT8* pBurnDraw = NULL;	// Pointer to correctly sized bitmap
+UINT16* pBurnDraw = NULL;	// Pointer to correctly sized bitmap
 INT32 nBurnPitch = 0;					// Pitch between each line
 INT32 nBurnBpp;						// Bytes per pixel (2, 3, or 4)
 

@@ -907,6 +907,7 @@ static INT32 Cps3Reset()
 	cps3_current_eeprom_read = 0;	
 	cps3SndReset();	
 	cps3_reset = 0;	
+	cps3Refresh();
 	return 0;
 }
 
@@ -1104,10 +1105,6 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((CPS3_GFX_WIDTH * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((CPS3_GFX_HEIGHT * fsz) >> 16) - 1;	// 224
 
-	UINT16 * pscr = RamScreen;
-	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(UINT16);
-	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
-		memset(pscr, 0, clrsz);
 
 	// Draw Sprites
 	for (INT32 i= 0; i< 2048; i += 4)
@@ -1576,6 +1573,14 @@ INT32 cps3Frame()
 	DrvDraw();
 
 	return 0;
+}
+
+void cps3Refresh(void)
+{
+	UINT16 * pscr = RamScreen;
+	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(UINT16);
+	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
+		memset(pscr, 0, clrsz);
 }
 
 INT32 cps3Scan(INT32 nAction, INT32 *pnMin)

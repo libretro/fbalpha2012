@@ -9,7 +9,8 @@
 #include <string>
 #include <ctype.h>
 
-extern INT32 cps3Frame();
+extern INT32 cps3Frame(void);
+extern void cps3Refresh(void);
 
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
@@ -761,6 +762,7 @@ static void poll_input()
 				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(SELECT)) &&
 				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(L)) &&
 				    input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(R));
+			    if(state) cps3Refresh();
 		    }
 		    else if (port < 2)
 			    state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);

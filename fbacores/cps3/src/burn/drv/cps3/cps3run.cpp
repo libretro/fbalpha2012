@@ -60,7 +60,7 @@ static UINT8 *RamC000_D;
 
 static UINT16 *EEPROM;
 
-static UINT32 *RamScreen;
+static UINT16 *RamScreen;
 
 UINT8 cps3_reset = 0;
 UINT8 cps3_palette_change = 0;
@@ -443,7 +443,7 @@ static INT32 MemIndex()
 	
 	RamEnd		= Next;
 	
-	RamScreen	= (UINT32 *) Next; Next += (1024) * (224 * 2 + 32) * sizeof(UINT32);
+	RamScreen	= (UINT16 *) Next; Next += (1024) * (224 * 2 + 32) * sizeof(UINT32);
 	
 	MemEnd		= Next;
 	return 0;
@@ -1104,8 +1104,8 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((CPS3_GFX_WIDTH * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((CPS3_GFX_HEIGHT * fsz) >> 16) - 1;	// 224
 
-	UINT32 * pscr = RamScreen;
-	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
+	UINT16 * pscr = RamScreen;
+	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(UINT16);
 	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
 		memset(pscr, 0, clrsz);
 
@@ -1214,7 +1214,7 @@ static void DrvDraw()
 								if (!bpp)
 									colour <<= 2;
 
-								UINT32 * dst = RamScreen;
+								UINT16 * dst = RamScreen;
 								UINT8 * src = (UINT8 *) RamCRam;
 								dst += (drawline * 1024 + ((x<<4) - scrollx % 16));
 								int const val = yflip ? (15 - (drawline - (drawline-tilesubline))) : (drawline - (drawline-tilesubline));
@@ -1394,7 +1394,7 @@ static void DrvDraw()
 									for( INT32 y=sy; y<ey; y++ )
 									{
 										UINT8 * source = source_base + (y_index>>16) * 16;
-										UINT32 * dest = RamScreen + y * 1024;
+										UINT16 * dest = RamScreen + y * 1024;
 										INT32 x_index = x_index_base;
 										for(INT32 x = sx; x < ex; x++ )
 										{
@@ -1424,7 +1424,7 @@ static void DrvDraw()
 	}
 
 	UINT32 srcx, srcy = 0;
-	UINT32 * srcbitmap;
+	UINT16 * srcbitmap;
 	UINT16 * dstbitmap = pBurnDraw;
 
 	for (INT32 rendery=0; rendery<224; rendery++) {

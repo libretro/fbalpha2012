@@ -1077,8 +1077,6 @@ INT32 cps3Init()
 	RamScreen	+= (1024) * 16 + 16; // safe draw	
 	cps3SndInit(RomUser);
 	
-	pBurnDrvPalette = (UINT32*)RamPal;
-		
 	Cps3Reset();
 	return 0;
 }

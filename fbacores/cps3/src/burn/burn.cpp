@@ -44,8 +44,6 @@ INT32 nMaxPlayers;
 
 bool bSaveCRoms = 0;
 
-UINT32 *pBurnDrvPalette;
-
 bool BurnCheckMMXSupport()
 {
 #if defined BUILD_X86_ASM
@@ -570,8 +568,6 @@ extern "C" INT32 BurnDrvExit()
 	
 	nBurnCPUSpeedAdjust = 0x0100;
 	
-	pBurnDrvPalette = NULL;	
-	
 	INT32 nRet = pDriver[nBurnDrvActive]->Exit();			// Forward to drivers function
 	
 	BurnExitMemoryManager();
@@ -585,25 +581,6 @@ extern "C" INT32 BurnDrvFrame()
 	//HiscoreApply();
 	return pDriver[nBurnDrvActive]->Frame();		// Forward to drivers function
 }
-
-// Refresh Palette
-extern "C" INT32 BurnRecalcPal()
-{
-	if (nBurnDrvActive < nBurnDrvCount) {
-		UINT8* pr = pDriver[nBurnDrvActive]->pRecalcPal;
-		if (pr == NULL) return 1;
-		*pr = 1;	// Signal for the driver to refresh it's palette
-	}
-
-	return 0;
-}
-
-extern "C" INT32 BurnDrvGetPaletteEntries()
-{
-	return pDriver[nBurnDrvActive]->nPaletteEntries;
-}
-
-// ----------------------------------------------------------------------------
 
 INT32 (__cdecl *BurnExtProgressRangeCallback)(double fProgressRange) = NULL;
 INT32 (__cdecl *BurnExtProgressUpdateCallback)(double fProgress, const TCHAR* pszText, bool bAbs) = NULL;
@@ -636,47 +613,12 @@ INT32 BurnSetRefreshRate(double dFrameRate)
 	return 0;
 }
 
-inline static INT32 BurnClearSize(INT32 w, INT32 h)
-{
-	UINT8 *pl;
-	INT32 y;
-
-	w *= nBurnBpp;
-
-	// clear the screen to zero
-	for (pl = pBurnDraw, y = 0; y < h; pl += nBurnPitch, y++)
-		memset(pl, 0x00, w);
-
-	return 0;
-}
-
-INT32 BurnClearScreen()
-{
-	struct BurnDriver* pbd = pDriver[nBurnDrvActive];
-
-	BurnClearSize(pbd->nWidth, pbd->nHeight);
-
-	return 0;
-}
-
 // Application-defined rom loading function:
 INT32 (__cdecl *BurnExtLoadRom)(UINT8 *Dest, INT32 *pnWrote, INT32 i) = NULL;
 
 // Application-defined colour conversion function
 static UINT32 __cdecl BurnHighColFiller(INT32, INT32, INT32, INT32) { return (UINT32)(~0); }
 UINT32 (__cdecl *BurnHighCol) (INT32 r, INT32 g, INT32 b, INT32 i) = BurnHighColFiller;
-
-// ----------------------------------------------------------------------------
-// Colour-depth independant image transfer
-
-UINT16* pTransDraw = NULL;
-
-static INT32 nTransWidth, nTransHeight;
-
-void BurnTransferClear()
-{
-	memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(UINT16));
-}
 
 // ----------------------------------------------------------------------------
 // Savestate support

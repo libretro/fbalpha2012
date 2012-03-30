@@ -71,11 +71,6 @@ extern INT32 (__cdecl *BurnExtLoadRom)(UINT8* Dest, INT32* pnWrote, INT32 i);
 extern INT32 (__cdecl *BurnExtProgressRangeCallback)(double dProgressRange);
 extern INT32 (__cdecl *BurnExtProgressUpdateCallback)(double dProgress, const TCHAR* pszText, bool bAbs);
 
-// Application-defined colour conversion function
-extern UINT32 (__cdecl *BurnHighCol) (INT32 r, INT32 g, INT32 b, INT32 i);
-
-// ---------------------------------------------------------------------------
-
 extern UINT32 nCurrentFrame;
 
 // ---------------------------------------------------------------------------
@@ -171,8 +166,6 @@ extern INT16* pBurnSoundOut;				// Pointer to output buffer
 extern INT32 nInterpolation;					// Desired interpolation level for ADPCM/PCM sound
 extern INT32 nFMInterpolation;				// Desired interpolation level for FM sound
 
-extern UINT32 *pBurnDrvPalette;
-
 #define PRINT_NORMAL	(0)
 #define PRINT_UI		(1)
 #define PRINT_IMPORTANT (2)
@@ -185,8 +178,6 @@ INT32 BurnDrvInit();
 INT32 BurnDrvExit();
 
 INT32 BurnDrvFrame();
-INT32 BurnRecalcPal();
-INT32 BurnDrvGetPaletteEntries();
 
 INT32 BurnSetProgressRange(double dProgressRange);
 INT32 BurnUpdateProgress(double dProgressStep, const TCHAR* pszText, bool bAbs);

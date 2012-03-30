@@ -379,25 +379,9 @@ static bool fba_init(unsigned driver)
    return true;
 }
 
-static unsigned int HighCol15(int r, int g, int b, int  /* i */)
-{
-   unsigned int t = 0;
-   t |= (r << 7) & 0x7c00;
-   t |= (g << 2) & 0x03e0;
-   t |= (b >> 3) & 0x001f;
-   return t;
-}
-
-int VidRecalcPal()
-{
-   return BurnRecalcPal();
-}
-
 static void init_video()
 {
    nBurnBpp = 2;
-   VidRecalcPal();
-   BurnHighCol = HighCol15;
 }
 
 static void init_audio()

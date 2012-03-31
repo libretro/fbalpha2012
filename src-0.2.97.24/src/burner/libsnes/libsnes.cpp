@@ -33,7 +33,6 @@ static unsigned g_rom_count;
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];
-static uint16_t g_fba_frame_conv[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 
 // libsnes globals
@@ -296,6 +295,7 @@ void snes_init()
 {
    BurnLibInit();
 
+
    if (environ_cb)
    {
       bool need_fullpath = true;
@@ -313,70 +313,12 @@ static bool g_reset;
 void snes_power() { g_reset = true; }
 void snes_reset() { g_reset = true; }
 
-// Copy stuff :o
-static inline void blit_regular(unsigned width, unsigned height, unsigned pitch)
-{
-   for (unsigned y = 0; y < height; y++)
-   {
-      memcpy(g_fba_frame_conv + y * 1024,
-            g_fba_frame + y * (pitch >> 1),
-            width * sizeof(uint16_t));
-   }
-
-   video_cb(g_fba_frame_conv, width, height);
-}
-
-static inline void blit_flipped(unsigned width, unsigned height, unsigned pitch)
-{
-   for (unsigned y = 0; y < height; y++)
-   {
-      memcpy(g_fba_frame_conv + (height - 1 - y) * 1024,
-            g_fba_frame + y * (pitch >> 1),
-            width * sizeof(uint16_t));
-   }
-
-   video_cb(g_fba_frame_conv, width, height);
-}
-
-static inline void blit_vertical(unsigned width, unsigned height, unsigned pitch)
-{
-   unsigned in_width = height;
-   unsigned in_height = width;
-   pitch >>= 1;
-
-   // Flip y and x coords pretty much ...
-   for (unsigned y = 0; y < in_height; y++)
-      for (unsigned x = 0; x < in_width; x++)
-         g_fba_frame_conv[(height - x - 1) * 1024 + y] = g_fba_frame[y * pitch + x];
-
-   video_cb(g_fba_frame_conv, width, height);
-}
-
-static inline void blit_vertical_flipped(unsigned width, unsigned height, unsigned pitch)
-{
-   unsigned in_width = height;
-   unsigned in_height = width;
-   pitch >>= 1;
-
-   // Flip y and x coords pretty much ...
-   for (unsigned y = 0; y < in_height; y++)
-      for (unsigned x = 0; x < in_width; x++)
-         g_fba_frame_conv[x * 1024 + (width - 1 - y)] = g_fba_frame[y * pitch + x];
-
-   video_cb(g_fba_frame_conv, width, height);
-}
-
 void snes_run()
 {
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    pBurnDraw = (uint8_t*)g_fba_frame;
 
-   unsigned drv_flags = BurnDrvGetFlags();
-   if (drv_flags & BDF_ORIENTATION_VERTICAL)
-      nBurnPitch = height * sizeof(uint16_t);
-   else
-      nBurnPitch = width * sizeof(uint16_t);
 
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
@@ -387,15 +329,18 @@ void snes_run()
    poll_input();
 
    BurnDrvFrame();
-
-   if ((drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED)) == (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
-      blit_vertical_flipped(width, height, nBurnPitch);
-   else if (drv_flags & BDF_ORIENTATION_VERTICAL)
-      blit_vertical(width, height, nBurnPitch);
-   else if (drv_flags & BDF_ORIENTATION_FLIPPED)
-      blit_flipped(width, height, nBurnPitch);
+   unsigned drv_flags = BurnDrvGetFlags();
+   uint32_t height_tmp = height;
+   if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
+   {
+	nBurnPitch = height * sizeof(uint16_t);
+	height = width;
+	width = height_tmp;
+   }
    else
-      blit_regular(width, height, nBurnPitch);
+      nBurnPitch = width * sizeof(uint16_t);
+
+   video_cb(g_fba_frame, width, height);
 
    for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
       audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
@@ -474,15 +419,21 @@ static bool fba_init(unsigned driver)
 
    BurnDrvInit();
 
+   int width, height;
+   BurnDrvGetVisibleSize(&width, &height);
+   unsigned drv_flags = BurnDrvGetFlags();
+   if (drv_flags & BDF_ORIENTATION_VERTICAL)
+      nBurnPitch = height * sizeof(uint16_t);
+   else
+      nBurnPitch = width * sizeof(uint16_t);
+
    if (environ_cb)
    {
       int width, height;
       BurnDrvGetVisibleSize(&width, &height);
       snes_geometry geom = { width, height, width, height };
       environ_cb(SNES_ENVIRONMENT_SET_GEOMETRY, &geom);
-
-      unsigned pitch = 2048;
-      environ_cb(SNES_ENVIRONMENT_SET_PITCH, &pitch);
+      environ_cb(SNES_ENVIRONMENT_SET_PITCH, &nBurnPitch);
    }
 
    return true;

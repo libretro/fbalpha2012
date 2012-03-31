@@ -1,5 +1,8 @@
 #include "tiles_generic.h"
 #include "sh2.h"
+#ifdef __LIBSNES__
+#include "sek.h"
+#endif
 
 static UINT8 DrvInputPort0[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 static UINT8 DrvInputPort1[8] = {0, 0, 0, 0, 0, 0, 0, 0};

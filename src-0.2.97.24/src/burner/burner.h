@@ -38,8 +38,10 @@ typedef struct tagIMAGE {
  #include "burner_win32.h"
 #elif defined (BUILD_SDL)
  #include "burner_sdl.h"
-#elif defined (_XBOX)
+#elif defined (_XBOX) && !defined(__LIBSNES__)
  #include "burner_xbox.h"
+#elif defined(__LIBSNES__)
+ #include "burner_libsnes.h"
 #endif
 
 #if defined (INCLUDE_LIB_PNGH)

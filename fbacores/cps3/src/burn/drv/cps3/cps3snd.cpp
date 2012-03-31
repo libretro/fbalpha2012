@@ -151,7 +151,10 @@ void cps3SndUpdate()
 				frac += step;
 
 #ifdef __ALTIVEC__
-/* Experimental Altivec */
+/* Altivec
+NOTE - Xbox 360's VMX128 does not have vmhraddshs implemented - so
+can't use this code for 360 */
+
 				vector signed short vec0 = { buffer[0], buffer[1] };
 				vector signed short vec1 = { vol_l, vol_r };
 				vector signed short vec2 = { sample << 7, sample << 7 };

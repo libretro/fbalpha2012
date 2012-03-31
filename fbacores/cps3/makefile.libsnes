@@ -76,7 +76,6 @@ all: $(TARGET)
 
 FBA_SRC_DIRS := $(FBA_BURNER_DIR)/libsnes/libsnes.cpp \
 		$(FBA_BURN_DRIVERS_DIR)/cps3/cps3run.cpp \
-		$(FBA_BURN_DRIVERS_DIR)/cps3/cps3snd.cpp \
 		$(FBA_BURN_DRIVERS_DIR)/cps3/d_cps3.cpp \
 		$(FBA_BURNER_DIR)/state.cpp \
 		$(FBA_BURNER_DIR)/statec.cpp \

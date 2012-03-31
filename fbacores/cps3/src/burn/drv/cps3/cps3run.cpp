@@ -28,6 +28,8 @@ Port to FBA by OopsWare
 
 #include "../../cpu/sh2/sh2.cpp"
 
+#include "cps3snd.cpp"
+
 #define	BE_GFX		1
 #define SPEED_HACK	1		// Default should be 1, if not FPS would drop.
 
@@ -873,7 +875,15 @@ static void Cps3PatchRegion()
 	}
 }
 
-static INT32 Cps3Reset()
+void cps3Refresh(void)
+{
+	UINT16 * pscr = RamScreen;
+	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(UINT16);
+	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
+		memset(pscr, 0, clrsz);
+}
+
+static INT32 Cps3Reset (void)
 {
 	// re-map cram_bank
 	cram_bank = 0;
@@ -1573,14 +1583,6 @@ INT32 cps3Frame()
 	DrvDraw();
 
 	return 0;
-}
-
-void cps3Refresh(void)
-{
-	UINT16 * pscr = RamScreen;
-	INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(UINT16);
-	for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 1024)
-		memset(pscr, 0, clrsz);
 }
 
 INT32 cps3Scan(INT32 nAction, INT32 *pnMin)

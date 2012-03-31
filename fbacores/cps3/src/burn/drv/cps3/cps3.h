@@ -26,20 +26,4 @@ INT32 cps3Exit();
 INT32 cps3Frame();
 INT32 cps3Scan(INT32 nAction,INT32 *pnMin);
 
-// sound 
-
-UINT8 __fastcall cps3SndReadByte(UINT32 addr);
-UINT16 __fastcall cps3SndReadWord(UINT32 addr);
-UINT32 __fastcall cps3SndReadLong(UINT32 addr);
-
-void __fastcall cps3SndWriteByte(UINT32 addr, UINT8 data);
-void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data);
-void __fastcall cps3SndWriteLong(UINT32 addr, UINT32 data);
-
-INT32 cps3SndInit(UINT8 *);
-void cps3SndReset();
-void cps3SndExit();
-void cps3SndUpdate();
-void cps3Refresh(void);
-
 INT32 cps3SndScan(INT32);

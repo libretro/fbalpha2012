@@ -4,12 +4,12 @@
  #define __fastcall
 #endif
 
-typedef unsigned char (__fastcall *pSh2ReadByteHandler)(unsigned int a);
-typedef void (__fastcall *pSh2WriteByteHandler)(unsigned int a, unsigned char d);
-typedef unsigned short (__fastcall *pSh2ReadWordHandler)(unsigned int a);
-typedef void (__fastcall *pSh2WriteWordHandler)(unsigned int a, unsigned short d);
-typedef unsigned int (__fastcall *pSh2ReadLongHandler)(unsigned int a);
-typedef void (__fastcall *pSh2WriteLongHandler)(unsigned int a, unsigned int d);
+typedef UINT8 (__fastcall *pSh2ReadByteHandler)(UINT32 a);
+typedef void (__fastcall *pSh2WriteByteHandler)(UINT32 a, UINT8 d);
+typedef UINT16 (__fastcall *pSh2ReadWordHandler)(UINT32 a);
+typedef void (__fastcall *pSh2WriteWordHandler)(UINT32 a, UINT16 d);
+typedef UINT32 (__fastcall *pSh2ReadLongHandler)(UINT32 a);
+typedef void (__fastcall *pSh2WriteLongHandler)(UINT32 a, UINT32 d);
 
 void __fastcall Sh2WriteByte(unsigned int a, unsigned char d);
 unsigned char __fastcall Sh2ReadByte(unsigned int a);

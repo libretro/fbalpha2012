@@ -1,5 +1,3 @@
-#include "cps3.h"
-
 #define CPS3_VOICES		16
 
 #define CPS3_SND_INT_RATE		(nBurnFPS / 100)
@@ -161,7 +159,7 @@ void cps3SndUpdate()
 				buffer[0] = vec3[0];
 				buffer[1] = vec3[1];
 #else
-#define CLAMP16(io) if((int16_t) io != io) io = (io >> 31) ^ 0x7FFF;
+#define CLAMP16(io) if((INT16) io != io) io = (io >> 31) ^ 0x7FFF;
 /* Blargg-style clamping - less branching */
 				INT32 sample_l;
 				sample_l = ((sample * vol_r) >> 8) + buffer[0];

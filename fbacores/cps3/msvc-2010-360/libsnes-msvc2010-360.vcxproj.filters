@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\burner">
+      <UniqueIdentifier>{5934b0a0-a392-46b1-a6b9-85680f426502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\burner\libsnes">
+      <UniqueIdentifier>{7bdcffa9-aeb6-4794-9e8e-458b9362ac6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\burn">
+      <UniqueIdentifier>{b7f20cc9-683f-43c2-bc98-e62b2fd559dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\burn\devices">
+      <UniqueIdentifier>{e5072976-2218-4f59-ad88-781c310d79c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\burn\drv">
+      <UniqueIdentifier>{25acca22-2077-4e00-bdbf-14bc6d910891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\burn\drv\cps3">
+      <UniqueIdentifier>{af190a4c-ea93-447b-bd8c-69430f3bafb2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\burn\devices\eeprom.cpp">
+      <Filter>Source Files\burn\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burn\drv\cps3\d_cps3.cpp">
+      <Filter>Source Files\burn\drv\cps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burn\drv\cps3\cps3run.cpp">
+      <Filter>Source Files\burn\drv\cps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burn\load.cpp">
+      <Filter>Source Files\burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burn\burn.cpp">
+      <Filter>Source Files\burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burn\burn_memory.cpp">
+      <Filter>Source Files\burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\libsnes\libsnes.cpp">
+      <Filter>Source Files\burner\libsnes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\gami.cpp">
+      <Filter>Source Files\burner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\state.cpp">
+      <Filter>Source Files\burner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\statec.cpp">
+      <Filter>Source Files\burner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\zipfn.cpp">
+      <Filter>Source Files\burner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\burner\gamc.cpp">
+      <Filter>Source Files\burner</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

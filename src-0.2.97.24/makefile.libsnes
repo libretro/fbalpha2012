@@ -77,9 +77,7 @@ endif
 
 all: $(TARGET)
 
-BURN_BLACKLIST := $(FBA_BURN_DIR)/zet_c68k.cpp \
-	$(FBA_BURN_DIR)/sek_c68k.cpp \
-	$(FBA_BURNER_DIR)/un7z.cpp \
+BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_CPU_DIR)/arm7/arm7core.c \
 	$(FBA_CPU_DIR)/hd6309/6309tbl.c \

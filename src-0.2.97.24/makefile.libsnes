@@ -1,5 +1,5 @@
 DEBUG = 0
-GENERATE_FILES = 1
+GENERATE_FILES = 0
 
 ifeq ($(platform),)
 platform = unix

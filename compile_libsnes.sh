@@ -8,25 +8,21 @@ FORMAT=libsnes
 
 clean()
 {
-   cd src-0.2.97.23/src/burner/libsnes
-   sh generate_files.sh
-   cd ../../..
+   cd src-0.2.97.24/
 	make -f makefile.libsnes clean
 }
 
 make_libsnes()
 {
-   cd src-0.2.97.23/src/burner/libsnes
-   sh generate_files.sh
-   cd ../../..
+   cd src-0.2.97.24/
+   make -f makefile.libsnes generate
 	make -f makefile.libsnes -j4
 }
 
 make_debug()
 {
-   cd src-0.2.97.23/src/burner/libsnes
-   sh generate_files.sh
-   cd ../../..
+   cd src-0.2.97.24/
+   make -f makefile.libsnes generate
 	make -f makefile.libsnes -j4 DEBUG=1
 }
 

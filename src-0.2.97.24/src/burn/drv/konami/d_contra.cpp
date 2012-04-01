@@ -4,6 +4,9 @@
 #include "tiles_generic.h"
 #include "burn_ym2151.h"
 #include "m6809_intf.h"
+#ifdef __LIBSNES_OPTIMISATIONS__
+#include "burn_libsnes_col.h"
+#endif
 
 static UINT8 *AllMem;
 static UINT8 *MemEnd;
@@ -18,7 +21,9 @@ static UINT8 *DrvGfxROM0;
 static UINT8 *DrvGfxROM1;
 static UINT8 *DrvPROMs;
 static UINT8 *DrvColTable;
+#ifndef __LIBSNES_OPTIMISATIONS__
 static UINT8 *DrvPalRAM;
+#endif
 static UINT8 *DrvFgCRAM;
 static UINT8 *DrvFgVRAM;
 static UINT8 *DrvTxCRAM;
@@ -238,6 +243,13 @@ void DrvContraM6809WriteByte(UINT16 address, UINT8 data)
 	if ((address & 0xff00) == 0x0c00) {
 		INT32 offset = address & 0xff;
 
+#ifdef __LIBSNES_OPTIMISATIONS__
+		UINT16 col = ((data & ~1) | (data | 1) << 8);
+
+		Palette[offset >> 1] = LIBSNES_COLOR(col);
+		for(INT32 i = 0; i < 0x1000; i++)
+			DrvPalette[i] = Palette[DrvColTable[i]];
+#else
 		DrvPalRAM[offset] = data;
 
 		UINT16 col = DrvPalRAM[offset & ~1] | (DrvPalRAM[offset | 1] << 8);
@@ -257,6 +269,7 @@ void DrvContraM6809WriteByte(UINT16 address, UINT8 data)
 
 		DrvRecalc = 1;
 		Palette[offset >> 1] = color;
+#endif
 
 		return;
 	}
@@ -352,7 +365,9 @@ static INT32 MemIndex()
 	DrvM6809RAM0	= Next; Next += 0x001000;
 	DrvM6809RAM1	= Next; Next += 0x001800;
 	DrvM6809RAM2	= Next; Next += 0x000800;
+#ifndef __LIBSNES_OPTIMISATIONS__
 	DrvPalRAM	= Next; Next += 0x000100;
+#endif
 	DrvFgCRAM	= Next; Next += 0x000400;
 	DrvFgVRAM	= Next; Next += 0x000400;
 	DrvTxCRAM	= Next; Next += 0x000400;
@@ -497,7 +512,9 @@ static INT32 DrvInit()
 
 	M6809Init(2);
 	M6809Open(0);
+#ifndef __LIBSNES_OPTIMISATIONS__
 	M6809MapMemory(DrvPalRAM,		0x0c00, 0x0cff, M6809_ROM);
+#endif
 	M6809MapMemory(DrvM6809RAM0,		0x1000, 0x1fff, M6809_RAM);
 	M6809MapMemory(DrvFgCRAM,		0x2000, 0x23ff, M6809_RAM);
 	M6809MapMemory(DrvFgVRAM,		0x2400, 0x27ff, M6809_RAM);
@@ -809,12 +826,14 @@ static void draw_sprites(INT32 bank, UINT8 *gfx_base, INT32 color_offset)
 
 static INT32 DrvDraw()
 {
+#ifndef __LIBSNES_OPTIMISATIONS__
 	if (DrvRecalc) {
 		for (INT32 i = 0; i < 0x1000; i++) {
 			INT32 rgb = Palette[DrvColTable[i]];
 			DrvPalette[i] = BurnHighCol(rgb >> 16, rgb >> 8, rgb, 0);
 		}
 	}
+#endif
 
 	draw_bg();
 	draw_fg();

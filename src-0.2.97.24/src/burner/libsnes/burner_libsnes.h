@@ -4,7 +4,6 @@
 #include "gameinp.h"
 #include "inp_keys.h"
 
-extern char g_basename[1024];
 extern int bDrvOkay;
 extern int bRunPause;
 extern bool bAlwaysProcessKeyboardInput;

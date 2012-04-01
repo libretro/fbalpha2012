@@ -29,7 +29,7 @@ typedef union
 #define BURN_ENDIAN_SWAP_INT64(x)				x
 #else
 // define the above union and BURN_ENDIAN_SWAP macros in the following platform specific header
-#include "burn_endian.h"
+#include "big_endian.h"
 #endif
 
 // ---------------------------------------------------------------------------

@@ -47,7 +47,7 @@ perl src/dep/scripts/cave_tile_func.pl -o src/dep/generated/cave_tile_func.h
 perl src/dep/scripts/toa_gp9001_func.pl -o src/dep/generated/toa_gp9001_func.h
 
 g++ -o pgm_sprite_create src/burn/drv/pgm/pgm_sprite_create.cpp
-./pgm_sprite_create > src/burn/drv/pgm/pgm_sprite.h
+./pgm_sprite_create > src/dep/generated/pgm_sprite.h
 
 #compile m68kmakeecho 
 gcc -o m68kmake src/cpu/m68k/m68kmake.c

@@ -1,6 +1,10 @@
 #include "burnint.h"
 #include "eeprom.h"
 
+#ifdef __LIBSNES__
+#include "burner_libsnes.h"
+#endif
+
 #define SERIAL_BUFFER_LENGTH 40
 #define MEMORY_SIZE 1024
 
@@ -90,7 +94,11 @@ void EEPROMInit(const eeprom_interface *interface)
 	else locked = 0;
 
 	char output[128];
+#ifdef __LIBSNES__
+	sprintf (output, "%s.nv", g_basename);
+#else
 	sprintf (output, "config/games/%s.nv", BurnDrvGetTextA(DRV_NAME));
+#endif
 
 	neeprom_available = 0;
 
@@ -111,7 +119,11 @@ void EEPROMExit()
 #endif
 
 	char output[128];
+#ifdef __LIBSNES__
+	sprintf (output, "%s.nv", g_basename);
+#else
 	sprintf (output, "config/games/%s.nv", BurnDrvGetTextA(DRV_NAME));
+#endif
 
 	neeprom_available = 0;
 

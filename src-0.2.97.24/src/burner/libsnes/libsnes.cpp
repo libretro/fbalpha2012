@@ -62,7 +62,7 @@ void snes_set_environment(snes_environment_t cb)
 
 static char g_rom_name[1024];
 static char g_rom_dir[1024];
-static char g_basename[1024];
+char g_basename[1024];
 
 /////
 static void poll_input();

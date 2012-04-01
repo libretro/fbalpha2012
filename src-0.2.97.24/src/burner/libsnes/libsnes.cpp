@@ -41,6 +41,7 @@ static snes_video_refresh_t video_cb;
 static snes_audio_sample_t audio_cb;
 static snes_input_poll_t poll_cb;
 static snes_input_state_t input_cb;
+static snes_audio_sample_batch_t audio_batch_cb;
 void snes_set_video_refresh(snes_video_refresh_t cb) { video_cb = cb; }
 void snes_set_audio_sample(snes_audio_sample_t cb) { audio_cb = cb; }
 void snes_set_input_poll(snes_input_poll_t cb) { poll_cb = cb; }
@@ -300,6 +301,7 @@ void snes_init()
    {
       bool need_fullpath = true;
       environ_cb(SNES_ENVIRONMENT_SET_NEED_FULLPATH, &need_fullpath);
+      environ_cb(SNES_ENVIRONMENT_GET_AUDIO_BATCH_CB, &audio_batch_cb);
    }
 }
 
@@ -342,8 +344,11 @@ void snes_run()
 
    video_cb(g_fba_frame, width, height);
 
-   for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
-      audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
+   if(audio_batch_cb)
+	   audio_batch_cb(g_audio_buf, AUDIO_SEGMENT_LENGTH);
+   else
+	   for (unsigned i = 0; i < AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS; i += 2)
+		   audio_cb(g_audio_buf[i + 0], g_audio_buf[i + 1]);
 }
 
 static uint8_t *write_state_ptr;

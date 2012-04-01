@@ -10,7 +10,11 @@
 #include <assert.h>
 #include <ctype.h>
 
+#if defined(__LIBSNES__) && defined(_XBOX)
+#include <tchar.h>
+#else
 #include "tchar.h"
+#endif
 
 // Macro to make quoted strings
 #define MAKE_STRING_2(s) #s
@@ -51,9 +55,9 @@ typedef struct tagIMAGE {
 // ---------------------------------------------------------------------------
 // OS independent functionality
 
+#ifndef __LIBSNES__
 #include "interface.h"
-
-
+#endif
 
 #define IMG_FREE		(1 << 0)
 
@@ -87,8 +91,10 @@ INT32 GameInpExit();
 TCHAR* InputCodeDesc(INT32 c);
 TCHAR* InpToDesc(struct GameInp* pgi);
 TCHAR* InpMacroToDesc(struct GameInp* pgi);
+#ifndef __LIBSNES__
 void GameInpCheckLeftAlt();
 void GameInpCheckMouse();
+#endif
 INT32 GameInpBlank(INT32 bDipSwitch);
 INT32 GameInputAutoIni(INT32 nPlayer, TCHAR* lpszFile, bool bOverWrite);
 INT32 ConfigGameLoadHardwareDefaults();

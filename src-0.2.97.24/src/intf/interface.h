@@ -14,6 +14,7 @@ struct InterfaceInfo {
 	TCHAR** ppszModuleSettings;
 };
 
+#ifndef __LIBSNES__
 INT32 IntInfoFree(InterfaceInfo* pInfo);
 INT32 IntInfoInit(InterfaceInfo* pInfo);
 INT32 IntInfoAddStringInterface(InterfaceInfo* pInfo, TCHAR* szString);
@@ -51,6 +52,8 @@ InterfaceInfo* InputGetInfo();
 extern bool bInputOkay;
 extern UINT32 nInputSelect;
 
+#endif
+
 // CD emulation module
 
 struct CDEmuDo {
@@ -62,8 +65,10 @@ struct CDEmuDo {
 	UINT8* (*CDEmuReadTOC)(INT32 track);
 	UINT8* (*CDEmuReadQChannel)();
 	INT32			   (*CDEmuGetSoundBuffer)(INT16* buffer, INT32 samples);
+#ifndef __LIBSNES__
 	// Get plugin info
 	INT32			   (*GetPluginSettings)(InterfaceInfo* pInfo);
+#endif
 	const TCHAR*	 szModuleName;
 };
 

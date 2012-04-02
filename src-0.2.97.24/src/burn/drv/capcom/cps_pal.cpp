@@ -3,7 +3,9 @@
 
 // CPS (palette)
 
+#ifndef __LIBSNES_OPTIMIZATIONS__
 static UINT8* CpsPalSrc = NULL;			// Copy of current input palette
+#endif
 UINT32* CpsPal = NULL;					// Hicolor version of palette
 INT32 nCpsPalCtrlReg;
 INT32 bCpsUpdatePalEveryFrame = 0;		// Some of the hacks need this as they don't write to CpsReg 0x0a
@@ -12,12 +14,14 @@ INT32 CpsPalInit()
 {
 	INT32 nLen = 0;
 
+#ifndef __LIBSNES_OPTIMIZATIONS__
 	nLen = 0xc00 * sizeof(UINT16);
 	CpsPalSrc = (UINT8*)BurnMalloc(nLen);
 	if (CpsPalSrc == NULL) {
 		return 1;
 	}
 	memset(CpsPalSrc, 0, nLen);
+#endif
 
 	nLen = 0xc00 * sizeof(UINT32);
 	CpsPal = (UINT32*)BurnMalloc(nLen);
@@ -31,11 +35,37 @@ INT32 CpsPalInit()
 INT32 CpsPalExit()
 {
 	BurnFree(CpsPal);
+#ifndef __LIBSNES_OPTIMIZATIONS__
 	BurnFree(CpsPalSrc);
+#endif
 	return 0;
 }
 
 // Update CpsPal with the new palette at pNewPal (length 0xc00 bytes)
+#ifdef __LIBSNES_OPTIMIZATIONS__
+INT32 CpsPalUpdate(UINT8* pNewPal)
+{
+	INT32 nCtrl = CpsReg[nCpsPalCtrlReg];
+	UINT16 *PaletteRAM = (UINT16*)pNewPal;
+	
+	for (INT32 nPage = 0; nPage < 6; nPage++) {
+		if (BIT(nCtrl, nPage)) {
+			for (INT32 Offset = 0; Offset < 0x200; ++Offset) {
+				INT32 Palette = BURN_ENDIAN_SWAP_INT16(*(PaletteRAM++));
+				INT32 Bright = 0x0f + ((Palette >> 12) << 1);
+
+				CpsPal[(0x200 * nPage) + (Offset ^ 15)] = (((((((Palette >> 8) & 0x0f) * 0x11 * Bright / 45) << 7)) & 0x7c00) | ((((((Palette >> 4) & 0x0f) * 0x11 * Bright / 45) << 2)) & 0x03e0) | ((((((Palette) & 0x0f) * 0x11 * Bright / 45) >> 3)) & 0x001f));
+			}
+		} else {
+			if (PaletteRAM != (UINT16*)pNewPal) {
+				PaletteRAM += 0x200;
+			}
+		}
+	}
+
+	return 0;
+}
+#else
 INT32 CpsPalUpdate(UINT8* pNewPal)
 {
 	UINT16 *ps, *pn;
@@ -52,11 +82,6 @@ INT32 CpsPalUpdate(UINT8* pNewPal)
 		if (BIT(nCtrl, nPage)) {
 			for (INT32 Offset = 0; Offset < 0x200; ++Offset) {
 				INT32 Palette = BURN_ENDIAN_SWAP_INT16(*(PaletteRAM++));
-#ifdef __LIBSNES_OPTIMIZATIONS__
-				INT32 Bright = 0x0f + ((Palette >> 12) << 1);
-
-				CpsPal[(0x200 * nPage) + (Offset ^ 15)] = (((((((Palette >> 8) & 0x0f) * 0x11 * Bright / 45) << 7)) & 0x7c00) | ((((((Palette >> 4) & 0x0f) * 0x11 * Bright / 45) << 2)) & 0x03e0) | ((((((Palette) & 0x0f) * 0x11 * Bright / 45) >> 3)) & 0x001f));
-#else
 				INT32 r, g, b, Bright;
 				
 				Bright = 0x0f + ((Palette >> 12) << 1);
@@ -66,7 +91,6 @@ INT32 CpsPalUpdate(UINT8* pNewPal)
 				b = ((Palette >> 0) & 0x0f) * 0x11 * Bright / 0x2d;
 				
 				CpsPal[(0x200 * nPage) + (Offset ^ 15)] = BurnHighCol(r, g, b, 0);
-#endif
 			}
 		} else {
 			if (PaletteRAM != (UINT16*)CpsPalSrc) {
@@ -77,3 +101,4 @@ INT32 CpsPalUpdate(UINT8* pNewPal)
 
 	return 0;
 }
+#endif

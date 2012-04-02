@@ -515,6 +515,7 @@ static INT32 MemIndex()
 
 UINT8 __fastcall cps3ReadByte(UINT32 addr)
 {
+#ifdef LOG_CPS3
 	addr &= 0xc7ffffff;
 	
 //	switch (addr) {
@@ -522,6 +523,7 @@ UINT8 __fastcall cps3ReadByte(UINT32 addr)
 //	default:
 //		bprintf(PRINT_NORMAL, _T("Attempt to read byte value of location %8x\n"), addr);
 //	}
+#endif
 	return 0;
 }
 

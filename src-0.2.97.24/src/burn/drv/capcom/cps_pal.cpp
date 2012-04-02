@@ -52,6 +52,11 @@ INT32 CpsPalUpdate(UINT8* pNewPal)
 		if (BIT(nCtrl, nPage)) {
 			for (INT32 Offset = 0; Offset < 0x200; ++Offset) {
 				INT32 Palette = BURN_ENDIAN_SWAP_INT16(*(PaletteRAM++));
+#ifdef __LIBSNES_OPTIMIZATIONS__
+				INT32 Bright = 0x0f + ((Palette >> 12) << 1);
+
+				CpsPal[(0x200 * nPage) + (Offset ^ 15)] = (((((((Palette >> 8) & 0x0f) * 0x11 * Bright / 45) << 7)) & 0x7c00) | ((((((Palette >> 4) & 0x0f) * 0x11 * Bright / 45) << 2)) & 0x03e0) | ((((((Palette) & 0x0f) * 0x11 * Bright / 45) >> 3)) & 0x001f));
+#else
 				INT32 r, g, b, Bright;
 				
 				Bright = 0x0f + ((Palette >> 12) << 1);
@@ -61,6 +66,7 @@ INT32 CpsPalUpdate(UINT8* pNewPal)
 				b = ((Palette >> 0) & 0x0f) * 0x11 * Bright / 0x2d;
 				
 				CpsPal[(0x200 * nPage) + (Offset ^ 15)] = BurnHighCol(r, g, b, 0);
+#endif
 			}
 		} else {
 			if (PaletteRAM != (UINT16*)CpsPalSrc) {

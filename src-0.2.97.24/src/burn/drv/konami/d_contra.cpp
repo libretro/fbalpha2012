@@ -4,9 +4,6 @@
 #include "tiles_generic.h"
 #include "burn_ym2151.h"
 #include "m6809_intf.h"
-#ifdef __LIBSNES_OPTIMISATIONS__
-#include "burn_libsnes_col.h"
-#endif
 
 static UINT8 *AllMem;
 static UINT8 *MemEnd;

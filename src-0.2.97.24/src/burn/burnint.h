@@ -13,6 +13,10 @@
 #include "tchar.h"
 #endif
 
+#ifdef __LIBSNES_OPTIMIZATIONS__
+#include "burn_libsnes_opts.h"
+#endif
+
 #include "burn.h"
 
 #ifdef LSB_FIRST
@@ -95,6 +99,12 @@ INT32 BurnTransferInit();
 // ---------------------------------------------------------------------------
 // Plotting pixels
 
+#ifdef __LIBSNES_OPTIMIZATIONS__
+inline static void PutPix(UINT8* pPix, UINT32 c)
+{
+	*((UINT16*)pPix) = (UINT16)c;
+}
+#else
 inline static void PutPix(UINT8* pPix, UINT32 c)
 {
 	if (nBurnBpp >= 4) {
@@ -109,6 +119,7 @@ inline static void PutPix(UINT8* pPix, UINT32 c)
 		}
 	}
 }
+#endif
 
 // ---------------------------------------------------------------------------
 // Setting up cpus for cheats

@@ -19,9 +19,6 @@ Port to FBA by OopsWare
 
 #include "cps3.h"
 #include "sh2.h"
-#ifdef __LIBSNES_OPTIMIZATIONS__
-#include "burn_libsnes_opts.h"
-#endif
 
 #define	BE_GFX		1
 //#define	FAST_BOOT	1

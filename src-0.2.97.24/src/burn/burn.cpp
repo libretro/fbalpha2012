@@ -844,6 +844,11 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 	
 	pBurnDrvPalette = pPalette;
 
+#ifdef __LIBSNES_OPTIMIZATIONS__
+	for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
+		for (INT32 x = 0; x < nTransWidth; x ++)
+			((UINT16*)pDest)[x] = pPalette[pSrc[x]];
+#else
 	switch (nBurnBpp) {
 		case 2: {
 			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
@@ -874,6 +879,7 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 			break;
 		}
 	}
+#endif
 
 	return 0;
 }

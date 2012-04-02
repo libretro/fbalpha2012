@@ -213,6 +213,9 @@ void BurnLEDRender()
 
 				for (INT32 x = 0; x < led_size; x++)
 				{
+#ifdef __LIBSNES_OPTIMIZATIONS__
+					*((UINT16*)ptr) =  color;
+#else
 					if (nBurnBpp >= 4)
 					{
 						*((UINT32*)ptr) = alpha_blend32(*((UINT32*)ptr));
@@ -229,6 +232,7 @@ void BurnLEDRender()
 					{
 						*((UINT16*)ptr) =  color;
 					}
+#endif
 
 					ptr += nBurnBpp;
 				}

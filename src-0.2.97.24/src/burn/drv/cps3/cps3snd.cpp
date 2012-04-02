@@ -183,8 +183,17 @@ void cps3SndUpdate()
 				// 8bit sample store with 16bit bigend ???
 				sample = base[(start + pos) ^ 1];
 				frac += step;
+#ifdef __ALTIVEC__
+/* NOTE - Xbox 360's VMX128 does not have vmhraddshs implemented - so
+can't use this code for 360 */
 
-#if 1
+				vector signed short vec0 = { buffer[0], buffer[1] };
+				vector signed short vec1 = { vol_l, vol_r };
+				vector signed short vec2 = { sample << 7, sample << 7 };
+				vector signed short vec3 = vec_mradds(vec1, vec2, vec0);
+				buffer[0] = vec3[0];
+				buffer[1] = vec3[1];
+#else
 				INT32 sample_l;
 
 				sample_l = ((sample * vol_r) >> 8) + buffer[0];
@@ -196,7 +205,8 @@ void cps3SndUpdate()
 				if (sample_l > 32767)		buffer[1] = 32767;
 				else if (sample_l < -32768)	buffer[1] = -32768;
 				else 						buffer[1] = sample_l;
-#else
+#endif
+#if 0
 				buffer[0] += (sample * (vol_l >> 8));
 				buffer[1] += (sample * (vol_r >> 8));
 #endif

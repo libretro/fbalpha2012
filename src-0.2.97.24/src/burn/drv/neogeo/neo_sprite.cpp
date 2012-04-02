@@ -29,22 +29,29 @@ static INT32 nNeoSpriteFrame04, nNeoSpriteFrame08;
 
 static INT32 nLastBPP = -1;
 
-typedef void (*RenderBankFunction)();
-static RenderBankFunction* RenderBank;
-
 static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
+typedef void (*RenderBankFunction)();
+
+#ifdef __LIBSNES_OPTIMIZATIONS__
+// Include the tile rendering functions
+#include "neo_sprite_func_libsnes.h"
+#else
+static RenderBankFunction* RenderBank;
 
 // Include the tile rendering functions
 #include "neo_sprite_func.h"
+#endif
 
 INT32 NeoRenderSprites()
 {
+#ifndef __LIBSNES_OPTIMIZATIONS__
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
 		RenderBank = RenderBankNormal[nBurnBpp - 2];
 	}
+#endif
 
 	if (!NeoSpriteROMActive || !(nBurnLayer & 1)) {
 		return 0;
@@ -100,10 +107,18 @@ INT32 NeoRenderSprites()
 			}
 
 			if (nBankXPos >= 0 && nBankXPos < (nNeoScreenWidth - nBankXZoom - 1)) {
+#ifdef __LIBSNES_OPTIMIZATIONS__
+				RenderBankFunctionTable[nBankXZoom]();
+#else
 				RenderBank[nBankXZoom]();
+#endif
 			} else {
 				if (nBankXPos >= -nBankXZoom && nBankXPos < nNeoScreenWidth) {
+#ifdef __LIBSNES_OPTIMIZATIONS__
+				RenderBankFunctionTable[nBankXZoom + 16]();
+#else
 					RenderBank[nBankXZoom + 16]();
+#endif
 				}
 			}
 		}

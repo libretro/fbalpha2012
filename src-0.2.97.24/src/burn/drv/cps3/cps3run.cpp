@@ -694,13 +694,13 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 
 #ifdef LSB_FIRST
 #ifdef __LIBSNES_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i) ^ 1] = LIBSNES_COLOR(coldata);
+				RamPal[(paldma_dest + i) ^ 1] = LIBSNES_COLOR_15BPP_BGR(coldata);
 #else
 				RamPal[(paldma_dest + i) ^ 1] = coldata;
 #endif
 #else
 #ifdef __LIBSNES_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i)] = LIBSNES_COLOR(coldata);
+				RamPal[(paldma_dest + i)] = LIBSNES_COLOR_15BPP_BGR(coldata);
 #else
 				RamPal[(paldma_dest + i)] = coldata;
 #endif

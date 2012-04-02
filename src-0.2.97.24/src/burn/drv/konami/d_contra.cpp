@@ -243,7 +243,7 @@ void DrvContraM6809WriteByte(UINT16 address, UINT8 data)
 #ifdef __LIBSNES_OPTIMISATIONS__
 		UINT16 col = ((data & ~1) | (data | 1) << 8);
 
-		Palette[offset >> 1] = LIBSNES_COLOR(col);
+		Palette[offset >> 1] = LIBSNES_COLOR_15BPP_BGR(col);
 		for(INT32 i = 0; i < 0x1000; i++)
 			DrvPalette[i] = Palette[DrvColTable[i]];
 #else

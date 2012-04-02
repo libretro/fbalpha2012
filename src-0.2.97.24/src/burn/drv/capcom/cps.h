@@ -292,9 +292,11 @@ extern INT32             nCtvTileAdd;					// Amount to add after each tile line
 extern UINT8  *pCtvLine;					// Pointer to output bitmap
 typedef INT32 (*CtvDoFn)();
 typedef INT32 (*CpstOneDoFn)();
+#ifndef __LIBSNES
 extern CtvDoFn CtvDoX[0x20];
 extern CtvDoFn CtvDoXM[0x20];
 extern CtvDoFn CtvDoXB[0x20];
+#endif
 extern CpstOneDoFn CpstOneDoX[3];
 extern CpstOneDoFn CpstOneObjDoX[2];
 INT32 CtvReady();

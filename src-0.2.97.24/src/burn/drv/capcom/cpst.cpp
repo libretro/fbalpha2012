@@ -1,4 +1,11 @@
 #include "cps.h"
+#ifdef __LIBSNES_OPTIMIZATIONS__
+UINT32 nCtvRollX=0,nCtvRollY=0;
+UINT8 *pCtvTile=NULL; // Pointer to tile data
+INT32 nCtvTileAdd=0; // Amount to add after each tile line
+UINT8 *pCtvLine=NULL; // Pointer to output bitmap
+#include "ctv.h"
+#endif
 
 // CPS Tiles
 UINT32 *CpstPal=NULL;
@@ -61,7 +68,11 @@ static INT32 CpstOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
+#ifdef __LIBSNES_OPTIMIZATIONS__
+  return CtvDo2[nFun]();
+#else
   return CtvDoX[nFun]();
+#endif
 }
 
 static INT32 CpstOneBgHi()
@@ -103,7 +114,11 @@ static INT32 CpstOneBgHi()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
+#ifdef __LIBSNES_OPTIMIZATIONS__
+  return CtvDo2b[nFun]();
+#else
   return CtvDoXB[nFun]();
+#endif
 }
 
 static INT32 Cps2tOne()
@@ -144,7 +159,11 @@ static INT32 Cps2tOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
+#ifdef __LIBSNES_OPTIMIZATIONS__
+  return CtvDo2[nFun]();
+#else
   return CtvDoX[nFun]();
+#endif
 }
 
 static INT32 CpstOneObjZ()
@@ -188,5 +207,9 @@ static INT32 CpstOneObjZ()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
+#ifdef __LIBSNES_OPTIMIZATIONS__
+  return CtvDo2m[nFun]();
+#else
   return CtvDoXM[nFun]();
+#endif
 }

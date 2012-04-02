@@ -404,6 +404,15 @@ static void Cps2Layers()
 	}
 }
 
+#ifdef __LIBSNES_OPTIMIZATIONS__
+void CpsClearScreen()
+{
+	UINT32 nColour = 0;
+	if (Cps == 1)
+		nColour = CpsPal[0xbff ^ 15] | CpsPal[0xbff ^ 15] << 16;
+	memset(pBurnDraw, nColour, 384 * 224 * nBurnBpp);
+}
+#else
 void CpsClearScreen()
 {
 	if (Cps == 1) {
@@ -458,10 +467,13 @@ void CpsClearScreen()
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
 	}
 }
+#endif
 
 static void DoDraw(INT32 Recalc)
 {
-	CtvReady();								// Point to correct tile drawing functions
+#ifndef __LIBSNES_OPTIMIZATIONS__
+	CtvReady();			// Point to correct tile drawing functions
+#endif
 
 	if (bCpsUpdatePalEveryFrame) GetPalette(0, 6);
 	if (Recalc || bCpsUpdatePalEveryFrame) CpsPalUpdate(CpsSavePal);		// recalc whole palette if needed

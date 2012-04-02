@@ -10,14 +10,13 @@ extern "C" {
 #define SNES_PORT_1  0
 #define SNES_PORT_2  1
 
-#define SNES_DEVICE_NONE          0
-#define SNES_DEVICE_JOYPAD        1
-#define SNES_DEVICE_MULTITAP      2
-#define SNES_DEVICE_MOUSE         3
-#define SNES_DEVICE_SUPER_SCOPE   4
-#define SNES_DEVICE_JUSTIFIER     5
-#define SNES_DEVICE_JUSTIFIERS    6
-#define SNES_DEVICE_SERIAL_CABLE  7
+#define SNES_DEVICE_NONE         0
+#define SNES_DEVICE_JOYPAD       1
+#define SNES_DEVICE_MULTITAP     2
+#define SNES_DEVICE_MOUSE        3
+#define SNES_DEVICE_SUPER_SCOPE  4
+#define SNES_DEVICE_JUSTIFIER    5
+#define SNES_DEVICE_JUSTIFIERS   6
 
 #define SNES_DEVICE_ID_JOYPAD_B        0
 #define SNES_DEVICE_ID_JOYPAD_Y        1
@@ -68,7 +67,6 @@ extern "C" {
 #define SNES_MEMORY_CGRAM   104
 
 // SSNES extension. Not required to be implemented for a working implementation.
-
 #define SNES_ENVIRONMENT_GET_FULLPATH 0         // const char ** --
                                                 // Full path of game loaded.
                                                 //
@@ -96,6 +94,7 @@ extern "C" {
                                                 // Implementation must then use SNES_ENVIRONMENT_GET_FULLPATH.
                                                 // This is useful for implementations with very large roms,
                                                 // which are impractical to load fully into RAM.
+                                                //
 #define SNES_ENVIRONMENT_GET_CAN_REWIND 7       // bool * --
                                                 // Boolean value telling if SSNES is able to rewind.
                                                 // Some implementations might need to take extra precautions
@@ -127,13 +126,32 @@ extern "C" {
                                                 //
 #define SNES_ENVIRONMENT_SET_MESSAGE 12         // const struct snes_message * --
                                                 // Sets a message to be displayed in implementation-specific manner for a certain amount of 'frames'.
+                                                //
 #define SNES_ENVIRONMENT_GET_AUDIO_BATCH_CB 13  // snes_audio_sample_batch_t * --
                                                 // Retrieves callback to a more optimized audio callback.
+                                                //
+#define SNES_ENVIRONMENT_SET_ROTATION 14        // const unsigned * --
+                                                // Sets screen rotation of graphics.
+                                                // Is only implemented if rotation can be accelerated by hardware.
+                                                // Valid values are 0, 1, 2, 3, which rotates screen by 0, 90, 180, 270 degrees
+                                                // counter-clockwise respectively.
+                                                //
+#define SNES_ENVIRONMENT_SET_CORE_VERSION 15    // const char * --
+                                                // Sets version of core as a human readable string.
 
 struct snes_message
 {
    const char *msg;
    unsigned frames;
+};
+
+struct snes_variable
+{
+   const char *key;        // Variable to query in SNES_ENVIRONMENT_GET_VARIABLE.
+                           // If NULL, obtains the complete environment string if more complex parsing is necessary.
+                           // The environment string is formatted as key-value pairs delimited by semicolons as so:
+                           // "key1=value1;key2=value2;..."
+   const char *value;      // Value to be obtained. If key does not exist, it is set to NULL.
 };
 
 struct snes_geometry
@@ -156,18 +174,19 @@ typedef bool (*snes_environment_t)(unsigned cmd, void *data);
 void snes_set_environment(snes_environment_t);
 ////
 
-// Performance extension. Retrieved from environ callback.
-
-typedef unsigned (*snes_audio_sample_batch_t)(const int16_t *data, unsigned frames);
-
 typedef void (*snes_video_refresh_t)(const uint16_t *data, unsigned width, unsigned height);
 typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);
+
+// Performance extension. Retrieved from environ callback.
+typedef unsigned (*snes_audio_sample_batch_t)(const int16_t *data, unsigned frames);
+
 typedef void (*snes_input_poll_t)(void);
 typedef int16_t (*snes_input_state_t)(bool port, unsigned device, unsigned index, unsigned id);
 
-const char* snes_library_id(void);
 unsigned snes_library_revision_major(void);
 unsigned snes_library_revision_minor(void);
+
+const char *snes_library_id(void);
 
 void snes_set_video_refresh(snes_video_refresh_t);
 void snes_set_audio_sample(snes_audio_sample_t);

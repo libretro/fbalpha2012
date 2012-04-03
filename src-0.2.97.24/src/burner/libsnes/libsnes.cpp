@@ -58,6 +58,7 @@ void snes_set_environment(snes_environment_t cb)
    dummy = 1;
    cb(SNES_ENVIRONMENT_SET_BATCH_LOAD, &dummy);
    cb(SNES_ENVIRONMENT_SET_ROM_FORMATS, (void*)"zip|ZIP");
+   cb(SNES_ENVIRONMENT_SET_CORE_VERSION, (void*)"0.2.97.24");
 }
 
 static char g_rom_name[1024];

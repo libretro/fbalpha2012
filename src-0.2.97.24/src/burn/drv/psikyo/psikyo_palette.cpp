@@ -27,6 +27,7 @@ INT32 PsikyoPalExit()
 	return 0;
 }
 
+#ifndef __LIBSNES_OPTIMIZATIONS__
 inline static UINT32 CalcCol(UINT16 nColour)
 {
 	INT32 r, g, b;
@@ -57,6 +58,7 @@ INT32 PsikyoPalUpdate()
 
 	return 0;
 }
+#endif
 
 // Update the PC copy of the palette on writes to the palette memory
 void PsikyoPalWriteByte(UINT32 nAddress, UINT8 byteValue)
@@ -66,7 +68,12 @@ void PsikyoPalWriteByte(UINT32 nAddress, UINT8 byteValue)
 
 	if (*((UINT8*)(PsikyoPalCopy + nAddress)) != byteValue) {
 		*((UINT8*)(PsikyoPalCopy + nAddress)) = byteValue;
-		PsikyoPalette[nAddress >> 1] = CalcCol(*(UINT16*)(PsikyoPalSrc + (nAddress & ~0x01)));
+		UINT16 c = (*((UINT16*)(PsikyoPalSrc + (nAddress & ~0x01))));
+#ifdef __LIBSNES_OPTIMIZATIONS__
+		PsikyoPalette[nAddress >> 1] = c;
+#else
+		PsikyoPalette[nAddress >> 1] = CalcCol(c);
+#endif
 	}
 }
 
@@ -78,6 +85,10 @@ void PsikyoPalWriteWord(UINT32 nAddress, UINT16 wordValue)
 
 	if (PsikyoPalCopy[nAddress] != wordValue) {
 		PsikyoPalCopy[nAddress] = wordValue;
+#ifdef __LIBSNES_OPTIMIZATIONS__
+		PsikyoPalette[nAddress] = wordValue;
+#else
 		PsikyoPalette[nAddress] = CalcCol(wordValue);
+#endif
 	}
 }

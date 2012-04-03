@@ -1270,7 +1270,9 @@ static INT32 DrvDoReset()
 
 static INT32 DrvDraw()
 {
+#ifndef __LIBSNES_OPTIMIZATIONS__
 	PsikyoPalUpdate();
+#endif
 	PsikyoTileRender();
 
 	return 0;

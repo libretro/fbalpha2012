@@ -134,7 +134,25 @@ void InpDIPSWResetDIPs (void)
 }
 
 int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
-void Reinitialise(void) {}
+
+void Reinitialise(void)
+{
+	int width, height;
+	BurnDrvGetVisibleSize(&width, &height);
+	unsigned drv_flags = BurnDrvGetFlags();
+	if (drv_flags & BDF_ORIENTATION_VERTICAL)
+		nBurnPitch = height * sizeof(uint16_t);
+	else
+		nBurnPitch = width * sizeof(uint16_t);
+
+	if (environ_cb)
+	{
+		BurnDrvGetVisibleSize(&width, &height);
+		snes_geometry geom = { width, height, width, height };
+		environ_cb(SNES_ENVIRONMENT_SET_GEOMETRY, &geom);
+		environ_cb(SNES_ENVIRONMENT_SET_PITCH, &nBurnPitch);
+	}
+}
 
 // Non-idiomatic (OutString should be to the left to match strcpy())
 // Seems broken to not check nOutSize.
@@ -879,6 +897,7 @@ static void poll_input()
             {
                state = g_reset;
                g_reset = false;
+	       Reinitialise();
             }
             else if (id == SERVICE_BIND)
             {
@@ -887,6 +906,7 @@ static void poll_input()
                   input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(SELECT)) &&
                   input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(L)) &&
                   input_cb(0, SNES_DEVICE_JOYPAD, 0, _BIND(R));
+	       Reinitialise();
             }
             else if (port < 2)
                state = input_cb(port, SNES_DEVICE_JOYPAD, 0, id);

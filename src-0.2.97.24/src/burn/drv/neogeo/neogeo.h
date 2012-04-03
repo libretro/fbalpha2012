@@ -103,7 +103,9 @@ extern UINT8 NeoRecalcPalette;
 
 INT32 NeoInitPalette();
 void NeoExitPalette();
+#ifndef __LIBSNES_OPTIMIZATIONS__
 INT32 NeoUpdatePalette();
+#endif
 void NeoSetPalette();
 
 void __fastcall NeoPalWriteByte(UINT32 nAddress, UINT8 byteValue);

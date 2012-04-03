@@ -369,6 +369,31 @@ INT32 NeoLoadADPCM(INT32 nOffset, INT32 nNum, UINT8* pDest)
 }
 
 // This function fills the screen with the first palette entry
+#ifdef __LIBSNES_OPTIMIZATIONS__
+void NeoClearScreen()
+{
+	UINT32 nColour = NeoPalette[0x0FFF];
+
+	if (nColour)
+	{
+		UINT32* pClear = (UINT32*)pBurnDraw;
+		nColour |= nColour << 16;
+		for (INT32 i = 0; i < nNeoScreenWidth * 224 / 16; i++)
+		{
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+			*pClear++ = nColour;
+		}
+	}
+	else
+		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
+}
+#else
 void NeoClearScreen()
 {
 	UINT32 nColour = NeoPalette[0x0FFF];
@@ -423,3 +448,4 @@ void NeoClearScreen()
 		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
 	}
 }
+#endif

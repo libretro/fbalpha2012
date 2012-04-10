@@ -18,7 +18,7 @@ static UINT8 *DrvGfxROM0;
 static UINT8 *DrvGfxROM1;
 static UINT8 *DrvPROMs;
 static UINT8 *DrvColTable;
-#ifndef __LIBSNES_OPTIMISATIONS__
+#ifndef __LIBRETRO_OPTIMISATIONS__
 static UINT8 *DrvPalRAM;
 #endif
 static UINT8 *DrvFgCRAM;
@@ -240,10 +240,10 @@ void DrvContraM6809WriteByte(UINT16 address, UINT8 data)
 	if ((address & 0xff00) == 0x0c00) {
 		INT32 offset = address & 0xff;
 
-#ifdef __LIBSNES_OPTIMISATIONS__
+#ifdef __LIBRETRO_OPTIMISATIONS__
 		UINT16 col = ((data & ~1) | (data | 1) << 8);
 
-		Palette[offset >> 1] = LIBSNES_COLOR_15BPP_BGR(col);
+		Palette[offset >> 1] = LIBRETRO_COLOR_15BPP_BGR(col);
 		for(INT32 i = 0; i < 0x1000; i++)
 			DrvPalette[i] = Palette[DrvColTable[i]];
 #else
@@ -362,7 +362,7 @@ static INT32 MemIndex()
 	DrvM6809RAM0	= Next; Next += 0x001000;
 	DrvM6809RAM1	= Next; Next += 0x001800;
 	DrvM6809RAM2	= Next; Next += 0x000800;
-#ifndef __LIBSNES_OPTIMISATIONS__
+#ifndef __LIBRETRO_OPTIMISATIONS__
 	DrvPalRAM	= Next; Next += 0x000100;
 #endif
 	DrvFgCRAM	= Next; Next += 0x000400;
@@ -509,7 +509,7 @@ static INT32 DrvInit()
 
 	M6809Init(2);
 	M6809Open(0);
-#ifndef __LIBSNES_OPTIMISATIONS__
+#ifndef __LIBRETRO_OPTIMISATIONS__
 	M6809MapMemory(DrvPalRAM,		0x0c00, 0x0cff, M6809_ROM);
 #endif
 	M6809MapMemory(DrvM6809RAM0,		0x1000, 0x1fff, M6809_RAM);
@@ -823,7 +823,7 @@ static void draw_sprites(INT32 bank, UINT8 *gfx_base, INT32 color_offset)
 
 static INT32 DrvDraw()
 {
-#ifndef __LIBSNES_OPTIMISATIONS__
+#ifndef __LIBRETRO_OPTIMISATIONS__
 	if (DrvRecalc) {
 		for (INT32 i = 0; i < 0x1000; i++) {
 			INT32 rgb = Palette[DrvColTable[i]];

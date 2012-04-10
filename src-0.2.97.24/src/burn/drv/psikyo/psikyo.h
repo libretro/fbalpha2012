@@ -15,7 +15,7 @@ extern INT32 PsikyoHardwareVersion;
 // palette
 INT32 PsikyoPalInit();
 INT32 PsikyoPalExit();
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 INT32 PsikyoPalUpdate();
 #endif
 

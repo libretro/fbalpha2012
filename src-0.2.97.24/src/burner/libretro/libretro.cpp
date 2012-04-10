@@ -37,7 +37,7 @@ static unsigned g_rom_count;
 static uint16_t g_fba_frame[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
 
-// libsnes globals
+// libretro globals
 
 static snes_video_refresh_t video_cb;
 static snes_audio_sample_t audio_cb;

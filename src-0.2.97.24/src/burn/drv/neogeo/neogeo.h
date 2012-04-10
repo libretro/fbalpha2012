@@ -103,7 +103,7 @@ extern UINT8 NeoRecalcPalette;
 
 INT32 NeoInitPalette();
 void NeoExitPalette();
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 INT32 NeoUpdatePalette();
 #endif
 void NeoSetPalette();

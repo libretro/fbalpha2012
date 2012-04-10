@@ -21,7 +21,7 @@ static UINT8* pTileData;
 static UINT32* pTilePalette;
 
 typedef void (*RenderTileFunction)();
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 static RenderTileFunction RenderTile;
 
 static INT32 nLastBPP = 0;
@@ -33,7 +33,7 @@ static INT32 nMinX, nMaxX;
  #include "neo_text_render.h"
 #undef BPP
 
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 #define BPP 24
  #include "neo_text_render.h"
 #undef BPP
@@ -54,7 +54,7 @@ INT32 NeoRenderText()
 	UINT32 nTileLeft = nBurnBpp << 3;
 	UINT16* pTileRow = (UINT16*)(NeoGraphicsRAM + 0xE000);
 
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (!(nBurnLayer & 2)) {
 		return 0;
 	}
@@ -112,7 +112,7 @@ INT32 NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 						RenderTile16();
 #else
 						RenderTile();
@@ -137,7 +137,7 @@ INT32 NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 						RenderTile16();
 #else
 						RenderTile();
@@ -166,7 +166,7 @@ INT32 NeoRenderText()
 				if (pTileAttrib[nTile] == 0) {
 					pTileData = pTextROM + (nTile << 5);
 					pTilePalette = &pTextPalette[nPalette >> 8];
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 					RenderTile16();
 #else
 					RenderTile();

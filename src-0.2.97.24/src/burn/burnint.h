@@ -7,14 +7,14 @@
 #include <string.h>
 #include <assert.h>
 
-#if defined(__LIBSNES__) && defined(_MSC_VER)
+#if defined(__LIBRETRO__) && defined(_MSC_VER)
 #include <tchar.h>
 #else
 #include "tchar.h"
 #endif
 
-#ifdef __LIBSNES_OPTIMIZATIONS__
-#include "burn_libsnes_opts.h"
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+#include "burn_libretro_opts.h"
 #endif
 
 #include "burn.h"
@@ -99,7 +99,7 @@ INT32 BurnTransferInit();
 // ---------------------------------------------------------------------------
 // Plotting pixels
 
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 inline static void PutPix(UINT8* pPix, UINT32 c)
 {
 	*((UINT16*)pPix) = (UINT16)c;

@@ -213,7 +213,7 @@ void BurnLEDRender()
 
 				for (INT32 x = 0; x < led_size; x++)
 				{
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 					*((UINT16*)ptr) =  color;
 #else
 					if (nBurnBpp >= 4)

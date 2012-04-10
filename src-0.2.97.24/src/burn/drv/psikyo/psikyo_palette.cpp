@@ -27,7 +27,7 @@ INT32 PsikyoPalExit()
 	return 0;
 }
 
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 inline static UINT32 CalcCol(UINT16 nColour)
 {
 	INT32 r, g, b;
@@ -69,7 +69,7 @@ void PsikyoPalWriteByte(UINT32 nAddress, UINT8 byteValue)
 	if (*((UINT8*)(PsikyoPalCopy + nAddress)) != byteValue) {
 		*((UINT8*)(PsikyoPalCopy + nAddress)) = byteValue;
 		UINT16 c = (*((UINT16*)(PsikyoPalSrc + (nAddress & ~0x01))));
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 		PsikyoPalette[nAddress >> 1] = c;
 #else
 		PsikyoPalette[nAddress >> 1] = CalcCol(c);
@@ -85,7 +85,7 @@ void PsikyoPalWriteWord(UINT32 nAddress, UINT16 wordValue)
 
 	if (PsikyoPalCopy[nAddress] != wordValue) {
 		PsikyoPalCopy[nAddress] = wordValue;
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 		PsikyoPalette[nAddress] = wordValue;
 #else
 		PsikyoPalette[nAddress] = CalcCol(wordValue);

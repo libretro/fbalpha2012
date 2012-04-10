@@ -3,7 +3,7 @@
 
 // CPS (palette)
 
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 static UINT8* CpsPalSrc = NULL;			// Copy of current input palette
 #endif
 UINT32* CpsPal = NULL;					// Hicolor version of palette
@@ -14,7 +14,7 @@ INT32 CpsPalInit()
 {
 	INT32 nLen = 0;
 
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	nLen = 0xc00 * sizeof(UINT16);
 	CpsPalSrc = (UINT8*)BurnMalloc(nLen);
 	if (CpsPalSrc == NULL) {
@@ -35,14 +35,14 @@ INT32 CpsPalInit()
 INT32 CpsPalExit()
 {
 	BurnFree(CpsPal);
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	BurnFree(CpsPalSrc);
 #endif
 	return 0;
 }
 
 // Update CpsPal with the new palette at pNewPal (length 0xc00 bytes)
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 INT32 CpsPalUpdate(UINT8* pNewPal)
 {
 	INT32 nCtrl = CpsReg[nCpsPalCtrlReg];

@@ -1,6 +1,6 @@
 #include "tiles_generic.h"
 #include "sh2.h"
-#ifdef __LIBSNES__
+#ifdef __LIBRETRO__
 #include "sek.h"
 #endif
 

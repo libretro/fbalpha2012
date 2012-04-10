@@ -12,7 +12,7 @@
     <Filter Include="Source Files\burner">
       <UniqueIdentifier>{5934b0a0-a392-46b1-a6b9-85680f426502}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\burner\libsnes">
+    <Filter Include="Source Files\burner\libretro">
       <UniqueIdentifier>{7bdcffa9-aeb6-4794-9e8e-458b9362ac6d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\cpu">
@@ -170,11 +170,11 @@
     <ClCompile Include="..\..\src\burn\drv\snes\snes_ppu.cpp">
       <Filter>Source Files\burn\drv\snes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\burner\libsnes\neocdlist.cpp">
-      <Filter>Source Files\burner\libsnes</Filter>
+    <ClCompile Include="..\..\src\burner\libretro\neocdlist.cpp">
+      <Filter>Source Files\burner\libretro</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\burner\libsnes\libsnes.cpp">
-      <Filter>Source Files\burner\libsnes</Filter>
+    <ClCompile Include="..\..\src\burner\libretro\libretro.cpp">
+      <Filter>Source Files\burner\libretro</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\burn\drv\capcom\qs_z.cpp">
       <Filter>Source Files\burn\drv\capcom</Filter>

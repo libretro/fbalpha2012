@@ -404,7 +404,7 @@ static void Cps2Layers()
 	}
 }
 
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 void CpsClearScreen()
 {
 	UINT32 nColour = 0;
@@ -471,7 +471,7 @@ void CpsClearScreen()
 
 static void DoDraw(INT32 Recalc)
 {
-#ifndef __LIBSNES_OPTIMIZATIONS__
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	CtvReady();			// Point to correct tile drawing functions
 #endif
 

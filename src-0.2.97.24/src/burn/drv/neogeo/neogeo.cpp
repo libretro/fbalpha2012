@@ -369,7 +369,7 @@ INT32 NeoLoadADPCM(INT32 nOffset, INT32 nNum, UINT8* pDest)
 }
 
 // This function fills the screen with the first palette entry
-#ifdef __LIBSNES_OPTIMIZATIONS__
+#ifdef __LIBRETRO_OPTIMIZATIONS__
 void NeoClearScreen()
 {
 	UINT32 nColour = NeoPalette[0x0FFF];

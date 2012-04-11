@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FORMAT=libsnes
+FORMAT=libretro
 
 #******************
 # PROGRAM FUNCTIONS
@@ -9,21 +9,21 @@ FORMAT=libsnes
 clean()
 {
    cd src-0.2.97.24/
-	make -f makefile.libsnes clean
+	make -f makefile.libretro clean
 }
 
-make_libsnes()
+make_libretro()
 {
    cd src-0.2.97.24/
-   make -f makefile.libsnes generate
-	make -f makefile.libsnes -j4
+   make -f makefile.libretro generate
+	make -f makefile.libretro -j4
 }
 
 make_debug()
 {
    cd src-0.2.97.24/
-   make -f makefile.libsnes generate
-	make -f makefile.libsnes -j4 DEBUG=1
+   make -f makefile.libretro generate
+	make -f makefile.libretro -j4 DEBUG=1
 }
 
 #******************
@@ -45,12 +45,12 @@ display_clean()
 
 display_make()
 {
-	echo "make           Compile libsnes library"
+	echo "make           Compile libretro library"
 }
 
 display_make_debug()
 {
-	echo "make_debug     Compile DEBUG libsnes library"
+	echo "make_debug     Compile DEBUG libretro library"
 }
 
 display_all_options()
@@ -62,7 +62,7 @@ display_all_options()
 
 display_usage()
 {
-	echo "Usage: compile_libsnes.sh [options]"
+	echo "Usage: compile_libretro.sh [options]"
 	echo "Options:"
 	display_all_options
 }
@@ -94,7 +94,7 @@ else
 			echo "DOING:"
 			display_make
 			echo "*************************************"
-			make_libsnes
+			make_libretro
 		fi
 		if [ "$i" = "make_debug" ]; then
 			echo ""

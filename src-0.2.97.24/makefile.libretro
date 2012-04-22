@@ -65,7 +65,7 @@ else ifeq ($(platform), wii)
    PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
    EXTERNAL_ZLIB = 1
 else
-   TARGET := libretro.dll
+   TARGET := retro.dll
    CC = gcc
    CXX = g++
    SHARED := -shared -Wl,-no-undefined -Wl,--version-script=$(LIBRETRO_DIR)/link.T

@@ -1,5 +1,5 @@
 DEBUG = 0
-LIBRETRO_OPTIMIZATIONS = 0
+LIBRETRO_OPTIMIZATIONS = 1
 
 ifeq ($(platform),)
 platform = unix
@@ -114,9 +114,9 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/nec/necinstr.c \
 	$(FBA_BURN_DIR)/drv/capcom/ctv_make.cpp
 
-ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
-BURN_BLACKLIST += $(FBA_BURN_DIR)/drv/capcom/ctv.cpp
-endif
+#ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
+#BURN_BLACKLIST += $(FBA_BURN_DIR)/drv/capcom/ctv.cpp
+#endif
 
 ifeq ($(EXTERNAL_ZLIB), 1)
 BURN_BLACKLIST += $(FBA_BURNER_DIR)/unzip.c \

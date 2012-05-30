@@ -698,18 +698,10 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 				b = b << 3;
 #endif
 
-#ifdef LSB_FIRST
 #ifdef __LIBRETRO_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i) ^ 1] = LIBRETRO_COLOR_15BPP_BGR(coldata);
-#else
-				RamPal[(paldma_dest + i) ^ 1] = coldata;
-#endif
-#else
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i)] =  LIBRETRO_COLOR_15BPP_BGR(coldata);
+				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_BGR(coldata);
 #else
 				RamPal[(paldma_dest + i)] = coldata;
-#endif
 #endif
 #ifndef __LIBRETRO_OPTIMIZATIONS__
 				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);

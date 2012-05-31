@@ -40,11 +40,13 @@ static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
 INT32 NeoRenderSprites()
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
 		RenderBank = RenderBankNormal[nBurnBpp - 2];
 	}
+#endif
 
 	if (!NeoSpriteROMActive || !(nBurnLayer & 1)) {
 		return 0;
@@ -100,10 +102,18 @@ INT32 NeoRenderSprites()
 			}
 
 			if (nBankXPos >= 0 && nBankXPos < (nNeoScreenWidth - nBankXZoom - 1)) {
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+				RenderBankFunctionTable[nBankXZoom]();
+#else
 				RenderBank[nBankXZoom]();
+#endif
 			} else {
 				if (nBankXPos >= -nBankXZoom && nBankXPos < nNeoScreenWidth) {
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+					RenderBankFunctionTable[nBankXZoom + 16]();
+#else
 					RenderBank[nBankXZoom + 16]();
+#endif
 				}
 			}
 		}

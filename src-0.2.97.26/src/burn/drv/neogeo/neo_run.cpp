@@ -4266,7 +4266,9 @@ INT32 NeoExit()
 
 INT32 NeoRender()
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	NeoUpdatePalette();							// Update the palette
+#endif
 	NeoClearScreen();
 
 	if (bNeoEnableGraphics) {
@@ -4571,7 +4573,9 @@ INT32 NeoFrame()
 	bForceUpdateOnStatusRead = false;
 
 	if (pBurnDraw) {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		NeoUpdatePalette();											// Update the palette
+#endif
 		NeoClearScreen();
 	}
 	nSliceEnd = 0x10;

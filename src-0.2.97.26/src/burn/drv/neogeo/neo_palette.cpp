@@ -6,7 +6,9 @@ UINT32* NeoPalette;
 INT32 nNeoPaletteBank;				// Selected palette bank
 
 static UINT32* NeoPaletteData[2] = {NULL, NULL};
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 static UINT16* NeoPaletteCopy[2] = {NULL, NULL};
+#endif
 
 UINT8 NeoRecalcPalette;
 
@@ -16,11 +18,15 @@ INT32 NeoInitPalette()
 		if (NeoPaletteData[i]) {
 			BurnFree(NeoPaletteData[i]);
 		}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		if (NeoPaletteCopy[i]) {
 			BurnFree(NeoPaletteCopy[i]);
 		}
+#endif
 		NeoPaletteData[i] = (UINT32*)BurnMalloc(4096 * sizeof(UINT32));
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		NeoPaletteCopy[i] = (UINT16*)BurnMalloc(4096 * sizeof(UINT16));
+#endif
 	}
 
 	NeoRecalcPalette = 1;
@@ -32,7 +38,9 @@ void NeoExitPalette()
 {
 	for (INT32 i = 0; i < 2; i++) {
 		BurnFree(NeoPaletteData[i]);
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		BurnFree(NeoPaletteCopy[i]);
+#endif
 	}
 }
 
@@ -52,6 +60,7 @@ inline static UINT32 CalcCol(UINT16 nColour)
 	return BurnHighCol(r, g, b, 0);
 }
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 INT32 NeoUpdatePalette()
 {
 	if (NeoRecalcPalette) {
@@ -74,6 +83,7 @@ INT32 NeoUpdatePalette()
 
 	return 0;
 }
+#endif
 
 void NeoSetPalette()
 {
@@ -88,10 +98,14 @@ void __fastcall NeoPalWriteByte(UINT32 nAddress, UINT8 byteValue)
 
 	NeoPalSrc[nNeoPaletteBank][nAddress] = byteValue;							// write byte
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (*((UINT8*)(NeoPaletteCopy[nNeoPaletteBank] + nAddress)) != byteValue) {
 		*((UINT8*)(NeoPaletteCopy[nNeoPaletteBank] + nAddress)) = byteValue;
+#endif
 		NeoPaletteData[nNeoPaletteBank][nAddress >> 1] = CalcCol(*(UINT16*)(NeoPalSrc[nNeoPaletteBank] + (nAddress & ~0x01)));
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	}
+#endif
 }
 
 void __fastcall NeoPalWriteWord(UINT32 nAddress, UINT16 wordValue)
@@ -101,9 +115,13 @@ void __fastcall NeoPalWriteWord(UINT32 nAddress, UINT16 wordValue)
 
 	((UINT16*)NeoPalSrc[nNeoPaletteBank])[nAddress] = BURN_ENDIAN_SWAP_INT16(wordValue);		// write word
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (NeoPaletteCopy[nNeoPaletteBank][nAddress] != BURN_ENDIAN_SWAP_INT16(wordValue)) {
 		NeoPaletteCopy[nNeoPaletteBank][nAddress] = BURN_ENDIAN_SWAP_INT16(wordValue);
+#endif
 		NeoPaletteData[nNeoPaletteBank][nAddress] = CalcCol(wordValue);
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	}
+#endif
 }
 

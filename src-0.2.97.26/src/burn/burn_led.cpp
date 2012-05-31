@@ -213,6 +213,7 @@ void BurnLEDRender()
 
 				for (INT32 x = 0; x < led_size; x++)
 				{
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 					if (nBurnBpp >= 4)
 					{
 						*((UINT32*)ptr) = alpha_blend32(*((UINT32*)ptr));
@@ -227,8 +228,11 @@ void BurnLEDRender()
 					}
 					else if (nBurnBpp == 2) // alpha blend not supported for 16-bit
 					{
+#endif
 						*((UINT16*)ptr) =  color;
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 					}
+#endif
 
 					ptr += nBurnBpp;
 				}

@@ -844,13 +844,16 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 	
 	pBurnDrvPalette = pPalette;
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	switch (nBurnBpp) {
 		case 2: {
+#endif
 			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
 				for (INT32 x = 0; x < nTransWidth; x ++) {
 					((UINT16*)pDest)[x] = pPalette[pSrc[x]];
 				}
 			}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 			break;
 		}
 		case 3: {
@@ -874,6 +877,7 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 			break;
 		}
 	}
+#endif
 
 	return 0;
 }

@@ -101,17 +101,21 @@ INT32 BurnTransferInit();
 
 inline static void PutPix(UINT8* pPix, UINT32 c)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (nBurnBpp >= 4) {
 		*((UINT32*)pPix) = c;
 	} else {
 		if (nBurnBpp == 2) {
+#endif
 			*((UINT16*)pPix) = (UINT16)c;
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		} else {
 			pPix[0] = (UINT8)(c >>  0);
 			pPix[1] = (UINT8)(c >>  8);
 			pPix[2] = (UINT8)(c >> 16);
 		}
 	}
+#endif
 }
 
 // ---------------------------------------------------------------------------

@@ -15,7 +15,9 @@ extern INT32 PsikyoHardwareVersion;
 // palette
 INT32 PsikyoPalInit();
 INT32 PsikyoPalExit();
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 INT32 PsikyoPalUpdate();
+#endif
 
 void PsikyoPalWriteByte(UINT32 nAddress, UINT8 byteValue);
 void PsikyoPalWriteWord(UINT32 nAddress, UINT16 wordValue);

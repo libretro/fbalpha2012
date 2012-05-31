@@ -1,3 +1,4 @@
+
 #include "cps.h"
 
 // CPS Tile Variants
@@ -13,7 +14,10 @@ UINT8 *pCtvLine=NULL; // Pointer to output bitmap
 // Include all tile variants:
 #include "ctv.h"
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+
 static INT32 nLastBpp=0;
+
 INT32 CtvReady()
 {
   // Set up the CtvDoX functions to point to the correct bpp functions.
@@ -39,3 +43,5 @@ INT32 CtvReady()
   nLastBpp=nBurnBpp;
   return 0;
 }
+
+#endif

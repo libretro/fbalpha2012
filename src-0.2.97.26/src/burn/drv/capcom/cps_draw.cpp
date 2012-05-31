@@ -488,7 +488,9 @@ void CpsClearScreen()
 
 static void DoDraw(INT32 Recalc)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	CtvReady();								// Point to correct tile drawing functions
+#endif
 
 	if (bCpsUpdatePalEveryFrame) GetPalette(0, 6);
 	if (Recalc || bCpsUpdatePalEveryFrame) CpsPalUpdate(CpsSavePal);		// recalc whole palette if needed

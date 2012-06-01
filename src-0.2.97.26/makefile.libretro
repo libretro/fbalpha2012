@@ -259,7 +259,12 @@ endif
 
 generate:
 	rm -rf src/dep/generated
+ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
+	sh ./generate_files_opts.sh
+else
 	sh ./generate_files.sh
+endif
+
 
 $(TARGET): generate-files $(OBJS)
 	@echo "LD $@"

@@ -68,8 +68,12 @@ int main()
 
   for (nCuMask=0; nCuMask<=2; nCuMask++)
   {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
     for (nCuBpp=2; nCuBpp<=4; nCuBpp++)
 	{
+#else
+    nCuBpp=2;
+#endif
       int i=0;
 
       if (nCuMask==1)
@@ -111,15 +115,19 @@ int main()
         if (((i+1)&3)==0) printf("\n");
 	  }
       printf ("};\n");
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	}
+#endif
   }
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
   printf ("\n\n");
   printf ("// Current BPP:\n");
   printf ("CtvDoFn CtvDoX[0x20];\n");
   printf ("CtvDoFn CtvDoXM[0x20];\n");
   printf ("CtvDoFn CtvDoXB[0x20];\n");
   printf ("\n\n");
+#endif
 
   return 0;
 }

@@ -32,7 +32,7 @@ src/burn/drv/taito \
 src/burn/drv/toaplan
 
 #generate src/dep/generated/neo_sprite_func.h and src/dep/generated/neo_sprite_func_table.h
-perl src/dep/scripts/neo_sprite_func.pl -o src/dep/generated/neo_sprite_func.h
+perl src/dep/scripts/neo_sprite_func_opts.pl -o src/dep/generated/neo_sprite_func.h
 
 #generate src/dep/generated/psikyo_tile_func.h and src/dep/generated/psikyo_tile_func_table.h
 perl src/dep/scripts/psikyo_tile_func.pl -o src/dep/generated/psikyo_tile_func.h

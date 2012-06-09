@@ -450,6 +450,27 @@ static bool fba_init(unsigned driver)
    else
       nBurnPitch = width * sizeof(uint16_t);
 
+   unsigned rotation;
+   switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
+   {
+      case BDF_ORIENTATION_VERTICAL:
+         rotation = 1;
+         break;
+
+      case BDF_ORIENTATION_FLIPPED:
+         rotation = 2;
+         break;
+
+      case BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED:
+         rotation = 3;
+         break;
+
+      default:
+         rotation = 0;
+   }
+
+   environ_cb(RETRO_ENVIRONMENT_SET_ROTATION, &rotation);
+
    return true;
 }
 

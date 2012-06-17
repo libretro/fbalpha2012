@@ -1,9 +1,0 @@
-==============================================================================
-			CELLFRAMEWORK Mk. II
-==============================================================================
-A framework with the following goals:
-
-* Provide an easy and clean framework for porting over applications to PS3.
-* Fully functional video/audio/input drivers written in C that can be 
-  implemented by the porter.
-* File system browser.

@@ -1,1 +1,0 @@
-perl scripts/gamelist.pl -o generated/driverlist.h -l gamelist.txt burn/atari burn/capcom burn/cps3 burn/cave burn/cps3 burn/galaxian burn/konami burn/megadrive burn/misc burn/misc/post90s burn/misc/pre90s burn/neogeo burn/pgm burn/psikyo burn/sega burn/taito burn/toaplan

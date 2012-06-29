@@ -424,7 +424,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    int maximum = width > height ? width : height;
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
-   struct retro_system_timing timing = { 60.0, 32000.0 };
+   //~59.62fps - for CPS1/CPS2
+   struct retro_system_timing timing = { 59.62, 32000.0 };
 
    info->geometry = geom;
    info->timing   = timing;

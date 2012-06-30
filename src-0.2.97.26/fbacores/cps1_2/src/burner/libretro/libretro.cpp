@@ -52,6 +52,7 @@ void retro_set_input_state(retro_input_state_t cb) { input_cb = cb; }
 void retro_set_environment(retro_environment_t cb) { environ_cb = cb; }
 
 static char g_rom_dir[1024];
+static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)
 {
@@ -319,7 +320,9 @@ void retro_init()
 
 void retro_deinit()
 {
-   BurnDrvExit();
+   if (driver_inited)
+      BurnDrvExit();
+   driver_inited = false;
    BurnLibExit();
 }
 
@@ -552,6 +555,7 @@ bool retro_load_game(const struct retro_game_info *info)
       if (!fba_init(i))
          return false;
 
+      driver_inited = true;
       init_input();
 
       return true;

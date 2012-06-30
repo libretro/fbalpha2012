@@ -34,7 +34,7 @@ else ifeq ($(platform), osx)
    SHARED := -dynamiclib
    ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), ps3)
-   TARGET := libretro.a
+   TARGET := libretro_ps3.a
    CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
    CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
    AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
@@ -42,7 +42,7 @@ else ifeq ($(platform), ps3)
    PLATFORM_DEFINES := -D__CELLOS_LV2
    EXTERNAL_ZLIB = 1
 else ifeq ($(platform), sncps3)
-   TARGET := libretro.a
+   TARGET := libretro_ps3.a
    CXX	= $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
    CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
    AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
@@ -50,14 +50,14 @@ else ifeq ($(platform), sncps3)
    PLATFORM_DEFINES += -D__CELLOS_LV2__ -DSN_TARGET_PS3
    EXTERNAL_ZLIB = 1
 else ifeq ($(platform), xenon)
-   TARGET := libretro.a
+   TARGET := libretro_xenon360.a
    CC = xenon-gcc
    CXX = xenon-g++
    AR = xenon-ar
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -D__LIBXENON__ -m32 -D__ppc__
 else ifeq ($(platform), wii)
-   TARGET := libretro.a
+   TARGET := libretro_wii.a
    CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc
    CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar

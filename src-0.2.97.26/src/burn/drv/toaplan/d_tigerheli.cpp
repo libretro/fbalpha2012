@@ -2,7 +2,7 @@
 
 #include "burnint.h"
 #include "zet.h"
-#include "taito_m68705.h"
+#include "../taito/taito_m68705.h"
 #include "bitswap.h"
 #include "driver.h"
 extern "C" {

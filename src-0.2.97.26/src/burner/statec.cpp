@@ -1,5 +1,5 @@
 // Driver State Compression module
-#include "zlib.h"
+#include "libs/zlib/zlib.h"
 
 #include "burnint.h"
 

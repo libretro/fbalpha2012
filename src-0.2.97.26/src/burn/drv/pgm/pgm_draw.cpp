@@ -1,5 +1,5 @@
 #include "pgm.h"
-#include "pgm_sprite.h"
+#include "generated/pgm_sprite.h"
 
 static INT32 nTileMask = 0;
 static UINT8 sprmsktab[0x100];

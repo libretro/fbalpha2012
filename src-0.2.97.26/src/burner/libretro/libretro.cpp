@@ -1,6 +1,6 @@
 #include "libretro.h"
 #include "burner.h"
-#include "inp_keys.h"
+#include "input/inp_keys.h"
 #include "state.h"
 #include <string.h>
 #include <stdio.h>
@@ -9,7 +9,7 @@
 #include <string>
 #include <ctype.h>
 
-#include "cd_interface.h"
+#include "cd/cd_interface.h"
 
 static unsigned int BurnDrvGetIndexByName(const char* name);
 

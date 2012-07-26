@@ -36,7 +36,7 @@ static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
 
 // Include the tile rendering functions
-#include "neo_sprite_func.h"
+#include "generated/neo_sprite_func.h"
 
 INT32 NeoRenderSprites()
 {

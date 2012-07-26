@@ -100,7 +100,7 @@ struct NeoMediaInfo {
  */
  
 #include "neogeo.h"
-#include "cd_interface.h"
+#include "cd/cd_interface.h"
 #include "burn_ym2610.h"
 #include "bitswap.h"
 #include "neocdlist.h"

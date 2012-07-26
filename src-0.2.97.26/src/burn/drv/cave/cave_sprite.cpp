@@ -49,7 +49,7 @@ typedef void (*RenderSpriteFunction)();
 static RenderSpriteFunction* RenderSprite;
 
 // Include the sprite rendering functions
-#include "cave_sprite_func.h"
+#include "generated/cave_sprite_func.h"
 
 INT32 CaveSpriteRender(INT32 nLowPriority, INT32 nHighPriority)
 {

@@ -320,6 +320,36 @@
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\capcom\ctv_make.cpp">
+							<FileConfiguration
+								Name="Debug|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Profile|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Profile_FastCap|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\capcom\d_cps1.cpp">
@@ -723,6 +753,36 @@
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\pgm\pgm_sprite_create.cpp">
+							<FileConfiguration
+								Name="Debug|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Profile|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Profile_FastCap|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Xbox"
+								ExcludedFromBuild="TRUE">
+								<Tool
+									Name="VCCLCompilerTool"/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
@@ -2126,31 +2186,36 @@
 					<File
 						RelativePath="..\..\src\cpu\arm7\arm7core.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2159,31 +2224,36 @@
 					<File
 						RelativePath="..\..\src\cpu\arm7\arm7exec.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2199,31 +2269,36 @@
 					<File
 						RelativePath="..\..\src\cpu\h6280\tblh6280.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2236,31 +2311,36 @@
 					<File
 						RelativePath="..\..\src\cpu\hd6309\6309ops.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2269,31 +2349,36 @@
 					<File
 						RelativePath="..\..\src\cpu\hd6309\6309tbl.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2319,31 +2404,36 @@
 					<File
 						RelativePath="..\..\src\cpu\konami\konamops.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2352,31 +2442,36 @@
 					<File
 						RelativePath="..\..\src\cpu\konami\konamtbl.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2389,31 +2484,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m68k\m68k_in.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2422,31 +2522,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m68k\m68kcpu.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2455,31 +2560,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m68k\m68kdasm.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2488,31 +2598,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m68k\m68kmake.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2528,31 +2643,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6502\t6502.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2561,31 +2681,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6502\t65c02.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2594,31 +2719,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6502\t65sc02.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2627,31 +2757,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6502\tdeco16.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2660,31 +2795,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6502\tn2a03.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2697,31 +2837,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6800\6800ops.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2730,31 +2875,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6800\6800tbl.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2770,31 +2920,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6805\6805ops.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2810,31 +2965,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6809\6809ops.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2843,31 +3003,36 @@
 					<File
 						RelativePath="..\..\src\cpu\m6809\6809tbl.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2886,31 +3051,36 @@
 					<File
 						RelativePath="..\..\src\cpu\nec\necinstr.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2922,31 +3092,36 @@
 					<File
 						RelativePath="..\..\src\cpu\nec\v25instr.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
@@ -2955,31 +3130,36 @@
 					<File
 						RelativePath="..\..\src\cpu\nec\v25sfr.c">
 						<FileConfiguration
-							Name="Debug|Xbox">
+							Name="Debug|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile|Xbox">
+							Name="Profile|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
+							Name="Profile_FastCap|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Xbox">
+							Name="Release|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Xbox">
+							Name="Release_LTCG|Xbox"
+							ExcludedFromBuild="TRUE">
 							<Tool
 								Name="VCCLCompilerTool"
 								CompileAs="1"/>

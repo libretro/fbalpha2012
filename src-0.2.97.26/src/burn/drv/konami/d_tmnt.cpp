@@ -3019,7 +3019,11 @@ static void tmnt2_protection_write()
 		if (i > 0)
 		{
 			i >>= 8;
+#ifdef _XBOX1
+			xoffs += (INT32)(powf(i, /*1.898461*/1.891292) * xoffs / 599.250121);
+#else
 			xoffs += (INT32)(pow(i, /*1.898461*/1.891292) * xoffs / 599.250121);
+#endif
 		}
 		else if (i < 0)
 		{
@@ -3033,7 +3037,11 @@ static void tmnt2_protection_write()
 		if (i > 0)
 		{
 			i >>= 8;
+#ifdef _XBOX1
+			yoffs += (INT32)(powf(i, /*1.898461*/1.891292) * yoffs / 599.250121);
+#else
 			yoffs += (INT32)(pow(i, /*1.898461*/1.891292) * yoffs / 599.250121);
+#endif
 		}
 		else if (i < 0)
 		{

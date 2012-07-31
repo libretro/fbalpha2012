@@ -329,7 +329,7 @@ generate-files:
 	@echo "Generate src/dep/generated/pgm_sprite.h"
 	@echo ""
 	$(EXE_PREFIX)$(PGM_SPRITE_CREATE_EXE) > src/dep/generated/pgm_sprite.h
-	$(CC_SYSTEM) $(GENERATE_OPTS) -o m68kmake src/cpu/m68k/m68kmake.c
+	$(CC_SYSTEM) $(GENERATE_OPTS) -o $(M68KMAKE_EXE) src/cpu/m68k/m68kmake.c
 	$(EXE_PREFIX)$(M68KMAKE_EXE) src/cpu/m68k/ src/cpu/m68k/m68k_in.c
 	$(CXX_SYSTEM) $(GENERATE_OPTS) -o $(CTVMAKE_EXE) src/burn/drv/capcom/ctv_make.cpp
 	@echo ""
@@ -364,4 +364,7 @@ endif
 clean:
 	rm -f $(TARGET)
 	rm -f $(OBJS)
+	rm -f $(M68KMAKE_EXE)
+	rm -f $(PGM_SPRITE_CREATE_EXE)
+	rm -f $(CTVMAKE_EXE)
 	rm -rf src/dep/generated/*.*

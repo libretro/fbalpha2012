@@ -12,6 +12,17 @@ else ifneq ($(findstring MINGW,$(shell uname -a)),)
 endif
 endif
 
+# system platform
+system_platform = unix
+ifeq ($(shell uname -a),)
+   system_platform = win
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+   system_platform = osx
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+   system_platform = win
+endif
+
+
 MAIN_FBA_DIR := src
 FBA_BURN_DIR := $(MAIN_FBA_DIR)/burn
 FBA_BURN_DRIVERS_DIR := $(MAIN_FBA_DIR)/burn/drv
@@ -80,6 +91,9 @@ else
    LDFLAGS += -static-libgcc -static-libstdc++
    ENDIANNESS_DEFINES := -DLSB_FIRST
 endif
+
+CC_SYSTEM = gcc
+CXX_SYSTEM = g++
 
 .PHONY: clean generate-files
 
@@ -270,44 +284,58 @@ else
 GENERATE_OPTS :=
 endif
 
-generate:
+ifeq ($(system_platform), win)
+PERL = perl.exe
+M68KMAKE_EXE = m68kmake.exe
+CTVMAKE_EXE = ctvmake.exe
+PGM_SPRITE_CREATE_EXE = pgmspritecreate.exe
+EXE_PREFIX =
+else
+PERL = perl
+M68KMAKE_EXE = m68kmake
+CTVMAKE_EXE = ctvmake
+PGM_SPRITE_CREATE_EXE = pgmspritecreate
+EXE_PREFIX = ./
+endif
+
+generate-files:
 	@echo "Generate src/dep/generated/driverlist.h"
 	@echo ""
-	perl src/dep/scripts/gamelist.pl -o src/dep/generated/driverlist.h -l gamelist.txt src/burn/drv/capcom src/burn/drv/cave src/burn/drv/cps3 src/burn/drv/dataeast src/burn/drv/galaxian src/burn/drv/irem src/burn/drv/konami src/burn/drv/megadrive src/burn/drv/neogeo src/burn/drv/pce src/burn/drv/pgm src/burn/drv/pre90s src/burn/drv/psikyo src/burn/drv/pst90s src/burn/drv/sega src/burn/drv/snes src/burn/drv/taito src/burn/drv/toaplan
+	$(PERL) src/dep/scripts/gamelist.pl -o src/dep/generated/driverlist.h -l gamelist.txt src/burn/drv/capcom src/burn/drv/cave src/burn/drv/cps3 src/burn/drv/dataeast src/burn/drv/galaxian src/burn/drv/irem src/burn/drv/konami src/burn/drv/megadrive src/burn/drv/neogeo src/burn/drv/pce src/burn/drv/pgm src/burn/drv/pre90s src/burn/drv/psikyo src/burn/drv/pst90s src/burn/drv/sega src/burn/drv/snes src/burn/drv/taito src/burn/drv/toaplan
 	@echo ""
 	@echo "Generate src/dep/generated/neo_sprite_func.h"
 	@echo ""
 	@echo "Generate src/dep/generated/neo_sprite_func_table.h"
 	@echo ""
-	perl src/dep/scripts/neo_sprite_func.pl -o src/dep/generated/neo_sprite_func.h
+	$(PERL) src/dep/scripts/neo_sprite_func.pl -o src/dep/generated/neo_sprite_func.h
 	@echo ""
 	@echo "Generate src/dep/generated/psikyo_tile_func.h"
 	@echo ""
 	@echo "Generate src/dep/generated/psikyo_tile_func_table.h"
 	@echo ""
-	perl src/dep/scripts/psikyo_tile_func.pl -o src/dep/generated/psikyo_tile_func.h
+	$(PERL) src/dep/scripts/psikyo_tile_func.pl -o src/dep/generated/psikyo_tile_func.h
 	@echo "Generate src/dep/generated/cave_sprite_func.h"
 	@echo ""
 	@echo "Generate src/dep/generated/cave_tile_func_table.h"
 	@echo ""
-	perl src/dep/scripts/cave_sprite_func.pl -o src/dep/generated/cave_sprite_func.h
-	perl src/dep/scripts/cave_tile_func.pl -o src/dep/generated/cave_tile_func.h
+	$(PERL) src/dep/scripts/cave_sprite_func.pl -o src/dep/generated/cave_sprite_func.h
+	$(PERL) src/dep/scripts/cave_tile_func.pl -o src/dep/generated/cave_tile_func.h
 	@echo ""
 	@echo "Generate src/dep/generated/toa_gp9001_func_table.h"
 	@echo ""
-	perl src/dep/scripts/toa_gp9001_func.pl -o src/dep/generated/toa_gp9001_func.h
-	g++ $(GENERATE_OPTS) -o pgm_sprite_create src/burn/drv/pgm/pgm_sprite_create.cpp
+	$(PERL) src/dep/scripts/toa_gp9001_func.pl -o src/dep/generated/toa_gp9001_func.h
+	$(CXX_SYSTEM) $(GENERATE_OPTS) -o $(PGM_SPRITE_CREATE_EXE) src/burn/drv/pgm/pgm_sprite_create.cpp
 	@echo ""
 	@echo "Generate src/dep/generated/pgm_sprite.h"
 	@echo ""
-	pgm_sprite_create > src/dep/generated/pgm_sprite.h
-	gcc $(GENERATE_OPTS) -o m68kmake src/cpu/m68k/m68kmake.c
-	m68kmake src/cpu/m68k/ src/cpu/m68k/m68k_in.c
-	g++ $(GENERATE_OPTS) -o ctvmake src/burn/drv/capcom/ctv_make.cpp
+	$(EXE_PREFIX)$(PGM_SPRITE_CREATE_EXE) > src/dep/generated/pgm_sprite.h
+	$(CC_SYSTEM) $(GENERATE_OPTS) -o m68kmake src/cpu/m68k/m68kmake.c
+	$(EXE_PREFIX)$(M68KMAKE_EXE) src/cpu/m68k/ src/cpu/m68k/m68k_in.c
+	$(CXX_SYSTEM) $(GENERATE_OPTS) -o $(CTVMAKE_EXE) src/burn/drv/capcom/ctv_make.cpp
 	@echo ""
 	@echo "Generate src/dep/generated/ctv.h"
 	@echo ""
-	ctvmake > src/dep/generated/ctv.h
+	$(EXE_PREFIX)$(CTVMAKE_EXE) > src/dep/generated/ctv.h
 
 $(TARGET): generate-files $(OBJS)
 	@echo "LD $@"

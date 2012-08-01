@@ -108,6 +108,7 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/hd6309/6309ops.c \
 	$(FBA_CPU_DIR)/konami/konamtbl.c \
 	$(FBA_CPU_DIR)/konami/konamops.c \
+        $(FBA_CPU_DIR)/m68k/m68k_in.c \
 	$(FBA_CPU_DIR)/m6800/6800ops.c \
 	$(FBA_CPU_DIR)/m6800/6800tbl.c \
 	$(FBA_CPU_DIR)/m6805/6805ops.c \
@@ -310,7 +311,7 @@ generate-files-clean:
 generate-files:
 	@echo "Generating $(FBA_GENERATED_DIR)/driverlist.h..."
 	@echo ""
-	$(PERL) $(FBA_SCRIPTS_DIR)/gamelist.pl -o $(FBA_GENERATED_DIR)/driverlist.h -l gamelist.txt $(FBA_BURN_DRIVERS_DIR)/capcom $(FBA_BURN_DRIVERS_DIR)/cave $(FBA_BURN_DRIVERS_DIR)/cps3 $(FBA_BURN_DRIVERS_DIR)/dataeast $(FBA_BURN_DRIVERS_DIR)/galaxian $(FBA_BURN_DRIVERS_DIR)/irem $(FBA_BURN_DRIVERS_DIR)/konami src/burn/drv/megadrive src/burn/drv/neogeo src/burn/drv/pce src/burn/drv/pgm src/burn/drv/pre90s src/burn/drv/psikyo src/burn/drv/pst90s src/burn/drv/sega $(FBA_BURN_DRIVERS_DIR)/snes $(FBA_BURN_DRIVERS_DIR)/taito $(FBA_BURN_DRIVERS_DIR)/toaplan
+	$(PERL) $(FBA_SCRIPTS_DIR)/gamelist.pl -o $(FBA_GENERATED_DIR)/driverlist.h -l gamelist.txt $(FBA_BURN_DRIVERS_DIR)/capcom $(FBA_BURN_DRIVERS_DIR)/cave $(FBA_BURN_DRIVERS_DIR)/cps3 $(FBA_BURN_DRIVERS_DIR)/dataeast $(FBA_BURN_DRIVERS_DIR)/galaxian $(FBA_BURN_DRIVERS_DIR)/irem $(FBA_BURN_DRIVERS_DIR)/konami $(FBA_BURN_DRIVERS_DIR)/megadrive $(FBA_BURN_DRIVERS_DIR)/neogeo $(FBA_BURN_DRIVERS_DIR)/pce $(FBA_BURN_DRIVERS_DIR)/pgm $(FBA_BURN_DRIVERS_DIR)/pre90s $(FBA_BURN_DRIVERS_DIR)/psikyo $(FBA_BURN_DRIVERS_DIR)/pst90s $(FBA_BURN_DRIVERS_DIR)/sega $(FBA_BURN_DRIVERS_DIR)/snes $(FBA_BURN_DRIVERS_DIR)/taito $(FBA_BURN_DRIVERS_DIR)/toaplan
 	@echo ""
 	@echo "Generating $(FBA_GENERATED_DIR)/neo_sprite_func.h..."
 	@echo ""

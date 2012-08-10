@@ -56,7 +56,7 @@ static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)
 {
-   info->library_name = "FB Alpha";
+   info->library_name = "FBA Cores Neo";
    info->library_version = "v0.2.97.26";
    info->need_fullpath = true;
    info->block_extract = true;
@@ -427,7 +427,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    int maximum = width > height ? width : height;
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
-   struct retro_system_timing timing = { 60.0, 32000.0 };
+   //~59.185606 - for Neogeo
+   struct retro_system_timing timing = { 59.18, 32000.0 };
 
    info->geometry = geom;
    info->timing   = timing;

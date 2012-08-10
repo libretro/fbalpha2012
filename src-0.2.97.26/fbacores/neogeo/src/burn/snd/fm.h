@@ -9,8 +9,6 @@
 #define BUILD_YM2610  (HAS_YM2610)		/* build YM2610(OPNB)  emulator */
 #define BUILD_YM2610B (HAS_YM2610B)		/* build YM2610B(OPNB?)emulator */
 
-//#define BUILD_YM2151  (HAS_YM2151)		/* build YM2151(OPM)   emulator */
-
 /* select bit size of output : 8 or 16 */
 #define FM_SAMPLE_BITS 16
 

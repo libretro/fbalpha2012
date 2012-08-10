@@ -270,14 +270,10 @@ endif
 ifeq ($(system_platform), win)
 PERL = perl.exe
 M68KMAKE_EXE = m68kmake.exe
-CTVMAKE_EXE = ctvmake.exe
-PGM_SPRITE_CREATE_EXE = pgmspritecreate.exe
 EXE_PREFIX =
 else
 PERL = perl
 M68KMAKE_EXE = m68kmake
-CTVMAKE_EXE = ctvmake
-PGM_SPRITE_CREATE_EXE = pgmspritecreate
 EXE_PREFIX = ./
 endif
 

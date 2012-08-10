@@ -36,16 +36,8 @@ __extension__ typedef long long				INT64;
 #define OSD_CPU_H
 
 /* OPN */
-#define HAS_YM2203  1
-#define HAS_YM2608  1
 #define HAS_YM2610  1
 #define HAS_YM2610B 1
-#define HAS_YM2612  1
-#define HAS_YM3438  1
-/* OPL */
-#define HAS_YM3812  1
-#define HAS_YM3526  1
-#define HAS_Y8950   1
 
 enum {
 	CLEAR_LINE = 0,

@@ -15,14 +15,14 @@ clean()
 make_libretro()
 {
    cd src-0.2.97.26/
-   make -f makefile.libretro generate
+   make -f makefile.libretro generate-files
 	make -f makefile.libretro -j4
 }
 
 make_debug()
 {
    cd src-0.2.97.26/
-   make -f makefile.libretro generate
+   make -f makefile.libretro generate-files
 	make -f makefile.libretro -j4 DEBUG=1
 }
 

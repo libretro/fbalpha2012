@@ -12,6 +12,17 @@ else ifneq ($(findstring MINGW,$(shell uname -a)),)
 endif
 endif
 
+# system platform
+system_platform = unix
+ifeq ($(shell uname -a),)
+   system_platform = win
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+   system_platform = osx
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+   system_platform = win
+endif
+
+
 MAIN_FBA_DIR := src
 FBA_BURN_DIR := $(MAIN_FBA_DIR)/burn
 FBA_BURN_DRIVERS_DIR := $(MAIN_FBA_DIR)/burn/drv
@@ -20,6 +31,8 @@ LIBRETRO_DIR := $(FBA_BURNER_DIR)/libretro
 FBA_CPU_DIR := $(MAIN_FBA_DIR)/cpu
 FBA_LIB_DIR := $(MAIN_FBA_DIR)/dep/libs
 FBA_INTERFACE_DIR := $(MAIN_FBA_DIR)/intf
+FBA_GENERATED_DIR = $(MAIN_FBA_DIR)/dep/generated
+FBA_SCRIPTS_DIR = $(MAIN_FBA_DIR)/dep/scripts
 
 EXTERNAL_ZLIB = 0
 
@@ -81,7 +94,10 @@ else
    ENDIANNESS_DEFINES := -DLSB_FIRST
 endif
 
-.PHONY: clean generate-files
+CC_SYSTEM = gcc
+CXX_SYSTEM = g++
+
+.PHONY: clean generate-files generate-files-clean
 
 all: $(TARGET)
 
@@ -114,23 +130,7 @@ endif
 FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
-	$(FBA_BURN_DRIVERS_DIR)/capcom \
-	$(FBA_BURN_DRIVERS_DIR)/cave \
-	$(FBA_BURN_DRIVERS_DIR)/cps3 \
-	$(FBA_BURN_DRIVERS_DIR)/dataeast \
-	$(FBA_BURN_DRIVERS_DIR)/galaxian \
-	$(FBA_BURN_DRIVERS_DIR)/irem \
-	$(FBA_BURN_DRIVERS_DIR)/megadrive \
-	$(FBA_BURN_DRIVERS_DIR)/neogeo \
-	$(FBA_BURN_DRIVERS_DIR)/pce \
-	$(FBA_BURN_DRIVERS_DIR)/pgm \
-	$(FBA_BURN_DRIVERS_DIR)/pre90s \
-	$(FBA_BURN_DRIVERS_DIR)/psikyo \
-	$(FBA_BURN_DRIVERS_DIR)/pst90s \
-	$(FBA_BURN_DRIVERS_DIR)/sega \
-	$(FBA_BURN_DRIVERS_DIR)/snes \
-	$(FBA_BURN_DRIVERS_DIR)/taito \
-	$(FBA_BURN_DRIVERS_DIR)/toaplan
+	$(FBA_BURN_DRIVERS_DIR)/capcom
 
 FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/m68k \
@@ -185,7 +185,6 @@ INCDIRS := -I$(FBA_BURNER_DIR)/win32 \
 
 ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
 FBA_DEFINES += -D__LIBRETRO_OPTIMIZATIONS__ 
-INCDIRS += -I$(MAIN_FBA_DIR)/dep/generated-libretro
 endif
 
 ifeq ($(DEBUG), 1)
@@ -197,8 +196,6 @@ CXXFLAGS += -O3 -DNDEBUG
 endif
 
 ifeq ($(platform), sncps3)
-WARNINGS_DEFINES =
-else ifeq ($(platform), psl1ght)
 WARNINGS_DEFINES =
 else
 WARNINGS_DEFINES = -Wno-write-strings
@@ -214,16 +211,47 @@ ifeq ($(ZLIB_INTERNAL), 0)
 INCDIRS += -I$(FBA_LIB_DIR)
 endif
 
-generate:
-	rm -rf src/dep/generated
 ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
-	sh ./generate_files_opts.sh
+GENERATE_OPTS := -D__LIBRETRO_OPTIMIZATIONS__
 else
-	sh ./generate_files.sh
+GENERATE_OPTS :=
 endif
 
+ifeq ($(system_platform), win)
+PERL = perl.exe
+M68KMAKE_EXE = m68kmake.exe
+CTVMAKE_EXE = ctvmake.exe
+PGM_SPRITE_CREATE_EXE = pgmspritecreate.exe
+EXE_PREFIX =
+else
+PERL = perl
+M68KMAKE_EXE = m68kmake
+CTVMAKE_EXE = ctvmake
+PGM_SPRITE_CREATE_EXE = pgmspritecreate
+EXE_PREFIX = ./
+endif
 
-$(TARGET): generate-files $(OBJS)
+generate-files-clean:
+	rm -rf $(FBA_GENERATED_DIR)/*.*
+	rm -rf $(FBA_CPU_DIR)/m68k/m68kopac.c
+	rm -rf $(FBA_CPU_DIR)/m68k/m68kopdm.c
+	rm -rf $(FBA_CPU_DIR)/m68k/m68kopnz.c
+	rm -rf $(FBA_CPU_DIR)/m68k/m68kops.c
+	rm -rf $(FBA_CPU_DIR)/m68k/m68kops.h
+
+generate-files:
+	@echo "Generating $(FBA_GENERATED_DIR)/driverlist.h..."
+	@echo ""
+	$(PERL) $(FBA_SCRIPTS_DIR)/gamelist.pl -o $(FBA_GENERATED_DIR)/driverlist.h -l gamelist.txt $(FBA_BURN_DRIVERS_DIR)/capcom
+	$(CC_SYSTEM) $(GENERATE_OPTS) -o $(M68KMAKE_EXE) $(FBA_CPU_DIR)/m68k/m68kmake.c
+	$(EXE_PREFIX)$(M68KMAKE_EXE) $(FBA_CPU_DIR)/m68k/ $(FBA_CPU_DIR)/m68k/m68k_in.c
+	$(CXX_SYSTEM) $(GENERATE_OPTS) -o $(CTVMAKE_EXE) $(FBA_BURN_DRIVERS_DIR)/capcom/ctv_make.cpp
+	@echo ""
+	@echo "Generating $(FBA_GENERATED_DIR)/ctv.h..."
+	@echo ""
+	$(EXE_PREFIX)$(CTVMAKE_EXE) > $(FBA_GENERATED_DIR)/ctv.h
+
+$(TARGET): $(OBJS)
 	@echo "LD $@"
 ifeq ($(platform), ps3)
 	@$(AR) rcs $@ $(OBJS)
@@ -250,6 +278,6 @@ endif
 clean:
 	rm -f $(TARGET)
 	rm -f $(OBJS)
-ifeq ($(GENERATE_FILES), 1)
-	rm -rf src/dep/generated
-endif
+	rm -f $(M68KMAKE_EXE)
+	rm -f $(PGM_SPRITE_CREATE_EXE)
+	rm -f $(CTVMAKE_EXE)

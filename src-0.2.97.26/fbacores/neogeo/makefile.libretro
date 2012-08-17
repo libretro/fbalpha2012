@@ -102,20 +102,14 @@ CXX_SYSTEM = g++
 all: $(TARGET)
 
 BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
-	$(FBA_CPU_DIR)/arm7/arm7exec.c \
-	$(FBA_CPU_DIR)/arm7/arm7core.c \
 	$(FBA_CPU_DIR)/hd6309/6309tbl.c \
 	$(FBA_CPU_DIR)/hd6309/6309ops.c \
-	$(FBA_CPU_DIR)/konami/konamtbl.c \
-	$(FBA_CPU_DIR)/konami/konamops.c \
         $(FBA_CPU_DIR)/m68k/m68k_in.c \
 	$(FBA_CPU_DIR)/m6800/6800ops.c \
 	$(FBA_CPU_DIR)/m6800/6800tbl.c \
 	$(FBA_CPU_DIR)/m6805/6805ops.c \
 	$(FBA_CPU_DIR)/m6809/6809ops.c \
 	$(FBA_CPU_DIR)/m6809/6809tbl.c \
-	$(FBA_CPU_DIR)/sh2/mksh2.cpp \
-	$(FBA_CPU_DIR)/sh2/mksh2-x86.cpp \
 	$(FBA_CPU_DIR)/m68k/m68kmake.c \
 	$(FBA_BURNER_DIR)/wave_writer.cpp \
 	$(FBA_CPU_DIR)/m68k/m68kdasm.c \
@@ -151,40 +145,11 @@ endif
 FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
-	$(FBA_BURN_DRIVERS_DIR)/capcom \
-	$(FBA_BURN_DRIVERS_DIR)/cave \
-	$(FBA_BURN_DRIVERS_DIR)/cps3 \
-	$(FBA_BURN_DRIVERS_DIR)/dataeast \
-	$(FBA_BURN_DRIVERS_DIR)/galaxian \
-	$(FBA_BURN_DRIVERS_DIR)/irem \
-	$(FBA_BURN_DRIVERS_DIR)/konami \
-	$(FBA_BURN_DRIVERS_DIR)/megadrive \
-	$(FBA_BURN_DRIVERS_DIR)/neogeo \
-	$(FBA_BURN_DRIVERS_DIR)/pce \
-	$(FBA_BURN_DRIVERS_DIR)/pgm \
-	$(FBA_BURN_DRIVERS_DIR)/pre90s \
-	$(FBA_BURN_DRIVERS_DIR)/psikyo \
-	$(FBA_BURN_DRIVERS_DIR)/pst90s \
-	$(FBA_BURN_DRIVERS_DIR)/sega \
-	$(FBA_BURN_DRIVERS_DIR)/snes \
-	$(FBA_BURN_DRIVERS_DIR)/taito \
-	$(FBA_BURN_DRIVERS_DIR)/toaplan
+	$(FBA_BURN_DRIVERS_DIR)/neogeo
 
 FBA_CPU_DIRS := $(FBA_CPU_DIR) \
-	$(FBA_CPU_DIR)/arm \
-	$(FBA_CPU_DIR)/arm7 \
-	$(FBA_CPU_DIR)/h6280 \
-	$(FBA_CPU_DIR)/hd6309 \
-	$(FBA_CPU_DIR)/i8039 \
-	$(FBA_CPU_DIR)/konami \
 	$(FBA_CPU_DIR)/m68k \
-	$(FBA_CPU_DIR)/m6502 \
 	$(FBA_CPU_DIR)/m6800 \
-	$(FBA_CPU_DIR)/m6805 \
-	$(FBA_CPU_DIR)/m6809 \
-	$(FBA_CPU_DIR)/nec \
-	$(FBA_CPU_DIR)/s2650 \
-	$(FBA_CPU_DIR)/sh2 \
 	$(FBA_CPU_DIR)/z80
 
 FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
@@ -226,11 +191,30 @@ INCDIRS := -I$(FBA_BURNER_DIR)/win32 \
 	-I$(FBA_BURNER_DIR) \
 	-I$(MAIN_FBA_DIR)/dep \
 	-I$(FBA_CPU_DIR) \
+	-I$(FBA_CPU_DIR)/m6809 \
+	-I$(FBA_CPU_DIR)/m6805 \
 	-I$(FBA_CPU_DIR)/m6800 \
+	-I$(FBA_CPU_DIR)/h6280 \
+	-I$(FBA_CPU_DIR)/nec \
+	-I$(FBA_CPU_DIR)/hd6309 \
+	-I$(FBA_CPU_DIR)/arm7 \
+	-I$(FBA_CPU_DIR)/i8039 \
+	-I$(FBA_CPU_DIR)/konami \
 	-I$(FBA_CPU_DIR)/m68k \
+	-I$(FBA_CPU_DIR)/m6502 \
 	-I$(FBA_CPU_DIR)/z80 \
+	-I$(FBA_CPU_DIR)/sh2 \
+	-I$(FBA_CPU_DIR)/s2650 \
+	-I$(FBA_CPU_DIR)/arm \
 	-I$(FBA_LIB_DIR)/zlib \
+	-I$(FBA_BURN_DIR)/drv/capcom \
+	-I$(FBA_BURN_DIR)/drv/dataeast \
+	-I$(FBA_BURN_DIR)/drv/cave \
 	-I$(FBA_BURN_DIR)/drv/neogeo \
+	-I$(FBA_BURN_DIR)/drv/psikyo \
+	-I$(FBA_BURN_DIR)/drv/sega \
+	-I$(FBA_BURN_DIR)/drv/toaplan \
+	-I$(FBA_BURN_DIR)/drv/taito \
 	-I$(FBA_LIB_DIR)
 
 ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
@@ -270,10 +254,14 @@ endif
 ifeq ($(system_platform), win)
 PERL = perl.exe
 M68KMAKE_EXE = m68kmake.exe
+CTVMAKE_EXE = ctvmake.exe
+PGM_SPRITE_CREATE_EXE = pgmspritecreate.exe
 EXE_PREFIX =
 else
 PERL = perl
 M68KMAKE_EXE = m68kmake
+CTVMAKE_EXE = ctvmake
+PGM_SPRITE_CREATE_EXE = pgmspritecreate
 EXE_PREFIX = ./
 endif
 
@@ -288,7 +276,7 @@ generate-files-clean:
 generate-files:
 	@echo "Generating $(FBA_GENERATED_DIR)/driverlist.h..."
 	@echo ""
-	$(PERL) $(FBA_SCRIPTS_DIR)/gamelist.pl -o $(FBA_GENERATED_DIR)/driverlist.h -l gamelist.txt $(FBA_BURN_DRIVERS_DIR)/neogeo
+	$(PERL) $(FBA_SCRIPTS_DIR)/gamelist.pl -o $(FBA_GENERATED_DIR)/driverlist.h -l gamelist.txt  $(FBA_BURN_DRIVERS_DIR)/neogeo
 	@echo ""
 	@echo "Generating $(FBA_GENERATED_DIR)/neo_sprite_func.h..."
 	@echo ""

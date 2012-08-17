@@ -366,15 +366,6 @@
 						RelativePath="..\..\src\burn\snd\msm6295.cpp">
 					</File>
 					<File
-						RelativePath="..\..\src\burn\snd\rf5c68.cpp">
-					</File>
-					<File
-						RelativePath="..\..\src\burn\snd\saa1099.cpp">
-					</File>
-					<File
-						RelativePath="..\..\src\burn\snd\samples.cpp">
-					</File>
-					<File
 						RelativePath="..\..\src\burn\snd\x1010.cpp">
 					</File>
 					<File
@@ -484,105 +475,6 @@
 			<Filter
 				Name="burner"
 				Filter="">
-				<File
-					RelativePath="..\..\src\burner\conc.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\burner\cong.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\burner\dat.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox"
-						ExcludedFromBuild="TRUE">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-				</File>
 				<File
 					RelativePath="..\..\src\burner\gamc.cpp">
 				</File>

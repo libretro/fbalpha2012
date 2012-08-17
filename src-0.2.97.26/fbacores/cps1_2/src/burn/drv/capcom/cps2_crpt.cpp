@@ -157,7 +157,7 @@ struct optimised_sbox
 };
 
 
-static const struct sbox fn1_r1_boxes[4] =
+const struct sbox fn1_r1_boxes[4] =
 {
 	{	// subkey bits  0- 5
 		{
@@ -193,7 +193,7 @@ static const struct sbox fn1_r1_boxes[4] =
 	},
 };
 
-static const struct sbox fn1_r2_boxes[4] =
+const struct sbox fn1_r2_boxes[4] =
 {
 	{	// subkey bits 24-29
 		{
@@ -229,7 +229,7 @@ static const struct sbox fn1_r2_boxes[4] =
 	},
 };
 
-static const struct sbox fn1_r3_boxes[4] =
+const struct sbox fn1_r3_boxes[4] =
 {
 	{	// subkey bits 48-53
 		{
@@ -265,7 +265,7 @@ static const struct sbox fn1_r3_boxes[4] =
 	},
 };
 
-static const struct sbox fn1_r4_boxes[4] =
+const struct sbox fn1_r4_boxes[4] =
 {
 	{	// subkey bits 72-77
 		{
@@ -303,7 +303,7 @@ static const struct sbox fn1_r4_boxes[4] =
 
 /******************************************************************************/
 
-static const struct sbox fn2_r1_boxes[4] =
+const struct sbox fn2_r1_boxes[4] =
 {
 	{	// subkey bits  0- 5
 		{
@@ -339,7 +339,7 @@ static const struct sbox fn2_r1_boxes[4] =
 	},
 };
 
-static const struct sbox fn2_r2_boxes[4] =
+const struct sbox fn2_r2_boxes[4] =
 {
 	{	// subkey bits 24-29
 		{
@@ -375,7 +375,7 @@ static const struct sbox fn2_r2_boxes[4] =
 	},
 };
 
-static const struct sbox fn2_r3_boxes[4] =
+const struct sbox fn2_r3_boxes[4] =
 {
 	{	// subkey bits 48-53
 		{
@@ -411,7 +411,7 @@ static const struct sbox fn2_r3_boxes[4] =
 	},
 };
 
-static const struct sbox fn2_r4_boxes[4] =
+const struct sbox fn2_r4_boxes[4] =
 {
 	{	// subkey bits 72-77
 		{
@@ -470,7 +470,7 @@ static UINT8 fn(UINT8 in, const struct optimised_sbox *sboxes, UINT32 key)
 // dstkey will contain the 96-bit key for the 1st FN (4x24 bits)
 static void expand_1st_key(UINT32 *dstkey, const UINT32 *srckey)
 {
-	static const INT32 bits[96] =
+	const INT32 bits[96] =
 	{
 		33, 58, 49, 36,  0, 31,
 		22, 30,  3, 16,  5, 53,
@@ -505,7 +505,7 @@ static void expand_1st_key(UINT32 *dstkey, const UINT32 *srckey)
 // dstkey will contain the 96-bit key for the 2nd FN (4x24 bits)
 static void expand_2nd_key(UINT32 *dstkey, const UINT32 *srckey)
 {
-	static const INT32 bits[96] =
+	const INT32 bits[96] =
 	{
 		34,  9, 32, 24, 44, 54,
 		38, 61, 47, 13, 28,  7,
@@ -543,7 +543,7 @@ static void expand_2nd_key(UINT32 *dstkey, const UINT32 *srckey)
 static void expand_subkey(UINT32* subkey, UINT16 seed)
 {
 	// Note that each row of the table is a permutation of the seed bits.
-	static const INT32 bits[64] =
+	const INT32 bits[64] =
 	{
 		 5, 10, 14,  9,  4,  0, 15,  6,  1,  8,  3,  2, 12,  7, 13, 11,
 		 5, 12,  7,  2, 13, 11,  9, 14,  4,  1,  6, 10,  8,  0, 15,  3,
@@ -777,7 +777,7 @@ struct game_keys
 It doesn't start from 0, and it's the upper half of a 128kB bank.
 */
 
-static const struct game_keys keys_table[] =
+const struct game_keys keys_table[] =
 {
 	// name                 key               upper                  watchdog
 	{ "dead",       { 0xffffffff,0xffffffff }, 0        },	// ffff ffff ffff

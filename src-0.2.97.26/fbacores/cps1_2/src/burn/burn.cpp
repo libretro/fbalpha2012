@@ -3,7 +3,7 @@
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#include "driverlist.h"
+#include "../dep/generated/driverlist.h"
 
 // filler function, used if the application is not printing debug messages
 static INT32 __cdecl BurnbprintfFiller(INT32, TCHAR* , ...) { return 0; }

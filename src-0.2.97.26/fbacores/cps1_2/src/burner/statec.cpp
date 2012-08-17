@@ -1,5 +1,9 @@
 // Driver State Compression module
+#ifdef _XBOX1
+#include <zlib.h>
+#else
 #include "zlib.h"
+#endif
 
 #include "burnint.h"
 

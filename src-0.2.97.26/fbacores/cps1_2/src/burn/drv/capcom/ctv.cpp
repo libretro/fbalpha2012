@@ -12,7 +12,7 @@ INT32 nCtvTileAdd=0; // Amount to add after each tile line
 UINT8 *pCtvLine=NULL; // Pointer to output bitmap
 
 // Include all tile variants:
-#include "ctv.h"
+#include "../../../dep/generated/ctv.h"
 
 #ifndef __LIBRETRO_OPTIMIZATIONS__
 

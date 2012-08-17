@@ -1,7 +1,7 @@
 #include "cps.h"
 	
 #ifdef __LIBRETRO_OPTIMIZATIONS__
-#include "ctv.h"
+#include "../../dep/generated/ctv.h"
 #endif
 
 // CPS Tiles

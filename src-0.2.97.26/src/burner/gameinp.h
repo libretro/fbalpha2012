@@ -48,23 +48,6 @@ struct giInput {
 	};
 };
 
-struct giForce {
-	UINT8 nInput;				// The input to apply force feedback efects to
-	UINT8 nEffect;				// The effect to use
-};
-
-struct giMacro {
-	UINT8 nMode;				// 0 = Unused, 1 = used
-
-	UINT8* pVal[4];				// Destination for the Input Value
-	UINT8 nVal[4];				// The Input Value
-	UINT8 nInput[4];			// Which inputs are mapped
-
-	struct giSwitch Switch;
-
-	char szName[33];					// Maximum name length 16 chars
-};
-
 #define GIT_CONSTANT		(0x01)
 #define GIT_SWITCH			(0x02)
 
@@ -92,8 +75,6 @@ struct GameInp {
 
 	union {
 		struct giInput Input;
-		struct giForce Force;
-		struct giMacro Macro;
 	};
 };
 

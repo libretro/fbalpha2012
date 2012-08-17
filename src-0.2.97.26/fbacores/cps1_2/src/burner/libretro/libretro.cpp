@@ -428,7 +428,11 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
    //~59.62fps - for CPS1/CPS2
+#ifdef GEKKO
    struct retro_system_timing timing = { 59.62, 32000.0 };
+#else
+   struct retro_system_timing timing = { 60.00, 32000.0 };
+#endif
 
    info->geometry = geom;
    info->timing   = timing;

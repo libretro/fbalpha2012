@@ -295,15 +295,6 @@
 							RelativePath="..\..\src\burn\drv\capcom\d_cps2.cpp">
 						</File>
 						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps_m.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps_z.cpp">
-						</File>
-						<File
 							RelativePath="..\..\src\burn\drv\capcom\qs.cpp">
 						</File>
 						<File

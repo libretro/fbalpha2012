@@ -133,12 +133,6 @@ INT32 CpsRunInit()
 		return 1;
 	}
 
-	if ((Cps & 1) && Cps1Qs == 0 && Cps1DisablePSnd == 0) {			// Sound init (MSM6295 + YM2151)
-		if (PsndInit()) {
-			return 1;
-		}
-	}
-
 	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) {			// Sound init (QSound)
 		if (QsndInit()) {
 			return 1;
@@ -173,7 +167,6 @@ INT32 CpsRunExit()
 
 	// Sound exit
 	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) QsndExit();
-	if (Cps != 2 && Cps1Qs == 0 && !Cps1DisablePSnd) PsndExit();
 
 	// Graphics exit
 	CpsObjExit();
@@ -284,89 +277,6 @@ static void DoIRQ()
 	}
 
 	return;
-}
-
-INT32 Cps1Frame()
-{
-	INT32 nDisplayEnd, nNext, i;
-
-	if (CpsReset) {
-		DrvReset();
-	}
-
-	SekNewFrame();
-	if (Cps1Qs == 1) {
-		QsndNewFrame();
-	} else {
-		if (!Cps1DisablePSnd) {
-			ZetOpen(0);
-			PsndNewFrame();
-		}
-	}
-	
-	if (CpsRunFrameStartCallbackFunction) {
-		CpsRunFrameStartCallbackFunction();
-	}
-
-	nCpsCycles = (INT32)((INT64)nCPS68KClockspeed * nBurnCPUSpeedAdjust >> 8);
-
-	CpsRwGetInp();												// Update the input port values
-
-	nDisplayEnd = (nCpsCycles * (nFirstLine + 224)) / nCpsNumScanlines;	// Account for VBlank
-
-	SekOpen(0);
-	SekIdle(nCpsCyclesExtra);
-
-	SekRun(nCpsCycles * nFirstLine / nCpsNumScanlines);					// run 68K for the first few lines
-
-	CpsObjGet();											// Get objects
-
-	for (i = 0; i < 4; i++) {
-		nNext = ((i + 1) * nCpsCycles) >> 2;					// find out next cycle count to run to
-		
-		if (i == 2 && CpsRunFrameMiddleCallbackFunction) {
-			CpsRunFrameMiddleCallbackFunction();
-		}
-
-		if (SekTotalCycles() < nDisplayEnd && nNext > nDisplayEnd) {
-
-			SekRun(nNext - nDisplayEnd);						// run 68K
-
-			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
-
-			SekSetIRQLine(Cps1VBlankIRQLine, SEK_IRQSTATUS_AUTO);				// Trigger VBlank interrupt
-		}
-
-		SekRun(nNext - SekTotalCycles());						// run 68K
-		
-//		if (pBurnDraw) {
-//			CpsDraw();										// Draw frame
-//		}
-	}
-	
-	if (pBurnDraw) {
-		CpsDraw();										// Draw frame
-	}
-
-	if (Cps1Qs == 1) {
-		QsndEndFrame();
-	} else {
-		if (!Cps1DisablePSnd) {
-			PsndSyncZ80(nCpsZ80Cycles);
-			PsmUpdate(nBurnSoundLen);
-			ZetClose();
-		}
-	}
-	
-	if (CpsRunFrameEndCallbackFunction) {
-		CpsRunFrameEndCallbackFunction();
-	}
-
-	nCpsCyclesExtra = SekTotalCycles() - nCpsCycles;
-
-	SekClose();
-
-	return 0;
 }
 
 INT32 Cps2Frame()

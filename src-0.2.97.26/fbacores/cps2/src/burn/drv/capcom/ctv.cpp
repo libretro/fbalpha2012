@@ -24,21 +24,9 @@ INT32 CtvReady()
   // Must be called before calling CpstOne
   if (nBurnBpp!=nLastBpp)
   {
-	  if (nBurnBpp==2) {
 		memcpy(CtvDoX,CtvDo2,sizeof(CtvDoX));
 		memcpy(CtvDoXM,CtvDo2m,sizeof(CtvDoXM));
 		memcpy(CtvDoXB,CtvDo2b,sizeof(CtvDoXB));
-	  }
-	  else if (nBurnBpp==3) {
-		memcpy(CtvDoX,CtvDo3,sizeof(CtvDoX));
-		memcpy(CtvDoXM,CtvDo3m,sizeof(CtvDoXM));
-		memcpy(CtvDoXB,CtvDo3b,sizeof(CtvDoXB));
-	  }
-	  else if (nBurnBpp==4) {
-		memcpy(CtvDoX,CtvDo4,sizeof(CtvDoX));
-		memcpy(CtvDoXM,CtvDo4m,sizeof(CtvDoXM));
-		memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
-	  }
   }
   nLastBpp=nBurnBpp;
   return 0;

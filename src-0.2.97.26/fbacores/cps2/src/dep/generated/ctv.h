@@ -172,23 +172,15 @@ static INT32 CtvDo232_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo308____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo308_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -224,23 +216,15 @@ static INT32 CtvDo308_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo316____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo316_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -250,23 +234,15 @@ static INT32 CtvDo316_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo316r___()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316r_f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo316rc__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316rcf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -280,23 +256,15 @@ static INT32 CtvDo316rcf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo332____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo332_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -336,23 +304,15 @@ static INT32 CtvDo332_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo408____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo408_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -388,23 +348,15 @@ static INT32 CtvDo408_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo416____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo416_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -414,23 +366,15 @@ static INT32 CtvDo416_cf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo416r___()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416r_f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo416rc__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416rcf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -444,23 +388,15 @@ static INT32 CtvDo416rcf_()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo432____()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432__f_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo432_c__()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432_cf_()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -664,23 +600,15 @@ static INT32 CtvDo232_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo308___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo308_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -716,23 +644,15 @@ static INT32 CtvDo308_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo316___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo316_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -768,23 +688,15 @@ static INT32 CtvDo316_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo332___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo332_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -824,23 +736,15 @@ static INT32 CtvDo332_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo408___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo408_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -876,23 +780,15 @@ static INT32 CtvDo408_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo416___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo416_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -928,23 +824,15 @@ static INT32 CtvDo416_cfm()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo432___m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432__fm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo432_c_m()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432_cfm()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1148,23 +1036,15 @@ static INT32 CtvDo232_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo308___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo308_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo308_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1200,23 +1080,15 @@ static INT32 CtvDo308_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo316___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo316_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo316_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1252,23 +1124,15 @@ static INT32 CtvDo316_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo332___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo332_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo332_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1308,23 +1172,15 @@ static INT32 CtvDo332_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo408___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo408_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo408_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1360,23 +1216,15 @@ static INT32 CtvDo408_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo416___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo416_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo416_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
@@ -1412,23 +1260,15 @@ static INT32 CtvDo416_cfb()
 
 #define CU_CARE  (0)
 #define CU_FLIPX (0)
-static INT32 CtvDo432___b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432__fb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 
 #define CU_CARE  (1)
 #define CU_FLIPX (0)
-static INT32 CtvDo432_c_b()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #define CU_FLIPX (1)
-static INT32 CtvDo432_cfb()
-#include "ctv_do.h"
 #undef  CU_FLIPX
 #undef  CU_CARE
 

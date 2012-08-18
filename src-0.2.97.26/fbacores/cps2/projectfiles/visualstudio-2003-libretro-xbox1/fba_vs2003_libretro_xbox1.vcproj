@@ -295,9 +295,6 @@
 							RelativePath="..\..\src\burn\drv\capcom\d_cps2.cpp">
 						</File>
 						<File
-							RelativePath="..\..\src\burn\drv\capcom\kabuki.cpp">
-						</File>
-						<File
 							RelativePath="..\..\src\burn\drv\capcom\ps.cpp">
 						</File>
 						<File

@@ -42,21 +42,12 @@ CpsrRenderDoFn  CpsrRenderDoX;
 
 void DrawFnInit()
 {
-	if(Cps == 2) {
 		CpsLayersDoX   = Cps2Layers;
 		CpsScr1DrawDoX = Cps2Scr1Draw;
 		CpsScr3DrawDoX = Cps2Scr3Draw;
 		CpsObjDrawDoX  = Cps2ObjDraw;
 		CpsrPrepareDoX = Cps2rPrepare;
 		CpsrRenderDoX  = Cps2rRender;
-	} else {
-		CpsLayersDoX   = Cps1Layers;
-		CpsScr1DrawDoX = Cps1Scr1Draw;
-		CpsScr3DrawDoX = Cps1Scr3Draw;
-		CpsObjDrawDoX  = Cps1ObjDraw;
-		CpsrPrepareDoX = Cps1rPrepare;
-		CpsrRenderDoX  = Cps1rRender;
-	}
 }
 
 static INT32 DrawScroll1(INT32 i)
@@ -200,116 +191,6 @@ static INT32 DrawScroll3(INT32 i)
 	return 0;
 }
 
-static INT32 DrawStar(INT32 nLayer)
-{
-	INT32 nStar, nStarXPos, nStarYPos, nStarColour;
-	UINT8* pStar = CpsStar + (nLayer << 12);
-
-	for (nStar = 0; nStar < 0x1000; nStar++) {
-		nStarColour = pStar[nStar];
-
-		if (nStarColour != 0x0F) {
-			nStarXPos = (((nStar >> 8) << 5) - *((INT16*)(CpsSaveReg[0] + 0x18 + (nLayer << 2))) + (nStarColour & 0x1F) - 64) & 0x01FF;
-			nStarYPos = ((nStar & 0xFF) - *((INT16*)(CpsSaveReg[0] + 0x1A + (nLayer << 2))) - 16) & 0xFF;
-
-			if (nStarXPos < 384 && nStarYPos < 224) {
-				nStarColour = ((nStarColour & 0xE0) >> 1) + ((GetCurrentFrame() >> 4) & 0x0F);
-				PutPix(pBurnDraw + (nBurnPitch * nStarYPos) + (nBurnBpp * nStarXPos), CpsPal[0x0800 + (nLayer << 9) + nStarColour]);
-			}
-		}
-	}
-
-	return 0;
-}
-
-static void Cps1Layers()
-{
-  INT32 Draw[4]={-1,-1,-1,-1};
-  INT32 nDrawMask=0;
-  INT32 i=0;
-
-  nDrawMask=1; // Sprites always on
-  LayerCont = BURN_ENDIAN_SWAP_INT16(*((UINT16 *)(CpsSaveReg[0] + nCpsLcReg)));
-  // Get correct bits from Layer Controller
-  if (LayerCont & CpsLayEn[1]) nDrawMask|=2;
-  if (LayerCont & CpsLayEn[2]) nDrawMask|=4;
-  if (LayerCont & CpsLayEn[3]) nDrawMask|=8;
-  nDrawMask&=nBurnLayer;   // User choice of layers to display
-  
-  // Layer control:
-  Draw[0]=(LayerCont>>12)&3; // top layer
-  Draw[1]=(LayerCont>>10)&3;
-  Draw[2]=(LayerCont>> 8)&3;
-  Draw[3]=(LayerCont>> 6)&3; // bottom layer (most covered up)
-  
-  if (Cps1OverrideLayers) {
-	nDrawMask = 1;
-	Draw[0] = nCps1Layers[0];
-	Draw[1] = nCps1Layers[1];
-	Draw[2] = nCps1Layers[2];
-	Draw[3] = nCps1Layers[3];
-	if (Draw[1] != -1) nDrawMask |= 2;
-	if (Draw[2] != -1) nDrawMask |= 4;
-	if (Draw[3] != -1) nDrawMask |= 8;
-	nDrawMask &= nBurnLayer;
-  }
-  
-  // Check for repeated layers and if there are any, the lower layer is omitted
-#define CRP(a,b) if (Draw[a]==Draw[b]) Draw[b]=-1;
-  CRP(0,1) CRP(0,2) CRP(0,3) CRP(1,2) CRP(1,3) CRP(2,3)
-#undef CRP
-
-  for (i = 0; i < 2; i++) {
-	  if (LayerCont & CpsLayEn[4 + i]) {
-		  DrawStar(i);
-	  }
-  }
-
-  // prepare layer 2
-  DrawScroll2Init(0);
-
-  // draw layers, bottom -> top
-  for (i=3;i>=0;i--)
-  {
-    INT32 n=Draw[i]; // Find out which layer to draw
-
-    if (n==0) {
-	  if (nDrawMask & 1)  CpsObjDrawDoX(0,7);
-
-	  if (!Cps1DisableBgHi) {
-		nBgHi=1;
-		switch (Draw[i+1]) {
-			case 1:
-				if (nDrawMask & 2) 	DrawScroll1(0);
-				break;
-			case 2:
-				if (nDrawMask & 4)  DrawScroll2Do();
-				break;
-			case 3:
-				if (nDrawMask & 8)  DrawScroll3(0);
-				break;
-		}
-		nBgHi=0;
-	  }
-	}
-
-    // Then Draw the scroll layer on top
-    switch (n) {
-		case 1:
-			if (nDrawMask & 2) DrawScroll1(0);
-			break;
-		case 2:
-			if (nDrawMask & 4) DrawScroll2Do();
-			break;
-		case 3:
-			if (nDrawMask & 8) DrawScroll3(0);
-			break;
-	}
-  }
-
-  DrawScroll2Exit();
-}
-
 static void Cps2Layers()
 {
 	INT32 Draw[MAX_RASTER][4];
@@ -433,57 +314,7 @@ static void Cps2Layers()
 
 void CpsClearScreen()
 {
-	if (Cps == 1) {
-		switch (nBurnBpp) {
-			case 4: {
-				UINT32* pClear = (UINT32*)pBurnDraw;
-				UINT32 nColour = CpsPal[0xbff ^ 15];
-				for (INT32 i = 0; i < 384 * 224 / 8; i++) {
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-				}
-				break;
-			}
-
-			case 3: {
-				UINT8* pClear = pBurnDraw;
-				UINT8 r = CpsPal[0xbff ^ 15];
-				UINT8 g = (CpsPal[0xbff ^ 15] >> 8) & 0xFF;
-				UINT8 b = (CpsPal[0xbff ^ 15] >> 16) & 0xFF;
-				r &= 0xFF;
-				for (INT32 i = 0; i < 384 * 224; i++) {
-					*pClear++ = r;
-					*pClear++ = g;
-					*pClear++ = b;
-				}
-				break;
-			}
-
-			case 2: {
-				UINT32* pClear = (UINT32*)pBurnDraw;
-				UINT32 nColour = CpsPal[0xbff ^ 15] | CpsPal[0xbff ^ 15] << 16;
-				for (INT32 i = 0; i < 384 * 224 / 16; i++) {
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-					*pClear++ = nColour;
-				}
-				break;
-			}
-		}
-	} else {
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
-	}
 }
 
 static void DoDraw(INT32 Recalc)

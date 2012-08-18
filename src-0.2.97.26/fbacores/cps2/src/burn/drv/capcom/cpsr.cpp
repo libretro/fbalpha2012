@@ -103,55 +103,6 @@ static INT32 PrepareRows()
   return 0;
 }
 
-// Prepare to draw Scroll 2 with rows, by seeing how much
-// row scroll each tile line uses (pli->nStart/nWidth),
-// and finding which tiles are visible onscreen (pli->nTileStart/End).
-
-INT32 Cps1rPrepare()
-{
-  INT32 y; struct CpsrLineInfo *pli;
-  if (CpsrBase==NULL) return 1;
-
-  nEndline = 224;
-  EndLineInfo = 14;
-  nShiftY=16-(nCpsrScrY&15);
-
-  for (y=-1,pli=CpsrLineInfo; y<EndLineInfo; y++,pli++)
-  {
-    INT32 nStart=0,nWidth=0;
-
-    if (CpsrRows!=NULL)
-    {
-      INT32 nRowFrom,nRowTo;
-      // Find out which rows we need to check
-      nRowFrom=(y<<4)+nShiftY;
-      nRowTo=nRowFrom+16;
-      if (nRowFrom<0) nRowFrom=0;
-      if (nRowTo>224) nRowTo=224;
-
-      // Shift by row table start offset
-      nRowFrom+=nCpsrRowStart;
-      nRowTo  +=nCpsrRowStart;
-
-      // Find out what range of scroll values there are for this line
-      GetRowsRange(&nStart,&nWidth,nRowFrom,nRowTo);
-    }
-
-    nStart+=nCpsrScrX;
-    nStart&=0x3ff;
-
-    // Save info in CpsrLineInfo table
-    pli->nStart=nStart;
-    pli->nWidth=nWidth;
-    // Find range of tiles to draw to see whole width:
-    pli->nTileStart=nStart>>4;
-    pli->nTileEnd=(nStart+nWidth+0x18f)>>4;
-  }
-
-  PrepareRows();
-  return 0;
-}
-
 INT32 Cps2rPrepare()
 {
   INT32 y;

@@ -965,7 +965,6 @@ INLINE void m68ki_stack_frame_buserr(uint sr);
 
 INLINE void m68ki_stack_frame_0000(uint pc, uint sr, uint vector);
 INLINE void m68ki_stack_frame_0001(uint pc, uint sr, uint vector);
-INLINE void m68ki_stack_frame_0010(uint sr, uint vector);
 INLINE void m68ki_stack_frame_1000(uint pc, uint sr, uint vector);
 INLINE void m68ki_stack_frame_1010(uint sr, uint vector, uint pc);
 INLINE void m68ki_stack_frame_1011(uint sr, uint vector, uint pc);
@@ -1491,26 +1490,6 @@ INLINE void m68ki_stack_frame_0000(uint pc, uint sr, uint vector)
 	m68ki_push_16(sr);
 }
 
-/* Format 1 stack frame (68020).
- * For 68020, this is the 4 word throwaway frame.
- */
-INLINE void m68ki_stack_frame_0001(uint pc, uint sr, uint vector)
-{
-	m68ki_push_16(0x1000 | (vector<<2));
-	m68ki_push_32(pc);
-	m68ki_push_16(sr);
-}
-
-/* Format 2 stack frame.
- * This is used only by 68020 for trap exceptions.
- */
-INLINE void m68ki_stack_frame_0010(uint sr, uint vector)
-{
-	m68ki_push_32(REG_PPC);
-	m68ki_push_16(0x2000 | (vector<<2));
-	m68ki_push_32(REG_PC);
-	m68ki_push_16(sr);
-}
 
 
 /* Bus error stack frame (68000 only).
@@ -1529,186 +1508,12 @@ INLINE void m68ki_stack_frame_buserr(uint sr)
 	m68ki_push_16(m68ki_aerr_write_mode | CPU_INSTR_MODE | m68ki_aerr_fc);
 }
 
-/* Format 8 stack frame (68010).
- * 68010 only.  This is the 29 word bus/address error frame.
- */
-void m68ki_stack_frame_1000(uint pc, uint sr, uint vector)
-{
-	/* VERSION
-	 * NUMBER
-	 * INTERNAL INFORMATION, 16 WORDS
-	 */
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-	m68ki_fake_push_32();
-
-	/* INSTRUCTION INPUT BUFFER */
-	m68ki_push_16(0);
-
-	/* UNUSED, RESERVED (not written) */
-	m68ki_fake_push_16();
-
-	/* DATA INPUT BUFFER */
-	m68ki_push_16(0);
-
-	/* UNUSED, RESERVED (not written) */
-	m68ki_fake_push_16();
-
-	/* DATA OUTPUT BUFFER */
-	m68ki_push_16(0);
-
-	/* UNUSED, RESERVED (not written) */
-	m68ki_fake_push_16();
-
-	/* FAULT ADDRESS */
-	m68ki_push_32(0);
-
-	/* SPECIAL STATUS WORD */
-	m68ki_push_16(0);
-
-	/* 1000, VECTOR OFFSET */
-	m68ki_push_16(0x8000 | (vector<<2));
-
-	/* PROGRAM COUNTER */
-	m68ki_push_32(pc);
-
-	/* STATUS REGISTER */
-	m68ki_push_16(sr);
-}
-
-/* Format A stack frame (short bus fault).
- * This is used only by 68020 for bus fault and address error
- * if the error happens at an instruction boundary.
- * PC stacked is address of next instruction.
- */
-void m68ki_stack_frame_1010(uint sr, uint vector, uint pc)
-{
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* DATA OUTPUT BUFFER (2 words) */
-	m68ki_push_32(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* DATA CYCLE FAULT ADDRESS (2 words) */
-	m68ki_push_32(0);
-
-	/* INSTRUCTION PIPE STAGE B */
-	m68ki_push_16(0);
-
-	/* INSTRUCTION PIPE STAGE C */
-	m68ki_push_16(0);
-
-	/* SPECIAL STATUS REGISTER */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* 1010, VECTOR OFFSET */
-	m68ki_push_16(0xa000 | (vector<<2));
-
-	/* PROGRAM COUNTER */
-	m68ki_push_32(pc);
-
-	/* STATUS REGISTER */
-	m68ki_push_16(sr);
-}
-
-/* Format B stack frame (long bus fault).
- * This is used only by 68020 for bus fault and address error
- * if the error happens during instruction execution.
- * PC stacked is address of instruction in progress.
- */
-void m68ki_stack_frame_1011(uint sr, uint vector, uint pc)
-{
-	/* INTERNAL REGISTERS (18 words) */
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-
-	/* VERSION# (4 bits), INTERNAL INFORMATION */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTERS (3 words) */
-	m68ki_push_32(0);
-	m68ki_push_16(0);
-
-	/* DATA INTPUT BUFFER (2 words) */
-	m68ki_push_32(0);
-
-	/* INTERNAL REGISTERS (2 words) */
-	m68ki_push_32(0);
-
-	/* STAGE B ADDRESS (2 words) */
-	m68ki_push_32(0);
-
-	/* INTERNAL REGISTER (4 words) */
-	m68ki_push_32(0);
-	m68ki_push_32(0);
-
-	/* DATA OUTPUT BUFFER (2 words) */
-	m68ki_push_32(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* DATA CYCLE FAULT ADDRESS (2 words) */
-	m68ki_push_32(0);
-
-	/* INSTRUCTION PIPE STAGE B */
-	m68ki_push_16(0);
-
-	/* INSTRUCTION PIPE STAGE C */
-	m68ki_push_16(0);
-
-	/* SPECIAL STATUS REGISTER */
-	m68ki_push_16(0);
-
-	/* INTERNAL REGISTER */
-	m68ki_push_16(0);
-
-	/* 1011, VECTOR OFFSET */
-	m68ki_push_16(0xb000 | (vector<<2));
-
-	/* PROGRAM COUNTER */
-	m68ki_push_32(pc);
-
-	/* STATUS REGISTER */
-	m68ki_push_16(sr);
-}
-
-
 /* Used for Group 2 exceptions.
  * These stack a type 2 frame on the 020.
  */
 INLINE void m68ki_exception_trap(uint vector)
 {
 	uint sr = m68ki_init_exception();
-
-	m68ki_stack_frame_0010(sr, vector);
 
 	m68ki_jump_vector(vector);
 
@@ -1731,8 +1536,6 @@ INLINE void m68ki_exception_trapN(uint vector)
 INLINE void m68ki_exception_trace(void)
 {
 	uint sr = m68ki_init_exception();
-
-	m68ki_stack_frame_0010(sr, EXCEPTION_TRACE);
 
 	m68ki_jump_vector(EXCEPTION_TRACE);
 

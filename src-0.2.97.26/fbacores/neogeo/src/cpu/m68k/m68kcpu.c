@@ -460,14 +460,7 @@ unsigned int m68k_get_reg(void* context, m68k_register_t regnum)
 		case M68K_REG_PPC:	return MASK_OUT_ABOVE_32(cpu->ppc);
 		case M68K_REG_IR:	return cpu->ir;
 		case M68K_REG_CPU_TYPE:
-			switch(cpu->cpu_type)
-			{
-				case CPU_TYPE_000:		return (unsigned int)M68K_CPU_TYPE_68000;
-				case CPU_TYPE_008:		return (unsigned int)M68K_CPU_TYPE_68008;
-				case CPU_TYPE_010:		return (unsigned int)M68K_CPU_TYPE_68010;
-				case CPU_TYPE_020:		return (unsigned int)M68K_CPU_TYPE_68020;
-			}
-			return M68K_CPU_TYPE_INVALID;
+			return (unsigned int)M68K_CPU_TYPE_68000;
 		default:			return 0;
 	}
 	return 0;
@@ -569,57 +562,20 @@ void m68k_set_instr_hook_callback(void  (*callback)(void))
 /* Set the CPU type. */
 void m68k_set_cpu_type(unsigned int cpu_type)
 {
-	switch(cpu_type)
-	{
-		case M68K_CPU_TYPE_68000:
-			CPU_TYPE         = CPU_TYPE_000;
-			CPU_ADDRESS_MASK = 0x00ffffff;
-			CPU_SR_MASK      = 0xa71f; /* T1 -- S  -- -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
-			CYC_INSTRUCTION  = m68ki_cycles[0];
-			CYC_EXCEPTION    = m68ki_exception_cycle_table[0];
-			CYC_BCC_NOTAKE_B = -2;
-			CYC_BCC_NOTAKE_W = 2;
-			CYC_DBCC_F_NOEXP = -2;
-			CYC_DBCC_F_EXP   = 2;
-			CYC_SCC_R_TRUE   = 2;
-			CYC_MOVEM_W      = 2;
-			CYC_MOVEM_L      = 3;
-			CYC_SHIFT        = 1;
-			CYC_RESET        = 132;
-			return;
-		case M68K_CPU_TYPE_68008:
-			CPU_TYPE         = CPU_TYPE_008;
-			CPU_ADDRESS_MASK = 0x003fffff;
-			CPU_SR_MASK      = 0xa71f; /* T1 -- S  -- -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
-			CYC_INSTRUCTION  = m68ki_cycles[0];
-			CYC_EXCEPTION    = m68ki_exception_cycle_table[0];
-			CYC_BCC_NOTAKE_B = -2;
-			CYC_BCC_NOTAKE_W = 2;
-			CYC_DBCC_F_NOEXP = -2;
-			CYC_DBCC_F_EXP   = 2;
-			CYC_SCC_R_TRUE   = 2;
-			CYC_MOVEM_W      = 2;
-			CYC_MOVEM_L      = 3;
-			CYC_SHIFT        = 1;
-			CYC_RESET        = 132;
-			return;
-		case M68K_CPU_TYPE_68010:
-			CPU_TYPE         = CPU_TYPE_010;
-			CPU_ADDRESS_MASK = 0x00ffffff;
-			CPU_SR_MASK      = 0xa71f; /* T1 -- S  -- -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
-			CYC_INSTRUCTION  = m68ki_cycles[1];
-			CYC_EXCEPTION    = m68ki_exception_cycle_table[1];
-			CYC_BCC_NOTAKE_B = -4;
-			CYC_BCC_NOTAKE_W = 0;
-			CYC_DBCC_F_NOEXP = 0;
-			CYC_DBCC_F_EXP   = 6;
-			CYC_SCC_R_TRUE   = 0;
-			CYC_MOVEM_W      = 2;
-			CYC_MOVEM_L      = 3;
-			CYC_SHIFT        = 1;
-			CYC_RESET        = 130;
-			return;
-	}
+	CPU_TYPE         = CPU_TYPE_000;
+	CPU_ADDRESS_MASK = 0x00ffffff;
+	CPU_SR_MASK      = 0xa71f; /* T1 -- S  -- -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
+	CYC_INSTRUCTION  = m68ki_cycles[0];
+	CYC_EXCEPTION    = m68ki_exception_cycle_table[0];
+	CYC_BCC_NOTAKE_B = -2;
+	CYC_BCC_NOTAKE_W = 2;
+	CYC_DBCC_F_NOEXP = -2;
+	CYC_DBCC_F_EXP   = 2;
+	CYC_SCC_R_TRUE   = 2;
+	CYC_MOVEM_W      = 2;
+	CYC_MOVEM_L      = 3;
+	CYC_SHIFT        = 1;
+	CYC_RESET        = 132;
 }
 
 /* Execute some instructions until we use up num_cycles clock cycles */

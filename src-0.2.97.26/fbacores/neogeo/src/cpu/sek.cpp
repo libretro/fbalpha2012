@@ -797,19 +797,7 @@ static INT32 SekInitCPUM68K(INT32 nCount, INT32 nCPUType)
 {
 	nSekCPUType[nCount] = nCPUType;
 
-	switch (nCPUType) {
-		case 0x68000:
-			m68k_set_cpu_type(M68K_CPU_TYPE_68000);
-			break;
-		case 0x68010:
-			m68k_set_cpu_type(M68K_CPU_TYPE_68010);
-			break;
-		case 0x68EC020:
-			m68k_set_cpu_type(M68K_CPU_TYPE_68EC020);
-			break;
-		default:
-			return 1;
-	}
+	m68k_set_cpu_type(M68K_CPU_TYPE_68000);
 
 	nSekM68KContextSize[nCount] = m68k_context_size();
 	SekM68KContext[nCount] = (INT8*)malloc(nSekM68KContextSize[nCount]);
@@ -1742,17 +1730,7 @@ INT32 SekDbgGetCPUType()
 	if (nSekActive == -1) bprintf(PRINT_ERROR, _T("SekDbgGetCPUType called when no CPU open\n"));
 #endif
 
-	switch (nSekCPUType[nSekActive]) {
-		case 0:
-		case 0x68000:
-			return M68K_CPU_TYPE_68000;
-		case 0x68010:
-			return M68K_CPU_TYPE_68010;
-		case 0x68EC020:
-			return M68K_CPU_TYPE_68EC020;
-	}
-
-	return 0;
+	return M68K_CPU_TYPE_68000;
 }
 
 INT32 SekDbgGetPendingIRQ()

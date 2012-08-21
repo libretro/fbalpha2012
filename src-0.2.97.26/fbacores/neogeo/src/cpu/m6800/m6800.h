@@ -68,20 +68,13 @@ unsigned char M6800ReadPort(unsigned short Address);
 void M6800WritePort(unsigned short Address, unsigned char Data);
 
 void m6800_init();
-void hd63701_init();
-void m6803_init();
 void m6801_init();
 void m6800_reset(void);
 int m6800_get_pc();
 void m6800_get_context(void *dst);
 void m6800_set_context(void *src);
 int m6800_execute(int cycles);
-int m6803_execute(int cycles);
-int hd63701_execute(int cycles);
 void m6800_set_irq_line(int irqline, int state);
-
-void m6803_internal_registers_w(unsigned short offset, unsigned char data);
-unsigned char m6803_internal_registers_r(unsigned short offset);
 
 //extern void m6800_get_info(UINT32 state, cpuinfo *info);
 
@@ -124,10 +117,6 @@ unsigned char m6803_internal_registers_r(unsigned short offset);
 offs_t m6800_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
 offs_t m6801_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
 offs_t m6802_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
-ffs_t m6803_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
-offs_t m6808_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
-offs_t hd63701_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
-offs_t nsc8105_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
 #endif
 
 #endif /* _M6800_H */

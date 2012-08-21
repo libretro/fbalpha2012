@@ -364,26 +364,15 @@
 /* These defines are dependant on the configuration defines in m68kconf.h */
 
 /* Disable certain comparisons if we're not using all CPU types */
-#if M68K_EMULATE_020
-	#define CPU_TYPE_IS_020_PLUS(A)    ((A) & CPU_TYPE_020)
-	#define CPU_TYPE_IS_020_LESS(A)    1
-#else
-	#define CPU_TYPE_IS_020_PLUS(A)    0
-	#define CPU_TYPE_IS_020_LESS(A)    1
-#endif
+#define CPU_TYPE_IS_020_PLUS(A)    0
+#define CPU_TYPE_IS_020_LESS(A)    1
 
 #define CPU_TYPE_IS_EC020_PLUS(A)  CPU_TYPE_IS_020_PLUS(A)
 #define CPU_TYPE_IS_EC020_LESS(A)  CPU_TYPE_IS_020_LESS(A)
 
-#if M68K_EMULATE_010
-	#define CPU_TYPE_IS_010(A)         ((A) == CPU_TYPE_010)
-	#define CPU_TYPE_IS_010_PLUS(A)    ((A) & (CPU_TYPE_010 | CPU_TYPE_EC020 | CPU_TYPE_020))
-	#define CPU_TYPE_IS_010_LESS(A)    ((A) & (CPU_TYPE_000 | CPU_TYPE_008 | CPU_TYPE_010))
-#else
-	#define CPU_TYPE_IS_010(A)         0
-	#define CPU_TYPE_IS_010_PLUS(A)    CPU_TYPE_IS_EC020_PLUS(A)
-	#define CPU_TYPE_IS_010_LESS(A)    CPU_TYPE_IS_EC020_LESS(A)
-#endif
+#define CPU_TYPE_IS_010(A)         0
+#define CPU_TYPE_IS_010_PLUS(A)    CPU_TYPE_IS_EC020_PLUS(A)
+#define CPU_TYPE_IS_010_LESS(A)    CPU_TYPE_IS_EC020_LESS(A)
 
 #define CPU_TYPE_IS_020_VARIANT(A) 0
 

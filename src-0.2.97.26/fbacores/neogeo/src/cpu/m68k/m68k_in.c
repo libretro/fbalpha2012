@@ -2262,19 +2262,6 @@ M68KMAKE_OP(bcc, 16, ., .)
 
 M68KMAKE_OP(bcc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		if(M68KMAKE_CC)
-		{
-			uint offset = OPER_I_32();
-			REG_PC -= 4;
-			m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-			m68ki_branch_32(offset);
-			return;
-		}
-		REG_PC += 4;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -2365,724 +2352,102 @@ M68KMAKE_OP(bclr, 8, s, .)
 
 M68KMAKE_OP(bfchg, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint* data = &DY;
-		uint64 mask;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-		mask = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask = ROR_32(mask, offset);
-
-		FLAG_N = NFLAG_32(*data<<offset);
-		FLAG_Z = *data & mask;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		*data ^= mask;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfchg, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint mask_base;
-		uint data_long;
-		uint mask_long;
-		uint data_byte = 0;
-		uint mask_byte = 0;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		mask_base = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask_long = mask_base >> offset;
-
-		data_long = m68ki_read_32(ea);
-		FLAG_N = NFLAG_32(data_long << offset);
-		FLAG_Z = data_long & mask_long;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		m68ki_write_32(ea, data_long ^ mask_long);
-
-		if((width + offset) > 32)
-		{
-			mask_byte = MASK_OUT_ABOVE_8(mask_base);
-			data_byte = m68ki_read_8(ea+4);
-			FLAG_Z |= (data_byte & mask_byte);
-			m68ki_write_8(ea+4, data_byte ^ mask_byte);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfclr, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint* data = &DY;
-		uint64 mask;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-
-		mask = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask = ROR_32(mask, offset);
-
-		FLAG_N = NFLAG_32(*data<<offset);
-		FLAG_Z = *data & mask;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		*data &= ~mask;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfclr, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint mask_base;
-		uint data_long;
-		uint mask_long;
-		uint data_byte = 0;
-		uint mask_byte = 0;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		mask_base = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask_long = mask_base >> offset;
-
-		data_long = m68ki_read_32(ea);
-		FLAG_N = NFLAG_32(data_long << offset);
-		FLAG_Z = data_long & mask_long;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		m68ki_write_32(ea, data_long & ~mask_long);
-
-		if((width + offset) > 32)
-		{
-			mask_byte = MASK_OUT_ABOVE_8(mask_base);
-			data_byte = m68ki_read_8(ea+4);
-			FLAG_Z |= (data_byte & mask_byte);
-			m68ki_write_8(ea+4, data_byte & ~mask_byte);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfexts, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint64 data = DY;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-		data = ROL_32(data, offset);
-		FLAG_N = NFLAG_32(data);
-		data = MAKE_INT_32(data) >> (32 - width);
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		REG_D[(word2>>12)&7] = data;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfexts, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint data;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		data = m68ki_read_32(ea);
-
-		data = MASK_OUT_ABOVE_32(data<<offset);
-
-		if((offset+width) > 32)
-			data |= (m68ki_read_8(ea+4) << offset) >> 8;
-
-		FLAG_N = NFLAG_32(data);
-		data  = MAKE_INT_32(data) >> (32 - width);
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		REG_D[(word2 >> 12) & 7] = data;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfextu, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint64 data = DY;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-		data = ROL_32(data, offset);
-		FLAG_N = NFLAG_32(data);
-		data >>= 32 - width;
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		REG_D[(word2>>12)&7] = data;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfextu, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint data;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-		offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		data = m68ki_read_32(ea);
-		data = MASK_OUT_ABOVE_32(data<<offset);
-
-		if((offset+width) > 32)
-			data |= (m68ki_read_8(ea+4) << offset) >> 8;
-
-		FLAG_N = NFLAG_32(data);
-		data  >>= (32 - width);
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		REG_D[(word2 >> 12) & 7] = data;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfffo, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint64 data = DY;
-		uint bit;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-		data = ROL_32(data, offset);
-		FLAG_N = NFLAG_32(data);
-		data >>= 32 - width;
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		for(bit = 1<<(width-1);bit && !(data & bit);bit>>= 1)
-			offset++;
-
-		REG_D[(word2>>12)&7] = offset;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfffo, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		sint local_offset;
-		uint width = word2;
-		uint data;
-		uint bit;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		local_offset = offset % 8;
-		if(local_offset < 0)
-		{
-			local_offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		data = m68ki_read_32(ea);
-		data = MASK_OUT_ABOVE_32(data<<local_offset);
-
-		if((local_offset+width) > 32)
-			data |= (m68ki_read_8(ea+4) << local_offset) >> 8;
-
-		FLAG_N = NFLAG_32(data);
-		data  >>= (32 - width);
-
-		FLAG_Z = data;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		for(bit = 1<<(width-1);bit && !(data & bit);bit>>= 1)
-			offset++;
-
-		REG_D[(word2>>12)&7] = offset;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfins, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint* data = &DY;
-		uint64 mask;
-		uint64 insert = REG_D[(word2>>12)&7];
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-
-		mask = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask = ROR_32(mask, offset);
-
-		insert = MASK_OUT_ABOVE_32(insert << (32 - width));
-		FLAG_N = NFLAG_32(insert);
-		FLAG_Z = insert;
-		insert = ROR_32(insert, offset);
-
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		*data &= ~mask;
-		*data |= insert;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfins, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint insert_base = REG_D[(word2>>12)&7];
-		uint insert_long;
-		uint insert_byte;
-		uint mask_base;
-		uint data_long;
-		uint mask_long;
-		uint data_byte = 0;
-		uint mask_byte = 0;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-		mask_base = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask_long = mask_base >> offset;
-
-		insert_base = MASK_OUT_ABOVE_32(insert_base << (32 - width));
-		FLAG_N = NFLAG_32(insert_base);
-		FLAG_Z = insert_base;
-		insert_long = insert_base >> offset;
-
-		data_long = m68ki_read_32(ea);
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		m68ki_write_32(ea, (data_long & ~mask_long) | insert_long);
-
-		if((width + offset) > 32)
-		{
-			mask_byte = MASK_OUT_ABOVE_8(mask_base);
-			insert_byte = MASK_OUT_ABOVE_8(insert_base);
-			data_byte = m68ki_read_8(ea+4);
-			FLAG_Z |= (data_byte & mask_byte);
-			m68ki_write_8(ea+4, (data_byte & ~mask_byte) | insert_byte);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfset, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint* data = &DY;
-		uint64 mask;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-
-		mask = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask = ROR_32(mask, offset);
-
-		FLAG_N = NFLAG_32(*data<<offset);
-		FLAG_Z = *data & mask;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		*data |= mask;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bfset, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint mask_base;
-		uint data_long;
-		uint mask_long;
-		uint data_byte = 0;
-		uint mask_byte = 0;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-
-		mask_base = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask_long = mask_base >> offset;
-
-		data_long = m68ki_read_32(ea);
-		FLAG_N = NFLAG_32(data_long << offset);
-		FLAG_Z = data_long & mask_long;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		m68ki_write_32(ea, data_long | mask_long);
-
-		if((width + offset) > 32)
-		{
-			mask_byte = MASK_OUT_ABOVE_8(mask_base);
-			data_byte = m68ki_read_8(ea+4);
-			FLAG_Z |= (data_byte & mask_byte);
-			m68ki_write_8(ea+4, data_byte | mask_byte);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bftst, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint offset = (word2>>6)&31;
-		uint width = word2;
-		uint* data = &DY;
-		uint64 mask;
-
-
-		if(BIT_B(word2))
-			offset = REG_D[offset&7];
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-
-		offset &= 31;
-		width = ((width-1) & 31) + 1;
-
-
-		mask = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask = ROR_32(mask, offset);
-
-		FLAG_N = NFLAG_32(*data<<offset);
-		FLAG_Z = *data & mask;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bftst, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		sint offset = (word2>>6)&31;
-		uint width = word2;
-		uint mask_base;
-		uint data_long;
-		uint mask_long;
-		uint data_byte = 0;
-		uint mask_byte = 0;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-
-		if(BIT_B(word2))
-			offset = MAKE_INT_32(REG_D[offset&7]);
-		if(BIT_5(word2))
-			width = REG_D[width&7];
-
-		/* Offset is signed so we have to use ugly math =( */
-		ea += offset / 8;
-		offset %= 8;
-		if(offset < 0)
-		{
-			offset += 8;
-			ea--;
-		}
-		width = ((width-1) & 31) + 1;
-
-
-		mask_base = MASK_OUT_ABOVE_32(0xffffffff << (32 - width));
-		mask_long = mask_base >> offset;
-
-		data_long = m68ki_read_32(ea);
-		FLAG_N = ((data_long & (0x80000000 >> offset))<<offset)>>24;
-		FLAG_Z = data_long & mask_long;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-
-		if((width + offset) > 32)
-		{
-			mask_byte = MASK_OUT_ABOVE_8(mask_base);
-			data_byte = m68ki_read_8(ea+4);
-			FLAG_Z |= (data_byte & mask_byte);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(bkpt, 0, ., .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		m68ki_bkpt_ack(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE) ? REG_IR & 7 : 0);	/* auto-disable (see m68kcpu.h) */
-	}
 	m68ki_exception_illegal();
 }
 
@@ -3109,16 +2474,6 @@ M68KMAKE_OP(bra, 16, ., .)
 
 M68KMAKE_OP(bra, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint offset = OPER_I_32();
-		REG_PC -= 4;
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		m68ki_branch_32(offset);
-		if(REG_PC == REG_PPC)
-			USE_ALL_CYCLES();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -3185,15 +2540,6 @@ M68KMAKE_OP(bsr, 16, ., .)
 
 M68KMAKE_OP(bsr, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint offset = OPER_I_32();
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		m68ki_push_32(REG_PC);
-		REG_PC -= 4;
-		m68ki_branch_32(offset);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -3227,195 +2573,36 @@ M68KMAKE_OP(btst, 8, s, .)
 M68KMAKE_OP(callm, 32, ., .)
 {
 	/* note: watch out for pcrelative modes */
-	if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-	{
-		uint ea = M68KMAKE_GET_EA_AY_32;
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		REG_PC += 2;
-(void)ea;	/* just to avoid an 'unused variable' warning */
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cas, 8, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint ea = M68KMAKE_GET_EA_AY_8;
-		uint dest = m68ki_read_8(ea);
-		uint* compare = &REG_D[word2 & 7];
-		uint res = dest - MASK_OUT_ABOVE_8(*compare);
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = MASK_OUT_ABOVE_8(res);
-		FLAG_V = VFLAG_SUB_8(*compare, dest, res);
-		FLAG_C = CFLAG_8(res);
-
-		if(COND_NE())
-			*compare = MASK_OUT_BELOW_8(*compare) | dest;
-		else
-		{
-			USE_CYCLES(3);
-			m68ki_write_8(ea, MASK_OUT_ABOVE_8(REG_D[(word2 >> 6) & 7]));
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cas, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint ea = M68KMAKE_GET_EA_AY_16;
-		uint dest = m68ki_read_16(ea);
-		uint* compare = &REG_D[word2 & 7];
-		uint res = dest - MASK_OUT_ABOVE_16(*compare);
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = MASK_OUT_ABOVE_16(res);
-		FLAG_V = VFLAG_SUB_16(*compare, dest, res);
-		FLAG_C = CFLAG_16(res);
-
-		if(COND_NE())
-			*compare = MASK_OUT_BELOW_16(*compare) | dest;
-		else
-		{
-			USE_CYCLES(3);
-			m68ki_write_16(ea, MASK_OUT_ABOVE_16(REG_D[(word2 >> 6) & 7]));
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cas, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint ea = M68KMAKE_GET_EA_AY_32;
-		uint dest = m68ki_read_32(ea);
-		uint* compare = &REG_D[word2 & 7];
-		uint res = dest - *compare;
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = MASK_OUT_ABOVE_32(res);
-		FLAG_V = VFLAG_SUB_32(*compare, dest, res);
-		FLAG_C = CFLAG_SUB_32(*compare, dest, res);
-
-		if(COND_NE())
-			*compare = dest;
-		else
-		{
-			USE_CYCLES(3);
-			m68ki_write_32(ea, REG_D[(word2 >> 6) & 7]);
-		}
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cas2, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_32();
-		uint* compare1 = &REG_D[(word2 >> 16) & 7];
-		uint ea1 = REG_DA[(word2 >> 28) & 15];
-		uint dest1 = m68ki_read_16(ea1);
-		uint res1 = dest1 - MASK_OUT_ABOVE_16(*compare1);
-		uint* compare2 = &REG_D[word2 & 7];
-		uint ea2 = REG_DA[(word2 >> 12) & 15];
-		uint dest2 = m68ki_read_16(ea2);
-		uint res2;
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		FLAG_N = NFLAG_16(res1);
-		FLAG_Z = MASK_OUT_ABOVE_16(res1);
-		FLAG_V = VFLAG_SUB_16(*compare1, dest1, res1);
-		FLAG_C = CFLAG_16(res1);
-
-		if(COND_EQ())
-		{
-			res2 = dest2 - MASK_OUT_ABOVE_16(*compare2);
-
-			FLAG_N = NFLAG_16(res2);
-			FLAG_Z = MASK_OUT_ABOVE_16(res2);
-			FLAG_V = VFLAG_SUB_16(*compare2, dest2, res2);
-			FLAG_C = CFLAG_16(res2);
-
-			if(COND_EQ())
-			{
-				USE_CYCLES(3);
-				m68ki_write_16(ea1, REG_D[(word2 >> 22) & 7]);
-				m68ki_write_16(ea2, REG_D[(word2 >> 6) & 7]);
-				return;
-			}
-		}
-		*compare1 = BIT_1F(word2) ? MAKE_INT_16(dest1) : MASK_OUT_BELOW_16(*compare1) | dest1;
-		*compare2 = BIT_F(word2) ? MAKE_INT_16(dest2) : MASK_OUT_BELOW_16(*compare2) | dest2;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cas2, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_32();
-		uint* compare1 = &REG_D[(word2 >> 16) & 7];
-		uint ea1 = REG_DA[(word2 >> 28) & 15];
-		uint dest1 = m68ki_read_32(ea1);
-		uint res1 = dest1 - *compare1;
-		uint* compare2 = &REG_D[word2 & 7];
-		uint ea2 = REG_DA[(word2 >> 12) & 15];
-		uint dest2 = m68ki_read_32(ea2);
-		uint res2;
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		FLAG_N = NFLAG_32(res1);
-		FLAG_Z = MASK_OUT_ABOVE_32(res1);
-		FLAG_V = VFLAG_SUB_32(*compare1, dest1, res1);
-		FLAG_C = CFLAG_SUB_32(*compare1, dest1, res1);
-
-		if(COND_EQ())
-		{
-			res2 = dest2 - *compare2;
-
-			FLAG_N = NFLAG_32(res2);
-			FLAG_Z = MASK_OUT_ABOVE_32(res2);
-			FLAG_V = VFLAG_SUB_32(*compare2, dest2, res2);
-			FLAG_C = CFLAG_SUB_32(*compare2, dest2, res2);
-
-			if(COND_EQ())
-			{
-				USE_CYCLES(3);
-				m68ki_write_32(ea1, REG_D[(word2 >> 22) & 7]);
-				m68ki_write_32(ea2, REG_D[(word2 >> 6) & 7]);
-				return;
-			}
-		}
-		*compare1 = dest1;
-		*compare2 = dest2;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -3458,338 +2645,66 @@ M68KMAKE_OP(chk, 16, ., .)
 
 M68KMAKE_OP(chk, 32, ., d)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		sint src = MAKE_INT_32(DX);
-		sint bound = MAKE_INT_32(DY);
-
-		FLAG_Z = ZFLAG_32(src); /* Undocumented */
-		FLAG_V = VFLAG_CLEAR;   /* Undocumented */
-		FLAG_C = CFLAG_CLEAR;   /* Undocumented */
-
-		if(src >= 0 && src <= bound)
-		{
-			return;
-		}
-		FLAG_N = (src < 0)<<7;
-		m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		sint src = MAKE_INT_32(DX);
-		sint bound = MAKE_INT_32(M68KMAKE_GET_OPER_AY_32);
-
-		FLAG_Z = ZFLAG_32(src); /* Undocumented */
-		FLAG_V = VFLAG_CLEAR;   /* Undocumented */
-		FLAG_C = CFLAG_CLEAR;   /* Undocumented */
-
-		if(src >= 0 && src <= bound)
-		{
-			return;
-		}
-		FLAG_N = (src < 0)<<7;
-		m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 8, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xff;
-		uint ea = EA_PCDI_8();
-		uint lower_bound = m68ki_read_pcrel_8(ea);
-		uint upper_bound = m68ki_read_pcrel_8(ea + 1);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_8(compare) - MAKE_INT_8(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 8, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xff;
-		uint ea = EA_PCIX_8();
-		uint lower_bound = m68ki_read_pcrel_8(ea);
-		uint upper_bound = m68ki_read_pcrel_8(ea + 1);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_8(compare) - MAKE_INT_8(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 8, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xff;
-		uint ea = M68KMAKE_GET_EA_AY_8;
-		uint lower_bound = m68ki_read_8(ea);
-		uint upper_bound = m68ki_read_8(ea + 1);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_8(compare) - MAKE_INT_8(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 16, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xffff;
-		uint ea = EA_PCDI_16();
-		uint lower_bound = m68ki_read_pcrel_16(ea);
-		uint upper_bound = m68ki_read_pcrel_16(ea + 2);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(compare) - MAKE_INT_16(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(upper_bound) - MAKE_INT_16(compare);
-		else
-			FLAG_C = upper_bound - compare;
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 16, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xffff;
-		uint ea = EA_PCIX_16();
-		uint lower_bound = m68ki_read_pcrel_16(ea);
-		uint upper_bound = m68ki_read_pcrel_16(ea + 2);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(compare) - MAKE_INT_16(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(upper_bound) - MAKE_INT_16(compare);
-		else
-			FLAG_C = upper_bound - compare;
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15]&0xffff;
-		uint ea = M68KMAKE_GET_EA_AY_16;
-		uint lower_bound = m68ki_read_16(ea);
-		uint upper_bound = m68ki_read_16(ea + 2);
-
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(compare) - MAKE_INT_16(lower_bound);
-		else
-			FLAG_C = compare - lower_bound;
-
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-		if(!BIT_F(word2))
-			FLAG_C = MAKE_INT_16(upper_bound) - MAKE_INT_16(compare);
-		else
-			FLAG_C = upper_bound - compare;
-
-		FLAG_C = CFLAG_16(FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 32, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15];
-		uint ea = EA_PCDI_32();
-		uint lower_bound = m68ki_read_pcrel_32(ea);
-		uint upper_bound = m68ki_read_pcrel_32(ea + 4);
-
-		FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_SUB_32(lower_bound, compare, FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		FLAG_C = CFLAG_SUB_32(compare, upper_bound, FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 32, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15];
-		uint ea = EA_PCIX_32();
-		uint lower_bound = m68ki_read_pcrel_32(ea);
-		uint upper_bound = m68ki_read_pcrel_32(ea + 4);
-
-		FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_SUB_32(lower_bound, compare, FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		FLAG_C = CFLAG_SUB_32(compare, upper_bound, FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(chk2cmp2, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint compare = REG_DA[(word2 >> 12) & 15];
-		uint ea = M68KMAKE_GET_EA_AY_32;
-		uint lower_bound = m68ki_read_32(ea);
-		uint upper_bound = m68ki_read_32(ea + 4);
-
-		FLAG_C = compare - lower_bound;
-		FLAG_Z = !((upper_bound==compare) | (lower_bound==compare));
-		FLAG_C = CFLAG_SUB_32(lower_bound, compare, FLAG_C);
-		if(COND_CS())
-		{
-			if(BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-			return;
-		}
-
-		FLAG_C = upper_bound - compare;
-		FLAG_C = CFLAG_SUB_32(compare, upper_bound, FLAG_C);
-		if(COND_CS() && BIT_B(word2))
-				m68ki_exception_trap(EXCEPTION_CHK);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -4070,36 +2985,12 @@ M68KMAKE_OP(cmpi, 8, ., .)
 
 M68KMAKE_OP(cmpi, 8, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_8();
-		uint dst = OPER_PCDI_8();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = MASK_OUT_ABOVE_8(res);
-		FLAG_V = VFLAG_SUB_8(src, dst, res);
-		FLAG_C = CFLAG_8(res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cmpi, 8, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_8();
-		uint dst = OPER_PCIX_8();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = MASK_OUT_ABOVE_8(res);
-		FLAG_V = VFLAG_SUB_8(src, dst, res);
-		FLAG_C = CFLAG_8(res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -4132,36 +3023,12 @@ M68KMAKE_OP(cmpi, 16, ., .)
 
 M68KMAKE_OP(cmpi, 16, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_16();
-		uint dst = OPER_PCDI_16();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = MASK_OUT_ABOVE_16(res);
-		FLAG_V = VFLAG_SUB_16(src, dst, res);
-		FLAG_C = CFLAG_16(res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cmpi, 16, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_16();
-		uint dst = OPER_PCIX_16();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = MASK_OUT_ABOVE_16(res);
-		FLAG_V = VFLAG_SUB_16(src, dst, res);
-		FLAG_C = CFLAG_16(res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -4196,36 +3063,12 @@ M68KMAKE_OP(cmpi, 32, ., .)
 
 M68KMAKE_OP(cmpi, 32, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_32();
-		uint dst = OPER_PCDI_32();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = MASK_OUT_ABOVE_32(res);
-		FLAG_V = VFLAG_SUB_32(src, dst, res);
-		FLAG_C = CFLAG_SUB_32(src, dst, res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(cmpi, 32, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_I_32();
-		uint dst = OPER_PCIX_32();
-		uint res = dst - src;
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = MASK_OUT_ABOVE_32(res);
-		FLAG_V = VFLAG_SUB_32(src, dst, res);
-		FLAG_C = CFLAG_SUB_32(src, dst, res);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -4310,65 +3153,30 @@ M68KMAKE_OP(cmpm, 32, ., .)
 
 M68KMAKE_OP(cpbcc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_1111();
 }
 
 
 M68KMAKE_OP(cpdbcc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_1111();
 }
 
 
 M68KMAKE_OP(cpgen, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_1111();
 }
 
 
 M68KMAKE_OP(cpscc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_1111();
 }
 
 
 M68KMAKE_OP(cptrapcc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_1111();
 }
 
@@ -4552,423 +3360,13 @@ M68KMAKE_OP(divu, 16, ., .)
 
 M68KMAKE_OP(divl, 32, ., d)
 {
-#if M68K_USE_64_BIT
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint64 divisor   = DY;
-		uint64 dividend  = 0;
-		uint64 quotient  = 0;
-		uint64 remainder = 0;
-
-		if(divisor != 0)
-		{
-			if(BIT_A(word2))	/* 64 bit */
-			{
-				dividend = REG_D[word2 & 7];
-				dividend <<= 32;
-				dividend |= REG_D[(word2 >> 12) & 7];
-
-				if(BIT_B(word2))	   /* signed */
-				{
-					quotient  = (uint64)((sint64)dividend / (sint64)((sint32)divisor));
-					remainder = (uint64)((sint64)dividend % (sint64)((sint32)divisor));
-					if((sint64)quotient != (sint64)((sint32)quotient))
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-				}
-				else					/* unsigned */
-				{
-					quotient = dividend / divisor;
-					if(quotient > 0xffffffff)
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-					remainder = dividend % divisor;
-				}
-			}
-			else	/* 32 bit */
-			{
-				dividend = REG_D[(word2 >> 12) & 7];
-				if(BIT_B(word2))	   /* signed */
-				{
-					quotient  = (uint64)((sint64)((sint32)dividend) / (sint64)((sint32)divisor));
-					remainder = (uint64)((sint64)((sint32)dividend) % (sint64)((sint32)divisor));
-				}
-				else					/* unsigned */
-				{
-					quotient = dividend / divisor;
-					remainder = dividend % divisor;
-				}
-			}
-
-			REG_D[word2 & 7] = remainder;
-			REG_D[(word2 >> 12) & 7] = quotient;
-
-			FLAG_N = NFLAG_32(quotient);
-			FLAG_Z = quotient;
-			FLAG_V = VFLAG_CLEAR;
-			FLAG_C = CFLAG_CLEAR;
-			return;
-		}
-		m68ki_exception_trap(EXCEPTION_ZERO_DIVIDE);
-		return;
-	}
 	m68ki_exception_illegal();
-
-#else
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint divisor = DY;
-		uint dividend_hi = REG_D[word2 & 7];
-		uint dividend_lo = REG_D[(word2 >> 12) & 7];
-		uint quotient = 0;
-		uint remainder = 0;
-		uint dividend_neg = 0;
-		uint divisor_neg = 0;
-		sint i;
-		uint overflow;
-
-		if(divisor != 0)
-		{
-			/* quad / long : long quotient, long remainder */
-			if(BIT_A(word2))
-			{
-				if(BIT_B(word2))	   /* signed */
-				{
-					/* special case in signed divide */
-					if(dividend_hi == 0 && dividend_lo == 0x80000000 && divisor == 0xffffffff)
-					{
-						REG_D[word2 & 7] = 0;
-						REG_D[(word2 >> 12) & 7] = 0x80000000;
-
-						FLAG_N = NFLAG_SET;
-						FLAG_Z = ZFLAG_CLEAR;
-						FLAG_V = VFLAG_CLEAR;
-						FLAG_C = CFLAG_CLEAR;
-						return;
-					}
-					if(GET_MSB_32(dividend_hi))
-					{
-						dividend_neg = 1;
-						dividend_hi = (uint)MASK_OUT_ABOVE_32((-(sint)dividend_hi) - (dividend_lo != 0));
-						dividend_lo = (uint)MASK_OUT_ABOVE_32(-(sint)dividend_lo);
-					}
-					if(GET_MSB_32(divisor))
-					{
-						divisor_neg = 1;
-						divisor = (uint)MASK_OUT_ABOVE_32(-(sint)divisor);
-
-					}
-				}
-
-				/* if the upper long is greater than the divisor, we're overflowing. */
-				if(dividend_hi >= divisor)
-				{
-					FLAG_V = VFLAG_SET;
-					return;
-				}
-
-				for(i = 31; i >= 0; i--)
-				{
-					quotient <<= 1;
-					remainder = (remainder << 1) + ((dividend_hi >> i) & 1);
-					if(remainder >= divisor)
-					{
-						remainder -= divisor;
-						quotient++;
-					}
-				}
-				for(i = 31; i >= 0; i--)
-				{
-					quotient <<= 1;
-					overflow = GET_MSB_32(remainder);
-					remainder = (remainder << 1) + ((dividend_lo >> i) & 1);
-					if(remainder >= divisor || overflow)
-					{
-						remainder -= divisor;
-						quotient++;
-					}
-				}
-
-				if(BIT_B(word2))	   /* signed */
-				{
-					if(quotient > 0x7fffffff)
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-					if(dividend_neg)
-					{
-						remainder = (uint)MASK_OUT_ABOVE_32(-(sint)remainder);
-						quotient = (uint)MASK_OUT_ABOVE_32(-(sint)quotient);
-					}
-					if(divisor_neg)
-						quotient = (uint)MASK_OUT_ABOVE_32(-(sint)quotient);
-				}
-
-				REG_D[word2 & 7] = remainder;
-				REG_D[(word2 >> 12) & 7] = quotient;
-
-				FLAG_N = NFLAG_32(quotient);
-				FLAG_Z = quotient;
-				FLAG_V = VFLAG_CLEAR;
-				FLAG_C = CFLAG_CLEAR;
-				return;
-			}
-
-			/* long / long: long quotient, maybe long remainder */
-			if(BIT_B(word2))	   /* signed */
-			{
-				/* Special case in divide */
-				if(dividend_lo == 0x80000000 && divisor == 0xffffffff)
-				{
-					FLAG_N = NFLAG_SET;
-					FLAG_Z = ZFLAG_CLEAR;
-					FLAG_V = VFLAG_CLEAR;
-					FLAG_C = CFLAG_CLEAR;
-					REG_D[(word2 >> 12) & 7] = 0x80000000;
-					REG_D[word2 & 7] = 0;
-					return;
-				}
-				REG_D[word2 & 7] = MAKE_INT_32(dividend_lo) % MAKE_INT_32(divisor);
-				quotient = REG_D[(word2 >> 12) & 7] = MAKE_INT_32(dividend_lo) / MAKE_INT_32(divisor);
-			}
-			else
-			{
-				REG_D[word2 & 7] = MASK_OUT_ABOVE_32(dividend_lo) % MASK_OUT_ABOVE_32(divisor);
-				quotient = REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(dividend_lo) / MASK_OUT_ABOVE_32(divisor);
-			}
-
-			FLAG_N = NFLAG_32(quotient);
-			FLAG_Z = quotient;
-			FLAG_V = VFLAG_CLEAR;
-			FLAG_C = CFLAG_CLEAR;
-			return;
-		}
-		m68ki_exception_trap(EXCEPTION_ZERO_DIVIDE);
-		return;
-	}
-	m68ki_exception_illegal();
-
-#endif
 }
 
 
 M68KMAKE_OP(divl, 32, ., .)
 {
-#if M68K_USE_64_BIT
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint64 divisor = M68KMAKE_GET_OPER_AY_32;
-		uint64 dividend  = 0;
-		uint64 quotient  = 0;
-		uint64 remainder = 0;
-
-		if(divisor != 0)
-		{
-			if(BIT_A(word2))	/* 64 bit */
-			{
-				dividend = REG_D[word2 & 7];
-				dividend <<= 32;
-				dividend |= REG_D[(word2 >> 12) & 7];
-
-				if(BIT_B(word2))	   /* signed */
-				{
-					quotient  = (uint64)((sint64)dividend / (sint64)((sint32)divisor));
-					remainder = (uint64)((sint64)dividend % (sint64)((sint32)divisor));
-					if((sint64)quotient != (sint64)((sint32)quotient))
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-				}
-				else					/* unsigned */
-				{
-					quotient = dividend / divisor;
-					if(quotient > 0xffffffff)
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-					remainder = dividend % divisor;
-				}
-			}
-			else	/* 32 bit */
-			{
-				dividend = REG_D[(word2 >> 12) & 7];
-				if(BIT_B(word2))	   /* signed */
-				{
-					quotient  = (uint64)((sint64)((sint32)dividend) / (sint64)((sint32)divisor));
-					remainder = (uint64)((sint64)((sint32)dividend) % (sint64)((sint32)divisor));
-				}
-				else					/* unsigned */
-				{
-					quotient = dividend / divisor;
-					remainder = dividend % divisor;
-				}
-			}
-
-			REG_D[word2 & 7] = remainder;
-			REG_D[(word2 >> 12) & 7] = quotient;
-
-			FLAG_N = NFLAG_32(quotient);
-			FLAG_Z = quotient;
-			FLAG_V = VFLAG_CLEAR;
-			FLAG_C = CFLAG_CLEAR;
-			return;
-		}
-		m68ki_exception_trap(EXCEPTION_ZERO_DIVIDE);
-		return;
-	}
 	m68ki_exception_illegal();
-
-#else
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint divisor = M68KMAKE_GET_OPER_AY_32;
-		uint dividend_hi = REG_D[word2 & 7];
-		uint dividend_lo = REG_D[(word2 >> 12) & 7];
-		uint quotient = 0;
-		uint remainder = 0;
-		uint dividend_neg = 0;
-		uint divisor_neg = 0;
-		sint i;
-		uint overflow;
-
-		if(divisor != 0)
-		{
-			/* quad / long : long quotient, long remainder */
-			if(BIT_A(word2))
-			{
-				if(BIT_B(word2))	   /* signed */
-				{
-					/* special case in signed divide */
-					if(dividend_hi == 0 && dividend_lo == 0x80000000 && divisor == 0xffffffff)
-					{
-						REG_D[word2 & 7] = 0;
-						REG_D[(word2 >> 12) & 7] = 0x80000000;
-
-						FLAG_N = NFLAG_SET;
-						FLAG_Z = ZFLAG_CLEAR;
-						FLAG_V = VFLAG_CLEAR;
-						FLAG_C = CFLAG_CLEAR;
-						return;
-					}
-					if(GET_MSB_32(dividend_hi))
-					{
-						dividend_neg = 1;
-						dividend_hi = (uint)MASK_OUT_ABOVE_32((-(sint)dividend_hi) - (dividend_lo != 0));
-						dividend_lo = (uint)MASK_OUT_ABOVE_32(-(sint)dividend_lo);
-					}
-					if(GET_MSB_32(divisor))
-					{
-						divisor_neg = 1;
-						divisor = (uint)MASK_OUT_ABOVE_32(-(sint)divisor);
-
-					}
-				}
-
-				/* if the upper long is greater than the divisor, we're overflowing. */
-				if(dividend_hi >= divisor)
-				{
-					FLAG_V = VFLAG_SET;
-					return;
-				}
-
-				for(i = 31; i >= 0; i--)
-				{
-					quotient <<= 1;
-					remainder = (remainder << 1) + ((dividend_hi >> i) & 1);
-					if(remainder >= divisor)
-					{
-						remainder -= divisor;
-						quotient++;
-					}
-				}
-				for(i = 31; i >= 0; i--)
-				{
-					quotient <<= 1;
-					overflow = GET_MSB_32(remainder);
-					remainder = (remainder << 1) + ((dividend_lo >> i) & 1);
-					if(remainder >= divisor || overflow)
-					{
-						remainder -= divisor;
-						quotient++;
-					}
-				}
-
-				if(BIT_B(word2))	   /* signed */
-				{
-					if(quotient > 0x7fffffff)
-					{
-						FLAG_V = VFLAG_SET;
-						return;
-					}
-					if(dividend_neg)
-					{
-						remainder = (uint)MASK_OUT_ABOVE_32(-(sint)remainder);
-						quotient = (uint)MASK_OUT_ABOVE_32(-(sint)quotient);
-					}
-					if(divisor_neg)
-						quotient = (uint)MASK_OUT_ABOVE_32(-(sint)quotient);
-				}
-
-				REG_D[word2 & 7] = remainder;
-				REG_D[(word2 >> 12) & 7] = quotient;
-
-				FLAG_N = NFLAG_32(quotient);
-				FLAG_Z = quotient;
-				FLAG_V = VFLAG_CLEAR;
-				FLAG_C = CFLAG_CLEAR;
-				return;
-			}
-
-			/* long / long: long quotient, maybe long remainder */
-			if(BIT_B(word2))	   /* signed */
-			{
-				/* Special case in divide */
-				if(dividend_lo == 0x80000000 && divisor == 0xffffffff)
-				{
-					FLAG_N = NFLAG_SET;
-					FLAG_Z = ZFLAG_CLEAR;
-					FLAG_V = VFLAG_CLEAR;
-					FLAG_C = CFLAG_CLEAR;
-					REG_D[(word2 >> 12) & 7] = 0x80000000;
-					REG_D[word2 & 7] = 0;
-					return;
-				}
-				REG_D[word2 & 7] = MAKE_INT_32(dividend_lo) % MAKE_INT_32(divisor);
-				quotient = REG_D[(word2 >> 12) & 7] = MAKE_INT_32(dividend_lo) / MAKE_INT_32(divisor);
-			}
-			else
-			{
-				REG_D[word2 & 7] = MASK_OUT_ABOVE_32(dividend_lo) % MASK_OUT_ABOVE_32(divisor);
-				quotient = REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(dividend_lo) / MASK_OUT_ABOVE_32(divisor);
-			}
-
-			FLAG_N = NFLAG_32(quotient);
-			FLAG_Z = quotient;
-			FLAG_V = VFLAG_CLEAR;
-			FLAG_C = CFLAG_CLEAR;
-			return;
-		}
-		m68ki_exception_trap(EXCEPTION_ZERO_DIVIDE);
-		return;
-	}
-	m68ki_exception_illegal();
-
-#endif
 }
 
 
@@ -5202,18 +3600,6 @@ M68KMAKE_OP(ext, 32, ., .)
 
 M68KMAKE_OP(extb, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint* r_dst = &DY;
-
-		*r_dst = MASK_OUT_ABOVE_8(*r_dst) | (GET_MSB_8(*r_dst) ? 0xffffff00 : 0);
-
-		FLAG_N = NFLAG_32(*r_dst);
-		FLAG_Z = *r_dst;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -5267,28 +3653,12 @@ M68KMAKE_OP(link, 16, ., .)
 
 M68KMAKE_OP(link, 32, ., a7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		REG_A[7] -= 4;
-		m68ki_write_32(REG_A[7], REG_A[7]);
-		REG_A[7] = MASK_OUT_ABOVE_32(REG_A[7] + OPER_I_32());
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(link, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint* r_dst = &AY;
-
-		m68ki_push_32(*r_dst);
-		*r_dst = REG_A[7];
-		REG_A[7] = MASK_OUT_ABOVE_32(REG_A[7] + OPER_I_32());
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -6647,22 +5017,12 @@ M68KMAKE_OP(movea, 32, ., .)
 
 M68KMAKE_OP(move, 16, frc, d)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		DY = MASK_OUT_BELOW_16(DY) | m68ki_get_ccr();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(move, 16, frc, .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		m68ki_write_16(M68KMAKE_GET_EA_AY_16, m68ki_get_ccr());
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -6751,144 +5111,12 @@ M68KMAKE_OP(move, 32, tou, .)
 
 M68KMAKE_OP(movec, 32, cr, .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		if(FLAG_S)
-		{
-			uint word2 = OPER_I_16();
-
-			m68ki_trace_t0();		   /* auto-disable (see m68kcpu.h) */
-			switch (word2 & 0xfff)
-			{
-			case 0x000:			   /* SFC */
-				REG_DA[(word2 >> 12) & 15] = REG_SFC;
-				return;
-			case 0x001:			   /* DFC */
-				REG_DA[(word2 >> 12) & 15] = REG_DFC;
-				return;
-			case 0x002:			   /* CACR */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_DA[(word2 >> 12) & 15] = REG_CACR;
-					return;
-				}
-				return;
-			case 0x800:			   /* USP */
-				REG_DA[(word2 >> 12) & 15] = REG_USP;
-				return;
-			case 0x801:			   /* VBR */
-				REG_DA[(word2 >> 12) & 15] = REG_VBR;
-				return;
-			case 0x802:			   /* CAAR */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_DA[(word2 >> 12) & 15] = REG_CAAR;
-					return;
-				}
-				m68ki_exception_illegal();
-				break;
-			case 0x803:			   /* MSP */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_DA[(word2 >> 12) & 15] = FLAG_M ? REG_SP : REG_MSP;
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			case 0x804:			   /* ISP */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_DA[(word2 >> 12) & 15] = FLAG_M ? REG_ISP : REG_SP;
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			default:
-				m68ki_exception_illegal();
-				return;
-			}
-		}
-		m68ki_exception_privilege_violation();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(movec, 32, rc, .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		if(FLAG_S)
-		{
-			uint word2 = OPER_I_16();
-
-			m68ki_trace_t0();		   /* auto-disable (see m68kcpu.h) */
-			switch (word2 & 0xfff)
-			{
-			case 0x000:			   /* SFC */
-				REG_SFC = REG_DA[(word2 >> 12) & 15] & 7;
-				return;
-			case 0x001:			   /* DFC */
-				REG_DFC = REG_DA[(word2 >> 12) & 15] & 7;
-				return;
-			case 0x002:			   /* CACR */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_CACR = REG_DA[(word2 >> 12) & 15];
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			case 0x800:			   /* USP */
-				REG_USP = REG_DA[(word2 >> 12) & 15];
-				return;
-			case 0x801:			   /* VBR */
-				REG_VBR = REG_DA[(word2 >> 12) & 15];
-				return;
-			case 0x802:			   /* CAAR */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					REG_CAAR = REG_DA[(word2 >> 12) & 15];
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			case 0x803:			   /* MSP */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					/* we are in supervisor mode so just check for M flag */
-					if(!FLAG_M)
-					{
-						REG_MSP = REG_DA[(word2 >> 12) & 15];
-						return;
-					}
-					REG_SP = REG_DA[(word2 >> 12) & 15];
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			case 0x804:			   /* ISP */
-				if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-				{
-					if(!FLAG_M)
-					{
-						REG_SP = REG_DA[(word2 >> 12) & 15];
-						return;
-					}
-					REG_ISP = REG_DA[(word2 >> 12) & 15];
-					return;
-				}
-				m68ki_exception_illegal();
-				return;
-			default:
-				m68ki_exception_illegal();
-				return;
-			}
-		}
-		m68ki_exception_privilege_violation();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -7167,100 +5395,18 @@ M68KMAKE_OP(movep, 32, er, .)
 
 M68KMAKE_OP(moves, 8, ., .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		if(FLAG_S)
-		{
-			uint word2 = OPER_I_16();
-			uint ea = M68KMAKE_GET_EA_AY_8;
-
-			m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-			if(BIT_B(word2))		   /* Register to memory */
-			{
-				m68ki_write_8_fc(ea, REG_DFC, MASK_OUT_ABOVE_8(REG_DA[(word2 >> 12) & 15]));
-				return;
-			}
-			if(BIT_F(word2))		   /* Memory to address register */
-			{
-				REG_A[(word2 >> 12) & 7] = MAKE_INT_8(m68ki_read_8_fc(ea, REG_SFC));
-				if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-					USE_CYCLES(2);
-				return;
-			}
-			/* Memory to data register */
-			REG_D[(word2 >> 12) & 7] = MASK_OUT_BELOW_8(REG_D[(word2 >> 12) & 7]) | m68ki_read_8_fc(ea, REG_SFC);
-			if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-				USE_CYCLES(2);
-			return;
-		}
-		m68ki_exception_privilege_violation();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(moves, 16, ., .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		if(FLAG_S)
-		{
-			uint word2 = OPER_I_16();
-			uint ea = M68KMAKE_GET_EA_AY_16;
-
-			m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-			if(BIT_B(word2))		   /* Register to memory */
-			{
-				m68ki_write_16_fc(ea, REG_DFC, MASK_OUT_ABOVE_16(REG_DA[(word2 >> 12) & 15]));
-				return;
-			}
-			if(BIT_F(word2))		   /* Memory to address register */
-			{
-				REG_A[(word2 >> 12) & 7] = MAKE_INT_16(m68ki_read_16_fc(ea, REG_SFC));
-				if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-					USE_CYCLES(2);
-				return;
-			}
-			/* Memory to data register */
-			REG_D[(word2 >> 12) & 7] = MASK_OUT_BELOW_16(REG_D[(word2 >> 12) & 7]) | m68ki_read_16_fc(ea, REG_SFC);
-			if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-				USE_CYCLES(2);
-			return;
-		}
-		m68ki_exception_privilege_violation();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(moves, 32, ., .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		if(FLAG_S)
-		{
-			uint word2 = OPER_I_16();
-			uint ea = M68KMAKE_GET_EA_AY_32;
-
-			m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-			if(BIT_B(word2))		   /* Register to memory */
-			{
-				m68ki_write_32_fc(ea, REG_DFC, REG_DA[(word2 >> 12) & 15]);
-				if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-					USE_CYCLES(2);
-				return;
-			}
-			/* Memory to register */
-			REG_DA[(word2 >> 12) & 15] = m68ki_read_32_fc(ea, REG_SFC);
-			if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-				USE_CYCLES(2);
-			return;
-		}
-		m68ki_exception_privilege_violation();
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -7334,249 +5480,13 @@ M68KMAKE_OP(mulu, 16, ., .)
 
 M68KMAKE_OP(mull, 32, ., d)
 {
-#if M68K_USE_64_BIT
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint64 src = DY;
-		uint64 dst = REG_D[(word2 >> 12) & 7];
-		uint64 res;
-
-		FLAG_C = CFLAG_CLEAR;
-
-		if(BIT_B(word2))			   /* signed */
-		{
-			res = (sint64)((sint32)src) * (sint64)((sint32)dst);
-			if(!BIT_A(word2))
-			{
-				FLAG_Z = MASK_OUT_ABOVE_32(res);
-				FLAG_N = NFLAG_32(res);
-				FLAG_V = ((sint64)res != (sint32)res)<<7;
-				REG_D[(word2 >> 12) & 7] = FLAG_Z;
-				return;
-			}
-			FLAG_Z = MASK_OUT_ABOVE_32(res) | (res>>32);
-			FLAG_N = NFLAG_64(res);
-			FLAG_V = VFLAG_CLEAR;
-			REG_D[word2 & 7] = (res >> 32);
-			REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(res);
-			return;
-		}
-
-		res = src * dst;
-		if(!BIT_A(word2))
-		{
-			FLAG_Z = MASK_OUT_ABOVE_32(res);
-			FLAG_N = NFLAG_32(res);
-			FLAG_V = (res > 0xffffffff)<<7;
-			REG_D[(word2 >> 12) & 7] = FLAG_Z;
-			return;
-		}
-		FLAG_Z = MASK_OUT_ABOVE_32(res) | (res>>32);
-		FLAG_N = NFLAG_64(res);
-		FLAG_V = VFLAG_CLEAR;
-		REG_D[word2 & 7] = (res >> 32);
-		REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(res);
-		return;
-	}
 	m68ki_exception_illegal();
-
-#else
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint src = DY;
-		uint dst = REG_D[(word2 >> 12) & 7];
-		uint neg = GET_MSB_32(src ^ dst);
-		uint src1;
-		uint src2;
-		uint dst1;
-		uint dst2;
-		uint r1;
-		uint r2;
-		uint r3;
-		uint r4;
-		uint lo;
-		uint hi;
-
-		FLAG_C = CFLAG_CLEAR;
-
-		if(BIT_B(word2))			   /* signed */
-		{
-			if(GET_MSB_32(src))
-				src = (uint)MASK_OUT_ABOVE_32(-(sint)src);
-			if(GET_MSB_32(dst))
-				dst = (uint)MASK_OUT_ABOVE_32(-(sint)dst);
-		}
-
-		src1 = MASK_OUT_ABOVE_16(src);
-		src2 = src>>16;
-		dst1 = MASK_OUT_ABOVE_16(dst);
-		dst2 = dst>>16;
-
-
-		r1 = src1 * dst1;
-		r2 = src1 * dst2;
-		r3 = src2 * dst1;
-		r4 = src2 * dst2;
-
-		lo = r1 + (MASK_OUT_ABOVE_16(r2)<<16) + (MASK_OUT_ABOVE_16(r3)<<16);
-		hi = r4 + (r2>>16) + (r3>>16) + (((r1>>16) + MASK_OUT_ABOVE_16(r2) + MASK_OUT_ABOVE_16(r3)) >> 16);
-
-		if(BIT_B(word2) && neg)
-		{
-			hi = (uint)MASK_OUT_ABOVE_32((-(sint)hi) - (lo != 0));
-			lo = (uint)MASK_OUT_ABOVE_32(-(sint)lo);
-		}
-
-		if(BIT_A(word2))
-		{
-			REG_D[word2 & 7] = hi;
-			REG_D[(word2 >> 12) & 7] = lo;
-			FLAG_N = NFLAG_32(hi);
-			FLAG_Z = hi | lo;
-			FLAG_V = VFLAG_CLEAR;
-			return;
-		}
-
-		REG_D[(word2 >> 12) & 7] = lo;
-		FLAG_N = NFLAG_32(lo);
-		FLAG_Z = lo;
-		if(BIT_B(word2))
-			FLAG_V = (!((GET_MSB_32(lo) && hi == 0xffffffff) || (!GET_MSB_32(lo) && !hi)))<<7;
-		else
-			FLAG_V = (hi != 0) << 7;
-		return;
-	}
-	m68ki_exception_illegal();
-
-#endif
 }
 
 
 M68KMAKE_OP(mull, 32, ., .)
 {
-#if M68K_USE_64_BIT
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint64 src = M68KMAKE_GET_OPER_AY_32;
-		uint64 dst = REG_D[(word2 >> 12) & 7];
-		uint64 res;
-
-		FLAG_C = CFLAG_CLEAR;
-
-		if(BIT_B(word2))			   /* signed */
-		{
-			res = (sint64)((sint32)src) * (sint64)((sint32)dst);
-			if(!BIT_A(word2))
-			{
-				FLAG_Z = MASK_OUT_ABOVE_32(res);
-				FLAG_N = NFLAG_32(res);
-				FLAG_V = ((sint64)res != (sint32)res)<<7;
-				REG_D[(word2 >> 12) & 7] = FLAG_Z;
-				return;
-			}
-			FLAG_Z = MASK_OUT_ABOVE_32(res) | (res>>32);
-			FLAG_N = NFLAG_64(res);
-			FLAG_V = VFLAG_CLEAR;
-			REG_D[word2 & 7] = (res >> 32);
-			REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(res);
-			return;
-		}
-
-		res = src * dst;
-		if(!BIT_A(word2))
-		{
-			FLAG_Z = MASK_OUT_ABOVE_32(res);
-			FLAG_N = NFLAG_32(res);
-			FLAG_V = (res > 0xffffffff)<<7;
-			REG_D[(word2 >> 12) & 7] = FLAG_Z;
-			return;
-		}
-		FLAG_Z = MASK_OUT_ABOVE_32(res) | (res>>32);
-		FLAG_N = NFLAG_64(res);
-		FLAG_V = VFLAG_CLEAR;
-		REG_D[word2 & 7] = (res >> 32);
-		REG_D[(word2 >> 12) & 7] = MASK_OUT_ABOVE_32(res);
-		return;
-	}
 	m68ki_exception_illegal();
-
-#else
-
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint word2 = OPER_I_16();
-		uint src = M68KMAKE_GET_OPER_AY_32;
-		uint dst = REG_D[(word2 >> 12) & 7];
-		uint neg = GET_MSB_32(src ^ dst);
-		uint src1;
-		uint src2;
-		uint dst1;
-		uint dst2;
-		uint r1;
-		uint r2;
-		uint r3;
-		uint r4;
-		uint lo;
-		uint hi;
-
-		FLAG_C = CFLAG_CLEAR;
-
-		if(BIT_B(word2))			   /* signed */
-		{
-			if(GET_MSB_32(src))
-				src = (uint)MASK_OUT_ABOVE_32(-(sint)src);
-			if(GET_MSB_32(dst))
-				dst = (uint)MASK_OUT_ABOVE_32(-(sint)dst);
-		}
-
-		src1 = MASK_OUT_ABOVE_16(src);
-		src2 = src>>16;
-		dst1 = MASK_OUT_ABOVE_16(dst);
-		dst2 = dst>>16;
-
-
-		r1 = src1 * dst1;
-		r2 = src1 * dst2;
-		r3 = src2 * dst1;
-		r4 = src2 * dst2;
-
-		lo = r1 + (MASK_OUT_ABOVE_16(r2)<<16) + (MASK_OUT_ABOVE_16(r3)<<16);
-		hi = r4 + (r2>>16) + (r3>>16) + (((r1>>16) + MASK_OUT_ABOVE_16(r2) + MASK_OUT_ABOVE_16(r3)) >> 16);
-
-		if(BIT_B(word2) && neg)
-		{
-			hi = (uint)MASK_OUT_ABOVE_32((-(sint)hi) - (lo != 0));
-			lo = (uint)MASK_OUT_ABOVE_32(-(sint)lo);
-		}
-
-		if(BIT_A(word2))
-		{
-			REG_D[word2 & 7] = hi;
-			REG_D[(word2 >> 12) & 7] = lo;
-			FLAG_N = NFLAG_32(hi);
-			FLAG_Z = hi | lo;
-			FLAG_V = VFLAG_CLEAR;
-			return;
-		}
-
-		REG_D[(word2 >> 12) & 7] = lo;
-		FLAG_N = NFLAG_32(lo);
-		FLAG_Z = lo;
-		if(BIT_B(word2))
-			FLAG_V = (!((GET_MSB_32(lo) && hi == 0xffffffff) || (!GET_MSB_32(lo) && !hi)))<<7;
-		else
-			FLAG_V = (hi != 0) << 7;
-		return;
-	}
-	m68ki_exception_illegal();
-
-#endif
 }
 
 
@@ -8127,82 +6037,30 @@ M68KMAKE_OP(ori, 16, tos, .)
 
 M68KMAKE_OP(pack, 16, rr, .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: DX and DY are reversed in Motorola's docs */
-		uint src = DY + OPER_I_16();
-		uint* r_dst = &DX;
-
-		*r_dst = MASK_OUT_BELOW_8(*r_dst) | ((src >> 4) & 0x00f0) | (src & 0x000f);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(pack, 16, mm, ax7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint ea_src = EA_AY_PD_8();
-		uint src = m68ki_read_8(ea_src);
-		ea_src = EA_AY_PD_8();
-		src = ((src << 8) | m68ki_read_8(ea_src)) + OPER_I_16();
-
-		m68ki_write_8(EA_A7_PD_8(), ((src >> 4) & 0x00f0) | (src & 0x000f));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(pack, 16, mm, ay7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint ea_src = EA_A7_PD_8();
-		uint src = m68ki_read_8(ea_src);
-		ea_src = EA_A7_PD_8();
-		src = ((src << 8) | m68ki_read_8(ea_src)) + OPER_I_16();
-
-		m68ki_write_8(EA_AX_PD_8(), ((src >> 4) & 0x00f0) | (src & 0x000f));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(pack, 16, mm, axy7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint ea_src = EA_A7_PD_8();
-		uint src = m68ki_read_8(ea_src);
-		ea_src = EA_A7_PD_8();
-		src = ((src << 8) | m68ki_read_8(ea_src)) + OPER_I_16();
-
-		m68ki_write_8(EA_A7_PD_8(), ((src >> 4) & 0x00f0) | (src & 0x000f));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(pack, 16, mm, .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint ea_src = EA_AY_PD_8();
-		uint src = m68ki_read_8(ea_src);
-		ea_src = EA_AY_PD_8();
-		src = ((src << 8) | m68ki_read_8(ea_src)) + OPER_I_16();
-
-		m68ki_write_8(EA_AX_PD_8(), ((src >> 4) & 0x00f0) | (src & 0x000f));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -9003,15 +6861,6 @@ M68KMAKE_OP(roxl, 16, ., .)
 
 M68KMAKE_OP(rtd, 32, ., .)
 {
-	if(CPU_TYPE_IS_010_PLUS(CPU_TYPE))
-	{
-		uint new_pc = m68ki_pull_32();
-
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		REG_A[7] = MASK_OUT_ABOVE_32(REG_A[7] + MAKE_INT_16(OPER_I_16()));
-		m68ki_jump(new_pc);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -9040,26 +6889,6 @@ M68KMAKE_OP(rte, 32, ., .)
 			return;
 		}
 
-		if(CPU_TYPE_IS_010(CPU_TYPE))
-		{
-			format_word = m68ki_read_16(REG_A[7]+6) >> 12;
-			if(format_word == 0)
-			{
-				new_sr = m68ki_pull_16();
-				new_pc = m68ki_pull_32();
-				m68ki_fake_pull_16();	/* format word */
-				m68ki_jump(new_pc);
-				m68ki_set_sr(new_sr);
-				CPU_INSTR_MODE = INSTRUCTION_YES;
-				CPU_RUN_MODE = RUN_MODE_NORMAL;
-				return;
-			}
-			CPU_INSTR_MODE = INSTRUCTION_YES;
-			CPU_RUN_MODE = RUN_MODE_NORMAL;
-			/* Not handling bus fault (9) */
-			m68ki_exception_format_error();
-			return;
-		}
 
 		/* Otherwise it's 020 */
 rte_loop:
@@ -9104,14 +6933,6 @@ rte_loop:
 
 M68KMAKE_OP(rtm, 32, ., .)
 {
-	if(CPU_TYPE_IS_020_VARIANT(CPU_TYPE))
-	{
-		m68ki_trace_t0();			   /* auto-disable (see m68kcpu.h) */
-		M68K_DO_LOG((M68K_LOG_FILEHANDLE "%s at %08x: called unimplemented instruction %04x (%s)\n",
-					 m68ki_cpu_names[CPU_TYPE], ADDRESS_68K(REG_PC - 2), REG_IR,
-					 m68k_disassemble_quick(ADDRESS_68K(REG_PC - 2))));
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -9990,109 +7811,54 @@ M68KMAKE_OP(trap, 0, ., .)
 
 M68KMAKE_OP(trapt, 0, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapt, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapt, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapf, 0, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapf, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		REG_PC += 2;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapf, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		REG_PC += 4;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapcc, 0, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		if(M68KMAKE_CC)
-			m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapcc, 16, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		if(M68KMAKE_CC)
-		{
-			m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-			return;
-		}
-		REG_PC += 2;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(trapcc, 32, ., .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		if(M68KMAKE_CC)
-		{
-			m68ki_exception_trap(EXCEPTION_TRAPV);	/* HJB 990403 */
-			return;
-		}
-		REG_PC += 4;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10131,48 +7897,18 @@ M68KMAKE_OP(tst, 8, ., .)
 
 M68KMAKE_OP(tst, 8, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCDI_8();
-
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 8, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCIX_8();
-
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 8, ., i)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_I_8();
-
-		FLAG_N = NFLAG_8(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10190,16 +7926,6 @@ M68KMAKE_OP(tst, 16, ., d)
 
 M68KMAKE_OP(tst, 16, ., a)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = MAKE_INT_16(AY);
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10217,48 +7943,18 @@ M68KMAKE_OP(tst, 16, ., .)
 
 M68KMAKE_OP(tst, 16, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCDI_16();
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 16, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCIX_16();
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 16, ., i)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_I_16();
-
-		FLAG_N = NFLAG_16(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10276,16 +7972,6 @@ M68KMAKE_OP(tst, 32, ., d)
 
 M68KMAKE_OP(tst, 32, ., a)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = AY;
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10303,48 +7989,18 @@ M68KMAKE_OP(tst, 32, ., .)
 
 M68KMAKE_OP(tst, 32, ., pcdi)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCDI_32();
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 32, ., pcix)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_PCIX_32();
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(tst, 32, ., i)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint res = OPER_I_32();
-
-		FLAG_N = NFLAG_32(res);
-		FLAG_Z = res;
-		FLAG_V = VFLAG_CLEAR;
-		FLAG_C = CFLAG_CLEAR;
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
@@ -10366,90 +8022,30 @@ M68KMAKE_OP(unlk, 32, ., .)
 
 M68KMAKE_OP(unpk, 16, rr, .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: DX and DY are reversed in Motorola's docs */
-		uint src = DY;
-		uint* r_dst = &DX;
-
-		*r_dst = MASK_OUT_BELOW_16(*r_dst) | (((((src << 4) & 0x0f00) | (src & 0x000f)) + OPER_I_16()) & 0xffff);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(unpk, 16, mm, ax7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint src = OPER_AY_PD_8();
-		uint ea_dst;
-
-		src = (((src << 4) & 0x0f00) | (src & 0x000f)) + OPER_I_16();
-		ea_dst = EA_A7_PD_8();
-		m68ki_write_8(ea_dst, (src >> 8) & 0xff);
-		ea_dst = EA_A7_PD_8();
-		m68ki_write_8(ea_dst, src & 0xff);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(unpk, 16, mm, ay7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint src = OPER_A7_PD_8();
-		uint ea_dst;
-
-		src = (((src << 4) & 0x0f00) | (src & 0x000f)) + OPER_I_16();
-		ea_dst = EA_AX_PD_8();
-		m68ki_write_8(ea_dst, (src >> 8) & 0xff);
-		ea_dst = EA_AX_PD_8();
-		m68ki_write_8(ea_dst, src & 0xff);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(unpk, 16, mm, axy7)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		uint src = OPER_A7_PD_8();
-		uint ea_dst;
-
-		src = (((src << 4) & 0x0f00) | (src & 0x000f)) + OPER_I_16();
-		ea_dst = EA_A7_PD_8();
-		m68ki_write_8(ea_dst, (src >> 8) & 0xff);
-		ea_dst = EA_A7_PD_8();
-		m68ki_write_8(ea_dst, src & 0xff);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 
 
 M68KMAKE_OP(unpk, 16, mm, .)
 {
-	if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Note: AX and AY are reversed in Motorola's docs */
-		uint src = OPER_AY_PD_8();
-		uint ea_dst;
-
-		src = (((src << 4) & 0x0f00) | (src & 0x000f)) + OPER_I_16();
-		ea_dst = EA_AX_PD_8();
-		m68ki_write_8(ea_dst, (src >> 8) & 0xff);
-		ea_dst = EA_AX_PD_8();
-		m68ki_write_8(ea_dst, src & 0xff);
-		return;
-	}
 	m68ki_exception_illegal();
 }
 

@@ -157,7 +157,6 @@
 #define CPU_TYPE_000   1
 #define CPU_TYPE_008   2
 #define CPU_TYPE_010   4
-#define CPU_TYPE_EC020 8
 #define CPU_TYPE_020   16
 
 /* Different ways to stop the CPU */
@@ -373,13 +372,8 @@
 	#define CPU_TYPE_IS_020_LESS(A)    1
 #endif
 
-#if M68K_EMULATE_EC020
-	#define CPU_TYPE_IS_EC020_PLUS(A)  ((A) & (CPU_TYPE_EC020 | CPU_TYPE_020))
-	#define CPU_TYPE_IS_EC020_LESS(A)  ((A) & (CPU_TYPE_000 | CPU_TYPE_008 | CPU_TYPE_010 | CPU_TYPE_EC020))
-#else
-	#define CPU_TYPE_IS_EC020_PLUS(A)  CPU_TYPE_IS_020_PLUS(A)
-	#define CPU_TYPE_IS_EC020_LESS(A)  CPU_TYPE_IS_020_LESS(A)
-#endif
+#define CPU_TYPE_IS_EC020_PLUS(A)  CPU_TYPE_IS_020_PLUS(A)
+#define CPU_TYPE_IS_EC020_LESS(A)  CPU_TYPE_IS_020_LESS(A)
 
 #if M68K_EMULATE_010
 	#define CPU_TYPE_IS_010(A)         ((A) == CPU_TYPE_010)
@@ -391,17 +385,9 @@
 	#define CPU_TYPE_IS_010_LESS(A)    CPU_TYPE_IS_EC020_LESS(A)
 #endif
 
-#if M68K_EMULATE_020 || M68K_EMULATE_EC020
-	#define CPU_TYPE_IS_020_VARIANT(A) ((A) & (CPU_TYPE_EC020 | CPU_TYPE_020))
-#else
-	#define CPU_TYPE_IS_020_VARIANT(A) 0
-#endif
+#define CPU_TYPE_IS_020_VARIANT(A) 0
 
-#if M68K_EMULATE_020 || M68K_EMULATE_EC020 || M68K_EMULATE_010
-	#define CPU_TYPE_IS_000(A)         ((A) == CPU_TYPE_000 || (A) == CPU_TYPE_008)
-#else
-	#define CPU_TYPE_IS_000(A)         1
-#endif
+#define CPU_TYPE_IS_000(A)         1
 
 
 #if !M68K_SEPARATE_READS
@@ -1183,17 +1169,6 @@ INLINE uint m68ki_get_ea_ix(uint An)
 	uint bd = 0;                        /* Base Displacement */
 	uint od = 0;                        /* Outer Displacement */
 
-	if(CPU_TYPE_IS_010_LESS(CPU_TYPE))
-	{
-		/* Calculate index */
-		Xn = REG_DA[extension>>12];     /* Xn */
-		if(!BIT_B(extension))           /* W/L */
-			Xn = MAKE_INT_16(Xn);
-
-		/* Add base register and displacement and return */
-		return An + Xn + MAKE_INT_8(extension);
-	}
-
 	/* Brief extension format */
 	if(!BIT_8(extension))
 	{
@@ -1201,9 +1176,6 @@ INLINE uint m68ki_get_ea_ix(uint An)
 		Xn = REG_DA[extension>>12];     /* Xn */
 		if(!BIT_B(extension))           /* W/L */
 			Xn = MAKE_INT_16(Xn);
-		/* Add scale if proper CPU type */
-		if(CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-			Xn <<= (extension>>9) & 3;  /* SCALE */
 
 		/* Add base register and displacement and return */
 		return An + Xn + MAKE_INT_8(extension);
@@ -1736,10 +1708,7 @@ INLINE void m68ki_exception_trap(uint vector)
 {
 	uint sr = m68ki_init_exception();
 
-	if(CPU_TYPE_IS_010_LESS(CPU_TYPE))
-		m68ki_stack_frame_0000(REG_PC, sr, vector);
-	else
-		m68ki_stack_frame_0010(sr, vector);
+	m68ki_stack_frame_0010(sr, vector);
 
 	m68ki_jump_vector(vector);
 
@@ -1763,18 +1732,7 @@ INLINE void m68ki_exception_trace(void)
 {
 	uint sr = m68ki_init_exception();
 
-	if(CPU_TYPE_IS_010_LESS(CPU_TYPE))
-	{
-		#if M68K_EMULATE_ADDRESS_ERROR == OPT_ON
-		if(CPU_TYPE_IS_000(CPU_TYPE))
-		{
-			CPU_INSTR_MODE = INSTRUCTION_NO;
-		}
-		#endif /* M68K_EMULATE_ADDRESS_ERROR */
-		m68ki_stack_frame_0000(REG_PC, sr, EXCEPTION_TRACE);
-	}
-	else
-		m68ki_stack_frame_0010(sr, EXCEPTION_TRACE);
+	m68ki_stack_frame_0010(sr, EXCEPTION_TRACE);
 
 	m68ki_jump_vector(EXCEPTION_TRACE);
 
@@ -1957,13 +1915,6 @@ void m68ki_exception_interrupt(uint int_level)
 
 	/* Generate a stack frame */
 	m68ki_stack_frame_0000(REG_PC, sr, vector);
-	if(FLAG_M && CPU_TYPE_IS_EC020_PLUS(CPU_TYPE))
-	{
-		/* Create throwaway frame */
-		m68ki_set_sm_flag(FLAG_S);	/* clear M */
-		sr |= 0x2000; /* Same as SR in master stack frame except S is forced high */
-		m68ki_stack_frame_0001(REG_PC, sr, vector);
-	}
 
 	m68ki_jump(new_pc);
 

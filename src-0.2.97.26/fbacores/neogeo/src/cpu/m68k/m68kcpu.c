@@ -2,26 +2,6 @@
 /* ========================= LICENSING & COPYRIGHT ======================== */
 /* ======================================================================== */
 
-#if 1
-static const char* copyright_notice =
-"MUSASHI\n"
-"Version 3.3 (2001-01-29)\n"
-"A portable Motorola M680x0 processor emulation engine.\n"
-"Copyright 1998-2001 Karl Stenerud.  All rights reserved.\n"
-"\n"
-"This code may be freely used for non-commercial purpooses as long as this\n"
-"copyright notice remains unaltered in the source code and any binary files\n"
-"containing this code in compiled form.\n"
-"\n"
-"All other lisencing terms must be negotiated with the author\n"
-"(Karl Stenerud).\n"
-"\n"
-"The latest version of this code can be obtained at:\n"
-"http://kstenerud.cjb.net\n"
-;
-#endif
-
-
 /* ======================================================================== */
 /* ================================= NOTES ================================ */
 /* ======================================================================== */
@@ -485,7 +465,6 @@ unsigned int m68k_get_reg(void* context, m68k_register_t regnum)
 				case CPU_TYPE_000:		return (unsigned int)M68K_CPU_TYPE_68000;
 				case CPU_TYPE_008:		return (unsigned int)M68K_CPU_TYPE_68008;
 				case CPU_TYPE_010:		return (unsigned int)M68K_CPU_TYPE_68010;
-				case CPU_TYPE_EC020:	return (unsigned int)M68K_CPU_TYPE_68EC020;
 				case CPU_TYPE_020:		return (unsigned int)M68K_CPU_TYPE_68020;
 			}
 			return M68K_CPU_TYPE_INVALID;
@@ -639,38 +618,6 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 3;
 			CYC_SHIFT        = 1;
 			CYC_RESET        = 130;
-			return;
-		case M68K_CPU_TYPE_68EC020:
-			CPU_TYPE         = CPU_TYPE_EC020;
-			CPU_ADDRESS_MASK = 0x00ffffff;
-			CPU_SR_MASK      = 0xf71f; /* T1 T0 S  M  -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
-			CYC_INSTRUCTION  = m68ki_cycles[2];
-			CYC_EXCEPTION    = m68ki_exception_cycle_table[2];
-			CYC_BCC_NOTAKE_B = -2;
-			CYC_BCC_NOTAKE_W = 0;
-			CYC_DBCC_F_NOEXP = 0;
-			CYC_DBCC_F_EXP   = 4;
-			CYC_SCC_R_TRUE   = 0;
-			CYC_MOVEM_W      = 2;
-			CYC_MOVEM_L      = 2;
-			CYC_SHIFT        = 0;
-			CYC_RESET        = 518;
-			return;
-		case M68K_CPU_TYPE_68020:
-			CPU_TYPE         = CPU_TYPE_020;
-			CPU_ADDRESS_MASK = 0xffffffff;
-			CPU_SR_MASK      = 0xf71f; /* T1 T0 S  M  -- I2 I1 I0 -- -- -- X  N  Z  V  C  */
-			CYC_INSTRUCTION  = m68ki_cycles[2];
-			CYC_EXCEPTION    = m68ki_exception_cycle_table[2];
-			CYC_BCC_NOTAKE_B = -2;
-			CYC_BCC_NOTAKE_W = 0;
-			CYC_DBCC_F_NOEXP = 0;
-			CYC_DBCC_F_EXP   = 4;
-			CYC_SCC_R_TRUE   = 0;
-			CYC_MOVEM_W      = 2;
-			CYC_MOVEM_L      = 2;
-			CYC_SHIFT        = 0;
-			CYC_RESET        = 518;
 			return;
 	}
 }
@@ -864,59 +811,6 @@ void m68k_set_context(void* src)
 /* ============================== MAME STUFF ============================== */
 /* ======================================================================== */
 
-#if M68K_COMPILE_FOR_MAME == OPT_ON
-
-#include "state.h"
-
-static struct {
-	UINT16 sr;
-	int stopped;
-	int halted;
-} m68k_substate;
-
-static void m68k_prepare_substate(void)
-{
-	m68k_substate.sr = m68ki_get_sr();
-	m68k_substate.stopped = (CPU_STOPPED & STOP_LEVEL_STOP) != 0;
-	m68k_substate.halted  = (CPU_STOPPED & STOP_LEVEL_HALT) != 0;
-}
-
-static void m68k_post_load(void)
-{
-	m68ki_set_sr_noint_nosp(m68k_substate.sr);
-	CPU_STOPPED = m68k_substate.stopped ? STOP_LEVEL_STOP : 0
-		        | m68k_substate.halted  ? STOP_LEVEL_HALT : 0;
-	m68ki_jump(REG_PC);
-}
-
-void m68k_state_register(const char *type)
-{
-	int cpu = cpu_getactivecpu();
-
-	state_save_register_UINT32(type, cpu, "D"         , REG_D, 8);
-	state_save_register_UINT32(type, cpu, "A"         , REG_A, 8);
-	state_save_register_UINT32(type, cpu, "PPC"       , &REG_PPC, 1);
-	state_save_register_UINT32(type, cpu, "PC"        , &REG_PC, 1);
-	state_save_register_UINT32(type, cpu, "USP"       , &REG_USP, 1);
-	state_save_register_UINT32(type, cpu, "ISP"       , &REG_ISP, 1);
-	state_save_register_UINT32(type, cpu, "MSP"       , &REG_MSP, 1);
-	state_save_register_UINT32(type, cpu, "VBR"       , &REG_VBR, 1);
-	state_save_register_UINT32(type, cpu, "SFC"       , &REG_SFC, 1);
-	state_save_register_UINT32(type, cpu, "DFC"       , &REG_DFC, 1);
-	state_save_register_UINT32(type, cpu, "CACR"      , &REG_CACR, 1);
-	state_save_register_UINT32(type, cpu, "CAAR"      , &REG_CAAR, 1);
-	state_save_register_UINT16(type, cpu, "SR"        , &m68k_substate.sr, 1);
-	state_save_register_UINT32(type, cpu, "INT_LEVEL" , &CPU_INT_LEVEL, 1);
-	state_save_register_UINT32(type, cpu, "INT_CYCLES", &CPU_INT_CYCLES, 1);
-	state_save_register_int   (type, cpu, "STOPPED"   , &m68k_substate.stopped);
-	state_save_register_int   (type, cpu, "HALTED"    , &m68k_substate.halted);
-	state_save_register_UINT32(type, cpu, "PREF_ADDR" , &CPU_PREF_ADDR, 1);
-	state_save_register_UINT32(type, cpu, "PREF_DATA" , &CPU_PREF_DATA, 1);
-	state_save_register_func_presave(m68k_prepare_substate);
-	state_save_register_func_postload(m68k_post_load);
-}
-
-#endif /* M68K_COMPILE_FOR_MAME */
 
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */

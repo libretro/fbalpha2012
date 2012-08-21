@@ -47,15 +47,11 @@ void NeoExitPalette()
 inline static UINT32 CalcCol(UINT16 nColour)
 {
 	INT32 r = (nColour & 0x0F00) >> 4;	// Red
-	r |= (nColour >> 11) & 8;
+	r |= ((nColour >> 11) & 8) >> 5;
 	INT32 g = (nColour & 0x00F0);			// Green
-	g |= (nColour >> 10) & 8;
+	g |= ((nColour >> 10) & 8) >> 5;
 	INT32 b = (nColour & 0x000F) << 4;	// Blue
-	b |= (nColour >> 9) & 8;
-
-	r |= r >> 5;
-	g |= g >> 5;
-	b |= b >> 5;
+	b |= ((nColour >> 9) & 8) >> 5;
 
 	return BurnHighCol(r, g, b, 0);
 }

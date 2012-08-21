@@ -61,19 +61,7 @@ INT32 NeoRenderText()
 
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
-
-		switch (nBurnBpp) {
-			case 2:
-				RenderTile = *RenderTile16;
-				break;
-			case 3:
-				RenderTile = *RenderTile24;
-				break;
-			case 4:
-				RenderTile = *RenderTile32;
-				break;
-			default:
-				return 1;
+		RenderTile = *RenderTile16;
 		}
 	}
 #endif

@@ -428,7 +428,11 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
    //~59.185606 - for Neogeo
+#ifdef GEKKO
    struct retro_system_timing timing = { 59.18, 32000.0 };
+#else
+   struct retro_system_timing timing = { 60.00, 32000.0 };
+#endif
 
    info->geometry = geom;
    info->timing   = timing;

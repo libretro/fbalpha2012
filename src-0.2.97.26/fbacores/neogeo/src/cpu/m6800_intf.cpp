@@ -159,27 +159,6 @@ INT32 M6800CoreInit(INT32 num, INT32 type)
 			CpuCheatRegister(i, &M6800CheatCpuConfig);
 	}
 
-	if (type == CPU_TYPE_HD63701) {
-		hd63701_init();
-
-		for (INT32 i = 0; i < num; i++)
-			CpuCheatRegister(i, &HD63701CheatCpuConfig);
-	}
-
-	if (type == CPU_TYPE_M6803) {
-		m6803_init();
-
-		for (INT32 i = 0; i < num; i++)
-			CpuCheatRegister(i, &M6803CheatCpuConfig);
-	}
-
-	if (type == CPU_TYPE_M6801) {
-		m6801_init();
-
-		for (INT32 i = 0; i < num; i++)
-			CpuCheatRegister(i, &M6803CheatCpuConfig);
-	}
-
 	return 0;
 }
 
@@ -243,75 +222,6 @@ void M6800SetIRQ(INT32 vector, INT32 status)
 	}
 }
 
-void HD63701SetIRQ(INT32 vector, INT32 status)
-{
-#if defined FBA_DEBUG
-	if (!DebugCPU_M6800Initted) bprintf(PRINT_ERROR, _T("HD63701SetIRQ called without init\n"));
-	if (nCpuType != CPU_TYPE_HD63701) bprintf(PRINT_ERROR, _T("HD63701SetIRQ called with invalid CPU Type\n"));
-#endif
-
-	if (status == HD63701_IRQSTATUS_NONE) {
-		m6800_set_irq_line(vector, 0);
-	}
-	
-	if (status == HD63701_IRQSTATUS_ACK) {
-		m6800_set_irq_line(vector, 1);
-	}
-	
-	if (status == HD63701_IRQSTATUS_AUTO) {
-		m6800_set_irq_line(vector, 1);
-		hd63701_execute(0);
-		m6800_set_irq_line(vector, 0);
-		hd63701_execute(0);
-	}
-}
-
-void M6803SetIRQ(INT32 vector, INT32 status)
-{
-#if defined FBA_DEBUG
-	if (!DebugCPU_M6800Initted) bprintf(PRINT_ERROR, _T("M6803SetIRQ called without init\n"));
-	if (nCpuType != CPU_TYPE_M6803) bprintf(PRINT_ERROR, _T("M6803SetIRQ called with invalid CPU Type\n"));
-#endif
-
-	if (status == M6803_IRQSTATUS_NONE) {
-		m6800_set_irq_line(vector, 0);
-	}
-	
-	if (status == M6803_IRQSTATUS_ACK) {
-		m6800_set_irq_line(vector, 1);
-	}
-	
-	if (status == M6803_IRQSTATUS_AUTO) {
-		m6800_set_irq_line(vector, 1);
-		m6803_execute(0);
-		m6800_set_irq_line(vector, 0);
-		m6803_execute(0);
-	}
-}
-
-void M6801SetIRQ(INT32 vector, INT32 status)
-{
-#if defined FBA_DEBUG
-	if (!DebugCPU_M6800Initted) bprintf(PRINT_ERROR, _T("M6801SetIRQ called without init\n"));
-	if (nCpuType != CPU_TYPE_M6801) bprintf(PRINT_ERROR, _T("M6800SetIRQ called with invalid CPU Type\n"));
-#endif
-
-	if (status == M6801_IRQSTATUS_NONE) {
-		m6800_set_irq_line(vector, 0);
-	}
-	
-	if (status == M6801_IRQSTATUS_ACK) {
-		m6800_set_irq_line(vector, 1);
-	}
-	
-	if (status == M6801_IRQSTATUS_AUTO) {
-		m6800_set_irq_line(vector, 1);
-		m6803_execute(0);
-		m6800_set_irq_line(vector, 0);
-		m6803_execute(0);
-	}
-}
-
 INT32 M6800Run(INT32 cycles)
 {
 #if defined FBA_DEBUG
@@ -320,34 +230,6 @@ INT32 M6800Run(INT32 cycles)
 #endif
 
 	cycles = m6800_execute(cycles);
-	
-	nM6800CyclesTotal += cycles;
-	
-	return cycles;
-}
-
-INT32 HD63701Run(INT32 cycles)
-{
-#if defined FBA_DEBUG
-	if (!DebugCPU_M6800Initted) bprintf(PRINT_ERROR, _T("HD63701Run called without init\n"));
-	if (nCpuType != CPU_TYPE_HD63701) bprintf(PRINT_ERROR, _T("HD63701Run called with invalid CPU Type\n"));
-#endif
-
-	cycles = hd63701_execute(cycles);
-	
-	nM6800CyclesTotal += cycles;
-	
-	return cycles;
-}
-
-INT32 M6803Run(INT32 cycles)
-{
-#if defined FBA_DEBUG
-	if (!DebugCPU_M6800Initted) bprintf(PRINT_ERROR, _T("M6803Run called without init\n"));
-	if (nCpuType != CPU_TYPE_M6803 && nCpuType != CPU_TYPE_M6801) bprintf(PRINT_ERROR, _T("M6803Run called with invalid CPU Type\n"));
-#endif
-
-	cycles = m6803_execute(cycles);
 	
 	nM6800CyclesTotal += cycles;
 	

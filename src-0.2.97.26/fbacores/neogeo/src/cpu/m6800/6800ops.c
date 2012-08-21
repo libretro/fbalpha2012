@@ -19,16 +19,6 @@ static void illegal( void )
 //	logerror("M6808: illegal opcode: address %04X, op %02X\n",PC,(int) M_RDOP_ARG(PC)&0xFF);
 }
 
-/* HD63701 only */
-#if (HAS_HD63701)
-//M6800_INLINE void trap( void )
-static void trap( void )
-{
-//	logerror("M6808: illegal opcode: address %04X, op %02X\n",PC,(int) M_RDOP_ARG(PC)&0xFF);
-	TAKE_TRAP;
-}
-#endif
-
 /* $00 ILLEGAL */
 
 /* $01 NOP */
@@ -198,16 +188,6 @@ M6800_INLINE void daa( void )
 }
 
 /* $1a ILLEGAL */
-
-#if (HAS_HD63701)
-/* $1a SLP */ /* HD63701YO only */
-M6800_INLINE void slp (void)
-{
-	/* wait for next IRQ (same as waiting of wai) */
-	m6808.wai_state |= HD63701_SLP;
-	EAT_CYCLES;
-}
-#endif
 
 /* $1b ABA inherent ***** */
 M6800_INLINE void aba (void)

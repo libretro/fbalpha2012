@@ -7,7 +7,6 @@
 
 /* --- select emulation chips --- */
 #define BUILD_YM2610  (HAS_YM2610)		/* build YM2610(OPNB)  emulator */
-#define BUILD_YM2610B (HAS_YM2610B)		/* build YM2610B(OPNB?)emulator */
 
 /* select bit size of output : 8 or 16 */
 #define FM_SAMPLE_BITS 16
@@ -95,9 +94,6 @@ void YM2610SetRom(int num,
 void YM2610Shutdown(void);
 void YM2610ResetChip(int num);
 void YM2610UpdateOne(int num, INT16 **buffer, int length);
-#if BUILD_YM2610B
-void YM2610BUpdateOne(int num, INT16 **buffer, int length);
-#endif
 
 int YM2610Write(int n, int a,unsigned char v);
 unsigned char YM2610Read(int n,int a);

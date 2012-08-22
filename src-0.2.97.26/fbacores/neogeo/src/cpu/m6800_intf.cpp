@@ -89,38 +89,6 @@ static cpu_core_config M6800CheatCpuConfig =
 	0
 };
 
-static cpu_core_config HD63701CheatCpuConfig =
-{
-	M6800Open,
-	M6800Close,
-	M6800CheatRead,
-	M6800WriteRom,
-	M6800GetActive,
-	M6800TotalCycles,
-	M6800NewFrame,
-	HD63701Run,		// different
-	M6800RunEnd,
-	M6800Reset,
-	1<<16,
-	0
-};
-
-static cpu_core_config M6803CheatCpuConfig =
-{
-	M6800Open,
-	M6800Close,
-	M6800CheatRead,
-	M6800WriteRom,
-	M6800GetActive,
-	M6800TotalCycles,
-	M6800NewFrame,
-	M6803Run,		// different
-	M6800RunEnd,
-	M6800Reset,
-	1<<16,
-	0
-};
-
 INT32 M6800CoreInit(INT32 num, INT32 type)
 {
 	DebugCPU_M6800Initted = 1;
@@ -165,16 +133,6 @@ INT32 M6800CoreInit(INT32 num, INT32 type)
 INT32 M6800Init(INT32 num)
 {
 	return M6800CoreInit(num, CPU_TYPE_M6800);
-}
-
-INT32 HD63701Init(INT32 num)
-{
-	return M6800CoreInit(num, CPU_TYPE_HD63701);
-}
-
-INT32 M6803Init(INT32 num)
-{
-	return M6800CoreInit(num, CPU_TYPE_M6803);
 }
 
 INT32 M6801Init(INT32 num)

@@ -98,7 +98,7 @@ endif
 CC_SYSTEM = gcc
 CXX_SYSTEM = g++
 
-.PHONY: clean generate-files generate-files-clean
+.PHONY: clean generate-files generate-files-clean clean-objs
 
 all: $(TARGET)
 
@@ -363,6 +363,9 @@ endif
 %.o: %.c
 	@echo "CC $<"
 	@$(CC) -c -o $@ $< $(CFLAGS) $(INCDIRS)
+
+clean-objs:
+	rm -f $(OBJS)
 
 clean:
 	rm -f $(TARGET)

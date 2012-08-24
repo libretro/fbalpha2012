@@ -429,7 +429,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 
    //~59.62fps - for CPS1/CPS2
 #ifdef GEKKO
-   struct retro_system_timing timing = { 59.62, 32000.0 };
+   struct retro_system_timing timing = { 59.629403, 59.629403 * AUDIO_SEGMENT_LENGTH };
 #else
    struct retro_system_timing timing = { 60.00, 32000.0 };
 #endif

@@ -420,6 +420,9 @@ bool retro_unserialize(const void *data, size_t size)
 void retro_cheat_reset() {}
 void retro_cheat_set(unsigned, bool, const char*) {}
 
+#define NEO_HREFRESH (15625.0)
+#define NEO_VREFRESH (NEO_HREFRESH / 264.0)
+
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    int width, height;
@@ -429,7 +432,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 
    //~59.185606 - for Neogeo
 #ifdef GEKKO
-   struct retro_system_timing timing = { 59.18, 32000.0 };
+   struct retro_system_timing timing = { NEO_VREFRESH, NEO_VREFRESH * AUDIO_SEGMENT_LENGTH };
 #else
    struct retro_system_timing timing = { 60.00, 32000.0 };
 #endif

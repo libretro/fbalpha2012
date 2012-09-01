@@ -19,24 +19,9 @@
  #error illegal isopaque value
 #endif
 
-#if BPP == 16
- #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
+#define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
    	*((UINT16*)pPixel) = (UINT16)pTilePalette[b];	\
  }
-#elif BPP == 24
- #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
-	UINT32 nRGB = pTilePalette[b];							\
-	pPixel[0] = (UINT8)nRGB;								\
-	pPixel[1] = (UINT8)(nRGB >> 8);							\
-	pPixel[2] = (UINT8)(nRGB >> 16);						\
- }
-#elif BPP == 32
- #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
-	 *((UINT32*)pPixel) = (UINT32)pTilePalette[b];		\
- }
-#else
- #error unsupported bitdepth specified.
-#endif
 
 #if XZOOM == 0
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\

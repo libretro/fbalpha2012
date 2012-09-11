@@ -335,13 +335,14 @@ void retro_run()
    BurnDrvGetVisibleSize(&width, &height);
    pBurnDraw = (uint8_t*)g_fba_frame;
 
+   poll_input();
+
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = 32000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
-   poll_input();
 
    BurnDrvFrame();
    unsigned drv_flags = BurnDrvGetFlags();

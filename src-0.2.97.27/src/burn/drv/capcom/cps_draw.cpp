@@ -434,6 +434,7 @@ static void Cps2Layers()
 void CpsClearScreen()
 {
 	if (Cps == 1) {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		switch (nBurnBpp) {
 			case 4: {
 				UINT32* pClear = (UINT32*)pBurnDraw;
@@ -466,6 +467,7 @@ void CpsClearScreen()
 			}
 
 			case 2: {
+#endif
 				UINT32* pClear = (UINT32*)pBurnDraw;
 				UINT32 nColour = CpsPal[0xbff ^ 15] | CpsPal[0xbff ^ 15] << 16;
 				for (INT32 i = 0; i < 384 * 224 / 16; i++) {
@@ -478,9 +480,11 @@ void CpsClearScreen()
 					*pClear++ = nColour;
 					*pClear++ = nColour;
 				}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 				break;
 			}
 		}
+#endif
 	} else {
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
 	}

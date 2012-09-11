@@ -7,8 +7,8 @@
 #include <string.h>
 #include <assert.h>
 
-#if defined(__LIBRETRO__) && defined(_MSC_VER)
-#include <tchar.h>
+#if defined(__LIBRETRO__)
+#include "libretro-tchar.h"
 #else
 #include "tchar.h"
 #endif

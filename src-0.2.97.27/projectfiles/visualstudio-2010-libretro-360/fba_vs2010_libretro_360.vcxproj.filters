@@ -126,7 +126,7 @@
     <Filter Include="Source Files\burn\snd">
       <UniqueIdentifier>{aa239b2a-4448-46ed-aa06-51a84303473a}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Source Files\burner\libretro">
+    <Filter Include="Source Files\burner\libretro">
       <UniqueIdentifier>{7f4ef354-8a73-47f9-9c04-9924b98358ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1571,7 +1571,7 @@
     <ClCompile Include="..\..\src\cpu\m68k\m68kopnz.c">
       <Filter>Source Files\cpu\m68k</Filter>
     </ClCompile>
-	<ClCompile Include="..\..\src\burner\libretro\neocdlist.cpp">
+    <ClCompile Include="..\..\src\burner\libretro\neocdlist.cpp">
       <Filter>Source Files\burner\libretro</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\burner\libretro\libretro.cpp">

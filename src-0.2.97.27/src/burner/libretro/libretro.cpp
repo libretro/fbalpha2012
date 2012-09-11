@@ -1,6 +1,6 @@
 #include "libretro.h"
 #include "burner.h"
-#include "inp_keys.h"
+#include "input/inp_keys.h"
 #include "state.h"
 #include <string.h>
 #include <stdio.h>
@@ -9,7 +9,7 @@
 #include <string>
 #include <ctype.h>
 
-#include "cd_interface.h"
+#include "cd/cd_interface.h"
 
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
@@ -52,11 +52,12 @@ void retro_set_input_state(retro_input_state_t cb) { input_cb = cb; }
 void retro_set_environment(retro_environment_t cb) { environ_cb = cb; }
 
 static char g_rom_dir[1024];
+static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)
 {
    info->library_name = "FB Alpha";
-   info->library_version = "0.2.97.26";
+   info->library_version = "v0.2.97.27";
    info->need_fullpath = true;
    info->block_extract = true;
    info->valid_extensions = "zip|ZIP";
@@ -319,7 +320,9 @@ void retro_init()
 
 void retro_deinit()
 {
-   BurnDrvExit();
+   if (driver_inited)
+      BurnDrvExit();
+   driver_inited = false;
    BurnLibExit();
 }
 
@@ -424,7 +427,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    int maximum = width > height ? width : height;
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
-   struct retro_system_timing timing = { 60.0, 32000.0 };
+   struct retro_system_timing timing = { 60.0, 60.0 * AUDIO_SEGMENT_LENGTH };
 
    info->geometry = geom;
    info->timing   = timing;
@@ -449,6 +452,27 @@ static bool fba_init(unsigned driver)
       nBurnPitch = height * sizeof(uint16_t);
    else
       nBurnPitch = width * sizeof(uint16_t);
+
+   unsigned rotation;
+   switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
+   {
+      case BDF_ORIENTATION_VERTICAL:
+         rotation = 1;
+         break;
+
+      case BDF_ORIENTATION_FLIPPED:
+         rotation = 2;
+         break;
+
+      case BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED:
+         rotation = 3;
+         break;
+
+      default:
+         rotation = 0;
+   }
+
+   environ_cb(RETRO_ENVIRONMENT_SET_ROTATION, &rotation);
 
    return true;
 }
@@ -530,6 +554,7 @@ bool retro_load_game(const struct retro_game_info *info)
       if (!fba_init(i))
          return false;
 
+      driver_inited = true;
       init_input();
 
       return true;

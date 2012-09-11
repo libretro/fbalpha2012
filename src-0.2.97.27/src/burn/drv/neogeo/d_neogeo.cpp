@@ -8,6 +8,10 @@
 	// #define ROM_VERIFY
 #endif
 
+#ifdef __LIBRETRO__
+#define ROM_VERIFY
+#endif
+
 static struct BurnRomInfo emptyRomDesc[] = {
 	{ "",                    0,          0, 0 },
 };

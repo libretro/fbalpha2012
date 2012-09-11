@@ -4,6 +4,7 @@ use strict;
 
 my $OutfileFun;
 my $OutfileTab;
+my $Option;
 
 # Process command line arguments
 if ( $ARGV[0] =~ /^-o/i ) {
@@ -12,6 +13,11 @@ if ( $ARGV[0] =~ /^-o/i ) {
    } else {
       $ARGV[0] =~ /(?<=-o)(.*)/i;
       $OutfileFun = $1;
+   }
+   if ( $ARGV[2] ) {
+      $Option = 1;
+   } else {
+      $Option = 0;
    }
 }
 
@@ -34,7 +40,9 @@ print OUTFILETAB "static RenderBankFunction RenderBankFunctionTable[] = {\n";
 
 print OUTFILEFUN "#define ISOPAQUE 0\n\n";
 
-for ( my $Bitdepth = 16; $Bitdepth <= 32; $Bitdepth += 8 ) {
+sub do_renderpath
+{
+	my $Bitdepth = shift;
 	print OUTFILEFUN "// " . $Bitdepth . "-bit rendering functions.\n";
 	print OUTFILEFUN "#define BPP $Bitdepth\n\n";
 
@@ -68,6 +76,19 @@ for ( my $Bitdepth = 16; $Bitdepth <= 32; $Bitdepth += 8 ) {
 	}
 	print OUTFILEFUN "#undef BPP\n\n";
 }
+
+if ( ($Option) == 1)
+{
+	do_renderpath(16);	
+}
+else
+{
+	for ( my $Bitdepth = 16; $Bitdepth <= 32; $Bitdepth += 8 )
+	{
+		do_renderpath($Bitdepth);
+	}
+}
+
 print OUTFILEFUN "#undef ISOPAQUE\n\n";
 
 $OutfileTab =~ /(?:.*[\\\/])(.*)/;

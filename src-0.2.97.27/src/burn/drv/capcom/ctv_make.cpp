@@ -15,8 +15,12 @@ int main()
   for (nCuMask=0; nCuMask<=2; nCuMask++)
   {
     printf ("#define CU_MASK  (%d)\n\n",nCuMask);
+#if(__LIBRETRO_OPTIMIZATIONS__ == 1)
+    nCuBpp = 2;
+#else
     for (nCuBpp=2; nCuBpp<=4; nCuBpp++)
 	{
+#endif
       printf ("#define CU_BPP   (%d)\n\n",nCuBpp);
       for (nCuSize=8; nCuSize<=32; nCuSize<<=1)
 	  {
@@ -57,7 +61,9 @@ int main()
         printf ("#undef  CU_SIZE\n\n");
 	  }
       printf ("#undef  CU_BPP\n\n");
+#if(__LIBRETRO_OPTIMIZATIONS__ == 0)
 	}
+#endif
 	printf ("#undef  CU_MASK\n\n");
   }
 
@@ -68,8 +74,12 @@ int main()
 
   for (nCuMask=0; nCuMask<=2; nCuMask++)
   {
+#if(__LIBRETRO_OPTIMIZATIONS__ == 1)
+    nCuBpp=2;
+#else
     for (nCuBpp=2; nCuBpp<=4; nCuBpp++)
 	{
+#endif
       int i=0;
 
       if (nCuMask==1)
@@ -111,7 +121,9 @@ int main()
         if (((i+1)&3)==0) printf("\n");
 	  }
       printf ("};\n");
+#if(__LIBRETRO_OPTIMIZATIONS__ == 0)
 	}
+#endif
   }
 
   printf ("\n\n");

@@ -1,5 +1,5 @@
 DEBUG = 0
-LIBRETRO_OPTIMIZATIONS = 1
+LIBRETRO_OPTIMIZATIONS = 0
 
 ifeq ($(platform),)
 platform = unix
@@ -302,7 +302,7 @@ PGM_SPRITE_CREATE_EXE = pgmspritecreate$(EXE_EXT)
 EXE_PREFIX = ./
 
 generate-files-clean:
-	rm -rf $(FBA_GENERATED_DIR)/*.*
+	rm -rf $(FBA_GENERATED_DIR)/
 	rm -rf $(FBA_CPU_DIR)/m68k/m68kopac.c
 	rm -rf $(FBA_CPU_DIR)/m68k/m68kopdm.c
 	rm -rf $(FBA_CPU_DIR)/m68k/m68kopnz.c
@@ -319,7 +319,7 @@ generate-files:
 	@echo ""
 	@echo "Generating $(FBA_GENERATED_DIR)/neo_sprite_func_table.h..."
 	@echo ""
-	$(PERL) $(FBA_SCRIPTS_DIR)/neo_sprite_func.pl -o $(FBA_GENERATED_DIR)/neo_sprite_func.h
+	$(PERL) $(FBA_SCRIPTS_DIR)/neo_sprite_func.pl -o $(FBA_GENERATED_DIR)/neo_sprite_func.h $(LIBRETRO_OPTIMIZATIONS)
 	@echo ""
 	@echo "Generating $(FBA_GENERATED_DIR)/psikyo_tile_func.h..."
 	@echo ""

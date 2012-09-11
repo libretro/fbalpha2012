@@ -706,6 +706,8 @@ static bool init_input()
    {
 	   keybinds[P1_FIRED][0] = _BIND(X);
 	   keybinds[P1_FIRED][1] = 0;
+	   keybinds[P2_FIRED][0] = _BIND(X);
+	   keybinds[P2_FIRED][1] = 0;
    }
 
    if(boardrom && (strcmp(boardrom,"neogeo") == 0))

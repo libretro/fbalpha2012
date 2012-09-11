@@ -10,8 +10,8 @@
 #include <assert.h>
 #include <ctype.h>
 
-#if defined(__LIBRETRO__) && defined(_XBOX)
-#include <tchar.h>
+#ifdef __LIBRETRO__
+#include "libretro-tchar.h"
 #else
 #include "tchar.h"
 #endif

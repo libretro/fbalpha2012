@@ -1367,9 +1367,6 @@
     <ClCompile Include="..\..\src\cpu\m6502\tn2a03.c">
       <Filter>Source Files\cpu\m6502</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cpu\zet.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\cpu\arm7_intf.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
@@ -1398,12 +1395,6 @@
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\cpu\s2650_intf.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\cpu\sek.cpp">
-      <Filter>Source Files\cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\cpu\vez.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\burn\vector.cpp">
@@ -1585,6 +1576,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_silvmil.cpp">
       <Filter>Source Files\burn\drv\pst90s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_atetris.cpp">
+      <Filter>Source Files\burn\drv\pre90s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_cybertnk.cpp">
+      <Filter>Source Files\burn\drv\pre90s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_dkong.cpp">
+      <Filter>Source Files\burn\drv\pre90s</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -206,6 +206,7 @@
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_ambush.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_arabian.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_armedf.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_atetris.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_aztarac.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_baraduke.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_bionicc.cpp" />
@@ -214,7 +215,9 @@
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_blueprnt.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_bombjack.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_commando.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_cybertnk.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_ddragon.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pre90s\d_dkong.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_dynduke.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_epos.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pre90s\d_exedexes.cpp" />
@@ -765,12 +768,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\cpu\s2650\s2650.cpp" />
     <ClCompile Include="..\..\src\cpu\s2650_intf.cpp" />
-    <ClCompile Include="..\..\src\cpu\sek.cpp" />
     <ClCompile Include="..\..\src\cpu\sh2\sh2.cpp" />
-    <ClCompile Include="..\..\src\cpu\vez.cpp" />
     <ClCompile Include="..\..\src\cpu\z80\z80.cpp" />
     <ClCompile Include="..\..\src\cpu\z80\z80daisy.cpp" />
-    <ClCompile Include="..\..\src\cpu\zet.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{00AAF92F-A249-4DF2-AE24-0C5427DB319E}</ProjectGuid>
@@ -948,7 +948,7 @@
       <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX;_XBOX360;_LIB;%(PreprocessorDefinitions);USE_SPEEDHACKS;__LIBRETRO__;INLINE=__inline static;EXTERNAL_ZLIB;__fastcall=;MAME_INLINE=_inline static</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\src\burn\drv\taito;$(SolutionDir)\..\..\src\dep;$(SolutionDir)\..\..\src\burner\libretro;$(SolutionDir)\..\..\src\burner;$(SolutionDir)\..\..\src\burn;$(SolutionDir)\..\..\src\burn\drv\pgm;$(SolutionDir)\..\..\src\burn\devices;$(SolutionDir)\..\..\src\burn\snd;$(SolutionDir)\..\..\src\cpu\;$(SolutionDir)\..\..\src\cpu\arm;$(SolutionDir)\..\..\src\cpu\arm7;$(SolutionDir)\..\..\src\cpu\h6280;$(SolutionDir)\..\..\src\cpu\hd6309;$(SolutionDir)\..\..\src\cpu\i8039;$(SolutionDir)\..\..\src\cpu\konami;$(SolutionDir)\..\..\src\cpu\m6502;$(SolutionDir)\..\..\src\cpu\m6800;$(SolutionDir)\..\..\src\cpu\m6805;$(SolutionDir)\..\..\src\cpu\m6809;$(SolutionDir)\..\..\src\cpu\m68k;$(SolutionDir)\..\..\src\cpu\nec;$(SolutionDir)\..\..\src\cpu\s2650;$(SolutionDir)\..\..\src\cpu\sh2;$(SolutionDir)\..\..\src\cpu\z80;$(SolutionDir)\..\..\src\intf\input;$(SolutionDir)\..\..\src\intf;$(SolutionDir)\..\..\src\dep\libs\zlib;$(SolutionDir)\..\..\src\intf\cd</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\src\burn\drv\taito;$(SolutionDir)\..\..\src\burner\libretro;$(SolutionDir)\..\..\src\burner;$(SolutionDir)\..\..\src\burn;$(SolutionDir)\..\..\src\burn\drv\pgm;$(SolutionDir)\..\..\src\burn\devices;$(SolutionDir)\..\..\src\burn\snd;$(SolutionDir)\..\..\src\cpu\;$(SolutionDir)\..\..\src\cpu\arm;$(SolutionDir)\..\..\src\cpu\arm7;$(SolutionDir)\..\..\src\cpu\h6280;$(SolutionDir)\..\..\src\cpu\hd6309;$(SolutionDir)\..\..\src\cpu\i8039;$(SolutionDir)\..\..\src\cpu\konami;$(SolutionDir)\..\..\src\cpu\m6502;$(SolutionDir)\..\..\src\cpu\m6800;$(SolutionDir)\..\..\src\cpu\m6805;$(SolutionDir)\..\..\src\cpu\m6809;$(SolutionDir)\..\..\src\cpu\m68k;$(SolutionDir)\..\..\src\cpu\nec;$(SolutionDir)\..\..\src\cpu\s2650;$(SolutionDir)\..\..\src\cpu\sh2;$(SolutionDir)\..\..\src\cpu\z80;$(SolutionDir)\..\..\src\intf\input;$(SolutionDir)\..\..\src\intf;$(SolutionDir)\..\..\src\dep\libs\zlib;$(SolutionDir)\..\..\src\intf\cd</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreschedulingOptimization>true</PreschedulingOptimization>
     </ClCompile>

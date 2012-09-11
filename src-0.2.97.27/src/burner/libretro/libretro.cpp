@@ -658,7 +658,11 @@ static bool init_input()
    }
 
    //needed for Neo Geo button mappings (and other drivers in future)
-   const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
+   const char * boardrom	= BurnDrvGetTextA(DRV_BOARDROM);
+   const char * drvname		= BurnDrvGetTextA(DRV_NAME);
+
+   fprintf(stderr, "drvname: %s\n", drvname);
+   fprintf(stderr, "boardrom: %s\n", boardrom);
 
    // Bind to nothing.
    for (unsigned i = 0; i < 0x5000; i++)
@@ -692,6 +696,16 @@ static bool init_input()
    keybinds[P1_FIRE4	][1] = 0;
    keybinds[P1_FIRE5	][0] = _BIND(A);
    keybinds[P1_FIRE5	][1] = 0;
+
+   const char *dd = strstr(drvname, "ddsom");
+   if(dd == NULL)
+	dd = strstr(drvname, "ddtod");
+
+   if(dd != NULL)
+   {
+	   keybinds[P1_FIRED][0] = _BIND(X);
+	   keybinds[P1_FIRED][1] = 0;
+   }
 
    if(boardrom && (strcmp(boardrom,"neogeo") == 0))
    {

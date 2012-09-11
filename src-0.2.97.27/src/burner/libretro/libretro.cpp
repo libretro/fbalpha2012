@@ -624,6 +624,7 @@ void retro_set_controller_port_device(unsigned, unsigned) {}
 #define P3_FIRE4 0x4183
 #define P3_FIRE5 0x4184
 #define P3_FIRE6 0x4185
+#define P3_FIRED 0x4186
 
 #define P4_COIN 0x09
 #define P4_START 0x05
@@ -637,6 +638,7 @@ void retro_set_controller_port_device(unsigned, unsigned) {}
 #define P4_FIRE4 0x4283
 #define P4_FIRE5 0x4284
 #define P4_FIRE6 0x4285
+#define P4_FIRED 0x4286
 
 static unsigned char keybinds[0x5000][2]; 
 #define _BIND(x) RETRO_DEVICE_ID_JOYPAD_##x
@@ -708,6 +710,10 @@ static bool init_input()
 	   keybinds[P1_FIRED][1] = 0;
 	   keybinds[P2_FIRED][0] = _BIND(X);
 	   keybinds[P2_FIRED][1] = 0;
+	   keybinds[P3_FIRED][0] = _BIND(X);
+	   keybinds[P3_FIRED][1] = 0;
+	   keybinds[P4_FIRED][0] = _BIND(X);
+	   keybinds[P4_FIRED][1] = 0;
    }
 
    if(boardrom && (strcmp(boardrom,"neogeo") == 0))

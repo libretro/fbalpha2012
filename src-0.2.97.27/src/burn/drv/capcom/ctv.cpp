@@ -13,6 +13,9 @@ UINT8 *pCtvLine=NULL; // Pointer to output bitmap
 // Include all tile variants:
 #include "ctv.h"
 
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+static INT32 nLastBpp = 2;
+#else
 static INT32 nLastBpp=0;
 INT32 CtvReady()
 {
@@ -39,3 +42,4 @@ INT32 CtvReady()
   nLastBpp=nBurnBpp;
   return 0;
 }
+#endif

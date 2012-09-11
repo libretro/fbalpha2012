@@ -1,5 +1,5 @@
 DEBUG = 0
-LIBRETRO_OPTIMIZATIONS = 0
+LIBRETRO_OPTIMIZATIONS = 1
 
 ifeq ($(platform),)
 platform = unix

@@ -26,7 +26,10 @@ typedef struct { int x, y, width, height; } RECT;
 #define snprintf _snprintf
 #endif
 
+#ifndef _T
 #define _T(x) x
+#endif
+
 #define _tcstol strtol
 #define _tfopen fopen
 #define _fgetts fgets

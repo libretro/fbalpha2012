@@ -19,7 +19,9 @@ typedef struct
 #undef __cdecl
 #define __cdecl
 
+#ifndef _XBOX1
 #define bprintf(...) {}
+#endif
 
 #ifdef _WIN32
 #define strncasecmp(s1, s2, n) _strnicmp(s1, s2, n)

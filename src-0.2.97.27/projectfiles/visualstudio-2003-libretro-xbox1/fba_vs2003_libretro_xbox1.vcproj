@@ -162,7 +162,7 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)\..\..\src\burn&quot;;&quot;$(SolutionDir)\..\..\src\burn\devices&quot;;&quot;$(SolutionDir)\..\..\src\burn\snd&quot;;&quot;$(SolutionDir)\..\..\src\burner&quot;;&quot;$(SolutionDir)\..\..\src\burner\libretro&quot;;&quot;$(SolutionDir)\..\..\src\cpu&quot;;&quot;$(SolutionDir)\..\..\src\cpu\h6280&quot;;&quot;$(SolutionDir)\..\..\src\cpu\hd6309&quot;;&quot;$(SolutionDir)\..\..\src\cpu\i8039&quot;;&quot;$(SolutionDir)\..\..\src\cpu\m6502&quot;;&quot;$(SolutionDir)\..\..\src\cpu\m6800&quot;;&quot;$(SolutionDir)\..\..\src\cpu\m6805&quot;;&quot;$(SolutionDir)\..\..\src\cpu\m6809&quot;;&quot;$(SolutionDir)\..\..\src\cpu\m68k&quot;;&quot;$(SolutionDir)\..\..\src\cpu\sh2&quot;;&quot;$(SolutionDir)\..\..\src\cpu\z80&quot;;&quot;$(SolutionDir)\..\..\src\intf\cd&quot;;&quot;$(SolutionDir)\..\..\src\intf\input&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)\..\..\src\dep\generated&quot;;&quot;$(SolutionDir)\..\..\src\burn&quot;;&quot;$(SolutionDir)\..\..\src\burn\snd&quot;;&quot;$(SolutionDir)\..\..\src\burner&quot;;&quot;$(SolutionDir)\..\..\src\burner\libretro&quot;;&quot;$(SolutionDir)\..\..\src\cpu&quot;;&quot;$(SolutionDir)\..\..\src\cpu\sh2&quot;;&quot;$(SolutionDir)\..\..\src\intf\cd&quot;;&quot;$(SolutionDir)\..\..\src\intf\input&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_XBOX1;LTCG;_LIB;USE_SPEEDHACKS;__LIBRETRO__;INLINE=__inline static;EXTERNAL_ZLIB;__fastcall=;MAME_INLINE=_inline static;LSB_FIRST"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"

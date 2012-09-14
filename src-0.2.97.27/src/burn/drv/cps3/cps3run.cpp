@@ -20,6 +20,10 @@ Port to FBA by OopsWare
 #include "cps3.h"
 #include "sh2.h"
 
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+#include "burn_libretro_opts.h"
+#endif
+
 #define	BE_GFX		1
 //#define	FAST_BOOT	1
 #define SPEED_HACK	1		// Default should be 1, if not FPS would drop.
@@ -47,7 +51,9 @@ static UINT8 *RamC000_D;
 
 static UINT16 *EEPROM;
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 UINT16 *Cps3CurPal;
+#endif
 static UINT32 *RamScreen;
 
 UINT8 cps3_reset = 0;
@@ -150,7 +156,9 @@ UINT32 cps3_flash_read(flash_chip * chip, UINT32 addr)
 
 void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
+#endif
 	
 	switch( chip->flash_mode )	{
 	case FM_NORMAL:
@@ -497,7 +505,9 @@ static INT32 MemIndex()
 	
 	RamEnd		= Next;
 	
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	Cps3CurPal		= (UINT16 *) Next; Next += 0x020001 * sizeof(UINT16); // iq_132 - layer disable
+#endif
 	RamScreen	= (UINT32 *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(UINT32);
 	
 	MemEnd		= Next;
@@ -506,7 +516,9 @@ static INT32 MemIndex()
 
 UINT8 __fastcall cps3ReadByte(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0xc7ffffff;
+#endif
 	
 //	switch (addr) {
 //
@@ -682,16 +694,20 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 					coldata = (r << 0) | (g << 5) | (b << 10);
 				}
 				
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 				r = r << 3;
 				g = g << 3;
 				b = b << 3;
+#endif
 
-#ifdef LSB_FIRST
-				RamPal[(paldma_dest + i) ^ 1] = coldata;
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_BGR(coldata);
 #else
 				RamPal[(paldma_dest + i)] = coldata;
 #endif
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
+#endif
 			}
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 		}
@@ -755,18 +771,22 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 #else
 			EEPROM[((addr-0x080) >> 1)] = data;
 #endif
-		} else
+		}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+                else
 		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
 			// unknow i/o
 
 		} else
 				
 		bprintf(PRINT_NORMAL, _T("Attempt to write word value %04x to location %8x\n"), data, addr);
+#endif
 	}
 }
 
 void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0xc7ffffff;
 	
 	switch (addr) {
@@ -778,16 +798,21 @@ void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to write long value %8x to location %8x\n"), data, addr);
 	}
+#endif
 }
 
 void __fastcall cps3C0WriteByte(UINT32 addr, UINT8 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3C0WriteWord(UINT32 addr, UINT16 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
@@ -842,12 +867,16 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 
 void __fastcall cps3RomWriteByte(UINT32 addr, UINT8 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3RomWriteWord(UINT32 addr, UINT16 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
@@ -857,7 +886,9 @@ void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
 	cps3_flash_write(&main_flash, addr, data);
 	
 	if ( main_flash.flash_mode == FM_NORMAL ) {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 		*(UINT32 *)(RomGame + addr) = data;
 		*(UINT32 *)(RomGame_D + addr) = data ^ cps3_mask(addr + 0x06000000, cps3_key1, cps3_key2);
 	}
@@ -899,28 +930,36 @@ UINT32 __fastcall cps3RomReadLongSpe(UINT32 addr)
 
 UINT8 __fastcall cps3VidReadByte(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
+#endif
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT16 __fastcall cps3VidReadWord(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
+#endif
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT32 __fastcall cps3VidReadLong(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
+#endif
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 void __fastcall cps3VidWriteByte(UINT32 addr, UINT8 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
@@ -929,12 +968,9 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 		// Palette
 		UINT32 palindex = (addr - 0x04080000) >> 1;
-#ifdef LSB_FIRST
-		RamPal[palindex ^ 1] = data;
-#else
 		RamPal[palindex] = data;
-#endif
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		INT32 r = (data & 0x001F) << 3;	// Red
 		INT32 g = (data & 0x03E0) >> 2;	// Green
 		INT32 b = (data & 0x7C00) >> 7;	// Blue
@@ -944,13 +980,18 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 		b |= b >> 5;
 			
 		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
+#endif
 	
-	} else
+	}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+        else
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %4x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0xc7ffffff;
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 
@@ -960,6 +1001,7 @@ void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 		
 	} else 
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 
@@ -984,7 +1026,9 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address) {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 			bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
+#endif
 			Sh2BurnUntilInt(0);
 		}
 	
@@ -1011,7 +1055,9 @@ static void Cps3PatchRegion()
 {
 	if ( cps3_region_address ) {
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
+#endif
 
 #ifdef LSB_FIRST
 		RomBios[cps3_region_address] = (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x7f);
@@ -1093,7 +1139,7 @@ INT32 cps3Init()
 	MemIndex();
 	INT32 nLen = MemEnd - (UINT8 *)0;
 	if ((Mem = (UINT8 *)BurnMalloc(nLen)) == NULL) return 1;
-	memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);						// blank all memory
 	MemIndex();	
 	
 	// load and decode bios roms
@@ -1235,7 +1281,11 @@ INT32 cps3Init()
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_1, 1.00, BURN_SND_ROUTE_LEFT);
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_2, 1.00, BURN_SND_ROUTE_RIGHT);
 	
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+	pBurnDrvPalette = (UINT32*)RamPal;
+#else
 	pBurnDrvPalette = (UINT32*)Cps3CurPal;
+#endif
 		
 	Cps3Reset();
 	return 0;
@@ -1258,7 +1308,11 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 	if ((x > (cps3_gfx_width - 8)) || (y > (cps3_gfx_height - 8))) return;
 	UINT16 * dst = (UINT16 *) pBurnDraw;
 	UINT8 * src = (UINT8 *)RamSS;
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+	UINT16 * color = RamPal + (pal << 4);
+#else
 	UINT16 * color = Cps3CurPal + (pal << 4);
+#endif
 	dst += (y * cps3_gfx_width + x);
 	src += code * 64;
 	
@@ -1746,7 +1800,9 @@ static void DrvDraw()
 	}
 	else
 	{
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0);
+#endif
 
 		INT32 i;
 		for (i = 0; i < 1024 * 448; i++) {
@@ -1933,7 +1989,11 @@ static void DrvDraw()
 			srcbitmap = RamScreen + (srcy >> 16) * 1024;
 			srcx=0;
 			for (INT32 renderx=0; renderx<cps3_gfx_width; renderx++, dstbitmap ++) {
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+				*dstbitmap = RamPal[ srcbitmap[srcx>>16] ];
+#else
 				*dstbitmap = Cps3CurPal[ srcbitmap[srcx>>16] ];
+#endif
 				srcx += fsz;
 			}
 			srcy += fsz;
@@ -1969,6 +2029,7 @@ INT32 cps3Frame()
 	if (cps3_reset)
 		Cps3Reset();
 		
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (cps3_palette_change) {
 		for(INT32 i=0;i<0x0020000;i++) {
 #ifdef LSB_FIRST
@@ -1986,6 +2047,7 @@ INT32 cps3Frame()
 		}
 		cps3_palette_change = 0;
 	}
+#endif
 	
 	if (WideScreenFrameDelay == GetCurrentFrame()) {
 		BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
@@ -2130,8 +2192,10 @@ INT32 cps3Scan(INT32 nAction, INT32 *pnMin)
 				
 		if (nAction & ACB_WRITE) {
 			
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 			// rebuild current palette
 			cps3_palette_change = 1;
+#endif
 			
 			// remap RamCRam
 			Sh2MapMemory(((UINT8 *)RamCRam) + (cram_bank << 20), 0x04100000, 0x041fffff, SH2_RAM);

@@ -991,16 +991,12 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 			
 		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
 	
-	}
-#ifndef __LIBRETRO_OPTIMIZATIONS__
-	else
+	} else
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %4x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0xc7ffffff;
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 
@@ -1010,7 +1006,6 @@ void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 		
 	} else 
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
-#endif
 }
 
 

@@ -225,7 +225,6 @@ INCDIRS := -I$(FBA_BURNER_DIR)/win32 \
 	-I$(LIBRETRO_DIR) \
 	-I$(LIBRETRO_DIR)/tchar \
 	-I$(FBA_BURN_DIR) \
-	-I$(FBA_BURN_DIR)/burner \
 	-I$(MAIN_FBA_DIR)/cpu \
 	-I$(FBA_BURN_DIR)/snd \
 	-I$(FBA_BURN_DIR)/devices \

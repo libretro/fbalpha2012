@@ -195,17 +195,12 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 			chip->flash_mode = FM_ERASEAMD1;
 		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xa0) {
 			chip->flash_mode = FM_BYTEPROGRAM;
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-		} else
-			chip->flash_mode = FM_NORMAL;
-#else
 		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xf0) {
 			chip->flash_mode = FM_NORMAL;
 		} else {
 			// logerror( "unexpected %08x=%02x in FM_READAMDID2\n", address, data & 0xff );
 			chip->flash_mode = FM_NORMAL;
 		}
-#endif
 		break;				
 	}
 }
@@ -418,16 +413,10 @@ static void cps3_do_alt_char_dma(UINT32 src, UINT32 real_dest, UINT32 real_lengt
 				real_byte = px[ (chardma_table_address+p*2+0) ^ 0 ];
 				ds += ProcessByte8(real_byte,ds);
 				real_byte = px[ (chardma_table_address+p*2+1) ^ 0 ];
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-				p = real_byte;
-			}
-			ds += ProcessByte8(p,ds);
-#else
 				ds += ProcessByte8(real_byte,ds);
  			} else {
  				ds += ProcessByte8(p,ds);
  			}
-#endif
  			++src;
  			ctrl<<=1;
 
@@ -473,10 +462,8 @@ static void cps3_process_character_dma(UINT32 address)
 			memcpy( (UINT8 *)RamCRam + real_destination, RomUser + real_source, real_length );
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 		default:
 			bprintf(PRINT_NORMAL, _T("Character DMA Unknown DMA List Command Type %08x\n"), dat1);
-#endif
 		}
 	}
 }
@@ -585,25 +572,16 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 			} else
 			if (addr == 0x202)
 				return cps3_current_eeprom_read;
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-		}
-#else
 		} else
 		bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %8x\n"), addr);
-#endif
 	}
 	return 0;
 }
 
 UINT32 __fastcall cps3ReadLong(UINT32 addr)
 {
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-	UINT32 retval = 0;
-	((addr & 0xc7ffffff) == 0x04200000) ? retval = 0x0404adad : retval = 0;
-	return retval;
-#else
 	addr &= 0xc7ffffff;
-
+		
 	switch (addr) {
 	case 0x04200000:
 		bprintf(PRINT_NORMAL, _T("GFX Read Flash ID, cram bank %04x gfx flash bank: %04x\n"), cram_bank, gfxflash_bank);
@@ -612,9 +590,7 @@ UINT32 __fastcall cps3ReadLong(UINT32 addr)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to read long value of location %8x\n"), addr);
 	}
-
 	return 0;
-#endif
 }
 
 void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
@@ -632,7 +608,6 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 	// cps3_ss_pal_base_w
 	case 0x05050024: ss_pal_base = ( ss_pal_base & 0x00ff ) | (data << 8); break;
 	case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	case 0x05050026: break;
 	case 0x05050027: break;
 
@@ -642,7 +617,6 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 
 		} else
 			bprintf(PRINT_NORMAL, _T("Attempt to write byte value   %02x to location %8x\n"), data, addr);
-#endif
 	}
 }
 
@@ -781,21 +755,18 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 #else
 			EEPROM[((addr-0x080) >> 1)] = data;
 #endif
-		}
-#ifndef __LIBRETRO_OPTIMIZATIONS__
-		else
+		} else
 		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
 			// unknow i/o
+
 		} else
 				
 		bprintf(PRINT_NORMAL, _T("Attempt to write word value %04x to location %8x\n"), data, addr);
-#endif
 	}
 }
 
 void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0xc7ffffff;
 	
 	switch (addr) {
@@ -807,21 +778,16 @@ void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to write long value %8x to location %8x\n"), data, addr);
 	}
-#endif
 }
 
 void __fastcall cps3C0WriteByte(UINT32 addr, UINT8 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3C0WriteWord(UINT32 addr, UINT16 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
@@ -876,16 +842,12 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 
 void __fastcall cps3RomWriteByte(UINT32 addr, UINT8 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3RomWriteWord(UINT32 addr, UINT16 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
@@ -937,36 +899,28 @@ UINT32 __fastcall cps3RomReadLongSpe(UINT32 addr)
 
 UINT8 __fastcall cps3VidReadByte(UINT32 addr)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
-#endif
 	return 0;
 }
 
 UINT16 __fastcall cps3VidReadWord(UINT32 addr)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
-#endif
 	return 0;
 }
 
 UINT32 __fastcall cps3VidReadLong(UINT32 addr)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
-#endif
 	return 0;
 }
 
 void __fastcall cps3VidWriteByte(UINT32 addr, UINT8 data)
 {
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
-#endif
 }
 
 void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)

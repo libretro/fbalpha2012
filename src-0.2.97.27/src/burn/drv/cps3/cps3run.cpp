@@ -54,7 +54,7 @@ static UINT16 *EEPROM;
 #ifndef __LIBRETRO_OPTIMIZATIONS__
 UINT16 *Cps3CurPal;
 #endif
-static UINT32 *RamScreen;
+static UINT16 *RamScreen;
 
 UINT8 cps3_reset = 0;
 UINT8 cps3_palette_change = 0;
@@ -508,7 +508,7 @@ static INT32 MemIndex()
 #ifndef __LIBRETRO_OPTIMIZATIONS__
 	Cps3CurPal		= (UINT16 *) Next; Next += 0x020001 * sizeof(UINT16); // iq_132 - layer disable
 #endif
-	RamScreen	= (UINT32 *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(UINT32);
+	RamScreen	= (UINT16 *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(UINT16);
 	
 	MemEnd		= Next;
 	return 0;
@@ -1421,7 +1421,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 
 static void cps3_drawgfxzoom_1(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x, INT32 y, INT32 drawline)
 {
-	UINT32 * dst = RamScreen;
+	UINT16 * dst = RamScreen;
 	UINT8 * src = (UINT8 *) RamCRam;
 	dst += (drawline * 1024 + x);
 
@@ -1645,7 +1645,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 0:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1662,7 +1662,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 6:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1679,7 +1679,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 8:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1793,7 +1793,7 @@ static void DrvDraw()
 
 	if (nBurnLayer & 1)
 	{
-		UINT32 * pscr = RamScreen;
+		UINT16 * pscr = RamScreen;
 		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
 		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
 			memset(pscr, 0, clrsz);
@@ -1982,7 +1982,7 @@ static void DrvDraw()
 	
 	{
 		UINT32 srcx, srcy = 0;
-		UINT32 * srcbitmap;
+		UINT16 * srcbitmap;
 		UINT16 * dstbitmap = (UINT16 * )pBurnDraw;
 
 		for (INT32 rendery=0; rendery<224; rendery++) {

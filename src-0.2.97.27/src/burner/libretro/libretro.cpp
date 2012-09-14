@@ -540,6 +540,8 @@ static void extract_directory(char *buf, const char *path, size_t size)
       buf[0] = '\0';
 }
 
+bool analog_controls_enabled = false;
+
 bool retro_load_game(const struct retro_game_info *info)
 {
    char basename[128];
@@ -556,7 +558,7 @@ bool retro_load_game(const struct retro_game_info *info)
          return false;
 
       driver_inited = true;
-      init_input();
+      analog_controls_enabled = init_input();
 
       return true;
    }
@@ -661,15 +663,857 @@ static bool init_input()
    }
 
    //needed for Neo Geo button mappings (and other drivers in future)
+   const char * parentrom	= BurnDrvGetTextA(DRV_PARENT);
    const char * boardrom	= BurnDrvGetTextA(DRV_BOARDROM);
    const char * drvname		= BurnDrvGetTextA(DRV_NAME);
+   INT32	genre		= BurnDrvGetGenreFlags();
+   INT32	hardware	= BurnDrvGetHardwareCode();
 
-   fprintf(stderr, "drvname: %s\n", drvname);
+   fprintf(stderr, "has_analog: %d\n", has_analog);
+   fprintf(stderr, "parentrom: %s\n", parentrom);
    fprintf(stderr, "boardrom: %s\n", boardrom);
+   fprintf(stderr, "drvname: %s\n", drvname);
+   fprintf(stderr, "genre: %d\n", genre);
+   fprintf(stderr, "hardware: %d\n", hardware);
+
+   /* initialization */
+   struct BurnInputInfo bii;
+   memset(&bii, 0, sizeof(bii));
 
    // Bind to nothing.
    for (unsigned i = 0; i < 0x5000; i++)
       keybinds[i][0] = 0xff;
+
+   pgi = GameInp;
+   for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
+   {
+	/* TODO: Cyberbots: Full Metal Madness */
+	/* TODO: Armored Warriors */
+	   BurnDrvGetInputInfo(&bii, i);
+	   fprintf(stderr, "%s: %d.\n", bii.szName, pgi->Input.Switch.nCode );
+
+	if(strcmp(bii.szName,"P1 Coin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Start") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(START);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Start 1") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(START);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Up") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(UP);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Down") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(DOWN);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(LEFT);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(RIGHT);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Attack") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Accelerate") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Brake") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Gear") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Turn") ==0)
+	{
+		// for Forgotten Worlds, etc.
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Jump") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Pin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Select") ==0)
+	{
+   		if(boardrom && (strcmp(boardrom,"neogeo") == 0))
+		{
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+			keybinds[pgi->Input.Switch.nCode][1] = 0;
+		}
+		else
+		{
+			/* catch-all */
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+			keybinds[pgi->Input.Switch.nCode][1] = 0;
+		}
+	}
+	else if(strcmp(bii.szName,"P1 Use") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Weak Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Medium Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Strong Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(L);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Weak Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Medium Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Strong Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(R);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Rotate Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Rotate Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Special") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Shot") ==0))
+	{
+		if(parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0)
+		{
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+			keybinds[pgi->Input.Switch.nCode][1] = 0;
+		}
+		else
+		{
+			// catch-all
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+			keybinds[pgi->Input.Switch.nCode][1] = 0;
+		}
+	}
+	else if((strcmp(bii.szName,"P1 Shot (auto)") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Button 1") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Button 2") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Button 3") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Button 4") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Auto") ==0))
+	{
+		// Progear
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Super") ==0))
+	{
+		// Punisher
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Answer 1") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Answer 2") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Answer 3") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Answer 4") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Shot 1") ==0))
+	{
+		// Pang 3
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Shot 2") ==0))
+	{
+		// Pang 3
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Bomb") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if((strcmp(bii.szName,"P1 Special") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Fire") ==0)
+	{
+		/* for Ghouls 'n Ghosts */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Fire 1") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Fire 1") ==0)
+	{
+		/* for Space Harrier */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Fire 2") ==0)
+	{
+		/* for Space Harrier */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Fire 3") ==0)
+	{
+		/* for Space Harrier */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Fire 2") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Fire 3") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"Coin 1") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Button A") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Button B") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Button C") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+	else if(strcmp(bii.szName,"P1 Button D") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 0;
+	}
+
+	/* Player 2 */
+
+	else if(strcmp(bii.szName,"P2 Coin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Start") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(START);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Up") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(UP);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Down") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(DOWN);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(LEFT);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(RIGHT);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Attack") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Turn") ==0)
+	{
+		// for Forgotten Worlds, etc.
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Jump") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Pin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Select") ==0)
+	{
+   		if(boardrom && (strcmp(boardrom,"neogeo") == 0))
+		{
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+			keybinds[pgi->Input.Switch.nCode][1] = 1;
+		}
+		else
+		{
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+			keybinds[pgi->Input.Switch.nCode][1] = 1;
+		}
+	}
+
+	else if(strcmp(bii.szName,"P2 Use") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Weak Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	else if(strcmp(bii.szName,"P2 Medium Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Strong Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(L);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Weak Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Medium Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Strong Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(R);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Rotate Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Rotate Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Punch") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Kick") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Special") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Shot") ==0))
+	{
+		if(parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0)
+		{
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+			keybinds[pgi->Input.Switch.nCode][1] = 1;
+		}
+		else
+		{
+			// catch-all
+			keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+			keybinds[pgi->Input.Switch.nCode][1] = 1;
+		}
+	}
+	else if((strcmp(bii.szName,"P2 Button 1") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Button 2") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Button 3") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Button 4") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Auto") ==0))
+	{
+		// Progear
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Shot (auto)") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Super") ==0))
+	{
+		// Punisher
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Answer 1") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Answer 2") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Answer 3") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Answer 4") ==0))
+	{
+		// Qtono2j
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Shot 1") ==0))
+	{
+		// Pang 3
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Shot 2") ==0))
+	{
+		// Pang 3
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Bomb") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if((strcmp(bii.szName,"P2 Special") ==0))
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Fire") ==0)
+	{
+		/* for Ghouls 'n Ghosts */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Fire 1") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Fire 2") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Fire 3") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"Coin 2") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Button A") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Button B") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Button C") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+	else if(strcmp(bii.szName,"P2 Button D") ==0)
+	{
+		/* for Neo-Geo */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 1;
+	}
+
+	/* Player 3 */
+	else if(strcmp(bii.szName,"P3 Coin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Start") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(START);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Up") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(UP);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Down") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(DOWN);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(LEFT);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(RIGHT);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Attack") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Jump") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Pin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Select") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Use") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if((strcmp(bii.szName,"P3 Button 1") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if((strcmp(bii.szName,"P3 Button 2") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if((strcmp(bii.szName,"P3 Button 3") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if((strcmp(bii.szName,"P3 Button 4") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Fire 1") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Fire 2") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"P3 Fire 3") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+	else if(strcmp(bii.szName,"Coin 3") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 2;
+	}
+
+	/* Player 4 */
+	else if(strcmp(bii.szName,"P4 Coin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Start") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(START);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Up") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(UP);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Down") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(DOWN);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Left") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(LEFT);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Right") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(RIGHT);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Attack") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Jump") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Pin") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Select") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Use") ==0)
+	{
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if((strcmp(bii.szName,"P4 Button 1") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if((strcmp(bii.szName,"P4 Button 2") ==0))
+	{
+		/* Simpsons - Konami */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if((strcmp(bii.szName,"P4 Button 3") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if((strcmp(bii.szName,"P4 Button 4") ==0))
+	{
+		/* Various */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(X);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Fire 1") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(Y);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Fire 2") ==0)
+	{
+		/* for TMNT */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(B);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"P4 Fire 3") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(A);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+	else if(strcmp(bii.szName,"Coin 4") ==0)
+	{
+		/* for Strider */
+		keybinds[pgi->Input.Switch.nCode][0] = _BIND(SELECT);
+		keybinds[pgi->Input.Switch.nCode][1] = 3;
+	}
+
+   }
 
    // Reset
    keybinds[FBK_F3		][0] = RESET_BIND;
@@ -677,228 +1521,61 @@ static bool init_input()
    keybinds[P1_SERVICE	][0] = SERVICE_BIND;
    keybinds[P1_SERVICE	][1] = 0;
 
-   keybinds[P1_COIN	][0] = _BIND(SELECT);
-   keybinds[P1_COIN	][1] = 0;
-   keybinds[P1_START	][0] = _BIND(START);
-   keybinds[P1_START	][1] = 0;
-   keybinds[P1_UP	][0] = _BIND(UP);
-   keybinds[P1_UP	][1] = 0;
-   keybinds[P1_DOWN	][0] = _BIND(DOWN);
-   keybinds[P1_DOWN	][1] = 0;
-   keybinds[P1_LEFT	][0] = _BIND(LEFT);
-   keybinds[P1_LEFT	][1] = 0;
-   keybinds[P1_RIGHT	][0] = _BIND(RIGHT);
-   keybinds[P1_RIGHT	][1] = 0;
-   keybinds[P1_FIRE1	][0] = _BIND(Y);
-   keybinds[P1_FIRE1	][1] = 0;
-   keybinds[P1_FIRE2	][0] = _BIND(X);
-   keybinds[P1_FIRE2	][1] = 0;
-   keybinds[P1_FIRE3	][0] = _BIND(L);
-   keybinds[P1_FIRE3	][1] = 0;
-   keybinds[P1_FIRE4	][0] = _BIND(B);
-   keybinds[P1_FIRE4	][1] = 0;
-   keybinds[P1_FIRE5	][0] = _BIND(A);
-   keybinds[P1_FIRE5	][1] = 0;
-
-   const char *dd = strstr(drvname, "ddsom");
-   if(dd == NULL)
-	dd = strstr(drvname, "ddtod");
-
-   if(dd != NULL)
-   {
-	   keybinds[P1_FIRED][0] = _BIND(X);
-	   keybinds[P1_FIRED][1] = 0;
-	   keybinds[P2_FIRED][0] = _BIND(X);
-	   keybinds[P2_FIRED][1] = 0;
-	   keybinds[P3_FIRED][0] = _BIND(X);
-	   keybinds[P3_FIRED][1] = 0;
-	   keybinds[P4_FIRED][0] = _BIND(X);
-	   keybinds[P4_FIRED][1] = 0;
-   }
-
-   if(boardrom && (strcmp(boardrom,"neogeo") == 0))
-   {
-      keybinds[P1_FIRE6][0] = _BIND(Y);
-      keybinds[P1_FIRE6][1] = 0;
-      keybinds[P1_FIRED][0] = _BIND(X);
-      keybinds[P1_FIRED][1] = 0;
-   }
-   else
-   {
-      keybinds[P1_FIRE6	][0] = _BIND(R);
-      keybinds[P1_FIRE6	][1] = 0;
-   }
-
-   keybinds[P2_COIN	][0] = _BIND(SELECT);
-   keybinds[P2_COIN	][1] = 1;
-   keybinds[P2_START	][0] = _BIND(START);
-   keybinds[P2_START	][1] = 1;
-   keybinds[P2_UP	][0] = _BIND(UP);
-   keybinds[P2_UP	][1] = 1;
-   keybinds[P2_DOWN	][0] = _BIND(DOWN);
-   keybinds[P2_DOWN	][1] = 1;
-   keybinds[P2_LEFT	][0] = _BIND(LEFT);
-   keybinds[P2_LEFT	][1] = 1;
-   keybinds[P2_RIGHT	][0] = _BIND(RIGHT);
-   keybinds[P2_RIGHT	][1] = 1;
-   keybinds[P2_FIRE1	][0] = _BIND(Y);
-
-   if (boardrom && (strcmp(boardrom, "neogeo") == 0))
-   {
-      keybinds[P2_FIRE3][0] = _BIND(Y);
-      keybinds[P2_FIRE3][1] = 1;
-      keybinds[P2_FIRE4][0] = _BIND(X);
-      keybinds[P2_FIRE4][1] = 1;
-      keybinds[P2_FIRE1][0] = _BIND(B);
-      keybinds[P2_FIRE1][1] = 1;
-      keybinds[P2_FIRE2][0] = _BIND(A);
-      keybinds[P2_FIRE2][1] = 1;
-   }
-   else
-   {
-      keybinds[P2_FIRE1	][1] = 1;
-      keybinds[P2_FIRE2	][0] = _BIND(X);
-      keybinds[P2_FIRE2	][1] = 1;
-      keybinds[P2_FIRE3	][0] = _BIND(L);
-      keybinds[P2_FIRE3	][1] = 1;
-      keybinds[P2_FIRE4	][0] = _BIND(B);
-      keybinds[P2_FIRE4	][1] = 1;
-      keybinds[P2_FIRE5	][0] = _BIND(A);
-      keybinds[P2_FIRE5	][1] = 1;
-      keybinds[P2_FIRE6	][0] = _BIND(R);
-      keybinds[P2_FIRE6	][1] = 1;
-   }
-
-#if 0
-   keybinds[0x4088		][0] = L2;
-   keybinds[0x4088		][1] = 1;
-   keybinds[0x408A		][0] = R2;
-   keybinds[0x408A		][1] = 1;
-   keybinds[0x408b		][0] = L3;
-   keybinds[0x408b		][1] = 1;
-   keybinds[0x408c		][0] = R3;
-   keybinds[0x408c		][1] = 1;
-#endif
-
-   keybinds[P3_COIN	][0] = _BIND(SELECT);
-   keybinds[P3_COIN	][1] = 2;
-   keybinds[P3_START	][0] = _BIND(START);
-   keybinds[P3_START	][1] = 2;
-   keybinds[P3_UP	][0] = _BIND(UP);
-   keybinds[P3_UP	][1] = 2;
-   keybinds[P3_DOWN	][0] = _BIND(DOWN);
-   keybinds[P3_DOWN	][1] = 2;
-   keybinds[P3_LEFT	][0] = _BIND(LEFT);
-   keybinds[P3_LEFT	][1] = 2;
-   keybinds[P3_RIGHT	][0] = _BIND(RIGHT);
-   keybinds[P3_RIGHT	][1] = 2;
-   keybinds[P3_FIRE1	][0] = _BIND(Y);
-   keybinds[P3_FIRE1	][1] = 2;
-   keybinds[P3_FIRE2	][0] = _BIND(X);
-   keybinds[P3_FIRE2	][1] = 2;
-   keybinds[P3_FIRE3	][0] = _BIND(L);
-   keybinds[P3_FIRE3	][1] = 2;
-   keybinds[P3_FIRE4	][0] = _BIND(B);
-   keybinds[P3_FIRE4	][1] = 2;
-   keybinds[P3_FIRE5	][0] = _BIND(A);
-   keybinds[P3_FIRE5	][1] = 2;
-   keybinds[P3_FIRE6	][0] = _BIND(R);
-   keybinds[P3_FIRE6	][1] = 2;
-#if 0
-   keybinds[0x4188		][0] = L2;
-   keybinds[0x4188		][1] = 2;
-   keybinds[0x418A		][0] = R2;
-   keybinds[0x418A		][1] = 2;
-   keybinds[0x418b		][0] = L3;
-   keybinds[0x418b		][1] = 2;
-   keybinds[0x418c		][0] = R3;
-   keybinds[0x418c		][1] = 2;
-#endif
-
-   keybinds[P4_COIN	][0] = _BIND(SELECT);
-   keybinds[P4_COIN	][1] = 3;
-   keybinds[P4_START	][0] = _BIND(START);
-   keybinds[P4_START	][1] = 3;
-   keybinds[P4_UP	][0] = _BIND(UP);
-   keybinds[P4_UP	][1] = 3;
-   keybinds[P4_DOWN	][0] = _BIND(DOWN);
-   keybinds[P4_DOWN	][1] = 3;
-   keybinds[P4_LEFT	][0] = _BIND(LEFT);
-   keybinds[P4_LEFT	][1] = 3;
-   keybinds[P4_RIGHT	][0] = _BIND(RIGHT);
-   keybinds[P4_RIGHT	][1] = 3;
-   keybinds[P4_FIRE1	][0] = _BIND(Y);
-   keybinds[P4_FIRE1	][1] = 3;
-   keybinds[P4_FIRE2	][0] = _BIND(X);
-   keybinds[P4_FIRE2	][1] = 3;
-   keybinds[P4_FIRE3	][0] = _BIND(L);
-   keybinds[P4_FIRE3	][1] = 3;
-   keybinds[P4_FIRE4	][0] = _BIND(B);
-   keybinds[P4_FIRE4	][1] = 3;
-   keybinds[P4_FIRE5	][0] = _BIND(A);
-   keybinds[P4_FIRE5	][1] = 3;
-   keybinds[P4_FIRE6	][0] = _BIND(R);
-   keybinds[P4_FIRE6	][1] = 3;
-#if 0
-   keybinds[0x4288		][0] = L2;
-   keybinds[0x4288		][1] = 3;
-   keybinds[0x428A		][0] = R2;
-   keybinds[0x428A		][1] = 3;
-   keybinds[0x428b		][0] = L3;
-   keybinds[0x428b		][1] = 3;
-   keybinds[0x428c		][0] = R3;
-   keybinds[0x428c		][1] = 3;
-#endif
-
    return has_analog;
 }
 
+//#define DEBUG_INPUT
+
 static void poll_input()
 {
+   /* TODO: hook up analog controls */
    poll_cb();
 
    struct GameInp* pgi = GameInp;
    unsigned controller_binds_count = nGameInpCount;
 
-   for (int i = 0; i < controller_binds_count; i++, pgi++)
+   if(analog_controls_enabled)
    {
-      int nAdd = 0;
-      if ((pgi->nInput & GIT_GROUP_SLIDER) == 0)                           // not a slider
-         continue;
+	   for (int i = 0; i < controller_binds_count; i++, pgi++)
+	   {
+		   int nAdd = 0;
+		   if ((pgi->nInput & GIT_GROUP_SLIDER) == 0)                           // not a slider
+			   continue;
 
-      if (pgi->nInput == GIT_KEYSLIDER)
-      {
-         // Get states of the two keys
-         if (input_cb(0, RETRO_DEVICE_JOYPAD, 0,
-                  keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]][0]))
-            nAdd -= 0x100;
+		   if (pgi->nInput == GIT_KEYSLIDER)
+		   {
+			   // Get states of the two keys
+			   if (input_cb(0, RETRO_DEVICE_JOYPAD, 0,
+						   keybinds[pgi->Input.Slider.SliderAxis.nSlider[0]][0]))
+				   nAdd -= 0x100;
 
-         if (input_cb(0, RETRO_DEVICE_JOYPAD, 0,
-                  keybinds[pgi->Input.Slider.SliderAxis.nSlider[1]][0]))
-            nAdd += 0x100;
-      }
+			   if (input_cb(0, RETRO_DEVICE_JOYPAD, 0,
+						   keybinds[pgi->Input.Slider.SliderAxis.nSlider[1]][0]))
+				   nAdd += 0x100;
+		   }
 
-      // nAdd is now -0x100 to +0x100
+		   // nAdd is now -0x100 to +0x100
 
-      // Change to slider speed
-      nAdd *= pgi->Input.Slider.nSliderSpeed;
-      nAdd /= 0x100;
+		   // Change to slider speed
+		   nAdd *= pgi->Input.Slider.nSliderSpeed;
+		   nAdd /= 0x100;
 
-      if (pgi->Input.Slider.nSliderCenter)
-      {                                          // Attact to center
-         int v = pgi->Input.Slider.nSliderValue - 0x8000;
-         v *= (pgi->Input.Slider.nSliderCenter - 1);
-         v /= pgi->Input.Slider.nSliderCenter;
-         v += 0x8000;
-         pgi->Input.Slider.nSliderValue = v;
-      }
+		   if (pgi->Input.Slider.nSliderCenter)
+		   {                                          // Attact to center
+			   int v = pgi->Input.Slider.nSliderValue - 0x8000;
+			   v *= (pgi->Input.Slider.nSliderCenter - 1);
+			   v /= pgi->Input.Slider.nSliderCenter;
+			   v += 0x8000;
+			   pgi->Input.Slider.nSliderValue = v;
+		   }
 
-      pgi->Input.Slider.nSliderValue += nAdd;
-      // Limit slider
-      if (pgi->Input.Slider.nSliderValue < 0x0100)
-         pgi->Input.Slider.nSliderValue = 0x0100;
-      if (pgi->Input.Slider.nSliderValue > 0xFF00)
-         pgi->Input.Slider.nSliderValue = 0xFF00;
+		   pgi->Input.Slider.nSliderValue += nAdd;
+		   // Limit slider
+		   if (pgi->Input.Slider.nSliderValue < 0x0100)
+			   pgi->Input.Slider.nSliderValue = 0x0100;
+		   if (pgi->Input.Slider.nSliderValue > 0xFF00)
+			   pgi->Input.Slider.nSliderValue = 0xFF00;
+	   }
    }
 
    pgi = GameInp;
@@ -953,7 +1630,12 @@ static void poll_input()
             {
                // Binary controls
                if (state)
-                  pgi->Input.nVal = 1;
+	       {
+#ifdef DEBUG_INPUT
+	fprintf(stderr, "input: %d\n", pgi->Input.Switch.nCode);
+#endif
+		       pgi->Input.nVal = 1;
+	       }
                else
                   pgi->Input.nVal = 0;
                *(pgi->Input.pVal) = pgi->Input.nVal;

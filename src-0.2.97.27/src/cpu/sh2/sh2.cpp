@@ -768,6 +768,9 @@ SH2_INLINE void sh2_exception(/*const char *message,*/ int irqline)
 		}
 		else
 		{
+#ifdef __LIBRETRO_OPTIMIZATIONS__
+			vector = 64 + irqline/2;
+#else
 			if(sh2->m[0x38] & 0x00010000)
 			{
 				//vector = sh2->irq_callback(irqline);
@@ -782,6 +785,7 @@ SH2_INLINE void sh2_exception(/*const char *message,*/ int irqline)
 				vector = 64 + irqline/2;
 				//LOG(("SH-2 #%d exception #%d (autovector: $%x) after [%s]\n", cpu_getactivecpu(), irqline, vector, message));
 			}
+#endif
 		}
 	}
 	else
@@ -2450,7 +2454,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 {
 	switch (opcode & 0x3F)
 	{
-	case 0x00: NOP();						break;
+	case 0x00:
 	case 0x01: NOP();						break;
 	case 0x02: STCSR(Rn);					break;
 	case 0x03: BSRF(Rn);					break;
@@ -2467,7 +2471,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x0e: MOVLL0(Rm, Rn);				break;
 	case 0x0f: MAC_L(Rm, Rn);				break;
 
-	case 0x10: NOP();						break;
+	case 0x10:
 	case 0x11: NOP();						break;
 	case 0x12: STCGBR(Rn);					break;
 	case 0x13: NOP();						break;
@@ -2484,7 +2488,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x1e: MOVLL0(Rm, Rn);				break;
 	case 0x1f: MAC_L(Rm, Rn);				break;
 
-	case 0x20: NOP();						break;
+	case 0x20:
 	case 0x21: NOP();						break;
 	case 0x22: STCVBR(Rn);					break;
 	case 0x23: BRAF(Rn);					break;
@@ -2501,17 +2505,17 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x2e: MOVLL0(Rm, Rn);				break;
 	case 0x2f: MAC_L(Rm, Rn);				break;
 
-	case 0x30: NOP();						break;
-	case 0x31: NOP();						break;
-	case 0x32: NOP();						break;
+	case 0x30:
+	case 0x31:
+	case 0x32:
 	case 0x33: NOP();						break;
 	case 0x34: MOVBS0(Rm, Rn);				break;
 	case 0x35: MOVWS0(Rm, Rn);				break;
 	case 0x36: MOVLS0(Rm, Rn);				break;
 	case 0x37: MULL(Rm, Rn);				break;
-	case 0x38: NOP();						break;
-	case 0x39: NOP();						break;
-	case 0x3a: NOP();						break;
+	case 0x38:
+	case 0x39:
+	case 0x3a:
 	case 0x3b: NOP();						break;
 	case 0x3c: MOVBL0(Rm, Rn);				break;
 	case 0x3d: MOVWL0(Rm, Rn);				break;
@@ -2816,10 +2820,13 @@ static void sh2_timer_activate(void)
 			sh2->timer_cycles = max_delta;
 			sh2->timer_base = sh2->frc_base;
 			
-		} else {
+		}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+		else {
 //			logerror("SH2.%d: Timer event in %d cycles of external clock", sh2->cpu_number, max_delta);
 			//bprintf(0, _T("SH2.0: Timer event in %d cycles of external clock\n"), max_delta);
 		}
+#endif
 	}
 }
 
@@ -3061,7 +3068,7 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 			sh2->ocra = (sh2->ocra & (mem_mask >> 16)) | ((data & ~mem_mask) >> 16);
 		sh2_timer_activate();
 		break;
-
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	case 0x06: // ICR
 		break;
 
@@ -3093,6 +3100,7 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 		// Division box
 	case 0x40: // DVSR
 		break;
+#endif
 	case 0x41: // DVDNT
 		{
 			INT32 a = sh2->m[0x41];
@@ -3183,6 +3191,7 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 		sh2_dmac_check(1);
 		break;
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		// Bus controller
 	case 0x78: // BCR1
 	case 0x79: // BCR2
@@ -3196,6 +3205,7 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 	default:
 		//logerror("sh2_internal_w:  Unmapped write %08x, %08x @ %08x\n", 0xfffffe00+offset*4, data, mem_mask);
 		break;
+#endif
 	}
 }
 

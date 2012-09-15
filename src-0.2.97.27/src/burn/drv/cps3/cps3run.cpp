@@ -470,8 +470,10 @@ static void cps3_process_character_dma(UINT32 address)
 			memcpy( (UINT8 *)RamCRam + real_destination, RomUser + real_source, real_length );
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 			break;
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		default:
 			bprintf(PRINT_NORMAL, _T("Character DMA Unknown DMA List Command Type %08x\n"), dat1);
+#endif
 		}
 	}
 }
@@ -544,28 +546,27 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 		return RamVReg[1] >> 16;
 	case 0x040c0006:
 		return RamVReg[1] & 0xffff;
-#else
 	case 0x040c0000:
 	case 0x040c0002:
 	case 0x040c0004:
 	case 0x040c0006:
 		return 0;
-#endif
 	// cps3_vbl_r
 	case 0x040c000c:
 	case 0x040c000e:
 		return 0;
-
+#endif
 	case 0x05000000: return ~Cps3Input[1];
 	case 0x05000002: return ~Cps3Input[0];
 	case 0x05000004: return ~Cps3Input[3];
 	case 0x05000006: return ~Cps3Input[2];
-
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	case 0x05140000:
 	case 0x05140002:
 		// cd-rom read
 		
 		break;
+#endif
 		
 	default:
 		if ((addr >= 0x05000a00) && (addr < 0x05000a20)) {
@@ -584,8 +585,11 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 			} else
 			if (addr == 0x202)
 				return cps3_current_eeprom_read;
-		} else
+		}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+		else
 		bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %8x\n"), addr);
+#endif
 	}
 	return 0;
 }
@@ -596,11 +600,14 @@ UINT32 __fastcall cps3ReadLong(UINT32 addr)
 		
 	switch (addr) {
 	case 0x04200000:
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		bprintf(PRINT_NORMAL, _T("GFX Read Flash ID, cram bank %04x gfx flash bank: %04x\n"), cram_bank, gfxflash_bank);
+#endif
 		return 0x0404adad;
-
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to read long value of location %8x\n"), addr);
+#endif
 	}
 	return 0;
 }
@@ -620,15 +627,16 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 	// cps3_ss_pal_base_w
 	case 0x05050024: ss_pal_base = ( ss_pal_base & 0x00ff ) | (data << 8); break;
 	case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	case 0x05050026: break;
 	case 0x05050027: break;
-
 	default:
 		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
 			// VideoReg
 
 		} else
 			bprintf(PRINT_NORMAL, _T("Attempt to write byte value   %02x to location %8x\n"), data, addr);
+#endif
 	}
 }
 
@@ -822,7 +830,9 @@ void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
 		*(UINT32 *)(RamC000_D + (addr & 0x3ff)) = data ^ cps3_mask(addr, cps3_key1, cps3_key2);
 		return ;
 	}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 // If fastboot != 1 
@@ -860,7 +870,9 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		if ( main_flash.flash_mode == FM_NORMAL )
 			retvalue = *(UINT32 *)(RomGame + (addr & 0x00ffffff));
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 		bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
+#endif
 	}
 	return retvalue;
 }
@@ -1791,24 +1803,26 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (nBurnLayer & 1)
+#endif
 	{
 		UINT16 * pscr = RamScreen;
 		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
 		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
 			memset(pscr, 0, clrsz);
 	}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	else
 	{
-#ifndef __LIBRETRO_OPTIMIZATIONS__
 		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0);
-#endif
 
 		INT32 i;
 		for (i = 0; i < 1024 * 448; i++) {
 			RamScreen[i] = 0x20000;
 		}
 	}
+#endif
 	
 	// Draw Sprites
 	{
@@ -1863,7 +1877,9 @@ static void DrvDraw()
 
 				if (xsize2==0)
 				{
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 					if (nBurnLayer & 1)
+#endif
 					{
 						INT32 tilemapnum = ((value3 & 0x00000030)>>4);
 						INT32 startline;
@@ -1889,7 +1905,9 @@ static void DrvDraw()
 						bg_drawn[tilemapnum] = 1;
 					}
 				} else {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 					if (~nSpriteEnable & 1) continue;
+#endif
 
 					ysize2 = tilestable[ysize2];
 					xsize2 = tilestable[xsize2];
@@ -2000,7 +2018,9 @@ static void DrvDraw()
 		}
 	}
 	
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	if (nBurnLayer & 2)
+#endif
 	{
 		// bank select? (sfiii2 intro)
 		INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;

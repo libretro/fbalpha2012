@@ -29,8 +29,10 @@ static cps3snd_chip * chip;
 
 UINT8 __fastcall cps3SndReadByte(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
+#endif
 	return 0;
 }
 
@@ -43,24 +45,31 @@ UINT16 __fastcall cps3SndReadWord(UINT32 addr)
 	} else
 	if (addr == 0x200)	{
 		return chip->key;
-	} else
+	}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+	else
 
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read word value of location %8x\n"), addr);
+#endif
 	return 0;
 }
 
 UINT32 __fastcall cps3SndReadLong(UINT32 addr)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0x000003ff;
 	
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
+#endif
 	return 0;
 }
 
 void __fastcall cps3SndWriteByte(UINT32 addr, UINT8 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data)
@@ -81,15 +90,19 @@ void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data)
 			}
 		}
 		chip->key = key;
-	} else
+	}
+#ifndef __LIBRETRO_OPTIMIZATIONS__
+	else
 		bprintf(PRINT_NORMAL, _T("SND Attempt to write word value %4x to location %8x\n"), data, addr);
-	
+#endif
 }
 
 void __fastcall cps3SndWriteLong(UINT32 addr, UINT32 data)
 {
+#ifndef __LIBRETRO_OPTIMIZATIONS__
 	//addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 INT32 cps3SndInit(UINT8 * sndrom)

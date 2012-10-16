@@ -150,6 +150,22 @@ INT32 BurnStateMAMEScan(INT32 nAction, INT32* pnMin);
 void BurnStateExit();
 INT32 BurnStateInit();
 
+#ifdef ANDROID
+#include <wchar.h>
+
+size_t mbstowcs(wchar_t *pwcs, const char *s, size_t n)
+{
+	if (pwcs == NULL)
+		return strlen(s);
+	return mbsrtowcs(pwcs, &s, n, NULL);
+}
+
+size_t wcstombs(char *s, const wchar_t *pwcs, size_t n)
+{
+        return wcsrtombs(s, &pwcs, n, NULL);
+}
+#endif
+
 // Get the text fields for the driver in TCHARs
 extern "C" TCHAR* BurnDrvGetText(UINT32 i)
 {

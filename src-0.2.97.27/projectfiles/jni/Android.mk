@@ -2,7 +2,19 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-MAIN_FBA_DIR := ../src
+ifeq ($(TARGET_ARCH),arm)
+LOCAL_CXXFLAGS += -DANDROID_ARM
+endif
+
+ifeq ($(TARGET_ARCH),x86)
+LOCAL_CXXFLAGS +=  -DANDROID_X86
+endif
+
+ifeq ($(TARGET_ARCH),mips)
+LOCAL_CXXFLAGS += -DANDROID_MIPS -D__mips__ -D__MIPSEL__
+endif
+
+MAIN_FBA_DIR := ../../src
 FBA_BURN_DIR := $(MAIN_FBA_DIR)/burn
 FBA_BURN_DRIVERS_DIR := $(MAIN_FBA_DIR)/burn/drv
 FBA_BURNER_DIR := $(MAIN_FBA_DIR)/burner
@@ -98,7 +110,7 @@ LOCAL_MODULE    := libretro
 LOCAL_SRC_FILES := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
 
 
-LOCAL_CXXFLAGS = -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID
+LOCAL_CXXFLAGS += -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID
 LOCAL_CFLAGS = -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID
 
 LOCAL_C_INCLUDES = $(FBA_BURNER_DIR)/win32 \

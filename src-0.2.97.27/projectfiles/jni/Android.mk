@@ -4,6 +4,10 @@ include $(CLEAR_VARS)
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CXXFLAGS += -DANDROID_ARM
+LOCAL_ARM_MODE := arm
+LOCAL_C_FLAGS += -fuse-ld=gold
+LOCAL_CPP_FLAGS+= -fuse-ld=gold
+LOCAL_LDLIBS := -fuse-ld=gold
 endif
 
 ifeq ($(TARGET_ARCH),x86)
@@ -110,8 +114,8 @@ LOCAL_MODULE    := libretro
 LOCAL_SRC_FILES := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
 
 
-LOCAL_CXXFLAGS += -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID
-LOCAL_CFLAGS = -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID
+LOCAL_CXXFLAGS += -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID -DFRONTEND_SUPPORTS_RGB565
+LOCAL_CFLAGS = -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID -DFRONTEND_SUPPORTS_RGB565
 
 LOCAL_C_INCLUDES = $(FBA_BURNER_DIR)/win32 \
 	$(LIBRETRO_DIR) \

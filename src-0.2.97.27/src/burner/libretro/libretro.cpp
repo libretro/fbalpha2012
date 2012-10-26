@@ -478,14 +478,17 @@ static bool fba_init(unsigned driver)
    return true;
 }
 
+#if defined(FRONTEND_SUPPORTS_RGB565)
+static unsigned int HighCol16(int r, int g, int b, int  /* i */)
+{
+   return (((r << 8) & 0xf800) | ((g << 3) & 0x07e0) | ((b >> 3) & 0x001f));
+}
+#else
 static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 {
-   unsigned int t = 0;
-   t |= (r << 7) & 0x7c00;
-   t |= (g << 2) & 0x03e0;
-   t |= (b >> 3) & 0x001f;
-   return t;
+   return (((r << 7) & 0x7c00) | ((g << 2) & 0x03e0) | ((b >> 3) & 0x001f));
 }
+#endif
 
 int VidRecalcPal()
 {
@@ -496,7 +499,13 @@ static void init_video()
 {
    nBurnBpp = 2;
    VidRecalcPal();
+#if 0
+#ifdef FRONTEND_SUPPORTS_RGB565
+   BurnHighCol = HighCol16;
+#else
    BurnHighCol = HighCol15;
+#endif
+#endif
 }
 
 static void init_audio()
@@ -544,6 +553,7 @@ bool analog_controls_enabled = false;
 
 bool retro_load_game(const struct retro_game_info *info)
 {
+   bool retval = false;
    char basename[128];
    extract_basename(basename, info->path, sizeof(basename));
    extract_directory(g_rom_dir, info->path, sizeof(g_rom_dir));
@@ -560,13 +570,18 @@ bool retro_load_game(const struct retro_game_info *info)
       driver_inited = true;
       analog_controls_enabled = init_input();
 
-      return true;
+      retval = true;
    }
    else
-   {
       fprintf(stderr, "[FBA] Cannot find driver.\n");
-      return false;
-   }
+
+#ifdef FRONTEND_SUPPORTS_RGB565
+   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
+   if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
+      fprintf(stderr, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+#endif
+
+   return retval;
 }
 
 bool retro_load_game_special(unsigned, const struct retro_game_info*, size_t) { return false; }

@@ -709,7 +709,7 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 #endif
 
 #ifdef __LIBRETRO_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_XBGR(coldata);
+				RamPal[(paldma_dest + i)] = BurnHighCol((coldata & 0x001F) << 3 , ((coldata & 0x03E0) >> 5) << 3, (((coldata & 0x7c00) >> 10) << 3), 0);
 #else
 				RamPal[(paldma_dest + i)] = coldata;
 #endif

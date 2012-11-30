@@ -83,12 +83,10 @@ FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/konami \
 	$(FBA_BURN_DRIVERS_DIR)/megadrive \
 	$(FBA_BURN_DRIVERS_DIR)/pce \
-	$(FBA_BURN_DRIVERS_DIR)/pgm \
 	$(FBA_BURN_DRIVERS_DIR)/pre90s \
 	$(FBA_BURN_DRIVERS_DIR)/psikyo \
 	$(FBA_BURN_DRIVERS_DIR)/pst90s \
 	$(FBA_BURN_DRIVERS_DIR)/sega \
-	$(FBA_BURN_DRIVERS_DIR)/snes \
 	$(FBA_BURN_DRIVERS_DIR)/taito \
 	$(FBA_BURN_DRIVERS_DIR)/toaplan
 
@@ -115,7 +113,7 @@ FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_
 
 LOCAL_MODULE    := libretro
 
-GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp
+GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp $(GRIFFIN_DIR)/pgm.cpp $(GRIFFIN_DIR)/snes.cpp
 
 LOCAL_SRC_FILES := $(GRIFFIN_CXX_SRC_FILES) $(CYCLONE_SRC)  $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp 
 

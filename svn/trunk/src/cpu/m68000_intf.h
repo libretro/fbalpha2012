@@ -1,3 +1,6 @@
+#ifndef _M68000_INTF_H
+#define _M68000_INTF_H
+
 // 68000 (Sixty Eight K) Interface - header file
 #include <stdint.h>
 #ifndef FASTCALL
@@ -245,3 +248,5 @@ INT32 SekSetCmpCallback(pSekCmpCallback pCallback);
 INT32 SekGetPC(INT32 n);
 
 INT32 SekScan(INT32 nAction);
+
+#endif

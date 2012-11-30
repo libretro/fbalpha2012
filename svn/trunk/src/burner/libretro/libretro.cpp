@@ -34,7 +34,7 @@ static unsigned g_rom_count;
 static unsigned audio_samplerate = 32010;
 
 #define AUDIO_SEGMENT_LENGTH ((audio_samplerate * 100 + (6000 >> 1)) / 6000) // <-- Hardcoded value that corresponds well to 32kHz audio.
-#define AUDIO_SEGMENT_LENGTH_FIXED ((4800 * 100 + (6000 >> 1)) / 6000) // <-- Hardcoded value that corresponds well to 32kHz audio.
+#define AUDIO_SEGMENT_LENGTH_FIXED ((48000 * 100 + (6000 >> 1)) / 6000) // <-- Hardcoded value that corresponds well to 32kHz audio.
 #define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS ((AUDIO_SEGMENT_LENGTH) * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];

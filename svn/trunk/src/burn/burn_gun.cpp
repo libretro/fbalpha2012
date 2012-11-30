@@ -155,10 +155,17 @@ void BurnGunDrawTarget(INT32 num, INT32 x, INT32 y)
 	UINT8* pTile = pBurnDraw + nBurnGunMaxX * nBurnBpp * (y - 1) + nBurnBpp * x;
 	
 	UINT32 nTargetCol = 0;
+#ifdef __LIBRETRO__
+	if (num == 0) nTargetCol = BurnHighCol(0xfc, 0x12, 0xee, 0);
+	if (num == 1) nTargetCol = BurnHighCol(0x1c, 0xfc, 0x1c, 0);
+	if (num == 2) nTargetCol = BurnHighCol(0x15, 0x93, 0xfd, 0);
+	if (num == 3) nTargetCol = BurnHighCol(0xf7, 0xfa, 0x0e, 0);
+#else
 	if (num == 0) nTargetCol = BurnHighCol(P1Colour, 0);
 	if (num == 1) nTargetCol = BurnHighCol(P2Colour, 0);
 	if (num == 2) nTargetCol = BurnHighCol(P3Colour, 0);
 	if (num == 3) nTargetCol = BurnHighCol(P4Colour, 0);
+#endif
 
 	for (INT32 y2 = 0; y2 < 17; y2++) {
 

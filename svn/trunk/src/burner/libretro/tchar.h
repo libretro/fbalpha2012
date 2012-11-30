@@ -67,5 +67,4 @@ extern HWND hScrnWnd;		// Handle to the screen window
 
 extern void InpDIPSWResetDIPs (void);
 
-
 #endif

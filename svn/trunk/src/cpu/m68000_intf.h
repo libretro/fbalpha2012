@@ -7,9 +7,9 @@
 
  #define EMU_M68K								// Use Musashi 68000 emulator
 
-#if defined BUILD_A68K
+#if defined(BUILD_A68K)
  #define EMU_A68K								// Use A68K Assembler 68000 emulator
-#elif defined BUILD_C68K
+#elif defined(BUILD_C68K)
  #define EMU_C68K								// Use Dave's Cyclone  68000 emulator
 #endif
 
@@ -177,7 +177,7 @@ inline static INT32 SekSegmentCycles()
 
 #if defined EMU_M68K
 	return nSekCyclesDone + nSekCyclesToDo - m68k_ICount;
-#elif defind EMU_C68K
+#elif defined EMU_C68K
 	return nSekCyclesDone + nSekCyclesToDo - PicoCpu[nSekActive].cycles;}
 #else
 	return nSekCyclesDone + nSekCyclesToDo;

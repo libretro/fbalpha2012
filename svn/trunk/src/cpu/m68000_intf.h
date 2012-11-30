@@ -5,16 +5,26 @@
  #define __fastcall
 #endif
 
+ #define EMU_M68K								// Use Musashi 68000 emulator
+
 #if defined BUILD_A68K
  #define EMU_A68K								// Use A68K Assembler 68000 emulator
+#elif defined BUILD_C68K
+ #define EMU_C68K								// Use Dave's Cyclone  68000 emulator
 #endif
 
-#define EMU_M68K								// Use Musashi 68000 emulator
+
 
 #define SEK_MAX	(4)								// Maximum number of CPUs supported
 
 #if defined EMU_M68K
  #include "m68k/m68k.h"
+#endif
+
+#if defined EMU_C68K
+ #include "cyclone/cyclone.h"
+ extern struct Cyclone PicoCpu[SEK_MAX];
+// #define	m68k_ICount PicoCpu[0].cycles
 #endif
 
 // Number of bits used for each page in the fast memory map
@@ -165,8 +175,10 @@ inline static INT32 SekSegmentCycles()
 	if (nSekActive == -1) bprintf(PRINT_ERROR, (TCHAR*)_T("SekSegmentCycles called when no CPU open\n"));
 #endif
 
-#ifdef EMU_M68K
+#if defined EMU_M68K
 	return nSekCyclesDone + nSekCyclesToDo - m68k_ICount;
+#elif defind EMU_C68K
+	return nSekCyclesDone + nSekCyclesToDo - PicoCpu[nSekActive].cycles;}
 #else
 	return nSekCyclesDone + nSekCyclesToDo;
 #endif
@@ -184,8 +196,10 @@ inline static INT32 SekTotalCycles()
 	if (nSekActive == -1) bprintf(PRINT_ERROR, (TCHAR*)_T("SekTotalCycles called when no CPU open\n"));
 #endif
 
-#ifdef EMU_M68K
+#if defined EMU_M68K
 	return nSekCyclesTotal + nSekCyclesToDo - m68k_ICount;
+#elif defined EMU_C68K
+	return nSekCyclesTotal + nSekCyclesToDo - PicoCpu[nSekActive].cycles;
 #else
 	return nSekCyclesTotal + nSekCyclesToDo;
 #endif

@@ -56,6 +56,7 @@ static void MapBank(struct QChan* pc)
 	pc->PlayBank = (INT8*)CpsQSam + nBank;
 }
 
+#if 0
 static void UpdateEndBuffer(struct QChan* pc)
 {
 	if (pc->bKey) {
@@ -80,6 +81,7 @@ static void UpdateEndBuffer(struct QChan* pc)
 		}
 	}
 }
+#endif
 
 static void CalcAdvance(struct QChan* pc)
 {
@@ -200,7 +202,7 @@ void QscWrite(INT32 a, INT32 d)
 			pc = QChan + ((nChanNum + 1) & 15);
 			pc->nBank = d;
 			MapBank(pc);
-			UpdateEndBuffer(pc);
+			//UpdateEndBuffer(pc);
 			break;
 		}
 		case 1: {										// Set sample start offset
@@ -222,16 +224,16 @@ void QscWrite(INT32 a, INT32 d)
 			break;
 		}
 #endif
-		case 4: {										// Set sample loop offset
+		case 4: //{										// Set sample loop offset
 			pc->nLoop = d << 12;
-			UpdateEndBuffer(pc);
+			//UpdateEndBuffer(pc);
 			break;
-		}
-		case 5: {										// Set sample end offset
+		//}
+		case 5: //{										// Set sample end offset
 			pc->nEnd = d << 12;
-			UpdateEndBuffer(pc);
+			//UpdateEndBuffer(pc);
 			break;
-		}
+		//}
 		case 6: {										// Set volume
 			pc->nMasterVolume = d;
 
@@ -243,7 +245,7 @@ void QscWrite(INT32 a, INT32 d)
 
 					pc->nPos = 0;
 					pc->bKey = 3;
-					UpdateEndBuffer(pc);
+					//UpdateEndBuffer(pc);
 				}
 			}
 			break;

@@ -314,7 +314,7 @@ static void Cps2Layers()
 {
 	INT32 Draw[MAX_RASTER][4];
 	INT32 Prio[MAX_RASTER][4];
-	//INT32 nDrawMask[MAX_RASTER];
+	INT32 nDrawMask[MAX_RASTER];
 
 	CpsObjDrawInit();
 
@@ -323,13 +323,11 @@ static void Cps2Layers()
 		LayerCont = BURN_ENDIAN_SWAP_INT16(*((UINT16 *)(CpsSaveReg[nSlice] + nCpsLcReg)));
 
 		// Determine which layers are enabled
-      /*
 		nDrawMask[nSlice] = 1;								// Sprites always on
 		if (LayerCont & CpsLayEn[1]) nDrawMask[nSlice] |= 2;
 		if (LayerCont & CpsLayEn[2]) nDrawMask[nSlice] |= 4;
 		if (LayerCont & CpsLayEn[3]) nDrawMask[nSlice] |= 8;
 		nDrawMask[nSlice] &= nBurnLayer;					// User choice of layers to display
-      */
 
 		// Determine layerö priority:
 		Draw[nSlice][3] = (LayerCont >> 12) & 3;			// top layer
@@ -390,7 +388,7 @@ static void Cps2Layers()
 				if (Prio[nSlice][Draw[nSlice][i]] == nCurrPrio) {
 
 					// Render sprites between the previous layer and this one
-					if (/*(nDrawMask[0] & 1) && */(nPrevPrio < nCurrPrio)) {
+					if ((nDrawMask[0] & 1) && (nPrevPrio < nCurrPrio)) {
 						CpsObjDrawDoX(nPrevPrio + 1, nCurrPrio);
 						nPrevPrio = nCurrPrio;
 					}
@@ -404,21 +402,21 @@ static void Cps2Layers()
 					// Render layer
 					switch (Draw[nSlice][i]) {
 						case 1:
-							//if (nDrawMask[nSlice] & 2) {
+							if (nDrawMask[nSlice] & 2) {
 								DrawScroll1(nSlice);
-							//}
+							}
 							break;
 						case 2:
-							//if (nDrawMask[nSlice] & 4) {
+							if (nDrawMask[nSlice] & 4) {
 								DrawScroll2Init(nSlice);
 								DrawScroll2Do();
 								DrawScroll2Exit();
-							//}
+							}
 							break;
 						case 3:
-							//if (nDrawMask[nSlice] & 8) {
+							if (nDrawMask[nSlice] & 8) {
 								DrawScroll3(nSlice);
-							//}
+							}
 							break;
 					}
 				}
@@ -428,7 +426,7 @@ static void Cps2Layers()
 	}
 
 	// Render highest priority sprites
-	if (/* (nDrawMask[0] & 1) && */ (nPrevPrio < 7)) {
+	if ((nDrawMask[0] & 1) && (nPrevPrio < 7)) {
 		CpsObjDrawDoX(nPrevPrio + 1, 7);
 	}
 }

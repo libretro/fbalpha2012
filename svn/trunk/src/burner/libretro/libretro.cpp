@@ -31,11 +31,14 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[1024];
 static unsigned g_rom_count;
 
-#define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
-#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS (534 * 2)
+static unsigned audio_samplerate = 32010;
+
+#define AUDIO_SEGMENT_LENGTH ((audio_samplerate * 100 + (6000 >> 1)) / 6000) // <-- Hardcoded value that corresponds well to 32kHz audio.
+#define AUDIO_SEGMENT_LENGTH_FIXED ((4800 * 100 + (6000 >> 1)) / 6000) // <-- Hardcoded value that corresponds well to 32kHz audio.
+#define AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS ((AUDIO_SEGMENT_LENGTH) * 2)
 
 static uint16_t g_fba_frame[1024 * 1024];
-static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_TIMES_CHANNELS];
+static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH_FIXED * 2];
 
 // libretro globals
 
@@ -339,7 +342,7 @@ void retro_run()
 
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
-   nBurnSoundRate = 32000;
+   nBurnSoundRate = 48000;
    nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
@@ -497,22 +500,6 @@ int VidRecalcPal()
 
 static void init_video()
 {
-   nBurnBpp = 2;
-   VidRecalcPal();
-#if 0
-#ifdef FRONTEND_SUPPORTS_RGB565
-   BurnHighCol = HighCol16;
-#else
-   BurnHighCol = HighCol15;
-#endif
-#endif
-}
-
-static void init_audio()
-{
-   pBurnSoundOut = g_audio_buf;
-   nBurnSoundRate = 32000;
-   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -561,8 +548,11 @@ bool retro_load_game(const struct retro_game_info *info)
    unsigned i = BurnDrvGetIndexByName(basename);
    if (i < nBurnDrvCount)
    {
-      init_video();
-      init_audio();
+      nBurnBpp = 2;
+      VidRecalcPal();
+      pBurnSoundOut = g_audio_buf;
+      nBurnSoundRate = audio_samplerate;
+      nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 
       if (!fba_init(i))
          return false;

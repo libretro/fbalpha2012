@@ -1,3 +1,5 @@
+#undef FN
+#undef FUNCTIONNAME
 #define FN(a) RenderTile ## a
 #define FUNCTIONNAME(a) FN(a)
 

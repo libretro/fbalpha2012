@@ -35,6 +35,7 @@ FBA_LIB_DIR := $(MAIN_FBA_DIR)/dep/libs
 FBA_INTERFACE_DIR := $(MAIN_FBA_DIR)/intf
 FBA_GENERATED_DIR = $(MAIN_FBA_DIR)/dep/generated
 FBA_SCRIPTS_DIR = $(MAIN_FBA_DIR)/dep/scripts
+GRIFFIN_DIR = griffin-libretro
 
 EXTERNAL_ZLIB = 0
 
@@ -161,9 +162,7 @@ endif
 FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
-	$(FBA_BURN_DRIVERS_DIR)/capcom \
 	$(FBA_BURN_DRIVERS_DIR)/cave \
-	$(FBA_BURN_DRIVERS_DIR)/cps3 \
 	$(FBA_BURN_DRIVERS_DIR)/dataeast \
 	$(FBA_BURN_DRIVERS_DIR)/galaxian \
 	$(FBA_BURN_DRIVERS_DIR)/irem \
@@ -201,13 +200,15 @@ FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
 
 FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
 
+GRIFFIN_CXXSRCFILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp
+
 ifeq ($(EXTERNAL_ZLIB), 1)
 FBA_DEFINES += -DEXTERNAL_ZLIB
 else
 FBA_SRC_DIRS += $(FBA_LIB_DIRS)
 endif
 
-FBA_CXXSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
+FBA_CXXSRCS := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXSRCS += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
 FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)
 FBA_CSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))

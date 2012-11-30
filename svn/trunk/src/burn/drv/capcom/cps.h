@@ -1,3 +1,6 @@
+#ifndef _CPS_H
+#define _CPS_H
+
 // CPS ----------------------------------
 #include "burnint.h"
 #include "m68000_intf.h"
@@ -483,3 +486,5 @@ extern UINT16 Cps2VolumeStates[40];
 extern INT32 Cps2DisableDigitalVolume;
 extern UINT8 Cps2VolUp;
 extern UINT8 Cps2VolDwn;
+
+#endif

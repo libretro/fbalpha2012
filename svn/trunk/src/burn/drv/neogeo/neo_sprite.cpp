@@ -16,8 +16,8 @@ static UINT8* NeoTileAttribActive;
 
 INT32 nSliceStart, nSliceEnd, nSliceSize;
 
-static UINT32* pTileData;
-static UINT32* pTilePalette;
+static UINT32* pTileDataSprite;
+static UINT32* pTilePaletteSprite;
 
 static UINT16* pBank;
 
@@ -27,7 +27,7 @@ static INT32 nBankXZoom, nBankYZoom;
 
 static INT32 nNeoSpriteFrame04, nNeoSpriteFrame08;
 
-static INT32 nLastBPP = -1;
+static INT32 nLastBPPSprite = -1;
 
 typedef void (*RenderBankFunction)();
 static RenderBankFunction* RenderBank;
@@ -40,8 +40,8 @@ static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
 INT32 NeoRenderSprites()
 {
-	if (nLastBPP != nBurnBpp ) {
-		nLastBPP = nBurnBpp;
+	if (nLastBPPSprite != nBurnBpp ) {
+		nLastBPPSprite = nBurnBpp;
 
 		RenderBank = RenderBankNormal[nBurnBpp - 2];
 	}

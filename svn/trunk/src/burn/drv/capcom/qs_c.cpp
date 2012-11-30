@@ -12,7 +12,7 @@ static INT32 nQscRate = 0;
 static INT32 Tams = -1;
 static INT32* Qs_s = NULL;
 
-static INT32 nPos;
+static INT32 qsnPos;
 
 struct QChan {
 		UINT8 bKey;				// 1 if channel is playing
@@ -149,7 +149,7 @@ INT32 QscScan(INT32 nAction)
 
 void QscNewFrame()
 {
-	nPos = 0;
+	qsnPos = 0;
 }
 
 static inline void QscSyncQsnd()
@@ -267,7 +267,7 @@ INT32 QscUpdate(INT32 nEnd)
 		nEnd = nBurnSoundLen;
 	}
 
-	nLen = nEnd - nPos;
+	nLen = nEnd - qsnPos;
 
 	if (nLen <= 0) {
 		return 0;
@@ -338,7 +338,7 @@ INT32 QscUpdate(INT32 nEnd)
 			}
 		}
 
-		INT16 *pDest = pBurnSoundOut + (nPos << 1);
+		INT16 *pDest = pBurnSoundOut + (qsnPos << 1);
 		INT32 *pSrc = Qs_s;
 		for (INT32 i = 0; i < nLen; i++) {
 			INT32 nLeftSample = 0, nRightSample = 0;
@@ -360,7 +360,7 @@ INT32 QscUpdate(INT32 nEnd)
 			pDest[(i << 1) + 0] = BURN_SND_CLIP(nLeftSample);
 			pDest[(i << 1) + 1] = BURN_SND_CLIP(nRightSample);
 		}
-		nPos = nEnd;
+		qsnPos = nEnd;
 
 		return 0;
 	}
@@ -449,7 +449,7 @@ INT32 QscUpdate(INT32 nEnd)
 		}
 	}
 	
-	INT16 *pDest = pBurnSoundOut + (nPos << 1);
+	INT16 *pDest = pBurnSoundOut + (qsnPos << 1);
 	INT32 *pSrc = Qs_s;
 	for (INT32 i = 0; i < nLen; i++) {
 		INT32 nLeftSample = 0, nRightSample = 0;
@@ -471,7 +471,7 @@ INT32 QscUpdate(INT32 nEnd)
 		pDest[(i << 1) + 0] = BURN_SND_CLIP(nLeftSample);
 		pDest[(i << 1) + 1] = BURN_SND_CLIP(nRightSample);
 	}
-	nPos = nEnd;	
+	qsnPos = nEnd;	
 
 	return 0;
 }

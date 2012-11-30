@@ -21,18 +21,18 @@
 
 #if BPP == 16
  #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
-   	*((UINT16*)pPixel) = (UINT16)pTilePalette[b];	\
+   	*((UINT16*)pPixel) = (UINT16)pTilePaletteSprite[b];	\
  }
 #elif BPP == 24
  #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
-	UINT32 nRGB = pTilePalette[b];							\
+	UINT32 nRGB = pTilePaletteSprite[b];							\
 	pPixel[0] = (UINT8)nRGB;								\
 	pPixel[1] = (UINT8)(nRGB >> 8);							\
 	pPixel[2] = (UINT8)(nRGB >> 16);						\
  }
 #elif BPP == 32
  #define PLOTPIXEL(a,b) if (TESTCOLOUR(b) && TESTCLIP(a)) {			\
-	 *((UINT32*)pPixel) = (UINT32)pTilePalette[b];		\
+	 *((UINT32*)pPixel) = (UINT32)pTilePaletteSprite[b];		\
  }
 #else
  #error unsupported bitdepth specified.
@@ -40,51 +40,51 @@
 
 #if XZOOM == 0
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);
 #elif XZOOM == 1
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 16;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 1),nColour & 0x0F);
 #elif XZOOM == 2
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 16;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 1),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 16;							\
 	PLOTPIXEL(OFFSET( 2),nColour & 0x0F);
 #elif XZOOM == 3
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 1),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 2),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 16;							\
 	PLOTPIXEL(OFFSET( 3),nColour & 0x0F);
 #elif XZOOM == 4
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 1),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 2),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 16;							\
@@ -94,7 +94,7 @@
 	PLOTPIXEL(OFFSET( 4),nColour & 0x0F);
 #elif XZOOM == 5
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
@@ -104,7 +104,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 2),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 3),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 16;							\
@@ -114,7 +114,7 @@
 	PLOTPIXEL(OFFSET( 5),nColour & 0x0F);
 #elif XZOOM == 6
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
@@ -124,7 +124,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 2),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 3),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -137,7 +137,7 @@
 	PLOTPIXEL(OFFSET( 6),nColour & 0x0F);
 #elif XZOOM == 7
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -149,7 +149,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 3),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 4),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -162,7 +162,7 @@
 	PLOTPIXEL(OFFSET( 7),nColour & 0x0F);
 #elif XZOOM == 8
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -174,7 +174,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 3),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 4),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -190,7 +190,7 @@
 	PLOTPIXEL(OFFSET( 8),nColour & 0x0F);
 #elif XZOOM == 9
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -205,7 +205,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 4),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 5),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -221,7 +221,7 @@
 	PLOTPIXEL(OFFSET( 9),nColour & 0x0F);
 #elif XZOOM == 10
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -236,7 +236,7 @@
 	nColour >>= 8;							\
 	PLOTPIXEL(OFFSET( 4),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 5),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -255,7 +255,7 @@
 	PLOTPIXEL(OFFSET(10),nColour & 0x0F);
 #elif XZOOM == 11
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -273,7 +273,7 @@
 	nColour >>= 4;							\
 	PLOTPIXEL(OFFSET( 5),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 6),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -292,7 +292,7 @@
 	PLOTPIXEL(OFFSET(11),nColour & 0x0F);
 #elif XZOOM == 12
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 8;							\
@@ -310,7 +310,7 @@
 	nColour >>= 4;							\
 	PLOTPIXEL(OFFSET( 5),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 6),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -332,7 +332,7 @@
 	PLOTPIXEL(OFFSET(12),nColour & 0x0F);
 #elif XZOOM == 13
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -353,7 +353,7 @@
 	nColour >>= 4;							\
 	PLOTPIXEL(OFFSET( 6),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 7),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -375,7 +375,7 @@
 	PLOTPIXEL(OFFSET(13),nColour & 0x0F);
 #elif XZOOM == 14
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -396,7 +396,7 @@
 	nColour >>= 4;							\
 	PLOTPIXEL(OFFSET( 6),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine + 1];			\
+	nColour = pTileDataSprite[nLine + 1];			\
 	PLOTPIXEL(OFFSET( 7),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -421,7 +421,7 @@
 	PLOTPIXEL(OFFSET(14),nColour & 0x0F);
 #elif XZOOM == 15
  #define PLOTLINE(OFFSET,ADVANCECOLUMN)		\
-	nColour = pTileData[nLine];				\
+	nColour = pTileDataSprite[nLine];				\
 	PLOTPIXEL(OFFSET( 0),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -445,7 +445,7 @@
 	nColour >>= 4;							\
 	PLOTPIXEL(OFFSET( 7),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
-	nColour = pTileData[nLine +	1];			\
+	nColour = pTileDataSprite[nLine +	1];			\
 	PLOTPIXEL(OFFSET( 8),nColour & 0x0F);	\
 	ADVANCECOLUMN;							\
 	nColour >>= 4;							\
@@ -620,8 +620,8 @@ static void FUNCTIONNAME(BPP,XZOOM,CLIP,OPACITY)()
 					nTransparent = NeoTileAttribActive[nTileNumber];
 
 					if (nTransparent == 0) {
-						pTileData = (UINT32*)(NeoSpriteROMActive + (nTileNumber << 7));
-						pTilePalette = &NeoPalette[(nTileAttrib & 0xFF00) >> 4];
+						pTileDataSprite = (UINT32*)(NeoSpriteROMActive + (nTileNumber << 7));
+						pTilePaletteSprite = &NeoPalette[(nTileAttrib & 0xFF00) >> 4];
 					}
 				}
 

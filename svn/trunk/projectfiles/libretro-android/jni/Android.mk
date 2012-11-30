@@ -14,6 +14,7 @@ FBA_LIB_DIR := $(MAIN_FBA_DIR)/dep/libs
 FBA_INTERFACE_DIR := $(MAIN_FBA_DIR)/intf
 FBA_GENERATED_DIR = $(MAIN_FBA_DIR)/dep/generated
 FBA_SCRIPTS_DIR = $(MAIN_FBA_DIR)/dep/scripts
+GRIFFIN_DIR := ../../../griffin-libretro
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CXXFLAGS += -DANDROID_ARM
@@ -75,15 +76,12 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
-	$(FBA_BURN_DRIVERS_DIR)/capcom \
 	$(FBA_BURN_DRIVERS_DIR)/cave \
-	$(FBA_BURN_DRIVERS_DIR)/cps3 \
 	$(FBA_BURN_DRIVERS_DIR)/dataeast \
 	$(FBA_BURN_DRIVERS_DIR)/galaxian \
 	$(FBA_BURN_DRIVERS_DIR)/irem \
 	$(FBA_BURN_DRIVERS_DIR)/konami \
 	$(FBA_BURN_DRIVERS_DIR)/megadrive \
-	$(FBA_BURN_DRIVERS_DIR)/neogeo \
 	$(FBA_BURN_DRIVERS_DIR)/pce \
 	$(FBA_BURN_DRIVERS_DIR)/pgm \
 	$(FBA_BURN_DRIVERS_DIR)/pre90s \
@@ -117,7 +115,9 @@ FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_
 
 LOCAL_MODULE    := libretro
 
-LOCAL_SRC_FILES := $(CYCLONE_SRC)  $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp 
+GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp
+
+LOCAL_SRC_FILES := $(GRIFFIN_CXX_SRC_FILES) $(CYCLONE_SRC)  $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp 
 
 LOCAL_CXXFLAGS += -O3 -fno-stack-protector -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID -DFRONTEND_SUPPORTS_RGB565 $(CYCLONE_DEFINES)
 LOCAL_CFLAGS = -O3 -fno-stack-protector -DUSE_SPEEDHACKS -DINLINE="static inline" -DSH2_INLINE="static inline" -D__LIBRETRO_OPTIMIZATIONS__ -DLSB_FIRST -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID -DFRONTEND_SUPPORTS_RGB565 $(CYCLONE_DEFINES)

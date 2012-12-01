@@ -1,8 +1,10 @@
+CYCLONE_ENABLED := 0
+HAVE_GRIFFIN    := 1
+
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-CYCLONE_ENABLED := 0
 
 MAIN_FBA_DIR := ../../../src
 FBA_BURN_DIR := $(MAIN_FBA_DIR)/burn
@@ -73,19 +75,36 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/nec/necinstr.c \
 	$(FBA_BURN_DIR)/drv/capcom/ctv_make.cpp
 
+ifeq ($(HAVE_GRIFFIN), 1)
+GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp $(GRIFFIN_DIR)/pgm.cpp $(GRIFFIN_DIR)/snes.cpp $(GRIFFIN_DIR)/galaxian.cpp
+else
+CPS2_DIR := $(FBA_BURN_DRIVERS_DIR)/capcom
+CPS3_DIR := $(FBA_BURN_DRIVERS_DIR)/cps3
+GALAXIAN_DIR := $(FBA_BURN_DRIVERS_DIR)/galaxian
+NEOGEO_DIR := $(FBA_BURN_DRIVERS_DIR)/neogeo
+PGM_DIR := $(FBA_BURN_DRIVERS_DIR)/pgm
+SNES_DIR := $(FBA_BURN_DRIVERS_DIR)/snes
+endif
+
 FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
+	$(CPS2_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/cave \
+	$(CPS3_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/dataeast \
+	$(GALAXIAN_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/irem \
 	$(FBA_BURN_DRIVERS_DIR)/konami \
 	$(FBA_BURN_DRIVERS_DIR)/megadrive \
+	$(NEOGEO_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/pce \
+	$(PGM_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/pre90s \
 	$(FBA_BURN_DRIVERS_DIR)/psikyo \
 	$(FBA_BURN_DRIVERS_DIR)/pst90s \
 	$(FBA_BURN_DRIVERS_DIR)/sega \
+	$(SNES_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/taito \
 	$(FBA_BURN_DRIVERS_DIR)/toaplan
 
@@ -106,13 +125,11 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/sh2 \
 	$(FBA_CPU_DIR)/z80
 
-FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
-
-FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS) $(FBA_LIB_DIRS)
+FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
 
 LOCAL_MODULE    := libretro
 
-GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp $(GRIFFIN_DIR)/pgm.cpp $(GRIFFIN_DIR)/snes.cpp $(GRIFFIN_DIR)/galaxian.cpp
+
 
 LOCAL_SRC_FILES := $(GRIFFIN_CXX_SRC_FILES) $(CYCLONE_SRC)  $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp 
 
@@ -143,5 +160,7 @@ LOCAL_C_INCLUDES = $(FBA_BURNER_DIR)/win32 \
 	$(FBA_BURN_DIR)/drv/taito \
 	$(FBA_GENERATED_DIR) \
 	$(FBA_LIB_DIR)
+
+LOCAL_LDLIBS += -lz
 
 include $(BUILD_SHARED_LIBRARY)

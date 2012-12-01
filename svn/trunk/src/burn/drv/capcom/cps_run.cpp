@@ -391,6 +391,7 @@ INT32 Cps2Frame()
 	CpsRwGetInp();											// Update the input port values
 	
 	// Check the volumes every 5 frames or so
+#if 0
 	if (GetCurrentFrame() % 5 == 0) {
 		if (Cps2VolUp) Cps2Volume++;
 		if (Cps2VolDwn) Cps2Volume--;
@@ -401,13 +402,12 @@ INT32 Cps2Frame()
 		QscSetRoute(BURN_SND_QSND_OUTPUT_1, Cps2Volume / 39.0, BURN_SND_ROUTE_LEFT);
 		QscSetRoute(BURN_SND_QSND_OUTPUT_2, Cps2Volume / 39.0, BURN_SND_ROUTE_RIGHT);
 	}
+#endif
 	
 	nDisplayEnd = nCpsCycles * (nFirstLine + 224) / nCpsNumScanlines;	// Account for VBlank
 
 	nInterrupt = 0;
-	for (i = 0; i < MAX_RASTER + 2; i++) {
-		nRasterline[i] = 0;
-	}
+   memset(nRasterline, 0, MAX_RASTER + 2 * sizeof(nRasterline[0]));
 
 	// Determine which (if any) of the line counters generates the first IRQ
 	bEnableAutoIrq50 = bEnableAutoIrq52 = false;

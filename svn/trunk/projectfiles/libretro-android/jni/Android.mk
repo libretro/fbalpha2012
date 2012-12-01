@@ -77,6 +77,8 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 
 ifeq ($(HAVE_GRIFFIN), 1)
 GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp $(GRIFFIN_DIR)/pgm.cpp $(GRIFFIN_DIR)/snes.cpp $(GRIFFIN_DIR)/galaxian.cpp
+GRIFFIN_CXX_SRC_FILES += $(GRIFFIN_DIR)/cpu-m68k.cpp
+BURN_BLACKLIST += $(FBA_CPU_DIR)/m68000_intf.cpp
 else
 CPS2_DIR := $(FBA_BURN_DRIVERS_DIR)/capcom
 CPS3_DIR := $(FBA_BURN_DRIVERS_DIR)/cps3
@@ -115,7 +117,6 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/hd6309 \
 	$(FBA_CPU_DIR)/i8039 \
 	$(FBA_CPU_DIR)/konami \
-	$(FBA_CPU_DIR)/m68k \
 	$(FBA_CPU_DIR)/m6502 \
 	$(FBA_CPU_DIR)/m6800 \
 	$(FBA_CPU_DIR)/m6805 \

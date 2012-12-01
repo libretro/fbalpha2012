@@ -703,7 +703,9 @@ INT32 BurnDrvCartridgeSetup(BurnCartrigeCommand nCommand)
 // Do one frame of game emulation
 extern "C" INT32 BurnDrvFrame()
 {
+#ifdef HAVE_CHEATS
 	CheatApply();									// Apply cheats (if any)
+#endif
 	HiscoreApply();
 	return pDriver[nBurnDrvActive]->Frame();		// Forward to drivers function
 }

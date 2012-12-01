@@ -160,25 +160,29 @@ static void YM2610UpdateResample(INT16* pSoundBuf, INT32 nSegmentEnd)
 			nRightSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 			nRightSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 		} else {
-			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT)
+         {
 				nLeftSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nLeftSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nLeftSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nLeftSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 			}
-			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT)
+         {
 				nRightSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nRightSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nRightSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 				nRightSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
 			}
 		
-			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-				nLeftSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
-				nLeftSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
-				nLeftSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
-				nLeftSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+         {
+				nLeftSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3]);
+				nLeftSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2]);
+				nLeftSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1]);
+				nLeftSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0]);
 			}
+#if 0
 			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
 				nRightSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
 				nRightSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
@@ -192,11 +196,13 @@ static void YM2610UpdateResample(INT16* pSoundBuf, INT32 nSegmentEnd)
 				nLeftSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 				nLeftSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 			}
-			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-				nRightSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
-				nRightSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
-				nRightSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
-				nRightSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+#endif
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+         {
+				nRightSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3]);
+				nRightSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2]);
+				nRightSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1]);
+				nRightSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0]);
 			}
 		}
 		
@@ -279,16 +285,14 @@ static void YM2610UpdateNormal(INT16* pSoundBuf, INT32 nSegmentEnd)
 			nRightSample += (INT32)(pYM2610Buffer[0][n] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
 			nRightSample += (INT32)(pYM2610Buffer[1][n] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 		} else {
-			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT)
 				nLeftSample += (INT32)(nAYSample * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
-			}
-			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT)
 				nRightSample += (INT32)(nAYSample * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
-			}
 		
-			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-				nLeftSample += (INT32)(pYM2610Buffer[0][n] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
-			}
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT)
+				nLeftSample += (INT32)(pYM2610Buffer[0][n]);
+#if 0
 			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
 				nRightSample += (INT32)(pYM2610Buffer[0][n] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
 			}
@@ -296,9 +300,9 @@ static void YM2610UpdateNormal(INT16* pSoundBuf, INT32 nSegmentEnd)
 			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
 				nLeftSample += (INT32)(pYM2610Buffer[1][n] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
 			}
-			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-				nRightSample += (INT32)(pYM2610Buffer[1][n] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
-			}
+#endif
+			//if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT)
+				nRightSample += (INT32)(pYM2610Buffer[1][n]);
 		}
 		
 		nLeftSample = BURN_SND_CLIP(nLeftSample);
@@ -423,6 +427,7 @@ INT32 BurnYM2610Init(INT32 nClockFrequency, UINT8* YM2610ADPCMAROM, INT32* nYM26
 
 	BurnYM2610StreamCallback = StreamCallback;
 
+#if 0
 	if (nFMInterpolation == 3) {
 		// Set YM2610 core samplerate to match the hardware
 		nBurnYM2610SoundRate = nClockFrequency / 144;
@@ -435,10 +440,11 @@ INT32 BurnYM2610Init(INT32 nClockFrequency, UINT8* YM2610ADPCMAROM, INT32* nYM26
 
 		nSampleSize = (UINT32)nBurnYM2610SoundRate * (1 << 16) / nBurnSoundRate;
 	} else {
+#endif
 		nBurnYM2610SoundRate = nBurnSoundRate;
 
 		BurnYM2610Update = YM2610UpdateNormal;
-	}
+	//}
 
 	AY8910InitYM(0, nClockFrequency, nBurnYM2610SoundRate, NULL, NULL, NULL, NULL, BurnAY8910UpdateRequest);
 	YM2610Init(1, nClockFrequency, nBurnYM2610SoundRate, (void**)(&YM2610ADPCMAROM), nYM2610ADPCMASize, (void**)(&YM2610ADPCMBROM), nYM2610ADPCMBSize, &BurnOPNTimerCallback, IRQCallback);

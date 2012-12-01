@@ -282,9 +282,11 @@ INT32 Cps2ObjDraw(INT32 nLevelFrom, INT32 nLevelTo)
 		INT32 nFlip;
 		INT32 v = BURN_ENDIAN_SWAP_INT16(ps[0]) >> 13;
 
+#if 0
 		if ((nSpriteEnable & (1 << v)) == 0) {
 			continue;
 		}
+#endif
 
 		// Check if sprite is between these levels
 		if (v > nLevelTo) {

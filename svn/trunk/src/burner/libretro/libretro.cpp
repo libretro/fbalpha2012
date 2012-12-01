@@ -340,7 +340,7 @@ void retro_run()
    nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = AUDIO_SAMPLERATE;
-   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+   //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
 
@@ -357,7 +357,7 @@ void retro_run()
       nBurnPitch = width * sizeof(uint16_t);
 
    video_cb(g_fba_frame, width, height, nBurnPitch);
-   audio_batch_cb(g_audio_buf, AUDIO_SEGMENT_LENGTH);
+   audio_batch_cb(g_audio_buf, nBurnSoundLen);
 }
 
 static uint8_t *write_state_ptr;
@@ -428,7 +428,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    int maximum = width > height ? width : height;
    struct retro_game_geometry geom = { width, height, maximum, maximum };
 
-   struct retro_system_timing timing = { 60.0, 60.0 * AUDIO_SEGMENT_LENGTH };
+   struct retro_system_timing timing = { (nBurnFPS / 100.0), (nBurnFPS / 100.0) * AUDIO_SEGMENT_LENGTH };
 
    info->geometry = geom;
    info->timing   = timing;

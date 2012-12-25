@@ -56,7 +56,7 @@ static UINT32* pTileData;
 static UINT32* pTilePalette;
 
 typedef void (*RenderTileFunction)();
-static RenderTileFunction* RenderTile;
+//static RenderTileFunction* RenderTile;
 
 static INT32 nTileXPos, nTileYPos;
 
@@ -151,9 +151,9 @@ static void RenderSpriteQueue(INT32 i, INT32 nPriority)
 						pTileData = (UINT32*)pSpriteData;
 						pTile = pBurnBitmap + (nTileXPos * nBurnColumn) + (nTileYPos * nBurnRow);
 						if (nTileXPos < 0 || nTileXPos > 312 || nTileYPos < 0 || nTileYPos > 232) {
-							RenderTile[nFlip + 1]();
+							RenderTile_ROT0[0][nFlip + 1]();
 						} else {
-							RenderTile[nFlip]();
+							RenderTile_ROT0[0][nFlip]();
 						}
 					}
 				}
@@ -285,23 +285,23 @@ static void RenderTileQueue(INT32 i, INT32 nPriority)
 
 			if ((nOpacity = GP9001TileAttrib[i][nTileNumber]) != 0) {
 				pTileData = (UINT32*)pTileStart;
-				RenderTile[nOpacity - 1]();
+				RenderTile_ROT0[0][nOpacity - 1]();
 			}
 			if ((nOpacity = GP9001TileAttrib[i][nTileNumber + 1]) != 0) {
 				pTile += nTileWidth;
 				pTileData = (UINT32*)(pTileStart + 32);
-				RenderTile[nOpacity - 1]();
+				RenderTile_ROT0[0][nOpacity - 1]();
 				pTile -= nTileWidth;
 			}
 			pTile += 8 * nBurnRow;
 			if ((nOpacity = GP9001TileAttrib[i][nTileNumber + 2]) != 0) {
 				pTileData = (UINT32*)(pTileStart + 64);
-				RenderTile[nOpacity - 1]();
+				RenderTile_ROT0[0][nOpacity - 1]();
 			}
 			if ((nOpacity = GP9001TileAttrib[i][nTileNumber + 3]) != 0) {
 				pTile += nTileWidth;
 				pTileData = (UINT32*)(pTileStart + 96);
-				RenderTile[nOpacity - 1]();
+				RenderTile_ROT0[0][nOpacity - 1]();
 			}
 		} else {
 			INT32 nTileWidth = 8 * nBurnColumn;
@@ -311,9 +311,9 @@ static void RenderTileQueue(INT32 i, INT32 nPriority)
 				if (nTileXPos > -8 && nTileXPos < 320 && nTileYPos > -8 && nTileYPos < 240) {
 					pTileData = (UINT32*)pTileStart;
 					if (nTileXPos > 0 && nTileXPos <= 312 && nTileYPos > 0 && nTileYPos <= 232) {
-						RenderTile[nOpacity - 1]();
+						RenderTile_ROT0[0][nOpacity - 1]();
 					} else {
-						RenderTile[nOpacity]();
+						RenderTile_ROT0[0][nOpacity]();
 					}
 				}
 			}
@@ -323,9 +323,9 @@ static void RenderTileQueue(INT32 i, INT32 nPriority)
 				if (nTileXPos > -8 && nTileXPos < 320 && nTileYPos > -8 && nTileYPos < 240) {
 					pTileData = (UINT32*)(pTileStart + 32);
 					if (nTileXPos > 0 && nTileXPos <= 312 && nTileYPos > 0 && nTileYPos <= 232) {
-						RenderTile[nOpacity - 1]();
+						RenderTile_ROT0[0][nOpacity - 1]();
 					} else {
-						RenderTile[nOpacity]();
+						RenderTile_ROT0[0][nOpacity]();
 					}
 				}
 				nTileXPos -= 8;
@@ -337,9 +337,9 @@ static void RenderTileQueue(INT32 i, INT32 nPriority)
 				if (nTileXPos > -8 && nTileXPos < 320 && nTileYPos > -8 && nTileYPos < 240) {
 					pTileData = (UINT32*)(pTileStart + 64);
 					if (nTileXPos > 0 && nTileXPos <= 312 && nTileYPos > 0 && nTileYPos <= 232) {
-						RenderTile[nOpacity - 1]();
+						RenderTile_ROT0[0][nOpacity - 1]();
 					} else {
-						RenderTile[nOpacity]();
+						RenderTile_ROT0[0][nOpacity]();
 					}
 				}
 			}
@@ -349,9 +349,9 @@ static void RenderTileQueue(INT32 i, INT32 nPriority)
 				if (nTileXPos > -8 && nTileXPos < 320 && nTileYPos > -8 && nTileYPos < 240) {
 					pTileData = (UINT32*)(pTileStart + 96);
 					if (nTileXPos > 0 && nTileXPos <= 312 && nTileYPos > 0 && nTileYPos <= 232) {
-						RenderTile[nOpacity - 1]();
+						RenderTile_ROT0[0][nOpacity - 1]();
 					} else {
-						RenderTile[nOpacity]();
+						RenderTile_ROT0[0][nOpacity]();
 					}
 				}
 			}
@@ -387,6 +387,7 @@ INT32 ToaBufferGP9001Sprites()
 
 INT32 ToaRenderGP9001()
 {
+#if 0
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
@@ -400,6 +401,7 @@ INT32 ToaRenderGP9001()
 		RenderTile = RenderTile_ROT0[nBurnBpp - 2];
 #endif
 	}
+#endif
 
 	PrepareTiles();
 	PrepareSprites();

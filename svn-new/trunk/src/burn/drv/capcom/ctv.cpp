@@ -13,7 +13,7 @@ UINT8 *pCtvLine=NULL; // Pointer to output bitmap
 // Include all tile variants:
 //#include "ctv.h"
 
-static INT32 nLastBpp=0;
+//static INT32 nLastBpp=0;
 INT32 CtvReady()
 {
   // Set up the CtvDoX functions to point to the correct bpp functions.
@@ -37,7 +37,7 @@ INT32 CtvReady()
 		memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
 	  }
   }
-#endif
   nLastBpp=nBurnBpp;
+#endif
   return 0;
 }

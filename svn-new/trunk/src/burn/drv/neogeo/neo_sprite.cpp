@@ -27,7 +27,7 @@ static INT32 nBankXZoom, nBankYZoom;
 
 static INT32 nNeoSpriteFrame04, nNeoSpriteFrame08;
 
-static INT32 nLastBPP = -1;
+//static INT32 nLastBPP = -1;
 
 typedef void (*RenderBankFunction)();
 //static RenderBankFunction* RenderBank;

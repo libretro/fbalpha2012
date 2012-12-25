@@ -13,9 +13,7 @@ static UINT8* pTileData;
 static UINT32* pTilePalette;
 
 typedef void (*RenderTileFunction)();
-static RenderTileFunction RenderTile[4];
-
-static INT32 nLastBPP = 0;
+//static RenderTileFunction RenderTile[4];
 
 #define ROT 0
 
@@ -26,12 +24,14 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
+#if 0
 #define BPP 24
 #include "toa_extratext.h"
 #undef BPP
 #define BPP 32
 #include "toa_extratext.h"
 #undef BPP
+#endif
 
 #undef DOCLIP
 #define DOCLIP 1
@@ -39,12 +39,14 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
+#if 0
 #define BPP 24
 #include "toa_extratext.h"
 #undef BPP
 #define BPP 32
 #include "toa_extratext.h"
 #undef BPP
+#endif
 
 #undef DOCLIP
 
@@ -56,12 +58,14 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
+#if 0
 #define BPP 24
 #include "toa_extratext.h"
 #undef BPP
 #define BPP 32
 #include "toa_extratext.h"
 #undef BPP
+#endif
 
 #undef DOCLIP
 #define DOCLIP 1
@@ -69,12 +73,14 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
+#if 0
 #define BPP 24
 #include "toa_extratext.h"
 #undef BPP
 #define BPP 32
 #include "toa_extratext.h"
 #undef BPP
+#endif
 
 #undef DOCLIP
 
@@ -92,12 +98,14 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
+#if 0
  #define BPP 24
  #include "toa_extratext.h"
  #undef BPP
  #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
+#endif
 
  #undef DOCLIP
  #define DOCLIP 1
@@ -105,12 +113,14 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
+#if 0
  #define BPP 24
  #include "toa_extratext.h"
  #undef BPP
  #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
+#endif
 
  #undef DOCLIP
 
@@ -122,12 +132,14 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
+#if 0
  #define BPP 24
  #include "toa_extratext.h"
  #undef BPP
  #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
+#endif
 
  #undef DOCLIP
  #define DOCLIP 1
@@ -135,12 +147,14 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
+#if 0
  #define BPP 24
  #include "toa_extratext.h"
  #undef BPP
  #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
+#endif
 
  #undef DOCLIP
 
@@ -151,87 +165,6 @@ static INT32 nLastBPP = 0;
 
 INT32 ToaExtraTextLayer()
 {
-	if (nLastBPP != nBurnBpp ) {
-		nLastBPP = nBurnBpp;
-
-#ifdef DRIVER_ROTATION
-#if 0
-		switch (nBurnBpp) {
-			case 2:
-#endif
-				if (bRotatedScreen) {
-					RenderTile[0] = *RenderTile16_ROT270_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile16_ROT270_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile16_ROT270_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile16_ROT270_CLIP_ROWSEL;
-				} else {
-					RenderTile[0] = *RenderTile16_ROT0_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile16_ROT0_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
-				}
-#if 0
-				break;
-			case 3:
-				if (bRotatedScreen) {
-					RenderTile[0] = *RenderTile24_ROT270_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile24_ROT270_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile24_ROT270_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile24_ROT270_CLIP_ROWSEL;
-				} else {
-					RenderTile[0] = *RenderTile24_ROT0_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile24_ROT0_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile24_ROT0_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile24_ROT0_CLIP_ROWSEL;
-				}
-				break;
-			case 4:
-				if (bRotatedScreen) {
-					RenderTile[0] = *RenderTile32_ROT270_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile32_ROT270_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile32_ROT270_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile32_ROT270_CLIP_ROWSEL;
-				} else {
-					RenderTile[0] = *RenderTile32_ROT0_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile32_ROT0_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile32_ROT0_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile32_ROT0_CLIP_ROWSEL;
-				}
-				break;
-			default:
-				return 1;
-		}
-#endif
-#else
-#if 0
-		switch (nBurnBpp) {
-			case 2:
-#endif
-				RenderTile[0] = *RenderTile16_ROT0_NOCLIP_NORMAL;
-				RenderTile[1] = *RenderTile16_ROT0_CLIP_NORMAL;
-				RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
-				RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
-#if 0
-				break;
-			case 3:
-				RenderTile[0] = *RenderTile24_ROT0_NOCLIP_NORMAL;
-				RenderTile[1] = *RenderTile24_ROT0_CLIP_NORMAL;
-				RenderTile[2] = *RenderTile24_ROT0_NOCLIP_ROWSEL;
-				RenderTile[3] = *RenderTile24_ROT0_CLIP_ROWSEL;
-				break;
-			case 4:
-				RenderTile[0] = *RenderTile32_ROT0_NOCLIP_NORMAL;
-				RenderTile[1] = *RenderTile32_ROT0_CLIP_NORMAL;
-				RenderTile[2] = *RenderTile32_ROT0_NOCLIP_ROWSEL;
-				RenderTile[3] = *RenderTile32_ROT0_CLIP_ROWSEL;
-				break;
-			default:
-				return 1;
-		}
-#endif
-#endif
-	}
-
 	UINT32* pTextPalette = &ToaPalette[0x0400];
 	UINT8* pCurrentRow = pBurnBitmap;
 
@@ -268,9 +201,9 @@ INT32 ToaExtraTextLayer()
 						pTilePalette = &pTextPalette[((nTile >> 6) & 0x03F0)];
 						if (x == 0 || x == 40) {
 							nTileXPos = 0 - nOffset + (x << 3);
-							RenderTile[1]();
+							RenderTile16_ROT0_CLIP_NORMAL();
 						} else {
-							RenderTile[0]();
+							RenderTile16_ROT0_NOCLIP_NORMAL();
 						}
 					}
 				}
@@ -295,9 +228,9 @@ INT32 ToaExtraTextLayer()
 				pTilePalette = &pTextPalette[((nTile >> 6) & 0x03F0)];
 				if (x == 0 || x == 40) {
 					nTileXPos = 0 - nOffset + (x << 3);
-					RenderTile[3]();
+					RenderTile16_ROT0_CLIP_ROWSEL();
 				} else {
-					RenderTile[2]();
+					RenderTile16_ROT0_NOCLIP_ROWSEL();
 				}
 			}
 		}

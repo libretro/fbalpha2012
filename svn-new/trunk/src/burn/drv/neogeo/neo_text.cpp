@@ -23,7 +23,7 @@ static UINT32* pTilePalette;
 //typedef void (*RenderTileFunction)();
 //static RenderTileFunction RenderTile;
 
-static INT32 nLastBPP = 0;
+//static INT32 nLastBPP = 0;
 
 static INT32 nMinX, nMaxX;
 

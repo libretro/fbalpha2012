@@ -10,7 +10,7 @@ INT32 Rallybik = 0;
 INT32 Hellfire = 0;
 
 typedef void (*RenderTileFunction)();
-static RenderTileFunction* RenderTile;
+//static RenderTileFunction* RenderTile;
 
 static INT32 nTileXPos, nTileYPos;
 
@@ -176,9 +176,9 @@ static void FCU2RenderSpriteQueue(INT32 nPriority)
 						pTileData = (UINT32*)pSpriteData;
 						pTile = pBurnBitmap + (nTileXPos * nBurnColumn) + (nTileYPos * nBurnRow);
 						if (nTileXPos < 0 || nTileXPos > 312 || nTileYPos < 0 || nTileYPos > 232) {
-							RenderTile[1]();
+							RenderTile_ROT0[0][1]();
 						} else {
-							RenderTile[0]();
+							RenderTile_ROT0[0][0]();
 						}
 					}
 				}
@@ -272,10 +272,10 @@ static void BCU2RenderTileQueue(INT32 nPriority)
 
 			pTileData = (UINT32*)pTileStart;
 			if (nTileXPos >= 0 && nTileXPos < 312 && nTileYPos >= 0 && nTileYPos < 232) {
-				RenderTile[nOpacity - 1]();
+				RenderTile_ROT0[0][nOpacity - 1]();
 			} else {
 				if (nTileXPos > -8 && nTileXPos < 320 && nTileYPos > -8 && nTileYPos < 240) {
-					RenderTile[nOpacity]();
+					RenderTile_ROT0[0][nOpacity]();
 				}
 			}
 		}
@@ -289,6 +289,7 @@ void ToaBufferFCU2Sprites()
 
 INT32 ToaRenderBCU2()
 {
+#if 0
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
@@ -302,6 +303,7 @@ INT32 ToaRenderBCU2()
 		RenderTile = RenderTile_ROT0[nBurnBpp - 2];
 #endif
 	}
+#endif
 
 	BCU2PrepareTiles();
 	if (!Rallybik) {

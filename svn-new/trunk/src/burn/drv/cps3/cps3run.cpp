@@ -47,8 +47,7 @@ static UINT8 *RamC000_D;
 
 static UINT16 *EEPROM;
 
-UINT16 *Cps3CurPal;
-static UINT32 *RamScreen;
+static UINT16 *RamScreen;
 
 UINT8 cps3_reset = 0;
 UINT8 cps3_palette_change = 0;
@@ -497,8 +496,7 @@ static INT32 MemIndex()
 	
 	RamEnd		= Next;
 	
-	Cps3CurPal		= (UINT16 *) Next; Next += 0x020001 * sizeof(UINT16); // iq_132 - layer disable
-	RamScreen	= (UINT32 *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(UINT32);
+	RamScreen	= (UINT16 *) Next; Next += (512 * 2) * (224 * 2 + 32) * sizeof(UINT16);
 	
 	MemEnd		= Next;
 	return 0;
@@ -506,7 +504,7 @@ static INT32 MemIndex()
 
 UINT8 __fastcall cps3ReadByte(UINT32 addr)
 {
-	addr &= 0xc7ffffff;
+	//addr &= 0xc7ffffff;
 	
 //	switch (addr) {
 //
@@ -682,12 +680,7 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 					coldata = (r << 0) | (g << 5) | (b << 10);
 				}
 				
-				r = r << 3;
-				g = g << 3;
-				b = b << 3;
-
-				RamPal[(paldma_dest + i)] = coldata;
-				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
+				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_XBGR(coldata, 0);
 			}
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 		}
@@ -930,19 +923,11 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 #else
 		RamPal[palindex] = data;
 #endif
-
-		INT32 r = (data & 0x001F) << 3;	// Red
-		INT32 g = (data & 0x03E0) >> 2;	// Green
-		INT32 b = (data & 0x7C00) >> 7;	// Blue
-		
-		r |= r >> 5;
-		g |= g >> 5;
-		b |= b >> 5;
-			
-		Cps3CurPal[palindex] = BurnHighCol(r, g, b, 0);
-	
-	} else
+	}
+#if 0
+   else
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write word value %4x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
@@ -1231,7 +1216,7 @@ INT32 cps3Init()
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_1, 1.00, BURN_SND_ROUTE_LEFT);
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_2, 1.00, BURN_SND_ROUTE_RIGHT);
 	
-	pBurnDrvPalette = (UINT32*)Cps3CurPal;
+	pBurnDrvPalette = (UINT32*)RamPal;
 		
 	Cps3Reset();
 	return 0;
@@ -1254,7 +1239,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 	if ((x > (cps3_gfx_width - 8)) || (y > (cps3_gfx_height - 8))) return;
 	UINT16 * dst = (UINT16 *) pBurnDraw;
 	UINT8 * src = (UINT8 *)RamSS;
-	UINT16 * color = Cps3CurPal + (pal << 4);
+	UINT16 * color = RamPal + (pal << 4);
 	dst += (y * cps3_gfx_width + x);
 	src += code * 64;
 	
@@ -1363,7 +1348,7 @@ static void cps3_drawgfxzoom_0(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 
 static void cps3_drawgfxzoom_1(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy, INT32 x, INT32 y, INT32 drawline)
 {
-	UINT32 * dst = RamScreen;
+	UINT16 * dst = RamScreen;
 	UINT8 * src = (UINT8 *) RamCRam;
 	dst += (drawline * 1024 + x);
 
@@ -1587,7 +1572,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 0:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1604,7 +1589,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 6:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1621,7 +1606,7 @@ static void cps3_drawgfxzoom_2(UINT32 code, UINT32 pal, INT32 flipx, INT32 flipy
 			case 8:
 				for( INT32 y=sy; y<ey; y++ ) {
 					UINT8 * source = source_base + (y_index>>16) * 16;
-					UINT32 * dest = RamScreen + y * 512 * 2;
+					UINT16 * dest = RamScreen + y * 512 * 2;
 					INT32 x_index = x_index_base;
 					for(INT32 x=sx; x<ex; x++ ) {
 #if BE_GFX
@@ -1735,7 +1720,7 @@ static void DrvDraw()
 
 	//if (nBurnLayer & 1)
 	{
-		UINT32 * pscr = RamScreen;
+		UINT16 * pscr = RamScreen;
 		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
 		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
 			memset(pscr, 0, clrsz);
@@ -1924,14 +1909,14 @@ static void DrvDraw()
 	
 	{
 		UINT32 srcx, srcy = 0;
-		UINT32 * srcbitmap;
+		UINT16 * srcbitmap;
 		UINT16 * dstbitmap = (UINT16 * )pBurnDraw;
 
 		for (INT32 rendery=0; rendery<224; rendery++) {
 			srcbitmap = RamScreen + (srcy >> 16) * 1024;
 			srcx=0;
 			for (INT32 renderx=0; renderx<cps3_gfx_width; renderx++, dstbitmap ++) {
-				*dstbitmap = Cps3CurPal[ srcbitmap[srcx>>16] ];
+				*dstbitmap = RamPal[ srcbitmap[srcx>>16] ];
 				srcx += fsz;
 			}
 			srcy += fsz;
@@ -1967,24 +1952,6 @@ INT32 cps3Frame()
 	if (cps3_reset)
 		Cps3Reset();
 		
-	if (cps3_palette_change) {
-		for(INT32 i=0;i<0x0020000;i++) {
-#ifdef LSB_FIRST
-			INT32 data = RamPal[i ^ 1];
-#else
-			INT32 data = RamPal[i];
-#endif
-			INT32 r = (data & 0x001F) << 3;	// Red
-			INT32 g = (data & 0x03E0) >> 2;	// Green
-			INT32 b = (data & 0x7C00) >> 7;	// Blue
-			r |= r >> 5;
-			g |= g >> 5;
-			b |= b >> 5;
-			Cps3CurPal[i] = BurnHighCol(r, g, b, 0);	
-		}
-		cps3_palette_change = 0;
-	}
-	
 	if (WideScreenFrameDelay == GetCurrentFrame()) {
 		BurnDrvGetVisibleSize(&cps3_gfx_width, &cps3_gfx_height);
 		WideScreenFrameDelay = 0;
@@ -2127,9 +2094,6 @@ INT32 cps3Scan(INT32 nAction, INT32 *pnMin)
 		SCAN_VAR(cps_int10_cnt);
 				
 		if (nAction & ACB_WRITE) {
-			
-			// rebuild current palette
-			cps3_palette_change = 1;
 			
 			// remap RamCRam
 			Sh2MapMemory(((UINT8 *)RamCRam) + (cram_bank << 20), 0x04100000, 0x041fffff, SH2_RAM);

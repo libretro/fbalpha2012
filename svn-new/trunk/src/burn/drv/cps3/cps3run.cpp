@@ -570,14 +570,18 @@ UINT16 __fastcall cps3ReadWord(UINT32 addr)
 			} else
 			if (addr == 0x202)
 				return cps3_current_eeprom_read;
-		} else
+		}
+#if 0
+      else
 		bprintf(PRINT_NORMAL, _T("Attempt to read word value of location %8x\n"), addr);
+#endif
 	}
 	return 0;
 }
 
 UINT32 __fastcall cps3ReadLong(UINT32 addr)
 {
+#if 0
 	addr &= 0xc7ffffff;
 		
 	switch (addr) {
@@ -588,6 +592,7 @@ UINT32 __fastcall cps3ReadLong(UINT32 addr)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to read long value of location %8x\n"), addr);
 	}
+#endif
 	return 0;
 }
 
@@ -606,6 +611,7 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 	// cps3_ss_pal_base_w
 	case 0x05050024: ss_pal_base = ( ss_pal_base & 0x00ff ) | (data << 8); break;
 	case 0x05050025: ss_pal_base = ( ss_pal_base & 0xff00 ) | (data << 0); break;
+#if 0
 	case 0x05050026: break;
 	case 0x05050027: break;
 
@@ -615,6 +621,7 @@ void __fastcall cps3WriteByte(UINT32 addr, UINT8 data)
 
 		} else
 			bprintf(PRINT_NORMAL, _T("Attempt to write byte value   %02x to location %8x\n"), data, addr);
+#endif
 	}
 }
 
@@ -680,7 +687,7 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 					coldata = (r << 0) | (g << 5) | (b << 10);
 				}
 				
-				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_XBGR(coldata, 0);
+				RamPal[(paldma_dest + i)] = BurnHighCol((coldata & 0x001F) << 3 , ((coldata & 0x03E0) >> 5) << 3, (((coldata & 0x7c00) >> 10) << 3), 0);
 			}
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 		}
@@ -744,18 +751,22 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 #else
 			EEPROM[((addr-0x080) >> 1)] = data;
 #endif
-		} else
+		}
+#if 0
+      else
 		if ((addr >= 0x05050000) && (addr < 0x05060000)) {
 			// unknow i/o
 
 		} else
 				
 		bprintf(PRINT_NORMAL, _T("Attempt to write word value %04x to location %8x\n"), data, addr);
+#endif
 	}
 }
 
 void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 {
+#if 0
 	addr &= 0xc7ffffff;
 	
 	switch (addr) {
@@ -767,16 +778,17 @@ void __fastcall cps3WriteLong(UINT32 addr, UINT32 data)
 	default:
 		bprintf(PRINT_NORMAL, _T("Attempt to write long value %8x to location %8x\n"), data, addr);
 	}
+#endif
 }
 
 void __fastcall cps3C0WriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3C0WriteWord(UINT32 addr, UINT16 data)
 {
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
@@ -786,7 +798,7 @@ void __fastcall cps3C0WriteLong(UINT32 addr, UINT32 data)
 		*(UINT32 *)(RamC000_D + (addr & 0x3ff)) = data ^ cps3_mask(addr, cps3_key1, cps3_key2);
 		return ;
 	}
-	bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("C0 Attempt to write long value %8x to location %8x\n"), data, addr);
 }
 
 // If fastboot != 1 
@@ -824,19 +836,19 @@ UINT32 __fastcall cps3RomReadLong(UINT32 addr)
 	if (pc == cps3_bios_test_hack || pc == cps3_game_test_hack){
 		if ( main_flash.flash_mode == FM_NORMAL )
 			retvalue = *(UINT32 *)(RomGame + (addr & 0x00ffffff));
-		bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
+		//bprintf(2, _T("CPS3 Hack : read long from %08x [%08x]\n"), addr, retvalue );
 	}
 	return retvalue;
 }
 
 void __fastcall cps3RomWriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteWord(UINT32 addr, UINT16 data)
 {
-	bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Rom Attempt to write word value %4x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
@@ -846,7 +858,7 @@ void __fastcall cps3RomWriteLong(UINT32 addr, UINT32 data)
 	cps3_flash_write(&main_flash, addr, data);
 	
 	if ( main_flash.flash_mode == FM_NORMAL ) {
-		bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
+		//bprintf(1, _T("Rom Attempt to write long value %8x to location %8x\n"), data, addr);
 		*(UINT32 *)(RomGame + addr) = data;
 		*(UINT32 *)(RomGame_D + addr) = data ^ cps3_mask(addr + 0x06000000, cps3_key1, cps3_key2);
 	}
@@ -888,28 +900,28 @@ UINT32 __fastcall cps3RomReadLongSpe(UINT32 addr)
 
 UINT8 __fastcall cps3VidReadByte(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read byte value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT16 __fastcall cps3VidReadWord(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read word value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 UINT32 __fastcall cps3VidReadLong(UINT32 addr)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to read long value of location %8x\n"), addr);
 //	addr &= 0xc7ffffff;
 	return 0;
 }
 
 void __fastcall cps3VidWriteByte(UINT32 addr, UINT8 data)
 {
-	bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
+	//bprintf(PRINT_NORMAL, _T("Video Attempt to write byte value %2x to location %8x\n"), data, addr);
 }
 
 void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
@@ -918,11 +930,7 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 		// Palette
 		UINT32 palindex = (addr - 0x04080000) >> 1;
-#ifdef LSB_FIRST
-		RamPal[palindex ^ 1] = data;
-#else
 		RamPal[palindex] = data;
-#endif
 	}
 #if 0
    else
@@ -932,6 +940,7 @@ void __fastcall cps3VidWriteWord(UINT32 addr, UINT16 data)
 
 void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 {
+#if 0
 	addr &= 0xc7ffffff;
 	if ((addr >= 0x04080000) && (addr < 0x040c0000)) {
 
@@ -941,6 +950,7 @@ void __fastcall cps3VidWriteLong(UINT32 addr, UINT32 data)
 		
 	} else 
 	bprintf(PRINT_NORMAL, _T("Video Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 
@@ -965,7 +975,7 @@ UINT16 __fastcall cps3RamReadWord(UINT32 addr)
 
 	if (addr == cps3_speedup_ram_address )
 		if (Sh2GetPC(0) == cps3_speedup_code_address) {
-			bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
+			//bprintf(PRINT_NORMAL, _T("Ram Attempt to read long value of location %8x\n"), addr);
 			Sh2BurnUntilInt(0);
 		}
 	
@@ -992,7 +1002,7 @@ static void Cps3PatchRegion()
 {
 	if ( cps3_region_address ) {
 
-		bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
+		//bprintf(0, _T("Region: %02x -> %02x\n"), RomBios[cps3_region_address], (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x0f));				
 
 #ifdef LSB_FIRST
 		RomBios[cps3_region_address] = (RomBios[cps3_region_address] & 0xf0) | (cps3_dip & 0x7f);

@@ -1332,12 +1332,12 @@ static INT32 DrvDraw()
 			memset (RamPrioBitmap, 0, nScreenWidth * nScreenHeight);
 			BurnTransferClear();
 		} else {
-			if (nBurnLayer & 1) draw_layer(1);
+			/*if (nBurnLayer & 1)*/ draw_layer(1);
 		}
 
-		if (nBurnLayer & 2) draw_layer(0);
+		/*if (nBurnLayer & 2)*/ draw_layer(0);
 
-		if (nBurnLayer & 4) draw_sprites();
+		/*if (nBurnLayer & 4)*/ draw_sprites();
 	} else {
 		BurnTransferClear();
 	}

@@ -235,7 +235,7 @@ static void Cps1Layers()
   if (LayerCont & CpsLayEn[1]) nDrawMask|=2;
   if (LayerCont & CpsLayEn[2]) nDrawMask|=4;
   if (LayerCont & CpsLayEn[3]) nDrawMask|=8;
-  nDrawMask&=nBurnLayer;   // User choice of layers to display
+  //nDrawMask&=nBurnLayer;   // User choice of layers to display
   
   // Layer control:
   Draw[0]=(LayerCont>>12)&3; // top layer
@@ -252,7 +252,7 @@ static void Cps1Layers()
 	if (Draw[1] != -1) nDrawMask |= 2;
 	if (Draw[2] != -1) nDrawMask |= 4;
 	if (Draw[3] != -1) nDrawMask |= 8;
-	nDrawMask &= nBurnLayer;
+	//nDrawMask &= nBurnLayer;
   }
   
   // Check for repeated layers and if there are any, the lower layer is omitted
@@ -328,7 +328,7 @@ static void Cps2Layers()
 		if (LayerCont & CpsLayEn[1]) nDrawMask[nSlice] |= 2;
 		if (LayerCont & CpsLayEn[2]) nDrawMask[nSlice] |= 4;
 		if (LayerCont & CpsLayEn[3]) nDrawMask[nSlice] |= 8;
-		nDrawMask[nSlice] &= nBurnLayer;					// User choice of layers to display
+		//nDrawMask[nSlice] &= nBurnLayer;					// User choice of layers to display
 
 		// Determine layerö priority:
 		Draw[nSlice][3] = (LayerCont >> 12) & 3;			// top layer

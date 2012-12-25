@@ -2019,14 +2019,14 @@ static INT32 CninjaDraw()
 
 	deco16_clear_prio_map();
 
-	if (nSpriteEnable &  1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
-	if (nSpriteEnable &  2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-	if (nSpriteEnable &  4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | DECO16_LAYER_TRANSMASK1);
-	if (nSpriteEnable &  8) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | DECO16_LAYER_TRANSMASK0);
+	/*if (nSpriteEnable &  1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
+	/*if (nSpriteEnable &  2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+	/*if (nSpriteEnable &  4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | DECO16_LAYER_TRANSMASK1);
+	/*if (nSpriteEnable &  8)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | DECO16_LAYER_TRANSMASK0);
  
 	cninja_draw_sprites();
 
-	if (nSpriteEnable & 16) deco16_draw_layer(0, pTransDraw, 0);
+	/*if (nSpriteEnable & 16)*/ deco16_draw_layer(0, pTransDraw, 0);
 
 	BurnTransferCopy(DrvPalette);
 
@@ -2049,14 +2049,14 @@ static INT32 CninjablDraw()
 
 	deco16_clear_prio_map();
 
-	if (nSpriteEnable &  1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
-	if (nSpriteEnable &  2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-	if (nSpriteEnable &  4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | DECO16_LAYER_TRANSMASK1);
-	if (nSpriteEnable &  8) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | DECO16_LAYER_TRANSMASK0);
+	/*if (nSpriteEnable &  1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
+	/*if (nSpriteEnable &  2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+	/*if (nSpriteEnable &  4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | DECO16_LAYER_TRANSMASK1);
+	/*if (nSpriteEnable &  8)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | DECO16_LAYER_TRANSMASK0);
  
 	cninjabl_draw_sprites();
 
-	if (nSpriteEnable & 16) deco16_draw_layer(0, pTransDraw, 0);
+	/*if (nSpriteEnable & 16)*/ deco16_draw_layer(0, pTransDraw, 0);
 
 	BurnTransferCopy(DrvPalette);
 
@@ -2079,13 +2079,13 @@ static INT32 EdrandyDraw()
 
 	deco16_clear_prio_map();
 
-	if (nSpriteEnable &  1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
-	if (nSpriteEnable &  2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-	if (nSpriteEnable &  4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04));
+	/*if (nSpriteEnable &  1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x01) | DECO16_LAYER_OPAQUE);
+	/*if (nSpriteEnable &  2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+	/*if (nSpriteEnable &  4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04));
  
 	cninja_draw_sprites();
 
-	if (nSpriteEnable &  8) deco16_draw_layer(0, pTransDraw, 0);
+	/*if (nSpriteEnable &  8)*/ deco16_draw_layer(0, pTransDraw, 0);
 
 	BurnTransferCopy(DrvPalette);
 
@@ -2123,20 +2123,20 @@ static INT32 Robocop2Draw()
 		deco16_set_color_mask(3, 0xf);
 		deco16_set_graphics(2, DrvGfxROM2, 0x300000, 16);
 
-		if (nSpriteEnable &  1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE | DECO16_LAYER_PRIORITY(0x01));
+		/*if (nSpriteEnable &  1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE | DECO16_LAYER_PRIORITY(0x01));
 	}
 
 	if (deco16_priority & 8) {
-		if (nSpriteEnable &  2) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-		if (nSpriteEnable &  4) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | layer_8bpp);
+		/*if (nSpriteEnable &  2)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+		/*if (nSpriteEnable &  4)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x04) | layer_8bpp);
 	} else {
-		if (nSpriteEnable &  2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | layer_8bpp);
-		if (nSpriteEnable &  4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04));
+		/*if (nSpriteEnable &  2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02) | layer_8bpp);
+		/*if (nSpriteEnable &  4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x04));
 	}
 
 	cninja_draw_sprites();
 
-	if (nSpriteEnable &  8) deco16_draw_layer(0, pTransDraw, 0);
+	/*if (nSpriteEnable &  8)*/ deco16_draw_layer(0, pTransDraw, 0);
 
 	BurnTransferCopy(DrvPalette);
 
@@ -2158,9 +2158,9 @@ static INT32 MutantfDraw()
 		pTransDraw[i] = 0x400;
 	}
 
-	if (nSpriteEnable &  1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
-	if (nSpriteEnable &  2) deco16_draw_layer(1, pTransDraw, 0);
-	if (nSpriteEnable &  4) deco16_draw_layer(2, pTransDraw, 0);
+	/*if (nSpriteEnable &  1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
+	/*if (nSpriteEnable &  2)*/ deco16_draw_layer(1, pTransDraw, 0);
+	/*if (nSpriteEnable &  4)*/ deco16_draw_layer(2, pTransDraw, 0);
  
 	if (deco16_priority & 1)
 	{
@@ -2177,7 +2177,7 @@ static INT32 MutantfDraw()
 		mutantf_draw_sprites(DrvSprBuf,  DrvGfxROM3, 0x100, 3);
 	}
 
-	if (nSpriteEnable & 8) deco16_draw_layer(0, pTransDraw, 0); 
+	/*if (nSpriteEnable & 8)*/ deco16_draw_layer(0, pTransDraw, 0); 
 
 	BurnTransferCopy(DrvPalette);
 

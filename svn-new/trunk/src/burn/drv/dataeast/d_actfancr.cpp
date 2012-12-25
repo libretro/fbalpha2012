@@ -860,13 +860,15 @@ static INT32 DrvDraw()
 		DrvRecalc = 0;
 	}
 
+#if 0
 	if ((nBurnLayer & 1) == 0) {
 		BurnTransferClear();
-	} else {
+	} else
+#endif
 		draw_pf1_layer();
-	}
-	if (nBurnLayer & 2) draw_sprites();
-	if (nBurnLayer & 4) draw_pf2_layer();
+   
+	/*if (nBurnLayer & 2)*/ draw_sprites();
+	/*if (nBurnLayer & 4)*/ draw_pf2_layer();
 
 	BurnTransferCopy(DrvPalette);
 

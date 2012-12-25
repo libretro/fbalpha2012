@@ -415,9 +415,11 @@ static void TigerHeliTextRender()
 {
 	UINT8* pTextRAM;
 
+#if 0
 	if ((nBurnLayer & 2) == 0) {
 		return;
 	}
+#endif
 
 	switch (nWhichGame) {
 		case 0:										// Tiger Heli
@@ -511,10 +513,12 @@ static void TigerHeliTileRender()
 {
 	UINT8* pTileRAM;
 
+#if 0
 	if ((nBurnLayer & 3) == 0) {
 		BurnTransferClear();
 		return;
 	}
+#endif
 
 	INT32 nTigerHeliTileXPos = nTigerHeliTileXPosLo + (nTigerHeliTileXPosHi << 8);
 	INT32 nTigerHeliTileYPos = nTigerHeliTileYPosLo;
@@ -643,9 +647,11 @@ static void TigerHeliSpriteRender()
 	UINT8* pSpriteRAM = TigerHeliSpriteBuf;
 	INT32 nSpriteYOffset = 0;
 
+#if 0
 	if ((nBurnLayer & 1) == 0) {
 		return;
 	}
+#endif
 
 	switch (nWhichGame) {
 		case 0:										// Tiger Heli

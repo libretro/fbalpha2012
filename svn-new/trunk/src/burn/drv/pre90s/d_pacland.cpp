@@ -716,17 +716,17 @@ static INT32 DrvDraw()
 
 	memset (pPrioBitmap, 0, 288 * 224 * sizeof(UINT8));
 
-	INT32 nLayer = nBurnLayer;
+	//INT32 nLayer = nBurnLayer;
 
 	draw_sprites(0);
 
-	if (nLayer & 1) draw_bg_layer();
+	/*if (nLayer & 1)*/ draw_bg_layer();
 
-	if (nLayer & 2) draw_fg_layer(0);
+	/*if (nLayer & 2)*/ draw_fg_layer(0);
 
 	draw_sprites(1);
 
-	if (nLayer & 4) draw_fg_layer(1);
+	/*if (nLayer & 4)*/ draw_fg_layer(1);
 
 	draw_sprites(2);
 

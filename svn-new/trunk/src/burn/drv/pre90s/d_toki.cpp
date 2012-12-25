@@ -1591,14 +1591,14 @@ static INT32 DrvDraw()
 	fgscrollx = ((BURN_ENDIAN_SWAP_INT16(scrollram[0x16]) & 0x7f) << 1) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x16]) & 0x80) >> 7) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x15]) & 0x10) << 4);
 	fgscrolly = ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1e]) & 0x7f) << 1) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1e]) & 0x80) >> 7) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1d]) & 0x10) << 4);
 
-	if (~nBurnLayer & 1) memset (pTransDraw, 0, nScreenWidth * nScreenHeight * 2);
+	//if (~nBurnLayer & 1) memset (pTransDraw, 0, nScreenWidth * nScreenHeight * 2);
 
 	if (BURN_ENDIAN_SWAP_INT16(scrollram[0x28]) & 0x0100) {
-		if (nBurnLayer & 1) draw_bg_layer(DrvBg1RAM, DrvGfxROM2, 0, 0x200, bgscrollx, bgscrolly+16);
-		if (nBurnLayer & 2) draw_bg_layer(DrvBg2RAM, DrvGfxROM3, 1, 0x300, fgscrollx, fgscrolly+16);
+		/*if (nBurnLayer & 1)*/ draw_bg_layer(DrvBg1RAM, DrvGfxROM2, 0, 0x200, bgscrollx, bgscrolly+16);
+		/*if (nBurnLayer & 2)*/ draw_bg_layer(DrvBg2RAM, DrvGfxROM3, 1, 0x300, fgscrollx, fgscrolly+16);
 	} else {
-		if (nBurnLayer & 2) draw_bg_layer(DrvBg2RAM, DrvGfxROM3, 0, 0x300, fgscrollx, fgscrolly+16);
-		if (nBurnLayer & 1) draw_bg_layer(DrvBg1RAM, DrvGfxROM2, 1, 0x200, bgscrollx, bgscrolly+16);
+		/*if (nBurnLayer & 2)*/ draw_bg_layer(DrvBg2RAM, DrvGfxROM3, 0, 0x300, fgscrollx, fgscrolly+16);
+		/*if (nBurnLayer & 1)*/ draw_bg_layer(DrvBg1RAM, DrvGfxROM2, 1, 0x200, bgscrollx, bgscrolly+16);
 	}
 #if 0
 	flip_screen_set((toki_scrollram16[0x28]&0x8000)==0);
@@ -1633,14 +1633,14 @@ static INT32 DrawByLine(INT32 line)
 	fgscrolly = ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1e]) & 0x7f) << 1) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1e]) & 0x80) >> 7) | ((BURN_ENDIAN_SWAP_INT16(scrollram[0x1d]) & 0x10) << 4);
 
 	//memset (pTransDraw + line * 2, 0, nScreenWidth * 2);
-	if (~nBurnLayer & 1) memset (pTransDraw, 0, nScreenWidth * nScreenHeight * 2);
+	//if (~nBurnLayer & 1) memset (pTransDraw, 0, nScreenWidth * nScreenHeight * 2);
 
 	if (BURN_ENDIAN_SWAP_INT16(scrollram[0x28]) & 0x0100) {
-		if (nBurnLayer & 1) draw_bg_layer_by_line(DrvBg1RAM, DrvGfxROM2, 0, 0x200, bgscrollx, bgscrolly+16, line);
-		if (nBurnLayer & 2) draw_bg_layer_by_line(DrvBg2RAM, DrvGfxROM3, 1, 0x300, fgscrollx, fgscrolly+16, line);
+		/*if (nBurnLayer & 1)*/ draw_bg_layer_by_line(DrvBg1RAM, DrvGfxROM2, 0, 0x200, bgscrollx, bgscrolly+16, line);
+		/*if (nBurnLayer & 2)*/ draw_bg_layer_by_line(DrvBg2RAM, DrvGfxROM3, 1, 0x300, fgscrollx, fgscrolly+16, line);
 	} else {
-		if (nBurnLayer & 2) draw_bg_layer_by_line(DrvBg2RAM, DrvGfxROM3, 0, 0x300, fgscrollx, fgscrolly+16, line);
-		if (nBurnLayer & 1) draw_bg_layer_by_line(DrvBg1RAM, DrvGfxROM2, 1, 0x200, bgscrollx, bgscrolly+16, line);
+		/*if (nBurnLayer & 2)*/ draw_bg_layer_by_line(DrvBg2RAM, DrvGfxROM3, 0, 0x300, fgscrollx, fgscrolly+16, line);
+		/*if (nBurnLayer & 1)*/ draw_bg_layer_by_line(DrvBg1RAM, DrvGfxROM2, 1, 0x200, bgscrollx, bgscrolly+16, line);
 	}
 
 	return 0;

@@ -1157,23 +1157,28 @@ static INT32 DrvDraw()
 		}
 	}
 
-	if (nBurnLayer & 8) {
+	//if (nBurnLayer & 8)
+   {
 		if (sf_active & 0x20)
 			draw_background();
 		else
 			memset (pTransDraw, 0, nScreenWidth * nScreenHeight * sizeof(INT16));
-	} else {
+	}
+#if 0
+   else
+   {
 		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++)
 			pTransDraw[i] = 0x0400; // point to magenta
 	}
+#endif
 
-	if (sf_active & 0x40 && nBurnLayer & 4)
+	if (sf_active & 0x40 /*&& nBurnLayer & 4*/)
 		draw_foreground();
 
-	if (sf_active & 0x80 && nBurnLayer & 1)
+	if (sf_active & 0x80 /*&& nBurnLayer & 1*/)
 		draw_sprites();
 
-	if (sf_active & 0x08 && nBurnLayer & 2)
+	if (sf_active & 0x08 /*&& nBurnLayer & 2*/)
 		draw_characters();
 
 	BurnTransferCopy(DrvPalette);

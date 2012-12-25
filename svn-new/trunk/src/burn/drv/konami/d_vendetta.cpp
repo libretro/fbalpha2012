@@ -808,18 +808,18 @@ static INT32 DrvDraw()
 	BurnTransferClear();
 
 	// this order makes sense...
-	if (nSpriteEnable & 8) K053247SpritesRender(DrvGfxROMExp1, 0);
+	/*if (nSpriteEnable & 8)*/ K053247SpritesRender(DrvGfxROMExp1, 0);
 
-	if (nBurnLayer & 1)    K052109RenderLayer(layer[0], 1, DrvGfxROMExp0);
+	/*if (nBurnLayer & 1)*/    K052109RenderLayer(layer[0], 1, DrvGfxROMExp0);
 
-	if (nBurnLayer & 2)    K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
+	/*if (nBurnLayer & 2)*/    K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
 
-	if (nSpriteEnable & 4) K053247SpritesRender(DrvGfxROMExp1, 1);
-	if (nSpriteEnable & 2) K053247SpritesRender(DrvGfxROMExp1, 2);
+	/*if (nSpriteEnable & 4)*/ K053247SpritesRender(DrvGfxROMExp1, 1);
+	/*if (nSpriteEnable & 2)*/ K053247SpritesRender(DrvGfxROMExp1, 2);
 
-	if (nBurnLayer & 4)    K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
+	/*if (nBurnLayer & 4)*/    K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
 
-	if (nSpriteEnable & 1) K053247SpritesRender(DrvGfxROMExp1, 3);
+	/*if (nSpriteEnable & 1)*/ K053247SpritesRender(DrvGfxROMExp1, 3);
 
 	KonamiBlendCopy(Palette, DrvPalette);
 

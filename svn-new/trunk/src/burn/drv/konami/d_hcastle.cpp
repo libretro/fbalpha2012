@@ -713,19 +713,18 @@ static INT32 DrvDraw()
 
 	BurnTransferClear();
 
+   /*if (nBurnLayer & 1)*/ draw_layer(DrvPf2RAM, DrvPf2Ctrl, DrvGfxROM1, 0x90, ((*gfxbank & 2) >> 1) * 0x4000, 0);
 	if ((*gfxbank & 0x04) == 0)
 	{
-		if (nBurnLayer & 1) draw_layer(DrvPf2RAM, DrvPf2Ctrl, DrvGfxROM1, 0x90, ((*gfxbank & 2) >> 1) * 0x4000, 0);
-		if (nSpriteEnable & 1) draw_sprites(0, DrvSprBuf1, DrvPf1Ctrl, DrvGfxROM0, 0x00);
-		if (nSpriteEnable & 2) draw_sprites(1, DrvSprBuf2, DrvPf2Ctrl, DrvGfxROM1, 0x80);
-		if (nBurnLayer & 2) draw_layer(DrvPf1RAM, DrvPf1Ctrl, DrvGfxROM0, 0x10, 0x0000, 1);
+		/*if (nSpriteEnable & 1)*/ draw_sprites(0, DrvSprBuf1, DrvPf1Ctrl, DrvGfxROM0, 0x00);
+		/*if (nSpriteEnable & 2)*/ draw_sprites(1, DrvSprBuf2, DrvPf2Ctrl, DrvGfxROM1, 0x80);
+		/*if (nBurnLayer & 2)*/ draw_layer(DrvPf1RAM, DrvPf1Ctrl, DrvGfxROM0, 0x10, 0x0000, 1);
 	}
 	else
 	{
-		if (nBurnLayer & 1) draw_layer(DrvPf2RAM, DrvPf2Ctrl, DrvGfxROM1, 0x90, ((*gfxbank & 2) >> 1) * 0x4000, 0);
-		if (nBurnLayer & 2) draw_layer(DrvPf1RAM, DrvPf1Ctrl, DrvGfxROM0, 0x10, 0x0000, 1);
-		if (nSpriteEnable & 1) draw_sprites(0, DrvSprBuf1, DrvPf1Ctrl, DrvGfxROM0, 0x00);
-		if (nSpriteEnable & 2) draw_sprites(1, DrvSprBuf2, DrvPf2Ctrl, DrvGfxROM1, 0x80);
+		/*if (nBurnLayer & 2)*/ draw_layer(DrvPf1RAM, DrvPf1Ctrl, DrvGfxROM0, 0x10, 0x0000, 1);
+		/*if (nSpriteEnable & 1)*/ draw_sprites(0, DrvSprBuf1, DrvPf1Ctrl, DrvGfxROM0, 0x00);
+		/*if (nSpriteEnable & 2)*/ draw_sprites(1, DrvSprBuf2, DrvPf2Ctrl, DrvGfxROM1, 0x80);
 	}
 	
 	BurnTransferCopy(DrvPalette);

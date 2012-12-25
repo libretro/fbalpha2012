@@ -70,9 +70,11 @@ INT32 CaveSpriteRender(INT32 nLowPriority, INT32 nHighPriority)
 		nMaskRight = nMaskBottom = -1;
 	}
 
+#if 0
 	if ((nBurnLayer & 1) == 0) {
 		return 0;
 	}
+#endif
 
 	if (nHighPriority < 3) {
 		for (INT32 i = nHighPriority + 1; i < 4; i++) {
@@ -92,7 +94,7 @@ INT32 CaveSpriteRender(INT32 nLowPriority, INT32 nHighPriority)
 		nPriorityMask |= 8 >> i;
 	}
 
-	nPriorityMask &= nSpriteEnable;
+	//nPriorityMask &= nSpriteEnable;
 	if (nPriorityMask == 0) {
 		return 0;
 	}

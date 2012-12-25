@@ -618,16 +618,16 @@ static INT32 DrvDraw()
 		pTransDraw[i] = 0x400;
 	}
 
-	if (nSpriteEnable & 1) draw_sprites(DrvSprTBuf1, DrvGfxROM1, 0x300, 0x0000);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(DrvSprTBuf1, DrvGfxROM1, 0x300, 0x0000);
 
-	if (nBurnLayer & 1) copy_pixel_layer();
+	/*if (nBurnLayer & 1)*/ copy_pixel_layer();
 
-	if (nSpriteEnable & 2) draw_sprites(DrvSprTBuf0, DrvGfxROM0, 0x200, 0x0000);
-	if (nSpriteEnable & 4) draw_sprites(DrvSprTBuf1, DrvGfxROM1, 0x300, 0x2000);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(DrvSprTBuf0, DrvGfxROM0, 0x200, 0x0000);
+	/*if (nSpriteEnable & 4)*/ draw_sprites(DrvSprTBuf1, DrvGfxROM1, 0x300, 0x2000);
 	
-	if (nBurnLayer & 2) draw_layer();
+	/*if (nBurnLayer & 2)*/ draw_layer();
 
-	if (nSpriteEnable & 8) draw_sprites(DrvSprTBuf0, DrvGfxROM0, 0x200, 0x2000);
+	/*if (nSpriteEnable & 8)*/ draw_sprites(DrvSprTBuf0, DrvGfxROM0, 0x200, 0x2000);
 
 	BurnTransferCopy(DrvPalette);
 

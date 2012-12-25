@@ -526,17 +526,17 @@ static INT32 DrvDraw()
 
 	INT32 backlayer = (*tilemap_reg & 0x02) ? 0x7000 : 0x6000;
 
-	if (nSpriteEnable & 0x01) draw_16x16_layer(DrvPfRAM + backlayer, DrvGfxROM3, 0x70, 4, 0x1fff, 0);
+	/*if (nSpriteEnable & 0x01)*/ draw_16x16_layer(DrvPfRAM + backlayer, DrvGfxROM3, 0x70, 4, 0x1fff, 0);
 
-	if (nSpriteEnable & 0x02) draw_8x8_layer(DrvPfRAM + 0x2000, DrvGfxROM1, 0x60, 3, 1);
+	/*if (nSpriteEnable & 0x02)*/ draw_8x8_layer(DrvPfRAM + 0x2000, DrvGfxROM1, 0x60, 3, 1);
 
-	if (nSpriteEnable & 0x04) draw_16x16_layer(DrvPfRAM + 0x5000, DrvGfxROM4, 0x40, 2, 0x7fff, 1); 
+	/*if (nSpriteEnable & 0x04)*/ draw_16x16_layer(DrvPfRAM + 0x5000, DrvGfxROM4, 0x40, 2, 0x7fff, 1); 
 
-	if (nSpriteEnable & 0x08) draw_16x16_layer(DrvPfRAM + 0x4000, DrvGfxROM4, 0x20, 1, 0x7fff, 1);
+	/*if (nSpriteEnable & 0x08)*/ draw_16x16_layer(DrvPfRAM + 0x4000, DrvGfxROM4, 0x20, 1, 0x7fff, 1);
 
-	if (nSpriteEnable & 0x10) draw_8x8_layer(DrvPfRAM + 0x0000, DrvGfxROM0, 0x10, 0, 1);
+	/*if (nSpriteEnable & 0x10)*/ draw_8x8_layer(DrvPfRAM + 0x0000, DrvGfxROM0, 0x10, 0, 1);
 
-	if (nSpriteEnable & 0x20) draw_8x8_layer(DrvPfRAM + 0x8000, DrvGfxROM2, 0x00, 5, 1);
+	/*if (nSpriteEnable & 0x20)*/ draw_8x8_layer(DrvPfRAM + 0x8000, DrvGfxROM2, 0x00, 5, 1);
 
 	BurnTransferCopy(DrvPalette);
 

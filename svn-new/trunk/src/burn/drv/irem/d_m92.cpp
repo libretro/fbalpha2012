@@ -1929,19 +1929,19 @@ static void DrawLayers(INT32 start, INT32 finish)
 {
 	memset (RamPrioBitmap + (start * nScreenWidth), 0, nScreenWidth * (finish - start)); // clear priority
 
-	if (~nBurnLayer & 1) memset (pTransDraw + (start * nScreenWidth), 0, nScreenWidth * (finish - start) * sizeof(INT16));
+	//if (~nBurnLayer & 1) memset (pTransDraw + (start * nScreenWidth), 0, nScreenWidth * (finish - start) * sizeof(INT16));
 
 	if (~pf_control[3][4] & 0x10) {
-		if (nBurnLayer & 1) draw_layer_byline(start, finish, 2, 1);
-		if (nBurnLayer & 1) draw_layer_byline(start, finish, 2, 0);
+		/*if (nBurnLayer & 1)*/ draw_layer_byline(start, finish, 2, 1);
+		/*if (nBurnLayer & 1)*/ draw_layer_byline(start, finish, 2, 0);
 	} else {
 		memset (pTransDraw + (start * nScreenWidth), 0, nScreenWidth * (finish - start) * sizeof(INT16));
 	}
 
-	if (nBurnLayer & 2) draw_layer_byline(start, finish, 1, 1);
-	if (nBurnLayer & 2) draw_layer_byline(start, finish, 1, 0);
-	if (nBurnLayer & 4) draw_layer_byline(start, finish, 0, 1);
-	if (nBurnLayer & 4) draw_layer_byline(start, finish, 0, 0);
+	/*if (nBurnLayer & 2)*/ draw_layer_byline(start, finish, 1, 1);
+	/*if (nBurnLayer & 2)*/ draw_layer_byline(start, finish, 1, 0);
+	/*if (nBurnLayer & 4)*/ draw_layer_byline(start, finish, 0, 1);
+	/*if (nBurnLayer & 4)*/ draw_layer_byline(start, finish, 0, 0);
 }
 
 static INT32 DrvDraw()
@@ -1954,7 +1954,7 @@ static INT32 DrvDraw()
 
 //	DrawLayers(0, nScreenHeight);
 
-	if (nBurnLayer & 8) draw_sprites();
+	/*if (nBurnLayer & 8)*/ draw_sprites();
 
 	BurnTransferCopy(DrvPalette);
 
@@ -1971,7 +1971,7 @@ static INT32 DrvReDraw()
 
 	DrawLayers(0, nScreenHeight);
 
-	if (nBurnLayer & 8) draw_sprites();
+	/*if (nBurnLayer & 8)*/ draw_sprites();
 
 	BurnTransferCopy(DrvPalette);
 

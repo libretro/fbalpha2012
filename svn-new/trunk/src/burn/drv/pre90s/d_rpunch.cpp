@@ -722,11 +722,11 @@ static INT32 DrvDraw()
 
 	BurnTransferClear();
 
-	if (nBurnLayer &  1) draw_layer(0, DrvGfxROM0);
-	if (nSpriteEnable & 1) draw_sprites(0, sproffs * 4);
-	if (nBurnLayer &  2) draw_layer(1, DrvGfxROM1);
-	if (nSpriteEnable & 2) draw_sprites(sproffs * 4, sprite_offs[0] * 4);
-	if (nBurnLayer &  4) draw_bitmap();
+	/*if (nBurnLayer &  1)*/ draw_layer(0, DrvGfxROM0);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(0, sproffs * 4);
+	/*if (nBurnLayer &  2)*/ draw_layer(1, DrvGfxROM1);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(sproffs * 4, sprite_offs[0] * 4);
+	/*if (nBurnLayer &  4)*/ draw_bitmap();
 
 	BurnTransferCopy(DrvPalette);
 

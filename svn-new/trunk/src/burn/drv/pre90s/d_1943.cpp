@@ -1523,11 +1523,11 @@ static void DrvDraw()
 {
 	BurnTransferClear();
 	DrvCalcPalette();
-	if (DrvBg2On && nBurnLayer & 1) DrvRenderBg2Layer();
+	if (DrvBg2On /*&& nBurnLayer & 1*/) DrvRenderBg2Layer();
 	if (DrvSpritesOn) DrvRenderSprites(0);
-	if (DrvBg1On && nBurnLayer & 2) DrvRenderBgLayer();
+	if (DrvBg1On /*&& nBurnLayer & 2*/) DrvRenderBgLayer();
 	if (DrvSpritesOn) DrvRenderSprites(1);
-	if (DrvCharsOn && nBurnLayer & 4) DrvRenderCharLayer();
+	if (DrvCharsOn /*&& nBurnLayer & 4*/) DrvRenderCharLayer();
 	BurnTransferCopy(DrvPalette);
 }
 

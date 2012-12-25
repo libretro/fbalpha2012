@@ -815,35 +815,35 @@ static INT32 DrvDraw()
 
 	deco16_clear_prio_map();
 
-	if (nBurnLayer & 1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE | DECO16_LAYER_PRIORITY(0));
+	/*if (nBurnLayer & 1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE | DECO16_LAYER_PRIORITY(0));
 
 	switch (deco16_priority & 3)
 	{
 		case 0:
-			if (nBurnLayer & 4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-			if (nBurnLayer & 2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x10));
+			/*if (nBurnLayer & 4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+			/*if (nBurnLayer & 2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x10));
 		break;
 
 		case 1:
-			if (nBurnLayer & 2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-			if (nBurnLayer & 4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x40));
+			/*if (nBurnLayer & 2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+			/*if (nBurnLayer & 4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x40));
 		break;
 
 		case 2:	break;
 
 		case 3:
-			if (nBurnLayer & 2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
-			if (nBurnLayer & 4) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x10));
+			/*if (nBurnLayer & 2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x02));
+			/*if (nBurnLayer & 4)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x10));
 		break;
 	}
 
-	if (nSpriteEnable & 1) draw_sprites(0);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(0);
 
-	if (nBurnLayer & 8) deco16_draw_layer(0, pTransDraw, DECO16_LAYER_PRIORITY(0xff));
+	/*if (nBurnLayer & 8)*/ deco16_draw_layer(0, pTransDraw, DECO16_LAYER_PRIORITY(0xff));
 
 	BurnTransferCopy(DrvPalette);
 
-	if (nSpriteEnable & 2) draw_sprites(4);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(4);
 
 	return 0;
 }

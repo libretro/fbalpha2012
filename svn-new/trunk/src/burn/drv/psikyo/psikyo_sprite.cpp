@@ -72,9 +72,11 @@ INT32 PsikyoSpriteRender(INT32 nLowPriority, INT32 nHighPriority)
 	INT32 nUseBuffer = 0x00010000;
 	INT32 nCurrentZPos;
 
+#if 0
 	if ((nBurnLayer & 1) == 0) {
 		return 0;
 	}
+#endif
 
 	if (nLowPriority == 0) {
 		nZPos = -1;
@@ -109,7 +111,7 @@ INT32 PsikyoSpriteRender(INT32 nLowPriority, INT32 nHighPriority)
 
 	nCurrentZPos = nMinZPos;
 
-	nPriorityMask &= nSpriteEnable;
+	//nPriorityMask &= nSpriteEnable;
 	if (nPriorityMask == 0) {
 		return 0;
 	}

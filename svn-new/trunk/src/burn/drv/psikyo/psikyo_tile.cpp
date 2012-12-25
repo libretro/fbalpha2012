@@ -202,7 +202,7 @@ INT32 PsikyoTileRender()
 		PsikyoTileBank[1] = (PsikyoLayerAttrib[1] & 0x0400) << 3;
 	}
 
-	if (bPsikyoClearBackground || ((PsikyoLayerAttrib[0] & 0x01) && (PsikyoLayerAttrib[1] & 0x02)) || (nBurnLayer & 0x0C) != 0x0C) {
+	if (bPsikyoClearBackground || ((PsikyoLayerAttrib[0] & 0x01) && (PsikyoLayerAttrib[1] & 0x02)) /*|| (nBurnLayer & 0x0C) != 0x0C*/) {
 		BurnClearScreen();
 	}
 
@@ -215,7 +215,7 @@ INT32 PsikyoTileRender()
 			nLowPriority = nPriority + 1;
 		}
 
-		if (nLayer < 2 && (PsikyoLayerAttrib[nLayer] & 1) == 0 && (PsikyoLayerAttrib[nLayer + 1] & 0x02) == 0 && (nBurnLayer & (4 << nLayer))) {
+		if (nLayer < 2 && (PsikyoLayerAttrib[nLayer] & 1) == 0 && (PsikyoLayerAttrib[nLayer + 1] & 0x02) == 0 /*&& (nBurnLayer & (4 << nLayer))*/) {
 			PsikyoRenderLayer(nLayer);
 		}
 	}

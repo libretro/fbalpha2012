@@ -5455,12 +5455,12 @@ static void BlswhstlDraw()
 	PaletteDim(Layer[2]);
 
 	K053245SpritesRender(0, DrvSprites, 3);
-	if (nBurnLayer & 1) K052109RenderLayer(Layer[0], 0, DrvTiles);
+	/*if (nBurnLayer & 1)*/ K052109RenderLayer(Layer[0], 0, DrvTiles);
 	K053245SpritesRender(0, DrvSprites, 2);
-	if (nBurnLayer & 2) K052109RenderLayer(Layer[1], 0, DrvTiles);
+	/*if (nBurnLayer & 2)*/ K052109RenderLayer(Layer[1], 0, DrvTiles);
 	K053245SpritesRender(0, DrvSprites, 1);
 	K053245SpritesRender(0, DrvSprites, 0);
-	if (nBurnLayer & 4) K052109RenderLayer(Layer[2], 0, DrvTiles);	
+	/*if (nBurnLayer & 4)*/ K052109RenderLayer(Layer[2], 0, DrvTiles);	
 
 	KonamiBlendCopy(Palette, DrvPalette);
 }
@@ -5491,13 +5491,13 @@ static INT32 Thndrx2Draw()
 
 	sortlayers(Layer, LayerPri);
 
-	if (nSpriteEnable & 8) K051960SpritesRender(DrvSprites, 3);
-	if (nBurnLayer & 1) K052109RenderLayer(Layer[0], 0, DrvTiles);
-	if (nSpriteEnable & 4) K051960SpritesRender(DrvSprites, 2);	
-	if (nBurnLayer & 2) K052109RenderLayer(Layer[1], 0, DrvTiles);
-	if (nSpriteEnable & 2) K051960SpritesRender(DrvSprites, 1);
-	if (nSpriteEnable & 1) K051960SpritesRender(DrvSprites, 0);
-	if (nBurnLayer & 4) K052109RenderLayer(Layer[2], 0, DrvTiles);
+	/*if (nSpriteEnable & 8)*/ K051960SpritesRender(DrvSprites, 3);
+	/*if (nBurnLayer & 1)*/ K052109RenderLayer(Layer[0], 0, DrvTiles);
+	/*if (nSpriteEnable & 4)*/ K051960SpritesRender(DrvSprites, 2);	
+	/*if (nBurnLayer & 2)*/ K052109RenderLayer(Layer[1], 0, DrvTiles);
+	/*if (nSpriteEnable & 2)*/ K051960SpritesRender(DrvSprites, 1);
+	/*if (nSpriteEnable & 1)*/ K051960SpritesRender(DrvSprites, 0);
+	/*if (nBurnLayer & 4)*/ K052109RenderLayer(Layer[2], 0, DrvTiles);
 
 	BurnTransferCopy(DrvPalette);
 
@@ -5527,12 +5527,12 @@ static INT32 PunkshotDraw()
 	sortlayers(Layer, LayerPri);
 
 //	if (nSpriteEnable & 8) K051960SpritesRender(DrvSprites, 3); // not sure...
-	if (nBurnLayer & 1) K052109RenderLayer(Layer[0], 1, DrvTiles);
-	if (nSpriteEnable & 4) K051960SpritesRender(DrvSprites, 2);	
-	if (nBurnLayer & 2) K052109RenderLayer(Layer[1], 0, DrvTiles);
-	if (nSpriteEnable & 2) K051960SpritesRender(DrvSprites, 1);
-	if (nBurnLayer & 4) K052109RenderLayer(Layer[2], 0, DrvTiles);
-	if (nSpriteEnable & 1) K051960SpritesRender(DrvSprites, 0);
+	/*if (nBurnLayer & 1)*/ K052109RenderLayer(Layer[0], 1, DrvTiles);
+	/*if (nSpriteEnable & 4)*/ K051960SpritesRender(DrvSprites, 2);	
+	/*if (nBurnLayer & 2)*/ K052109RenderLayer(Layer[1], 0, DrvTiles);
+	/*if (nSpriteEnable & 2)*/ K051960SpritesRender(DrvSprites, 1);
+	/*if (nBurnLayer & 4)*/ K052109RenderLayer(Layer[2], 0, DrvTiles);
+	/*if (nSpriteEnable & 1)*/ K051960SpritesRender(DrvSprites, 0);
 
 	BurnTransferCopy(DrvPalette);
 

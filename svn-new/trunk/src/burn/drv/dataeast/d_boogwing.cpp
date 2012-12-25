@@ -655,36 +655,36 @@ static INT32 DrvDraw()
 	{
 		case 0x01:
 		case 0x02:
-			if (nSpriteEnable & 4) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
-			if (nSpriteEnable & 1) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x08) | bpp1);
-			if (nSpriteEnable & 2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x20));
+			/*if (nSpriteEnable & 4)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
+			/*if (nSpriteEnable & 1)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x08) | bpp1);
+			/*if (nSpriteEnable & 2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x20));
 		break;
 
 		case 0x03:
-			if (nSpriteEnable & 4) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
-			if (nSpriteEnable & 1) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x08) | bpp1);
+			/*if (nSpriteEnable & 4)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
+			/*if (nSpriteEnable & 1)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x08) | bpp1);
 			// should use pf2 to add shadows...
 		break;
 
 		case 0x05:
-			if (nSpriteEnable & 1) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
-			if (nSpriteEnable &16) draw_combined_playfield(0x300, DECO16_LAYER_PRIORITY(0x20));
+			/*if (nSpriteEnable & 1)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
+			/*if (nSpriteEnable &16)*/ draw_combined_playfield(0x300, DECO16_LAYER_PRIORITY(0x20));
 		break;
 
 		case 0x00:
 		case 0x04:
 		case 0x06:
 		case 0x07:
-			if (nSpriteEnable & 4) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
-			if (nSpriteEnable & 2) deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x08));
-			if (nSpriteEnable & 1) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x20) | bpp1);
+			/*if (nSpriteEnable & 4)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_PRIORITY(0x00) | DECO16_LAYER_OPAQUE);
+			/*if (nSpriteEnable & 2)*/ deco16_draw_layer(2, pTransDraw, DECO16_LAYER_PRIORITY(0x08));
+			/*if (nSpriteEnable & 1)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_PRIORITY(0x20) | bpp1);
 		break;
 	}
 
 	draw_sprites(DrvSprBuf , DrvGfxROM3, 0x500, 3, 0);
 	draw_sprites(DrvSprBuf1, DrvGfxROM4, 0x700, 4, 0);
 
-	if (nSpriteEnable & 8) deco16_draw_layer(0, pTransDraw, DECO16_LAYER_PRIORITY(0xff) | bpp0);
+	/*if (nSpriteEnable & 8)*/ deco16_draw_layer(0, pTransDraw, DECO16_LAYER_PRIORITY(0xff) | bpp0);
 
 	BurnTransferCopy(DrvPalette);
 

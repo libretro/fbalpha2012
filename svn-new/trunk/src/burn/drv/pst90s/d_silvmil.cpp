@@ -530,10 +530,10 @@ static INT32 DrvDraw()
 		DrvRecalc = 0;
 	}
 
-	if (~nBurnLayer & 1) BurnTransferClear();
-	if ( nBurnLayer & 1) draw_layer(DrvBgRAM, 0x20, *bg_scroll_x, *bg_scroll_y, 0);
-	if ( nBurnLayer & 2) draw_layer(DrvFgRAM, 0x10, *fg_scroll_x, *fg_scroll_y, 1);
-	if ( nBurnLayer & 4) draw_sprites();
+	//if (~nBurnLayer & 1) BurnTransferClear();
+	/*if ( nBurnLayer & 1)*/ draw_layer(DrvBgRAM, 0x20, *bg_scroll_x, *bg_scroll_y, 0);
+	/*if ( nBurnLayer & 2)*/ draw_layer(DrvFgRAM, 0x10, *fg_scroll_x, *fg_scroll_y, 1);
+	/*if ( nBurnLayer & 4)*/ draw_sprites();
 
 	BurnTransferCopy(DrvPalette);
 

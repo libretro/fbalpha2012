@@ -797,31 +797,27 @@ static INT32 DrvDraw()
 
 	K052109UpdateScroll();
 
+   K052109RenderLayer(1, 1, DrvGfxROMExp0); 
 	if (nGame)
 	{
-		K052109RenderLayer(1, 1, DrvGfxROMExp0); 
 		K052109RenderLayer(2, 0, DrvGfxROMExp0);
 
 		K051960SpritesRender(DrvGfxROMExp1, 0);
 	
-		K052109RenderLayer(0, 0, DrvGfxROMExp0);
 	}
 	else
 	{
-		if (nBurnLayer & 1) K052109RenderLayer(1, 1, DrvGfxROMExp0); 
+		/*if (nBurnLayer & 2)*/ K052109RenderLayer(2 | 0x10, 0, DrvGfxROMExp0);
 
-		if (nBurnLayer & 2) K052109RenderLayer(2 | 0x10, 0, DrvGfxROMExp0);
+		/*if (nSpriteEnable & 2)*/ K051960SpritesRender(DrvGfxROMExp1, 1);
 
-		if (nSpriteEnable & 2) K051960SpritesRender(DrvGfxROMExp1, 1);
+		/*if (nBurnLayer & 4)*/ K052109RenderLayer(2 | 0x00, 0, DrvGfxROMExp0);
 
-		if (nBurnLayer & 4) K052109RenderLayer(2 | 0x00, 0, DrvGfxROMExp0);
+		/*if (nSpriteEnable & 4)*/ K051960SpritesRender(DrvGfxROMExp1, 0); // makes sense...
 
-		if (nSpriteEnable & 4) K051960SpritesRender(DrvGfxROMExp1, 0); // makes sense...
-
-		if (nSpriteEnable & 1) K051960SpritesRender(DrvGfxROMExp1, 2);
-
-		if (nBurnLayer & 8) K052109RenderLayer(0, 0, DrvGfxROMExp0);
+		/*if (nSpriteEnable & 1)*/ K051960SpritesRender(DrvGfxROMExp1, 2);
 	}
+   K052109RenderLayer(0, 0, DrvGfxROMExp0);
 
 	BurnTransferCopy(DrvPalette);
 

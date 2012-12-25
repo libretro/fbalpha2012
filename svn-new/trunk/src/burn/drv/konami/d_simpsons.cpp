@@ -625,13 +625,13 @@ static INT32 DrvDraw()
 		pTransDraw[i] = 16 * bg_colorbase;
 	}
 
-	if (nSpriteEnable & 8) K053247SpritesRender(DrvGfxROMExp1, 3);		// title (simpsons behind clouds)
-	if (nBurnLayer & 1)    K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);	// title (back-most cloud)
-	if (nSpriteEnable & 4) K053247SpritesRender(DrvGfxROMExp1, 2);		// smithers' on first stage
-	if (nBurnLayer & 2)    K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);	// main layer (buildings, stage 1)
-	if (nSpriteEnable & 2) K053247SpritesRender(DrvGfxROMExp1, 1);		// smithers' thugs on stage 1
-	if (nBurnLayer & 4)    K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);	// game over text
-	if (nSpriteEnable & 1) K053247SpritesRender(DrvGfxROMExp1, 0);		// not used? seems to make sense here...
+	/*if (nSpriteEnable & 8)*/ K053247SpritesRender(DrvGfxROMExp1, 3);		// title (simpsons behind clouds)
+	/*if (nBurnLayer & 1)*/    K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);	// title (back-most cloud)
+	/*if (nSpriteEnable & 4)*/ K053247SpritesRender(DrvGfxROMExp1, 2);		// smithers' on first stage
+	/*if (nBurnLayer & 2)*/    K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);	// main layer (buildings, stage 1)
+	/*if (nSpriteEnable & 2)*/ K053247SpritesRender(DrvGfxROMExp1, 1);		// smithers' thugs on stage 1
+	/*if (nBurnLayer & 4)*/    K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);	// game over text
+	/*if (nSpriteEnable & 1)*/ K053247SpritesRender(DrvGfxROMExp1, 0);		// not used? seems to make sense here...
 
 	KonamiBlendCopy(Palette, DrvPalette);
 

@@ -1496,7 +1496,7 @@ static void update_rohga(INT32 is_schmeisr)
 			break;
 	}
 
-	if (nSpriteEnable & 1) rohga_draw_sprites(DrvSprBuf2, is_schmeisr);
+	/*if (nSpriteEnable & 1)*/ rohga_draw_sprites(DrvSprBuf2, is_schmeisr);
 
 	deco16_draw_layer(0, pTransDraw, 0);
 
@@ -1531,25 +1531,21 @@ static INT32 WizdfireDraw()
 		pTransDraw[i] = 0x200;
 	}
 
-	if (nBurnLayer & 1) deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
+	/*if (nBurnLayer & 1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
 
-	if (nSpriteEnable & 1) wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 4, 3);
+	/*if (nSpriteEnable & 1)*/ wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 4, 3);
 
-	if (nBurnLayer & 2) deco16_draw_layer(1, pTransDraw, 0);
+	/*if (nBurnLayer & 2)*/ deco16_draw_layer(1, pTransDraw, 0);
 
-	if (nSpriteEnable & 2) wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 3, 3);
+	/*if (nSpriteEnable & 2)*/ wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 3, 3);
 
-	if ((deco16_priority & 0x1f) == 0x1f) {
-		if (nBurnLayer & 4) deco16_draw_layer(2, pTransDraw, 0); // tilemap draw alpha 0x80...
-	} else {
-		if (nBurnLayer & 4) deco16_draw_layer(2, pTransDraw, 0); 
-	}
+   /*if (nBurnLayer & 4)*/ deco16_draw_layer(2, pTransDraw, 0); 
 
-	if (nSpriteEnable & 4) wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 0, 3);
-	if (nSpriteEnable & 8) wizdfire_draw_sprites(DrvSprBuf2, DrvGfxROM4, 0x600, 2, 4);
-	if (nSpriteEnable & 16) wizdfire_draw_sprites(DrvSprBuf2, DrvGfxROM4, 0x600, 1, 4);
+	/*if (nSpriteEnable & 4)*/ wizdfire_draw_sprites(DrvSprBuf, DrvGfxROM3, 0x400, 0, 3);
+	/*if (nSpriteEnable & 8)*/ wizdfire_draw_sprites(DrvSprBuf2, DrvGfxROM4, 0x600, 2, 4);
+	/*if (nSpriteEnable & 16)*/ wizdfire_draw_sprites(DrvSprBuf2, DrvGfxROM4, 0x600, 1, 4);
 
-	if (nBurnLayer & 8) deco16_draw_layer(0, pTransDraw, 0); 
+	/*if (nBurnLayer & 8)*/ deco16_draw_layer(0, pTransDraw, 0); 
 
 	BurnTransferCopy(DrvPalette);
 
@@ -1576,7 +1572,7 @@ static INT32 NitrobalDraw()
 
 	draw_combined_playfield(0x200, 0);
 
-	if (nBurnLayer & 1)deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
+	/*if (nBurnLayer & 1)*/ deco16_draw_layer(3, pTransDraw, DECO16_LAYER_OPAQUE);
 
 	deco16_draw_layer(1, pTransDraw, 16);
 

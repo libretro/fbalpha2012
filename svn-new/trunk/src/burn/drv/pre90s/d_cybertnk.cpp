@@ -812,18 +812,19 @@ static INT32 DrvDraw()
 		DrvRecalc = 0;
 	}
 
-	DrvPalette[0x2000] = ((nSpriteEnable & 0x3f) == 0x3f) ? BurnHighCol(0x00, 0x00, 0x00, 0) : BurnHighCol(0xff, 0x00, 0xff, 0); // black / magenta
+	//DrvPalette[0x2000] = ((nSpriteEnable & 0x3f) == 0x3f) ? BurnHighCol(0x00, 0x00, 0x00, 0) : BurnHighCol(0xff, 0x00, 0xff, 0); // black / magenta
+	DrvPalette[0x2000] = BurnHighCol(0x00, 0x00, 0x00, 0);
 
 	for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
 		pTransDraw[i] = 0x2000;
 	}
 
-	if (nSpriteEnable & 1)  draw_road(0x00);
-	if (nSpriteEnable & 2)  draw_layer(DrvVidRAM2, DrvGfxROM2, DrvScroll2, DrvTransTab2, 0x1c00);
-	if (nSpriteEnable & 4)  draw_layer(DrvVidRAM1, DrvGfxROM1, DrvScroll1, DrvTransTab1, 0x1800);
-	if (nSpriteEnable & 8)  draw_road(0x80);
-	if (nSpriteEnable & 16) draw_sprites();
-	if (nSpriteEnable & 32) draw_layer(DrvVidRAM0, DrvGfxROM0, DrvScroll0, DrvTransTab0, 0x1400);
+	/*if (nSpriteEnable & 1)*/  draw_road(0x00);
+	/*if (nSpriteEnable & 2)*/  draw_layer(DrvVidRAM2, DrvGfxROM2, DrvScroll2, DrvTransTab2, 0x1c00);
+	/*if (nSpriteEnable & 4)*/  draw_layer(DrvVidRAM1, DrvGfxROM1, DrvScroll1, DrvTransTab1, 0x1800);
+	/*if (nSpriteEnable & 8)*/  draw_road(0x80);
+	/*if (nSpriteEnable & 16)*/ draw_sprites();
+	/*if (nSpriteEnable & 32)*/ draw_layer(DrvVidRAM0, DrvGfxROM0, DrvScroll0, DrvTransTab0, 0x1400);
 
 	BurnTransferCopy(DrvPalette);
 

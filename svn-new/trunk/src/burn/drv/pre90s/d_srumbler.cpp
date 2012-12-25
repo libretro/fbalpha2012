@@ -575,16 +575,17 @@ static INT32 DrvDraw()
 		}
 	}
 
-	if (nSpriteEnable & 1) draw_background_layer(1); // opaque
-	else BurnTransferClear();
+	//if (nSpriteEnable & 1)
+      draw_background_layer(1); // opaque
+	//else BurnTransferClear();
 
-	if (nBurnLayer & 2) draw_background_layer(3);
-	if (nBurnLayer & 4) draw_foreground_layer(0);
+	/*if (nBurnLayer & 2)*/ draw_background_layer(3);
+	/*if (nBurnLayer & 4)*/ draw_foreground_layer(0);
 
 	draw_sprites();
 
-	if (nBurnLayer & 1) draw_background_layer(2);
-	if (nBurnLayer & 8) draw_foreground_layer(1);
+	/*if (nBurnLayer & 1)*/ draw_background_layer(2);
+	/*if (nBurnLayer & 8)*/ draw_foreground_layer(1);
 
 	BurnTransferCopy(DrvPalette);
 

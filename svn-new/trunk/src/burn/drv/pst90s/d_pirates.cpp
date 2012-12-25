@@ -533,16 +533,18 @@ static INT32 DrvDraw()
 		}
 	}
 
-	if (nBurnLayer & 1)
+	/*if (nBurnLayer & 1)*/
 		draw_layer(0x2a80, 0x100, 0);
+#if 0
 	else
 		memset (pTransDraw, 0, nScreenWidth * nScreenHeight * 2);
+#endif
 
-	if (nBurnLayer & 2) draw_layer(0x1380, 0x080, 1);
+	/*if (nBurnLayer & 2)*/ draw_layer(0x1380, 0x080, 1);
 
-	if (nBurnLayer & 8) draw_sprites();
+	/*if (nBurnLayer & 8)*/ draw_sprites();
 
-	if (nBurnLayer & 4) draw_text_layer();
+	/*if (nBurnLayer & 4)*/ draw_text_layer();
 
 	BurnTransferCopy(DrvPalette);
 

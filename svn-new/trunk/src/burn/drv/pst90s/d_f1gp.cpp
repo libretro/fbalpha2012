@@ -1098,14 +1098,13 @@ static INT32 F1gpDraw()
 	predraw_background();
 	draw_background(0);
 
+   f1gp_draw_sprites(DrvSprVRAM2, DrvSprCGRAM2, DrvGfxROM2, 0x20);
 	if (*gfxctrl == 0x00) {
-		if (nBurnLayer & 2) f1gp_draw_sprites(DrvSprVRAM2, DrvSprCGRAM2, DrvGfxROM2, 0x20);
-		if (nBurnLayer & 1) f1gp_draw_sprites(DrvSprVRAM1, DrvSprCGRAM1, DrvGfxROM1, 0x10);
-		if (nBurnLayer & 4) draw_foreground(1);
+		/*if (nBurnLayer & 1)*/ f1gp_draw_sprites(DrvSprVRAM1, DrvSprCGRAM1, DrvGfxROM1, 0x10);
+		/*if (nBurnLayer & 4)*/ draw_foreground(1);
 	} else {
-		if (nBurnLayer & 2) f1gp_draw_sprites(DrvSprVRAM2, DrvSprCGRAM2, DrvGfxROM2, 0x20);
-		if (nBurnLayer & 4) draw_foreground(1);
-		if (nBurnLayer & 1) f1gp_draw_sprites(DrvSprVRAM1, DrvSprCGRAM1, DrvGfxROM1, 0x10);
+		/*if (nBurnLayer & 4)*/ draw_foreground(1);
+		/*if (nBurnLayer & 1)*/ f1gp_draw_sprites(DrvSprVRAM1, DrvSprCGRAM1, DrvGfxROM1, 0x10);
 	}
 
 	BurnTransferCopy(DrvPalette);
@@ -1122,21 +1121,21 @@ static INT32 F1gp2Draw()
 		switch (*gfxctrl & 3)
 		{
 			case 0:
-				if (nBurnLayer & 1) draw_background(0);
-				if (nBurnLayer & 4) f1gp2_draw_sprites();
-				if (nBurnLayer & 2) draw_foreground(1);
+				/*if (nBurnLayer & 1)*/ draw_background(0);
+				/*if (nBurnLayer & 4)*/ f1gp2_draw_sprites();
+				/*if (nBurnLayer & 2)*/ draw_foreground(1);
 			break;
 
 			case 1:
-				if (nBurnLayer & 1) draw_background(0);
-				if (nBurnLayer & 2) draw_foreground(1);
-				if (nBurnLayer & 4) f1gp2_draw_sprites();
+				/*if (nBurnLayer & 1)*/ draw_background(0);
+				/*if (nBurnLayer & 2)*/ draw_foreground(1);
+				/*if (nBurnLayer & 4)*/ f1gp2_draw_sprites();
 			break;
 
 			case 2:
-				if (nBurnLayer & 2) draw_foreground(0);
-				if (nBurnLayer & 1) draw_background(1);
-				if (nBurnLayer & 4) f1gp2_draw_sprites();
+				/*if (nBurnLayer & 2)*/ draw_foreground(0);
+				/*if (nBurnLayer & 1)*/ draw_background(1);
+				/*if (nBurnLayer & 4)*/ f1gp2_draw_sprites();
 			break;
 		}
 	}

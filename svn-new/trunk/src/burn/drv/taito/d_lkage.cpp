@@ -832,7 +832,7 @@ static INT32 DrvDraw()
 	}
 	else
 	{
-		if (nBurnLayer & 4)draw_layer(0x000, 0,       0x110,              0, lkage_scroll[0]+1, lkage_scroll[1]);
+		/*if (nBurnLayer & 4)*/draw_layer(0x000, 0,       0x110,              0, lkage_scroll[0]+1, lkage_scroll[1]);
 	}
 
 	BurnTransferCopy(DrvPalette);

@@ -1737,13 +1737,14 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
-	if (nBurnLayer & 1)
+	//if (nBurnLayer & 1)
 	{
 		UINT32 * pscr = RamScreen;
 		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
 		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
 			memset(pscr, 0, clrsz);
 	}
+#if 0
 	else
 	{
 		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0);
@@ -1753,6 +1754,7 @@ static void DrvDraw()
 			RamScreen[i] = 0x20000;
 		}
 	}
+#endif
 	
 	// Draw Sprites
 	{
@@ -1807,7 +1809,7 @@ static void DrvDraw()
 
 				if (xsize2==0)
 				{
-					if (nBurnLayer & 1)
+					//if (nBurnLayer & 1)
 					{
 						INT32 tilemapnum = ((value3 & 0x00000030)>>4);
 						INT32 startline;
@@ -1833,7 +1835,7 @@ static void DrvDraw()
 						bg_drawn[tilemapnum] = 1;
 					}
 				} else {
-					if (~nSpriteEnable & 1) continue;
+					//if (~nSpriteEnable & 1) continue;
 
 					ysize2 = tilestable[ysize2];
 					xsize2 = tilestable[xsize2];
@@ -1940,7 +1942,7 @@ static void DrvDraw()
 		}
 	}
 	
-	if (nBurnLayer & 2)
+	//if (nBurnLayer & 2)
 	{
 		// bank select? (sfiii2 intro)
 		INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;

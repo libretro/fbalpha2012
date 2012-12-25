@@ -1697,9 +1697,9 @@ static void DrvDraw()
 {
 	BurnTransferClear();
 	if (DrvRecalcPal) DrvCalcPalette();
-	if (nBurnLayer & 0x01 && !DrvDisableBg) DrvRenderBgLayer();
-	if (nSpriteEnable & 0x01) DrawSprites();
-	if (nBurnLayer & 0x02) DrvRenderFgLayer();
+	if (/*nBurnLayer & 0x01 &&*/ !DrvDisableBg) DrvRenderBgLayer();
+	/*if (nSpriteEnable & 0x01)*/ DrawSprites();
+	/*if (nBurnLayer & 0x02)*/ DrvRenderFgLayer();
 	BurnTransferCopy(DrvPalette);
 }
 

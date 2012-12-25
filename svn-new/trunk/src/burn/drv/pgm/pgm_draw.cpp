@@ -629,7 +629,8 @@ INT32 pgmDraw()
 
 	{
 		// black / magenta
-		RamCurPal[0x1200/2] = (nBurnLayer & 1) ? RamCurPal[0x3ff] : BurnHighCol(0xff, 0, 0xff, 0);
+		//RamCurPal[0x1200/2] = (nBurnLayer & 1) ? RamCurPal[0x3ff] : BurnHighCol(0xff, 0, 0xff, 0);
+		RamCurPal[0x1200/2] = RamCurPal[0x3ff];
 	}
 
 	// Fill in background color (0x1200/2)
@@ -643,10 +644,10 @@ INT32 pgmDraw()
 	}
 
 	pgm_drawsprites();
-	if (nSpriteEnable & 1) copy_sprite_priority(1);
-	if (nBurnLayer & 1) draw_background();
-	if (nSpriteEnable & 2) copy_sprite_priority(0);
-	if (nBurnLayer & 2) draw_text();
+	/*if (nSpriteEnable & 1)*/ copy_sprite_priority(1);
+	/*if (nBurnLayer & 1)*/ draw_background();
+	/*if (nSpriteEnable & 2)*/ copy_sprite_priority(0);
+	/*if (nBurnLayer & 2)*/ draw_text();
 
 	BurnTransferCopy(RamCurPal);
 

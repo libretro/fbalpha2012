@@ -1097,19 +1097,19 @@ static INT32 DrvDraw()
 
 	enable_rasters();
 
-	if (nSpriteEnable & 1) draw_sprites(3);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(3);
 
 	fuuki32_draw_layer(tm_back,   buffer);
 
-	if (nSpriteEnable & 2) draw_sprites(2);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(2);
 
 	fuuki32_draw_layer(tm_middle, buffer);
 
-	if (nSpriteEnable & 4) draw_sprites(1);
+	/*if (nSpriteEnable & 4)*/ draw_sprites(1);
 
 	fuuki32_draw_layer(tm_front,  buffer);
 
-	if (nSpriteEnable & 8) draw_sprites(0);
+	/*if (nSpriteEnable & 8)*/ draw_sprites(0);
 
 	BurnTransferCopy(DrvPalette);
 

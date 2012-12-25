@@ -20,7 +20,7 @@ static UINT16 *DrvPriBmp;
 static UINT8 *DrvZoomBmp;
 static INT32 nDrvZoomPrev = -1;
 static UINT32  *DrvTmpDraw;
-static UINT32  *DrvTmpDraw_ptr;
+//static UINT32  *DrvTmpDraw_ptr;
 
 static INT32 nGraphicsMin0;  // minimum tile number 4bpp
 static INT32 nGraphicsMin1;  // for 8bpp
@@ -294,7 +294,7 @@ static void draw_prezoom(INT32 gfx, INT32 code, INT32 high, INT32 wide)
 static void psikyosh_drawgfxzoom(INT32 gfx, UINT32 code, INT32 color, INT32 flipx, INT32 flipy, INT32 offsx, 
 				 INT32 offsy, INT32 alpha, INT32 zoomx, INT32 zoomy, INT32 wide, INT32 high, INT32 z)
 {
-	if (~nBurnLayer & 8) return;
+	//if (~nBurnLayer & 8) return;
 	if (!zoomx || !zoomy) return;
 
 	if (zoomx == 0x400 && zoomy == 0x400)
@@ -502,7 +502,7 @@ static void draw_layer(INT32 layer, INT32 bank, INT32 alpha, INT32 scrollx, INT3
 
 static void draw_bglayer(INT32 layer)
 {
-	if (!(nBurnLayer & 1)) return;
+	//if (!(nBurnLayer & 1)) return;
 
 	INT32 scrollx, scrolly, bank, alpha;
 	INT32 scrollbank = ((pPsikyoshVidRegs[6] << (layer << 3)) >> 24) & 0x7f;
@@ -520,7 +520,7 @@ static void draw_bglayer(INT32 layer)
 
 static void draw_bglayertext(INT32 layer)
 {
-	if (~nBurnLayer & 2) return;
+	//if (~nBurnLayer & 2) return;
 
 	INT32 scrollx, scrolly, bank, alpha;
 	INT32 scrollbank = ((pPsikyoshVidRegs[6] << (layer << 3)) >> 24) & 0x7f;
@@ -542,7 +542,7 @@ static void draw_bglayertext(INT32 layer)
 
 static void draw_bglayerscroll(INT32 layer)
 {
-	if (!(nBurnLayer & 4)) return;
+	//if (!(nBurnLayer & 4)) return;
 
 	INT32 scrollx, bank, alpha;
 	INT32 scrollbank = ((pPsikyoshVidRegs[6] << (layer << 3)) >> 24) & 0x7f;
@@ -635,11 +635,13 @@ INT32 PsikyoshDraw()
 		}
 	}
 
-	if (nBurnBpp == 4) {
+	//if (nBurnBpp == 4) {
 		DrvTmpDraw = (UINT32*)pBurnDraw;
+#if 0
 	} else {
 		DrvTmpDraw = DrvTmpDraw_ptr;
 	}
+#endif
 
 	memset (DrvTmpDraw, 0, nScreenWidth * nScreenHeight * sizeof(UINT32));
 	memset (DrvPriBmp, 0, nScreenWidth * nScreenHeight * sizeof(INT16));
@@ -654,12 +656,14 @@ INT32 PsikyoshDraw()
 		if ((psikyosh_vidregs[2] & 0x0f) == i) postlineblend();
 	}
 
+#if 0
 	if (nBurnBpp < 4) {
 		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
 			INT32 d = DrvTmpDraw[i];
-			PutPix(pBurnDraw + i * nBurnBpp, BurnHighCol(d>>16, d>>8, d, 0));
+			PutPix(pBurnDraw + i * nBurnBpp, BurnHighColSwitch(d>>16, d>>8, d, 0));
 		}
 	}
+#endif
 
 	return 0;
 }
@@ -705,7 +709,7 @@ void PsikyoshVideoInit(INT32 gfx_max, INT32 gfx_min)
 {
 	DrvZoomBmp	= (UINT8 *)BurnMalloc(16 * 16 * 16 * 16);
 	DrvPriBmp	= (UINT16*)BurnMalloc(320 * 240 * sizeof(INT16));
-	DrvTmpDraw_ptr	= (UINT32  *)BurnMalloc(320 * 240 * sizeof(UINT32));
+	//DrvTmpDraw_ptr	= (UINT32  *)BurnMalloc(320 * 240 * sizeof(UINT32));
 
 	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
 		BurnDrvGetVisibleSize(&nScreenHeight, &nScreenWidth);
@@ -727,7 +731,7 @@ void PsikyoshVideoExit()
 {
 	BurnFree (DrvZoomBmp);
 	BurnFree (DrvPriBmp);
-	BurnFree (DrvTmpDraw_ptr);
+	//BurnFree (DrvTmpDraw_ptr);
 	DrvTmpDraw = NULL;
 	BurnFree (DrvTransTab);
 	

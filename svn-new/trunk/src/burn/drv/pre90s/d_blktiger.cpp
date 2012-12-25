@@ -710,19 +710,19 @@ static INT32 DrvDraw()
 	}
 
 	if (*DrvBgEnable) {
-		if (nSpriteEnable & 1) draw_bg(*DrvScreenLayout, 1);
+		/*if (nSpriteEnable & 1)*/ draw_bg(*DrvScreenLayout, 1);
 	}
 
 	if (*DrvSprEnable) {
-		if (nSpriteEnable & 2) draw_sprites();
+		/*if (nSpriteEnable & 2)*/ draw_sprites();
 	}
 
 	if (*DrvBgEnable) {
-		if (nSpriteEnable & 4) draw_bg(*DrvScreenLayout, 0);
+		/*if (nSpriteEnable & 4)*/ draw_bg(*DrvScreenLayout, 0);
 	}
 
 	if (*DrvFgEnable) {
-		if (nSpriteEnable & 8) draw_text_layer();
+		/*if (nSpriteEnable & 8)*/ draw_text_layer();
 	}
 
 	BurnTransferCopy(DrvPalette);

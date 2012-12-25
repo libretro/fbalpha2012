@@ -48,7 +48,7 @@ INT32 NeoRenderSprites()
 	}
 #endif
 
-	if (!NeoSpriteROMActive || !(nBurnLayer & 1)) {
+	if (!NeoSpriteROMActive/*|| !(nBurnLayer & 1)*/) {
 		return 0;
 	}
 

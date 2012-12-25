@@ -515,21 +515,25 @@ static INT32 DrvDraw()
 		DrvRecalc = nBurnBpp;
 	}
 
+#if 0
 	if (nBurnLayer & 1) {
 		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
 			pTransDraw[i] = 0x7c0;
 		}
-	} else {
+	}
+   else
+#endif
+   {
 		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
 			pTransDraw[i] = 0x1000;
 		}
 	}
 
-	if (nBurnLayer    & 2) draw_layer(0x0000, DrvSysRegs[ 0] & 0x3ff, DrvSysRegs[ 1] & 0x3ff);
-	if (nSpriteEnable & 1) draw_sprites(0x0000);
-	if (nBurnLayer    & 4) draw_layer(0x4000, DrvSysRegs[ 5] & 0x3ff, DrvSysRegs[10] & 0x3ff);
-	if (nSpriteEnable & 2) draw_sprites(0x1000);
-	if (nBurnLayer    & 8) draw_layer(0x8000, DrvSysRegs[ 4] & 0x3ff, DrvSysRegs[ 2] & 0x3ff);
+	/*if (nBurnLayer    & 2)*/ draw_layer(0x0000, DrvSysRegs[ 0] & 0x3ff, DrvSysRegs[ 1] & 0x3ff);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(0x0000);
+	/*if (nBurnLayer    & 4)*/ draw_layer(0x4000, DrvSysRegs[ 5] & 0x3ff, DrvSysRegs[10] & 0x3ff);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(0x1000);
+	/*if (nBurnLayer    & 8)*/ draw_layer(0x8000, DrvSysRegs[ 4] & 0x3ff, DrvSysRegs[ 2] & 0x3ff);
 
 	BurnTransferCopy(DrvPalette);
 

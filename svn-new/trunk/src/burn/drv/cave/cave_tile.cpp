@@ -789,7 +789,8 @@ INT32 CaveTileRender(INT32 nMode)
 			for (nPriority = 0; nPriority < 4; nPriority++) {
 				CaveTileQueue[nLayer][nPriority] = &CaveTileQueueMemory[nLayer][nPriority * 1536];
 			}
-			if (nBurnLayer & (8 >> nLayer)) {
+			//if (nBurnLayer & (8 >> nLayer))
+         {
 				if (CaveTileReg[nLayer][1] & 0x2000) {
 					if (nMode && ((CaveTileReg[nLayer][0] | CaveTileReg[nLayer][1]) & 0x4000)) {
 						CaveTileMax[0] += 0x0123;
@@ -835,7 +836,7 @@ INT32 CaveTileRender(INT32 nMode)
 		for (UINT32 i = 0; i < 4; i++) {
 			for (nLayer = 0; nLayer < 4; nLayer++) {
 				if ((CaveTileReg[nLayer][2] & 0x0003) == i) {
-					if ((CaveTileReg[nLayer][2] & 0x0010) || (nBurnLayer & (8 >> nLayer)) == 0) {
+					if ((CaveTileReg[nLayer][2] & 0x0010)/* || (nBurnLayer & (8 >> nLayer)) == 0*/) {
 						continue;
 					}
 

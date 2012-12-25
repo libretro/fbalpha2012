@@ -1368,11 +1368,11 @@ static INT32 DrvDraw()
 		DrvRecalcPal();
 	}
 
-	if (nBurnLayer & 1) draw_layer(1);
-	if (nSpriteEnable & 1) draw_sprites(1);
-	if (nBurnLayer & 2) draw_layer(0);
-	if (nSpriteEnable & 2) draw_sprites(0);
-	if (nBurnLayer & 4) draw_fg_layer();
+	/*if (nBurnLayer & 1)*/ draw_layer(1);
+	/*if (nSpriteEnable & 1)*/ draw_sprites(1);
+	/*if (nBurnLayer & 2)*/ draw_layer(0);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(0);
+	/*if (nBurnLayer & 4)*/ draw_fg_layer();
 
 	BurnTransferCopy(DrvPalette);
 

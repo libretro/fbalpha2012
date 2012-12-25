@@ -6918,7 +6918,7 @@ static void draw_sprites_map()
 
 static void draw_sprites()
 {
-	if (~nSpriteEnable & 1) return;
+	//if (~nSpriteEnable & 1) return;
 
 	UINT16 *spriteram16 = (UINT16*)DrvSprRAM0;
 
@@ -7139,7 +7139,7 @@ static void seta_update(INT32 enable_tilemap2, INT32 tmap_flip)
 	if (~en1 & 0x08) layer_enable &= ~0x08;
 	if (enable_tilemap2 == 0) layer_enable &= ~0x0c;
 
-	layer_enable &= nBurnLayer;
+	//layer_enable &= nBurnLayer;
 
 	BurnTransferClear();
 

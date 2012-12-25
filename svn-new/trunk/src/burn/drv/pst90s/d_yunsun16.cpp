@@ -796,29 +796,31 @@ static INT32 DrvDraw()
 	if ((*video_priority & 0x0c) == 0x04) {
 		draw_layer(0, 1);
 
-		if (nSpriteEnable & 1) draw_sprites(1);
+		/*if (nSpriteEnable & 1)*/ draw_sprites(1);
 
-		if (nBurnLayer & 2) draw_layer(0, 0);
-		if (nSpriteEnable & 2 )draw_sprites(2);
+		/*if (nBurnLayer & 2)*/ draw_layer(0, 0);
+		/*if (nSpriteEnable & 2 )*/draw_sprites(2);
 
-		if (nBurnLayer & 4) draw_layer(1, 0);
+		/*if (nBurnLayer & 4)*/ draw_layer(1, 0);
 
-		if (nSpriteEnable & 4) {
+		//if (nSpriteEnable & 4)
+      {
 			draw_sprites(3);
 			draw_sprites(0);
 		}
 	} else if ((*video_priority & 0x0c) == 0x08) {
 		draw_layer(1, 1);
 
-		if (nSpriteEnable & 1) draw_sprites(1);
+		/*if (nSpriteEnable & 1)*/ draw_sprites(1);
 
-		if (nBurnLayer & 2) draw_layer(1, 0);
+		/*if (nBurnLayer & 2)*/ draw_layer(1, 0);
 
-		if (nSpriteEnable & 2)draw_sprites(2);
+		/*if (nSpriteEnable & 2)*/ draw_sprites(2);
 
-		if (nBurnLayer & 4) draw_layer(0, 0);
+		/*if (nBurnLayer & 4)*/ draw_layer(0, 0);
 
-		if (nSpriteEnable & 4) {
+		/*if (nSpriteEnable & 4)*/
+      {
 			draw_sprites(3);
 			draw_sprites(0);
 		}

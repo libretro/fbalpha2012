@@ -667,18 +667,20 @@ static INT32 DrvDraw()
 		DrvRecalc = 0;
 	}
 
+#if 0
 	if ((nBurnLayer & 1) == 0) {
 		BurnTransferClear();
 	}
+#endif
 
-	if (nSpriteEnable & 1) draw_sprites(0); // ?
-	if (nBurnLayer & 1) draw_bg_layer(0x00);
-	if (nSpriteEnable & 2) draw_sprites(1);
-	if (nBurnLayer & 2) draw_bg_layer(0x20);
-	if (nSpriteEnable & 4) draw_sprites(2);
-	if (nBurnLayer & 4) draw_fg_layer();
-	if (nSpriteEnable & 8) draw_sprites(3);
-	if (nBurnLayer & 8) draw_tx_layer();
+	/*if (nSpriteEnable & 1)*/ draw_sprites(0); // ?
+	/*if (nBurnLayer & 1)*/ draw_bg_layer(0x00);
+	/*if (nSpriteEnable & 2)*/ draw_sprites(1);
+	/*if (nBurnLayer & 2)*/ draw_bg_layer(0x20);
+	/*if (nSpriteEnable & 4)*/ draw_sprites(2);
+	/*if (nBurnLayer & 4)*/ draw_fg_layer();
+	/*if (nSpriteEnable & 8)*/ draw_sprites(3);
+	/*if (nBurnLayer & 8)*/ draw_tx_layer();
 
 	BurnTransferCopy(DrvPalette);
 

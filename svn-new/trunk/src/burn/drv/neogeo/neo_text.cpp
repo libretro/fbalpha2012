@@ -52,11 +52,11 @@ INT32 NeoRenderText()
 	UINT32 nTileLeft = nBurnBpp << 3;
 	UINT16* pTileRow = (UINT16*)(NeoGraphicsRAM + 0xE000);
 
+#if 0
 	if (!(nBurnLayer & 2)) {
 		return 0;
 	}
 
-#if 0
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 

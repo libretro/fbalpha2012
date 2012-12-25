@@ -573,19 +573,19 @@ static INT32 DrvDraw()
 		pTransDraw[i] = 16 * bg_colorbase+1;
 	}
 
-	if (nSpriteEnable & 8) K053247SpritesRender(DrvGfxROMExp1, 3);
+	/*if (nSpriteEnable & 8)*/ K053247SpritesRender(DrvGfxROMExp1, 3);
 
-	if (nBurnLayer & 1) K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);
+	/*if (nBurnLayer & 1)*/ K052109RenderLayer(layer[0], 0, DrvGfxROMExp0);
 
-	if (nBurnLayer & 2) K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
+	/*if (nBurnLayer & 2)*/ K052109RenderLayer(layer[1], 0, DrvGfxROMExp0);
 
-if (nBurnLayer & 8) {
-	if (nSpriteEnable & 1) K053247SpritesRender(DrvGfxROMExp1, 0);
-	if (nSpriteEnable & 2) K053247SpritesRender(DrvGfxROMExp1, 1);
-	if (nSpriteEnable & 4) K053247SpritesRender(DrvGfxROMExp1, 2);
-}
+   /*if (nBurnLayer & 8) {*/
+      /*if (nSpriteEnable & 1)*/ K053247SpritesRender(DrvGfxROMExp1, 0);
+      /*if (nSpriteEnable & 2)*/ K053247SpritesRender(DrvGfxROMExp1, 1);
+      /*if (nSpriteEnable & 4)*/ K053247SpritesRender(DrvGfxROMExp1, 2);
+   //}
 
-	if (nBurnLayer & 4) K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
+	/*if (nBurnLayer & 4)*/ K052109RenderLayer(layer[2], 0, DrvGfxROMExp0);
 
 	KonamiBlendCopy(Palette, DrvPalette);
 

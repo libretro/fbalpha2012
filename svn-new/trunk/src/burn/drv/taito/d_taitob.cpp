@@ -1977,19 +1977,19 @@ static INT32 DrvDraw()
 		return 0;
 	}
 
-	if (~nBurnLayer & 1) BurnTransferClear();
+	//if (~nBurnLayer & 1) BurnTransferClear();
 
-	if (nBurnLayer & 1) TC0180VCUDrawLayer(color_config[0], 1, -1);
+	/*if (nBurnLayer & 1)*/ TC0180VCUDrawLayer(color_config[0], 1, -1);
 
-	if (nSpriteEnable & 1) TC0180VCUFramebufferDraw(1, color_config[3] << 4);
+	/*if (nSpriteEnable & 1)*/ TC0180VCUFramebufferDraw(1, color_config[3] << 4);
 
-	if (nBurnLayer & 2) TC0180VCUDrawLayer(color_config[1], 0,  0);
+	/*if (nBurnLayer & 2)*/ TC0180VCUDrawLayer(color_config[1], 0,  0);
 
 	draw_hitice_framebuffer();
 
-	if (nSpriteEnable & 2) TC0180VCUFramebufferDraw(0, color_config[3] << 4);
+	/*if (nSpriteEnable & 2)*/ TC0180VCUFramebufferDraw(0, color_config[3] << 4);
 
-	if (nBurnLayer & 4) TC0180VCUDrawCharLayer(color_config[2]);
+	/*if (nBurnLayer & 4)*/ TC0180VCUDrawCharLayer(color_config[2]);
 
 	BurnTransferCopy(TaitoPalette);
 

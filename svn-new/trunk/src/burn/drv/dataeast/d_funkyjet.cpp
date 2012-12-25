@@ -533,10 +533,10 @@ static INT32 DrvDraw()
 		pTransDraw[i] = 0x300;
 	}
 
-	if (nBurnLayer & 1) deco16_draw_layer(1, pTransDraw, DECO16_LAYER_OPAQUE);
-	if (nBurnLayer & 2) deco16_draw_layer(0, pTransDraw, 0);
+	/*if (nBurnLayer & 1)*/ deco16_draw_layer(1, pTransDraw, DECO16_LAYER_OPAQUE);
+	/*if (nBurnLayer & 2)*/ deco16_draw_layer(0, pTransDraw, 0);
 
-	if (nBurnLayer & 4) draw_sprites();
+	/*if (nBurnLayer & 4)*/ draw_sprites();
 
 	BurnTransferCopy(DrvPalette);
 

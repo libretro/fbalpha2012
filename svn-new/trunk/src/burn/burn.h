@@ -192,8 +192,8 @@ extern UINT8 *pBurnDraw;			// Pointer to correctly sized bitmap
 extern INT32 nBurnPitch;						// Pitch between each line
 extern INT32 nBurnBpp;						// Bytes per pixel (2, 3, or 4)
 
-extern UINT8 nBurnLayer;			// Can be used externally to select which layers to show
-extern UINT8 nSpriteEnable;			// Can be used externally to select which Sprites to show
+//extern UINT8 nBurnLayer;			// Can be used externally to select which layers to show
+//extern UINT8 nSpriteEnable;			// Can be used externally to select which Sprites to show
 
 extern INT32 nBurnSoundRate;					// Samplerate of sound
 extern INT32 nBurnSoundLen;					// Length in samples per frame

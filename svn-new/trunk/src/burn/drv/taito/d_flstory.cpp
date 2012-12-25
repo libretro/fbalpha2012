@@ -1101,10 +1101,10 @@ static INT32 DrvDraw()
 		DrvRecalcPalette();
 	}
 
-	if (nBurnLayer & 1) draw_background_layer(0, 0);
-	if (nBurnLayer & 2) draw_background_layer(1, 0);
-	if (nBurnLayer & 4) draw_background_layer(2, 1);
-	if (nBurnLayer & 8) draw_background_layer(3, 1);
+	/*if (nBurnLayer & 1)*/ draw_background_layer(0, 0);
+	/*if (nBurnLayer & 2)*/ draw_background_layer(1, 0);
+	/*if (nBurnLayer & 4)*/ draw_background_layer(2, 1);
+	/*if (nBurnLayer & 8)*/ draw_background_layer(3, 1);
 	draw_sprites(0x00, 0);
 	draw_sprites(0x80, 0);
 

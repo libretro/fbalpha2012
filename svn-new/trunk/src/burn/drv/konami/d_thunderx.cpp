@@ -733,16 +733,8 @@ static INT32 DrvDraw()
 
 //	K051960SpritesRender(DrvGfxROMExp1, 3);
 
-	if (nDrvKonamiBank[0] & 0x08)
-	{
-		if (nBurnLayer & 1) K052109RenderLayer(2, 1, DrvGfxROMExp0);
-		if (nBurnLayer & 2) K052109RenderLayer(1, 0, DrvGfxROMExp0);
-	}
-	else
-	{
-		if (nBurnLayer & 8) K052109RenderLayer(2, 1, DrvGfxROMExp0);
-		if (nBurnLayer & 4) K052109RenderLayer(1, 0, DrvGfxROMExp0);
-	}
+   K052109RenderLayer(2, 1, DrvGfxROMExp0);
+   K052109RenderLayer(1, 0, DrvGfxROMExp0);
 
 	K051960SpritesRender(DrvGfxROMExp1, 2);
 

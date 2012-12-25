@@ -34,7 +34,7 @@ static unsigned g_rom_count;
 #define AUDIO_SAMPLERATE 32000
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 
-static uint16_t g_fba_frame[1024 * 1024];
+static uint32_t g_fba_frame[1024 * 1024];
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
 
 // libretro globals
@@ -338,7 +338,7 @@ void retro_run()
 
    poll_input();
 
-   nBurnLayer = 0xff;
+   //nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = AUDIO_SAMPLERATE;
    //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
@@ -348,14 +348,15 @@ void retro_run()
    BurnDrvFrame();
    unsigned drv_flags = BurnDrvGetFlags();
    uint32_t height_tmp = height;
+   size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
    if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
    {
-      nBurnPitch = height * sizeof(uint16_t);
+      nBurnPitch = height * pitch_size;
       height = width;
       width = height_tmp;
    }
    else
-      nBurnPitch = width * sizeof(uint16_t);
+      nBurnPitch = width * pitch_size;
 
    video_cb(g_fba_frame, width, height, nBurnPitch);
    audio_batch_cb(g_audio_buf, nBurnSoundLen);
@@ -435,13 +436,19 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    info->timing   = timing;
 }
 
-static bool fba_init(unsigned driver)
+int VidRecalcPal()
+{
+   return BurnRecalcPal();
+}
+
+static bool fba_init(unsigned driver, const char *game_zip_name)
 {
    nBurnDrvActive = driver;
 
    if (!open_archive())
       return false;
 
+   nBurnBpp = 2;
    nFMInterpolation = 3;
    nInterpolation = 3;
 
@@ -450,10 +457,11 @@ static bool fba_init(unsigned driver)
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    unsigned drv_flags = BurnDrvGetFlags();
+   size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
    if (drv_flags & BDF_ORIENTATION_VERTICAL)
-      nBurnPitch = height * sizeof(uint16_t);
+      nBurnPitch = height * pitch_size;
    else
-      nBurnPitch = width * sizeof(uint16_t);
+      nBurnPitch = width * pitch_size;
 
    unsigned rotation;
    switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
@@ -474,7 +482,46 @@ static bool fba_init(unsigned driver)
          rotation = 0;
    }
 
+   if(
+         (strcmp("gunbird2", game_zip_name) == 0) ||
+         (strcmp("s1945ii", game_zip_name) == 0) ||
+         (strcmp("s1945iii", game_zip_name) == 0) ||
+         (strcmp("dragnblz", game_zip_name) == 0) ||
+         (strcmp("gnbarich", game_zip_name) == 0) ||
+         (strcmp("mjgtaste", game_zip_name) == 0) ||
+         (strcmp("tgm2", game_zip_name) == 0) ||
+         (strcmp("tgm2p", game_zip_name) == 0) ||
+         (strcmp("soldivid", game_zip_name) == 0) ||
+         (strcmp("daraku", game_zip_name) == 0) ||
+         (strcmp("sbomber", game_zip_name) == 0) ||
+         (strcmp("sbombera", game_zip_name) == 0) 
+
+         )
+   {
+      nBurnBpp = 4;
+   }
+   fprintf(stderr, "Game: %s\n", game_zip_name);
+
    environ_cb(RETRO_ENVIRONMENT_SET_ROTATION, &rotation);
+
+   VidRecalcPal();
+
+#ifdef FRONTEND_SUPPORTS_RGB565
+   if(nBurnBpp == 4)
+   {
+      enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
+
+      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
+         fprintf(stderr, "Frontend supports XRGB888 - will use that instead of XRGB1555.\n");
+   }
+   else
+   {
+      enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
+
+      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
+         fprintf(stderr, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+   }
+#endif
 
    return true;
 }
@@ -491,10 +538,6 @@ static unsigned int HighCol15(int r, int g, int b, int  /* i */)
 }
 #endif
 
-int VidRecalcPal()
-{
-   return BurnRecalcPal();
-}
 
 static void init_video()
 {
@@ -546,13 +589,11 @@ bool retro_load_game(const struct retro_game_info *info)
    unsigned i = BurnDrvGetIndexByName(basename);
    if (i < nBurnDrvCount)
    {
-      nBurnBpp = 2;
-      VidRecalcPal();
       pBurnSoundOut = g_audio_buf;
       nBurnSoundRate = AUDIO_SAMPLERATE;
       nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 
-      if (!fba_init(i))
+      if (!fba_init(i, basename))
          return false;
 
       driver_inited = true;
@@ -563,11 +604,6 @@ bool retro_load_game(const struct retro_game_info *info)
    else
       fprintf(stderr, "[FBA] Cannot find driver.\n");
 
-#ifdef FRONTEND_SUPPORTS_RGB565
-   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
-   if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
-      fprintf(stderr, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
-#endif
 
    return retval;
 }

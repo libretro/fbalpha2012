@@ -1,7 +1,4 @@
 // burn_ym2203.h
-#ifndef _BURN_YM2203_H
-#define _BURN_YM2203_H
-
 #include "driver.h"
 extern "C" {
  #include "ay8910.h"
@@ -41,6 +38,4 @@ extern INT32 bYM2203UseSeperateVolumes;
 #else
 	#define BurnYM2203Write(i, a, n) YM2203Write(i, a, n)
 	#define BurnYM2203SetPorts(c, read0, read1, write0, write1)	AY8910SetPorts(c, read0, read1, write0, write1)
-#endif
-
 #endif

@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_YM3812_H
-#define _BURN_SND_YM3812_H
-
 #include "driver.h"
 extern "C" {
  #include "fmopl.h"
@@ -37,6 +34,4 @@ void BurnYM3812Scan(INT32 nAction, INT32* pnMin);
 	#define BurnYM3812Write(a, n) if (!DebugSnd_YM3812Initted) bprintf(PRINT_ERROR, _T("BurnYM3812Write called without init\n")); YM3812Write(0, a, n)
 #else
 	#define BurnYM3812Write(a, n) YM3812Write(0, a, n)
-#endif
-
 #endif

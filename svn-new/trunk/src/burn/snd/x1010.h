@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_X1010_H
-#define _BURN_SND_X1010_H
-
 #define SETA_NUM_CHANNELS	16
 #define SETA_NUM_BANKS 		(0x100000 / 0x20000)
 
@@ -53,5 +50,3 @@ void x1010_exit();
 #define x1010_set_all_routes(v, d)						\
 	x1010_set_route(BURN_SND_X1010_ROUTE_1, v, d);		\
 	x1010_set_route(BURN_SND_X1010_ROUTE_2, v, d);
-
-#endif

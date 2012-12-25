@@ -1,7 +1,4 @@
 // use these in arm.cpp
-#ifndef _BURN_CPU_ARM_INTF_H
-#define _BURN_CPU_ARM_INTF_H
-
 void Arm_program_write_byte_32le(UINT32 addr, UINT8 data);
 void Arm_program_write_dword_32le(UINT32 addr, UINT32 data);
 UINT8  Arm_program_read_byte_32le(UINT32 addr);
@@ -91,5 +88,3 @@ void Arm_write_rom_byte(UINT32 addr, UINT8 data);
 			return 0xff;						\
 		}								\
 	}
-
-#endif

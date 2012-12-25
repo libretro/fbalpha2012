@@ -1,6 +1,3 @@
-#ifndef _CPS3_H
-#define _CPS3_H
-
 #include "burnint.h"
 
 #ifndef HARDWARE_CAPCOM_CPS3
@@ -55,5 +52,3 @@ INT32 cps3SndScan(INT32);
 #define cps3SndSetAllRoutes(v, d)						\
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_1, v, d);	\
 	cps3SndSetRoute(BURN_SND_CPS3SND_ROUTE_2, v, d);
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_M6502_INTF_H
-#define _BURN_CPU_M6502_INTF_H
-
 #include "m6502/m6502.h"
 
 typedef UINT8 (*pReadPortHandler)(UINT16 a);
@@ -98,5 +95,3 @@ inline static INT32 M6502TotalCycles()
 
 	return nM6502CyclesTotal;
 }
-
-#endif

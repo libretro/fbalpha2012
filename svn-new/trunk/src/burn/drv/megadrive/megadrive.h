@@ -1,6 +1,3 @@
-#ifndef _BURN_DRV_MD_H
-#define _BURN_DRV_MD_H
-
 #define SEGA_MD_ROM_LOAD_NORMAL										0x10
 #define SEGA_MD_ROM_LOAD16_WORD_SWAP								0x20
 #define SEGA_MD_ROM_LOAD16_BYTE										0x30
@@ -27,5 +24,3 @@ INT32 MegadriveInit();
 INT32 MegadriveExit();
 INT32 MegadriveFrame();
 INT32 MegadriveScan(INT32 nAction, INT32 *pnMin);
-
-#endif

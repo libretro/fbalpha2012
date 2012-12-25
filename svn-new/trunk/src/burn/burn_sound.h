@@ -1,9 +1,6 @@
 // burn_sound.h - General sound support functions
 // based on code by Daniel Moreno (ComaC) < comac2k@teleline.es >
 
-#ifndef _BURN_SOUND_H
-#define _BURN_SOUND_H
-
 #if defined BUILD_X86_ASM
 extern "C" {
 	int __cdecl ChannelMix_QS_A(int* Dest, int nLen,
@@ -49,5 +46,3 @@ extern "C" INT16 Precalc[];
 #define INTERPOLATE4PU_8BIT(fp, sN, s0, s1, s2)      (((UINT32)((sN) * Precalc[(INT32)(fp) * 4 + 0]) + (UINT32)((s0) * Precalc[(INT32)(fp) * 4 + 1]) + (UINT32)((s1) * Precalc[(INT32)(fp) * 4 + 2]) + (UINT32)((s2) * Precalc[(INT32)(fp) * 4 + 3])) / 64)
 #define INTERPOLATE4PU_16BIT(fp, sN, s0, s1, s2)     (((UINT32)((sN) * Precalc[(INT32)(fp) * 4 + 0]) + (UINT32)((s0) * Precalc[(INT32)(fp) * 4 + 1]) + (UINT32)((s1) * Precalc[(INT32)(fp) * 4 + 2]) + (UINT32)((s2) * Precalc[(INT32)(fp) * 4 + 3])) / 16384)
 #define INTERPOLATE4PU_CUSTOM(fp, sN, s0, s1, s2, v) (((UINT32)((sN) * Precalc[(INT32)(fp) * 4 + 0]) + (UINT32)((s0) * Precalc[(INT32)(fp) * 4 + 1]) + (UINT32)((s1) * Precalc[(INT32)(fp) * 4 + 2]) + (UINT32)((s2) * Precalc[(INT32)(fp) * 4 + 3])) / (UINT32)(v))
-
-#endif

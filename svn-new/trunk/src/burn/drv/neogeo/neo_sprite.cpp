@@ -27,7 +27,7 @@ static INT32 nBankXZoom, nBankYZoom;
 
 static INT32 nNeoSpriteFrame04, nNeoSpriteFrame08;
 
-static INT32 nSpriteLastBPP = -1;
+static INT32 nLastBPP = -1;
 
 typedef void (*RenderBankFunction)();
 static RenderBankFunction* RenderBank;
@@ -40,8 +40,8 @@ static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
 INT32 NeoRenderSprites()
 {
-	if (nSpriteLastBPP != nBurnBpp ) {
-		nSpriteLastBPP = nBurnBpp;
+	if (nLastBPP != nBurnBpp ) {
+		nLastBPP = nBurnBpp;
 
 		RenderBank = RenderBankNormal[nBurnBpp - 2];
 	}

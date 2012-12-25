@@ -1,6 +1,3 @@
-#ifndef _BURN_DRV_GALAXIAN_H
-#define _BURN_DRV_GALAXIAN_H
-
 #include "tiles_generic.h"
 #include "z80_intf.h"
 #include "dac.h"
@@ -328,5 +325,3 @@ void JumpbugRenderStarLayer();
 void ScrambleRenderStarLayer();
 void MarinerRenderStarLayer();
 void RescueRenderStarLayer();
-
-#endif

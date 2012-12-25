@@ -1,5 +1,3 @@
-#ifndef _FBA_EEPROM_H
-#define _FBA_EEPROM_H
 
 typedef struct _eeprom_interface eeprom_interface;
 struct _eeprom_interface
@@ -56,5 +54,3 @@ void EEPROMSetClockLine(INT32 state);
 void EEPROMFill(const UINT8 *data, INT32 offset, INT32 length);
 
 void EEPROMScan(INT32 nAction, INT32* pnMin);
-
-#endif

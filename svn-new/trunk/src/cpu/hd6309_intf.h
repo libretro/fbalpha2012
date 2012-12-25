@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_HD6309_INTF_H
-#define _BURN_CPU_HD6309_INTF_H
-
 #include "hd6309/hd6309.h"
 
 typedef UINT8 (*pReadByteHandler)(UINT16 a);
@@ -68,5 +65,3 @@ inline static INT32 HD6309TotalCycles()
 
 	return nHD6309CyclesTotal;
 }
-
-#endif

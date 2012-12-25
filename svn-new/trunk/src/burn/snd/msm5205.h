@@ -1,5 +1,3 @@
-#ifndef _BURN_SND_MSM5205_H
-#define _BURN_SND_MSM5205_H
 
 #define MSM5205_S96_3B 0     /* prescaler 1/96(4KHz) , data 3bit */
 #define MSM5205_S48_3B 1     /* prescaler 1/48(8KHz) , data 3bit */
@@ -47,5 +45,3 @@ void MSM5205Scan(INT32 nAction, INT32 *pnMin);
 
 INT32 MSM5205CalcInterleave(INT32 chip, INT32 cpu_speed);
 void MSM5205Update();
-
-#endif

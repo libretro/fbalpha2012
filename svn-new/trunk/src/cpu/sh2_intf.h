@@ -1,5 +1,3 @@
-#ifndef _BURN_CPU_SH2_INTF_H
-#define _BURN_CPU_SH2_INTF_H
 
 #ifndef FASTCALL
  #undef __fastcall
@@ -61,5 +59,3 @@ int Sh2Scan(int);
 #define SH2_FETCH (4)
 #define SH2_ROM (SH2_READ | SH2_FETCH)
 #define SH2_RAM (SH2_READ | SH2_WRITE | SH2_FETCH)
-
-#endif

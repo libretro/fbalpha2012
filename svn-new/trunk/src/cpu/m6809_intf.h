@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_M6809_INTF_H
-#define _BURN_CPU_M6809_INTF_H
-
 #include "m6809/m6809.h"
 
 typedef UINT8 (*pReadByteHandler)(UINT16 a);
@@ -66,5 +63,3 @@ inline static INT32 M6809TotalCycles()
 
 	return nM6809CyclesTotal;
 }
-
-#endif

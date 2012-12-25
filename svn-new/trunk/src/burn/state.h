@@ -1,5 +1,4 @@
-#ifndef _STATE_H
-#define _STATE_H
+#if !defined(_STATE_H)
 
 #ifdef __cplusplus
  extern "C" {
@@ -71,5 +70,7 @@ C_INLINE static void ScanVar(void* pv, INT32 nSize, char* szName)
 #ifdef __cplusplus
  }
 #endif
+
+#define _STATE_H
 
 #endif /* _STATE_H */

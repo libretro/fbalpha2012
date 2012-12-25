@@ -1,6 +1,3 @@
-#ifndef _BURN_CHEAT_H
-#define _BURN_CHEAT_H
-
 #define CHEAT_MAX_ADDRESS (512)
 #define CHEAT_MAX_OPTIONS (512)
 #define CHEAT_MAX_NAME	  (128)
@@ -54,5 +51,3 @@ void CheatSearchDumptoFile();
 typedef void (*CheatSearchInitCallback)();
 extern CheatSearchInitCallback CheatSearchInitCallbackFunction;
 void CheatSearchExcludeAddressRange(UINT32 nStart, UINT32 nEnd);
-
-#endif

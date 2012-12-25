@@ -1,6 +1,3 @@
-#ifndef _BURN_DRV_PGM_H
-#define _BURN_DRV_PGM_H
-
 #include "tiles_generic.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
@@ -113,5 +110,3 @@ void pgm_decode_kovqhsgs_tile_data(UINT8 *source);
 void pgm_decrypt_kovqhsgs();
 void pgm_decrypt_kovlsqh2();
 void pgm_decrypt_kovassg();
-
-#endif

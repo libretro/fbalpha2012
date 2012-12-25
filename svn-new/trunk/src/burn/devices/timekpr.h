@@ -1,6 +1,3 @@
-#ifndef _BURN_DEVICES_TIMEKPR_H
-#define _BURN_DEVICES_TIMEKPR_H
-
 #define TIMEKEEPER_M48T02		1
 #define TIMEKEEPER_M48T35		2
 #define TIMEKEEPER_M48T37		3
@@ -13,5 +10,3 @@ void TimeKeeperTick();
 void TimeKeeperInit(INT32 type, UINT8 *data);
 void TimeKeeperExit();
 void TimeKeeperScan(INT32 nAction);
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_K007232_H
-#define _BURN_SND_K007232_H
-
 void K007232Update(INT32 chip, INT16* pSoundBuf, INT32 nLength);
 UINT8 K007232ReadReg(INT32 chip, INT32 r);
 void K007232WriteReg(INT32 chip, INT32 r, INT32 v);
@@ -18,5 +15,3 @@ void k007232_set_bank( INT32 chip, INT32 chABank, INT32 chBBank );
 #define K007232PCMSetAllRoutes(i, v, d)						\
 	K007232SetRoute(i, BURN_SND_K007232_ROUTE_1, v, d);	\
 	K007232SetRoute(i, BURN_SND_K007232_ROUTE_2, v, d);
-
-#endif

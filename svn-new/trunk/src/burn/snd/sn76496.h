@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_SN76496_H
-#define _BURN_SND_SN76496_H
-
 void SN76496Update(INT32 Num, INT16* pSoundBuf, INT32 Length);
 void SN76496Write(INT32 Num, INT32 Data);
 void SN76489Init(INT32 Num, INT32 Clock, INT32 SignalAdd);
@@ -10,5 +7,3 @@ void SN76496Init(INT32 Num, INT32 Clock, INT32 SignalAdd);
 void SN76496SetRoute(INT32 Num, double nVolume, INT32 nRouteDir);
 void SN76496Exit();
 INT32 SN76496Scan(INT32 nAction,INT32 *pnMin);
-
-#endif

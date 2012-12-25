@@ -1,7 +1,4 @@
 // burn_ym2151.h
-#ifndef _BURN_YM2151_H
-#define _BURN_YM2151_H
-
 #include "driver.h"
 extern "C" {
  #include "ym2151.h"
@@ -54,5 +51,3 @@ static inline void BurnYM2151WriteRegister(const UINT8 nValue)
 #define BurnYM2151SetAllRoutes(v, d)							\
 	BurnYM2151SetRoute(BURN_SND_YM2151_YM2151_ROUTE_1, v, d);	\
 	BurnYM2151SetRoute(BURN_SND_YM2151_YM2151_ROUTE_2, v, d);
-
-#endif

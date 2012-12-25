@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_M68000_DEBUG_H
-#define _BURN_CPU_M68000_DEBUG_H
-
 enum SekRegister {
 	SEK_REG_D0, SEK_REG_D1, SEK_REG_D2, SEK_REG_D3, SEK_REG_D4, SEK_REG_D5, SEK_REG_D6, SEK_REG_D7,
 	SEK_REG_A0, SEK_REG_A1, SEK_REG_A2, SEK_REG_A3, SEK_REG_A4, SEK_REG_A5, SEK_REG_A6, SEK_REG_A7,
@@ -28,5 +25,3 @@ INT32 SekDbgGetCPUType();
 INT32 SekDbgGetPendingIRQ();
 UINT32 SekDbgGetRegister(SekRegister nRegister);
 bool SekDbgSetRegister(SekRegister nRegister, UINT32 nValue);
-
-#endif

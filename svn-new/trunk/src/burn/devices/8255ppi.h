@@ -1,6 +1,3 @@
-#ifndef BURN_DEVICES_8255_PPI_H
-#define BURN_DEVICES_8255_PPI_H
-
 typedef UINT8 (*PPIPortRead)();
 typedef void (*PPIPortWrite)(UINT8 data);
 extern PPIPortRead PPI0PortReadA;
@@ -28,5 +25,3 @@ void ppi8255_scan();
 UINT8 ppi8255_r(INT32 which, INT32 offset);
 void ppi8255_w(INT32 which, INT32 offset, UINT8 data);
 void ppi8255_set_portC( INT32 which, UINT8 data );
-
-#endif

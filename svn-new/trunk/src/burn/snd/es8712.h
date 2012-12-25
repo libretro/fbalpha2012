@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_ES8712_H
-#define _BURN_SND_ES8712_H
-
 void es8712Write(INT32 device, INT32 offset, UINT8 data);
 void es8712Play(INT32 device);
 
@@ -13,5 +10,3 @@ void es8712Update(INT32 device, INT16 *buffer, INT32 samples);
 void es8712Exit(INT32 device);
 
 INT32 es8712Scan(INT32 device, INT32 nAction);
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_Y8950_H
-#define _BURN_SND_Y8950_H
-
 #include "driver.h"
 extern "C" {
  #include "fmopl.h"
@@ -36,6 +33,4 @@ void BurnY8950Scan(INT32 nAction, INT32* pnMin);
 	#define BurnY8950Write(i, a, n) if (!DebugSnd_Y8950Initted) bprintf(PRINT_ERROR, _T("BurnY8950Write called without init\n")); Y8950Write(i, a, n)
 #else
 	#define BurnY8950Write(i, a, n) Y8950Write(i, a, n)
-#endif
-
 #endif

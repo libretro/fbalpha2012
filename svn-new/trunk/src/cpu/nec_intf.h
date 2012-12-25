@@ -1,8 +1,5 @@
 // Nec V20/V30/V33 interface
 
-#ifndef _BURN_CPU_NEC_INTF_H
-#define _BURN_CPU_NEC_INTF_H
-
 #ifndef FASTCALL
  #undef __fastcall
  #define __fastcall
@@ -66,4 +63,3 @@ INT32 VezRun(INT32 nCycles);
 
 void VezSetIRQLineAndVector(const INT32 line, const INT32 vector, const INT32 status);
 
-#endif

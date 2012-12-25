@@ -1,5 +1,3 @@
-#ifndef _BURNER_GAMEINP_H
-#define _BURNER_GAMEINP_H
 
 struct giConstant {
 	UINT8 nConst;				// The constant value
@@ -99,4 +97,3 @@ struct GameInp {
 	};
 };
 
-#endif

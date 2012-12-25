@@ -1,8 +1,5 @@
 // FM timers
 
-#ifndef _BURN_TIMER_H
-#define _BURN_TIMER_H
-
 #define TIMER_TICKS_PER_SECOND (2048000000)
 #define MAKE_TIMER_TICKS(n, m) ((INT64)(n) * TIMER_TICKS_PER_SECOND / (m))
 #define MAKE_CPU_CYLES(n, m) ((INT64)(n) * (m) / TIMER_TICKS_PER_SECOND)
@@ -37,5 +34,3 @@ void BurnTimerScan(INT32 nAction, INT32* pnMin);
 INT32 BurnTimerUpdate(INT32 nCycles);
 void BurnTimerUpdateEnd();
 void BurnTimerEndFrame(INT32 nCycles);
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_S2650_INTF_H
-#define _BURN_CPU_S2650_INTF_H
-
 #define MAX_S2650	4
 extern INT32 nActiveS2650;
 extern INT32 s2650Count;
@@ -61,5 +58,3 @@ INT32 s2650Scan(INT32 nAction,INT32 *);
 
 /* Fake Sense Line */
 #define S2650_SENSE_PORT 0x102
-
-#endif

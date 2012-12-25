@@ -1,6 +1,3 @@
-#ifndef _BURN_CPU_M6805_INTF_H
-#define _BURN_CPU_M6805_INTF_H
-
 #include "m6805/m6805.h"
 
 #define M6805_READ		1
@@ -43,4 +40,3 @@ void hd63705SetIrqLine(INT32 irqline, INT32 state);
 void m6805NewFrame();
 INT32 m6805TotalCycles();
 
-#endif

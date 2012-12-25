@@ -1,8 +1,4 @@
 // burn_ym2413.h
-
-#ifndef _BURN_YM2413_H
-#define _BURN_YM2413_H
-
 #include "driver.h"
 extern "C" {
  #include "ym2413.h"
@@ -32,5 +28,3 @@ static inline void BurnYM2413Write(INT32 Address, const UINT8 nValue)
 #define BurnYM2413SetAllRoutes(v, d)							\
 	BurnYM2413SetRoute(BURN_SND_YM2413_YM2413_ROUTE_1, v, d);	\
 	BurnYM2413SetRoute(BURN_SND_YM2413_YM2413_ROUTE_2, v, d);
-
-#endif

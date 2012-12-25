@@ -1,8 +1,4 @@
 // 68000 (Sixty Eight K) Interface - header file
-
-#ifndef _BURN_CPU_M68000_INTF_H
-#define _BURN_CPU_M68000_INTF_H
-
 #include <stdint.h>
 #ifndef FASTCALL
  #undef __fastcall
@@ -235,5 +231,3 @@ INT32 SekSetCmpCallback(pSekCmpCallback pCallback);
 INT32 SekGetPC(INT32 n);
 
 INT32 SekScan(INT32 nAction);
-
-#endif

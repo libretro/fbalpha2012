@@ -1,5 +1,5 @@
-#ifndef _FBA_INTF_HIPASS_INCLUDED
-#define _FBA_INTF_HIPASS_INCLUDED
+#ifndef HIPASS_INCLUDED
+#define HIPASS_INCLUDED
 
 class LowPass2
 {

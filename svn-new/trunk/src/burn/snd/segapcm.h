@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_SEGAPCM_H
-#define _BURN_SND_SEGAPCM_H
-
 #define   BANK_256    (11)
 #define   BANK_512    (12)
 #define   BANK_12M    (13)
@@ -22,5 +19,3 @@ void SegaPCMWrite(INT32 nChip, UINT32 Offset, UINT8 Data);
 #define SegaPCMSetAllRoutes(n, v, d)						\
 	SegaPCMSetRoute(n, BURN_SND_SEGAPCM_ROUTE_1, v, d);		\
 	SegaPCMSetRoute(n, BURN_SND_SEGAPCM_ROUTE_2, v, d);
-
-#endif

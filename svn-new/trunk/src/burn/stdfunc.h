@@ -1,8 +1,5 @@
 // Standard ROM/input/DIP info functions
 
-#ifndef _BURN_STDFUNC_H
-#define _BURN_STDFUNC_H
-
 // A function to pick a rom, or return NULL if i is out of range
 #define STD_ROM_PICK(Name)												\
 static struct BurnRomInfo* Name##PickRom(UINT32 i)						\
@@ -149,5 +146,3 @@ static INT32 Name##SampleName(char** pszName, UINT32 i, INT32 nAka)		\
 	*pszName = por->szName;												\
 	return 0;															\
 }
-
-#endif

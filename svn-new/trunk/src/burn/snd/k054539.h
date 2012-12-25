@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_K054539_H
-#define _BURN_SND_K054539_H
-
 #define K054539_RESET_FLAGS     0
 #define K054539_REVERSE_STEREO  1
 #define K054539_DISABLE_REVERB  2
@@ -27,5 +24,3 @@ INT32 K054539Scan(INT32 nAction);
 #define K054539PCMSetAllRoutes(i, v, d)						\
 	K054539SetRoute(i, BURN_SND_K054539_ROUTE_1, v, d);	\
 	K054539SetRoute(i, BURN_SND_K054539_ROUTE_2, v, d);
-
-#endif

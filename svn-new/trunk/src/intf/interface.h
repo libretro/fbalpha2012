@@ -1,6 +1,3 @@
-#ifndef _BURN_INTF_H
-#define _BURN_INTF_H
-
 #ifdef FBA_DEBUG
  #define PRINT_DEBUG_INFO
 #endif
@@ -248,5 +245,3 @@ extern TCHAR EditText[MAX_CHAT_SIZE + 1];
 extern TCHAR OSDMsg[MAX_PATH];
 extern UINT32 nOSDTimer;
 void VidSKillOSDMsg();
-
-#endif

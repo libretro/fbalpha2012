@@ -1,9 +1,5 @@
 // konamiic.cpp
 //---------------------------------------------------------------------------------------------------------------
-
-#ifndef _BURN_DRV_KONAMI_IC_H
-#define _BURN_DRV_KONAMI_IC_H
-
 extern UINT32 KonamiIC_K051960InUse;
 extern UINT32 KonamiIC_K052109InUse;
 extern UINT32 KonamiIC_K051316InUse;
@@ -240,4 +236,3 @@ void K053936SetOffset(INT32 chip, INT32 xoffs, INT32 yoffs);
 void K053936PredrawTiles(INT32 chip, UINT8 *gfx, INT32 transparent, INT32 tcol /*transparent color*/);
 void K053936Draw(INT32 chip, UINT16 *ctrl, UINT16 *linectrl, INT32 transp);
 
-#endif

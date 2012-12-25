@@ -1,6 +1,3 @@
-#ifndef _BURN_SND_SAMPLES_H
-#define _BURN_SND_SAMPLES_H
-
 #define SAMPLE_IGNORE		0x01 // don't ever play this sample
 #define SAMPLE_AUTOLOOP		0x02 // start the looping on start
 #define SAMPLE_NOLOOP		0x04 // don't allow this to loop
@@ -38,5 +35,3 @@ void BurnSampleExit();
 #define BurnSampleSetAllRoutesAllSamples(v, d)						\
 	BurnSampleSetRouteAllSamples(BURN_SND_SAMPLE_ROUTE_1, v, d);	\
 	BurnSampleSetRouteAllSamples(BURN_SND_SAMPLE_ROUTE_2, v, d);
-
-#endif

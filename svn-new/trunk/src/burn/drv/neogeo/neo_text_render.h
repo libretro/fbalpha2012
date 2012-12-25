@@ -1,5 +1,5 @@
-#define TEXT_RENDER_FN(a) RenderTile ## a
-#define TEXT_RENDER_FUNCTIONNAME(a) TEXT_RENDER_FN(a)
+#define FN(a) RenderTile ## a
+#define FUNCTIONNAME(a) FN(a)
 
 #define ISOPAQUE 0
 
@@ -36,7 +36,7 @@
  #error unsupported bitdepth specified.
 #endif
 
-static void TEXT_RENDER_FUNCTIONNAME(BPP)()
+static void FUNCTIONNAME(BPP)()
 {
 	UINT8 *pTileRow, *pPixel;
 	INT32 y, nColour;
@@ -75,5 +75,5 @@ static void TEXT_RENDER_FUNCTIONNAME(BPP)()
 #undef ADVANCEROW
 #undef ADVANCECOLUMN
 #undef CLIP
-#undef TEXT_RENDER_FUNCTIONNAME
+#undef FUNCTIONNAME
 #undef FN

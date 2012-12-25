@@ -705,7 +705,9 @@ INT32 BurnDrvCartridgeSetup(BurnCartrigeCommand nCommand)
 // Do one frame of game emulation
 extern "C" INT32 BurnDrvFrame()
 {
+#ifndef __LIBRETRO__
 	CheatApply();									// Apply cheats (if any)
+#endif
 	HiscoreApply();
 	return pDriver[nBurnDrvActive]->Frame();		// Forward to drivers function
 }
@@ -846,6 +848,7 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 	
 	pBurnDrvPalette = pPalette;
 
+#if 0
 	switch (nBurnBpp) {
 		case 2: {
 			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
@@ -876,6 +879,11 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 			break;
 		}
 	}
+#else
+   for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
+      for (INT32 x = 0; x < nTransWidth; x ++)
+         ((UINT16*)pDest)[x] = pPalette[pSrc[x]];
+#endif
 
 	return 0;
 }

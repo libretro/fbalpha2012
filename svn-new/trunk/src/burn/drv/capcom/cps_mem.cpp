@@ -235,9 +235,9 @@ void __fastcall CpsWriteSpriteWord(UINT32 sekAddress, UINT16 wordValue)
 
 UINT8 __fastcall haxx0rReadByte(UINT32 sekAddress)
 {
-	sekAddress &= 0xFFFF;
-	bprintf(PRINT_NORMAL, _T("    QS %06X read (%02X)\n"), sekAddress, CpsEncZRom[sekAddress]);
-	return CpsEncZRom[sekAddress];
+	//sekAddress &= 0xFFFF;
+	//bprintf(PRINT_NORMAL, _T("    QS %06X read (%02X)\n"), sekAddress, CpsEncZRom[sekAddress]);
+	return CpsEncZRom[sekAddress & 0xFFFF];
 }
 
 INT32 CpsMemInit()

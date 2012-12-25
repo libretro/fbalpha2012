@@ -99,6 +99,7 @@ INT32 BurnTransferInit();
 // ---------------------------------------------------------------------------
 // Plotting pixels
 
+#if 0
 inline static void PutPix(UINT8* pPix, UINT32 c)
 {
 	if (nBurnBpp >= 4) {
@@ -113,6 +114,9 @@ inline static void PutPix(UINT8* pPix, UINT32 c)
 		}
 	}
 }
+#else
+#define PutPix(pPix, c) *((UINT16*)pPix) = (UINT16)c
+#endif
 
 // ---------------------------------------------------------------------------
 // Setting up cpus for cheats

@@ -376,6 +376,7 @@ void NeoClearScreen()
 	UINT32 nColour = NeoPalette[0x0FFF];
 
 	if (nColour) {
+#if 0
 		switch (nBurnBpp) {
 			case 4: {
 				UINT32* pClear = (UINT32*)pBurnDraw;
@@ -421,6 +422,20 @@ void NeoClearScreen()
 				break;
 			}
 		}
+#else
+      UINT32* pClear = (UINT32*)pBurnDraw;
+      nColour |= nColour << 16;
+      for (INT32 i = 0; i < nNeoScreenWidth * 224 / 16; i++) {
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+      }
+#endif
 	} else {
 		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
 	}

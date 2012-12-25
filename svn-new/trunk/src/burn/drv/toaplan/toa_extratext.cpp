@@ -155,8 +155,10 @@ INT32 ToaExtraTextLayer()
 		nLastBPP = nBurnBpp;
 
 #ifdef DRIVER_ROTATION
+#if 0
 		switch (nBurnBpp) {
 			case 2:
+#endif
 				if (bRotatedScreen) {
 					RenderTile[0] = *RenderTile16_ROT270_NOCLIP_NORMAL;
 					RenderTile[1] = *RenderTile16_ROT270_CLIP_NORMAL;
@@ -168,6 +170,7 @@ INT32 ToaExtraTextLayer()
 					RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
 					RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
 				}
+#if 0
 				break;
 			case 3:
 				if (bRotatedScreen) {
@@ -198,13 +201,17 @@ INT32 ToaExtraTextLayer()
 			default:
 				return 1;
 		}
+#endif
 #else
+#if 0
 		switch (nBurnBpp) {
 			case 2:
+#endif
 				RenderTile[0] = *RenderTile16_ROT0_NOCLIP_NORMAL;
 				RenderTile[1] = *RenderTile16_ROT0_CLIP_NORMAL;
 				RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
 				RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
+#if 0
 				break;
 			case 3:
 				RenderTile[0] = *RenderTile24_ROT0_NOCLIP_NORMAL;
@@ -221,6 +228,7 @@ INT32 ToaExtraTextLayer()
 			default:
 				return 1;
 		}
+#endif
 #endif
 	}
 

@@ -30,7 +30,7 @@ static INT32 nNeoSpriteFrame04, nNeoSpriteFrame08;
 static INT32 nLastBPP = -1;
 
 typedef void (*RenderBankFunction)();
-static RenderBankFunction* RenderBank;
+//static RenderBankFunction* RenderBank;
 
 static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
@@ -40,11 +40,13 @@ static 	UINT16 BankAttrib01, BankAttrib02, BankAttrib03;
 
 INT32 NeoRenderSprites()
 {
+#if 0
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
 		RenderBank = RenderBankNormal[nBurnBpp - 2];
 	}
+#endif
 
 	if (!NeoSpriteROMActive || !(nBurnLayer & 1)) {
 		return 0;
@@ -100,10 +102,10 @@ INT32 NeoRenderSprites()
 			}
 
 			if (nBankXPos >= 0 && nBankXPos < (nNeoScreenWidth - nBankXZoom - 1)) {
-				RenderBank[nBankXZoom]();
+				RenderBankNormal[0][nBankXZoom]();
 			} else {
 				if (nBankXPos >= -nBankXZoom && nBankXPos < nNeoScreenWidth) {
-					RenderBank[nBankXZoom + 16]();
+					RenderBankNormal[0][nBankXZoom + 16]();
 				}
 			}
 		}

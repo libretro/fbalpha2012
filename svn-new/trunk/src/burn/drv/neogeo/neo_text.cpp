@@ -20,8 +20,8 @@ static UINT8* pTile;
 static UINT8* pTileData;
 static UINT32* pTilePalette;
 
-typedef void (*RenderTileFunction)();
-static RenderTileFunction RenderTile;
+//typedef void (*RenderTileFunction)();
+//static RenderTileFunction RenderTile;
 
 static INT32 nLastBPP = 0;
 
@@ -31,6 +31,7 @@ static INT32 nMinX, nMaxX;
  #include "neo_text_render.h"
 #undef BPP
 
+#if 0
 #define BPP 24
  #include "neo_text_render.h"
 #undef BPP
@@ -38,6 +39,7 @@ static INT32 nMinX, nMaxX;
 #define BPP 32
  #include "neo_text_render.h"
 #undef BPP
+#endif
 
 INT32 NeoRenderText()
 {
@@ -54,6 +56,7 @@ INT32 NeoRenderText()
 		return 0;
 	}
 
+#if 0
 	if (nLastBPP != nBurnBpp ) {
 		nLastBPP = nBurnBpp;
 
@@ -71,6 +74,7 @@ INT32 NeoRenderText()
 				return 1;
 		}
 	}
+#endif
 
 	if (!bBIOSTextROMEnabled && nBankswitch[nNeoActiveSlot]) {
 
@@ -106,7 +110,7 @@ INT32 NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-						RenderTile();
+						RenderTile16();
 					}
 				}
 			}
@@ -127,7 +131,7 @@ INT32 NeoRenderText()
 					if (pTileAttrib[nTile] == 0) {
 						pTileData = pTextROM + (nTile << 5);
 						pTilePalette = &pTextPalette[nPalette >> 8];
-						RenderTile();
+						RenderTile16();
 					}
 				}
 			}
@@ -152,7 +156,7 @@ INT32 NeoRenderText()
 				if (pTileAttrib[nTile] == 0) {
 					pTileData = pTextROM + (nTile << 5);
 					pTilePalette = &pTextPalette[nPalette >> 8];
-					RenderTile();
+					RenderTile16();
 				}
 			}
 		}

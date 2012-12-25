@@ -89,6 +89,7 @@ INT32 ToaLoadGP9001Tiles(UINT8* pDest, INT32 nStart, INT32 nNumFiles, INT32 nROM
 void ToaClearScreen(INT32 PalOffset)
 {
 	if (*ToaPalette) {
+#if 0
 		switch (nBurnBpp) {
 			case 4: {
 				UINT32* pClear = (UINT32*)pBurnDraw;
@@ -137,6 +138,20 @@ void ToaClearScreen(INT32 PalOffset)
 				break;
 			}
 		}
+#else
+      UINT32* pClear = (UINT32*)pBurnDraw;
+      UINT32 nColour = ToaPalette[PalOffset] | ToaPalette[PalOffset] << 16;
+      for (INT32 i = 0; i < 320 * 240 / 16; i++) {
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+         *pClear++ = nColour;
+      }
+#endif
 	} else {
 		memset(pBurnDraw, 0, 320 * 240 * nBurnBpp);
 	}

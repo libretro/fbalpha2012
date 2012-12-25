@@ -1,4 +1,5 @@
 #include "cps.h"
+#include "ctv.h"
 
 // CPS Tiles
 UINT32 *CpstPal=NULL;
@@ -61,7 +62,7 @@ static INT32 CpstOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoX[nFun]();
+  return CtvDo2[nFun]();
 }
 
 static INT32 CpstOneBgHi()
@@ -103,7 +104,7 @@ static INT32 CpstOneBgHi()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoXB[nFun]();
+  return CtvDo2b[nFun]();
 }
 
 static INT32 Cps2tOne()
@@ -144,7 +145,7 @@ static INT32 Cps2tOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoX[nFun]();
+  return CtvDo2[nFun]();
 }
 
 static INT32 CpstOneObjZ()
@@ -188,5 +189,5 @@ static INT32 CpstOneObjZ()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoXM[nFun]();
+  return CtvDo2m[nFun]();
 }

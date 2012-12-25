@@ -11,13 +11,14 @@ INT32 nCtvTileAdd=0; // Amount to add after each tile line
 UINT8 *pCtvLine=NULL; // Pointer to output bitmap
 
 // Include all tile variants:
-#include "ctv.h"
+//#include "ctv.h"
 
 static INT32 nLastBpp=0;
 INT32 CtvReady()
 {
   // Set up the CtvDoX functions to point to the correct bpp functions.
   // Must be called before calling CpstOne
+#if 0
   if (nBurnBpp!=nLastBpp)
   {
 	  if (nBurnBpp==2) {
@@ -36,6 +37,7 @@ INT32 CtvReady()
 		memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
 	  }
   }
+#endif
   nLastBpp=nBurnBpp;
   return 0;
 }

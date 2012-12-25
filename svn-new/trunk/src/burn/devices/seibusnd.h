@@ -1,3 +1,6 @@
+#ifndef _BURN_DEVICES_SEIBU_SND_H
+#define _BURN_DEVICES_SEIBU_SND_H
+
 #include "burn_ym3812.h"
 #include "burn_ym2151.h"
 #include "burn_ym2203.h"
@@ -30,3 +33,5 @@ void seibu_sound_init(INT32 type, INT32 encrypted_len, INT32 freq0 /*cpu*/, INT3
 void seibu_sound_exit();
 
 void seibu_sound_scan(INT32 *pnMin, INT32 nAction);
+
+#endif

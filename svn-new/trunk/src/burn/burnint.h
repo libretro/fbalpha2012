@@ -1,5 +1,8 @@
 // Burn - Arcade emulator library - internal code
 
+#ifndef _BURN_BURNINT_H
+#define _BURN_BURNINT_H
+
 // Standard headers
 #include <stdarg.h>
 #include <stdio.h>
@@ -219,3 +222,5 @@ extern UINT8 DebugCPU_I8039Initted;
 extern UINT8 DebugCPU_SH2Initted;
 
 void DebugTrackerExit();
+
+#endif

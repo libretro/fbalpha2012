@@ -1,4 +1,8 @@
 // burn_ym2608.h
+
+#ifndef _BURN_SND_YM2608_H
+#define _BURN_SND_YM2608_H
+
 #include "driver.h"
 extern "C" {
  #include "ay8910.h"
@@ -30,4 +34,6 @@ void BurnYM2608Scan(INT32 nAction, INT32* pnMin);
 	#define BurnYM2608Write(a, n) if (!DebugSnd_YM2608Initted) bprintf(PRINT_ERROR, _T("BurnYM2608Write called without init\n")); YM2608Write(0, a, n)
 #else
 	#define BurnYM2608Write(a, n) YM2608Write(0, a, n)
+#endif
+
 #endif

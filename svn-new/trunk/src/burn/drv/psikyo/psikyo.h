@@ -1,3 +1,6 @@
+#ifndef _BURN_DRV_PSIKYO_H
+#define _BURN_DRV_PSIKYO_H
+
 #include "burnint.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
@@ -44,3 +47,5 @@ INT32 PsikyoSpriteRender(INT32 nLowPriority, INT32 nHighPriority);
 extern UINT8* PsikyoSpriteROM;
 extern UINT8* PsikyoSpriteRAM;
 extern UINT8* PsikyoSpriteLUT;
+
+#endif

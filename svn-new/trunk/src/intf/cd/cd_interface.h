@@ -1,5 +1,5 @@
-#ifndef CD_INTERFACE_H_
-#define CD_INTERFACE_H_
+#ifndef _FBA_INTF_CD_INTERFACE_H_
+#define _FBA_INTF_CD_INTERFACE_H_
 
 // ----------------------------------------------------------------------------
 // CD emulation module
@@ -38,4 +38,4 @@ static inline void CDEmuPause()
 	CDEmuStatus = paused;
 }
 
-#endif /*CD_INTERFACE_H_*/
+#endif /*_FBA_INTF_CD_INTERFACE_H_*/

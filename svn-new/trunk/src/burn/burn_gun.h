@@ -1,3 +1,6 @@
+#ifndef _BURN_GUN_H
+#define _BURN_GUN_H
+
 #define MAX_GUNS	4
 
 extern INT32 nBurnGunNumPlayers;
@@ -13,3 +16,5 @@ void BurnGunExit();
 void BurnGunScan();
 extern void BurnGunDrawTarget(INT32 num, INT32 x, INT32 y);
 extern void BurnGunMakeInputs(INT32 num, INT16 x, INT16 y);
+
+#endif

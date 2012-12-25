@@ -1,5 +1,8 @@
 // FB Alpha key definitions
 
+#ifndef _FBA_INTF_INP_KEYS_H
+#define _FBA_INTF_INP_KEYS_H
+
 #define FBK_ESCAPE          0x01
 #define FBK_1               0x02
 #define FBK_2               0x03
@@ -146,3 +149,5 @@
 #define FBK_MYCOMPUTER      0xEB				// My Computer
 #define FBK_MAIL            0xEC				// Mail
 #define FBK_MEDIASELECT     0xED				// Media Select
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_ICS2115_H
+#define _BURN_SND_ICS2115_H
+
 extern UINT8 *ICSSNDROM;
 extern UINT32 nICSSNDROMLen;
 
@@ -14,3 +17,5 @@ extern void ics2115_soundlatch_w(INT32 i, UINT16 d);
 extern void ics2115_frame();
 extern void ics2115_update(INT32 length);
 extern void ics2115_scan(INT32 nAction,INT32 *pnMin);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_YMF278B_H
+#define _BURN_SND_YMF278B_H
+
 #include "driver.h"
 extern "C" {
  #include "ymf278b.h"
@@ -23,3 +26,5 @@ void BurnYMF278BScan(INT32 nAction, INT32* pnMin);
 #define BurnYMF278BSetAllRoutes(v, d)								\
 	BurnYMF278BSetRoute(BURN_SND_YMF278B_YMF278B_ROUTE_1, v, d);	\
 	BurnYMF278BSetRoute(BURN_SND_YMF278B_YMF278B_ROUTE_2, v, d);
+
+#endif

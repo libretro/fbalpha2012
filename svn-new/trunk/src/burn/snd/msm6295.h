@@ -1,4 +1,6 @@
 // MSM6295 module header
+#ifndef _BURN_SND_MSM6295_H
+#define _BURN_SND_MSM6295_H
 
 #define MAX_MSM6295 (2)
 
@@ -28,3 +30,4 @@ inline static UINT32 MSM6295ReadStatus(const INT32 nChip)
 	return nMSM6295Status[nChip];
 }
 
+#endif

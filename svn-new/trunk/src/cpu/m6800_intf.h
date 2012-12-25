@@ -1,3 +1,6 @@
+#ifndef _BURN_CPU_M6800_INTF_H
+#define _BURN_CPU_M6800_INTF_H
+
 #include "m6800/m6800.h"
 
 typedef UINT8 (*pReadByteHandler)(UINT16 a);
@@ -181,3 +184,5 @@ inline static INT32 M6800TotalCycles()
 
 	return nM6800CyclesTotal;
 }
+
+#endif

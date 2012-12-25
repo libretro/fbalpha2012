@@ -1,5 +1,5 @@
-#ifndef _neocdlist_
-#define _neocdlist_
+#ifndef _BURNER_NEOCDLIST_H
+#define _BURNER_NEOCDLIST_H
 
 struct NGCDGAME
 {

@@ -1,5 +1,8 @@
 // Yamaha YMZ280B module
 
+#ifndef _BURN_SND_YMZ280B_H
+#define _BURN_SND_YMZ280B_H
+
 INT32 YMZ280BInit(INT32 nClock, void (*IRQCallback)(INT32));
 void YMZ280BSetRoute(INT32 nIndex, double nVolume, INT32 nRouteDir);
 void YMZ280BReset();
@@ -50,3 +53,5 @@ inline static UINT32 YMZ280BRead(INT32 offset)
 #define YMZ280BSetAllRoutes(v, d)								\
 	YMZ280BSetRoute(BURN_SND_YMZ280B_YMZ280B_ROUTE_1, v, d);	\
 	YMZ280BSetRoute(BURN_SND_YMZ280B_YMZ280B_ROUTE_2, v, d);
+
+#endif

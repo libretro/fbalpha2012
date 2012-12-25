@@ -3,6 +3,9 @@
 
 // Burner emulation library
 
+#ifndef _BURN_H
+#define _BURN_H
+
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -532,3 +535,5 @@ void IpsApplyPatches(UINT8* base, char* rom_name);
  } // End of extern "C"
 #endif
 
+
+#endif

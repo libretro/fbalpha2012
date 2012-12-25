@@ -1,3 +1,5 @@
+#ifndef _BURN_SND_C6280_H
+#define _BURN_SND_C6280_H
 
 void c6280_init(double clk, INT32 bAdd);
 void c6280_set_route(INT32 nIndex, double nVolume, INT32 nRouteDir);
@@ -18,3 +20,5 @@ INT32 c6280_scan(INT32 nAction, INT32 *pnMin);
 #define c6280_set_all_routes(v, d)						\
 	c6280_set_route(BURN_SND_C6280_ROUTE_1, v, d);	\
 	c6280_set_route(BURN_SND_C6280_ROUTE_2, v, d);
+
+#endif

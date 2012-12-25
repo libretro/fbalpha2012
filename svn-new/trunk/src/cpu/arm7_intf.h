@@ -1,3 +1,5 @@
+#ifndef _BURN_CPU_ARM7_INTF_H
+#define _BURN_CPU_ARM7_INTF_H
 
 // use these in arm7.cpp
 void Arm7_program_write_byte_32le(UINT32 addr, UINT8 data);
@@ -58,3 +60,5 @@ void Arm7SetIdleLoopAddress(UINT32 address);
 
 // for cheat handling
 void Arm7_write_rom_byte(UINT32 addr, UINT8 data);
+
+#endif

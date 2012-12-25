@@ -1,3 +1,6 @@
+#ifndef _BURN_DRV_CAVE_H
+#define _BURN_DRV_CAVE_H
+
 #include "burnint.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
@@ -63,3 +66,5 @@ extern INT32 (*CaveSpriteBuffer)();
 extern INT32 CaveSpriteRender(INT32 nLowPriority, INT32 nHighPriority);
 void CaveSpriteExit();
 INT32 CaveSpriteInit(INT32 nType, INT32 nROMSize);
+
+#endif

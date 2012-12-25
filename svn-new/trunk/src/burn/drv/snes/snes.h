@@ -1,3 +1,6 @@
+#ifndef _BURN_DRV_SNES_H
+#define _BURN_DRV_SNES_H
+
 #pragma once
 
 #include "tiles_generic.h"
@@ -254,3 +257,5 @@ INT32 SnesScan(INT32 nAction,INT32 *pnMin);
 extern unsigned char DoSnesReset;
 
 extern unsigned char SnesJoy1[12];
+
+#endif

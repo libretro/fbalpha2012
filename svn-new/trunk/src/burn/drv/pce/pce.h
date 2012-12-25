@@ -1,3 +1,6 @@
+#ifndef _BURN_DRV_PCE_H
+#define _BURN_DRV_PCE_H
+
 extern UINT8 PCEPaletteRecalc;
 
 extern UINT8 PCEReset;
@@ -21,3 +24,5 @@ INT32 PCEExit();
 INT32 PCEDraw();
 INT32 PCEFrame();
 INT32 PCEScan(INT32 nAction, INT32 *pnMin);
+
+#endif

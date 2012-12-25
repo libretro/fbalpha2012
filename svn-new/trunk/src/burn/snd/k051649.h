@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_K051649_H
+#define _BURN_SND_K051649_H
+
 void K051649Update(INT16 *pBuf, INT32 samples);
 void K051649Init(INT32 clock);
 void K051649SetRoute(double nVolume, INT32 nRouteDir);
@@ -14,3 +17,5 @@ void K052539WaveformWrite(INT32 offset, INT32 data);
 void K051649VolumeWrite(INT32 offset, INT32 data);
 void K051649FrequencyWrite(INT32 offset, INT32 data);
 void K051649KeyonoffWrite(INT32 data);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_IREMGA_20_H
+#define _BURN_SND_IREMGA_20_H
+
 void iremga20_write(INT32 device, INT32 offset, INT32 data);
 UINT8 iremga20_read(INT32 device, INT32 offset);
 
@@ -8,3 +11,5 @@ void iremga20_update(INT32 device, INT16 *buffer, INT32 length);
 void iremga20_exit();
 
 INT32 iremga20_scan(INT32 device, INT32 nAction, INT32 *pnMin);
+
+#endif

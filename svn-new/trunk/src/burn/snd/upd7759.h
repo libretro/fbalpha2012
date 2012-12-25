@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_UPD7759_H
+#define _BURN_SND_UPD7759_H
+
 #define UPD7759_STANDARD_CLOCK		640000
 
 typedef void (*drqcallback)(INT32 param);
@@ -13,3 +16,5 @@ void UPD7759StartWrite(INT32 chip, UINT8 Data);
 void UPD7759PortWrite(INT32 chip, UINT8 Data);
 INT32 UPD7759Scan(INT32 chip, INT32 nAction,INT32 *pnMin);
 void UPD7759Exit();
+
+#endif

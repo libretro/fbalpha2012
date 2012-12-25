@@ -17,8 +17,8 @@ static INT32 nBankLookupAddress[40];
 static INT32 nBankLookupShift[40];
 
 static UINT8* pTile;
-static UINT8* pTileData;
-static UINT32* pTilePalette;
+static UINT8* pTextTileData;
+static UINT32* pTextTilePalette;
 
 typedef void (*RenderTileFunction)();
 static RenderTileFunction RenderTile;
@@ -104,8 +104,8 @@ INT32 NeoRenderText()
 					INT32 nPalette = nTile & 0xF000;
 					nTile &= 0x0FFF;
 					if (pTileAttrib[nTile] == 0) {
-						pTileData = pTextROM + (nTile << 5);
-						pTilePalette = &pTextPalette[nPalette >> 8];
+						pTextTileData = pTextROM + (nTile << 5);
+						pTextTilePalette = &pTextPalette[nPalette >> 8];
 						RenderTile();
 					}
 				}
@@ -125,8 +125,8 @@ INT32 NeoRenderText()
 					nTile &= 0x0FFF;
 					nTile += (((pBankInfo[nBankLookupAddress[x]] >> nBankLookupShift[x]) & 3) ^ 3) << 12;
 					if (pTileAttrib[nTile] == 0) {
-						pTileData = pTextROM + (nTile << 5);
-						pTilePalette = &pTextPalette[nPalette >> 8];
+						pTextTileData = pTextROM + (nTile << 5);
+						pTextTilePalette = &pTextPalette[nPalette >> 8];
 						RenderTile();
 					}
 				}
@@ -150,8 +150,8 @@ INT32 NeoRenderText()
 				INT32 nPalette = nTile & 0xF000;
 				nTile &= 0xFFF;
 				if (pTileAttrib[nTile] == 0) {
-					pTileData = pTextROM + (nTile << 5);
-					pTilePalette = &pTextPalette[nPalette >> 8];
+					pTextTileData = pTextROM + (nTile << 5);
+					pTextTilePalette = &pTextPalette[nPalette >> 8];
 					RenderTile();
 				}
 			}

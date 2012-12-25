@@ -1,4 +1,7 @@
 // h6280.cpp
+#ifndef _BURN_CPU_H6280_INTF_H
+#define _BURN_CPU_H6280_INTF_H
+
 void h6280_set_irq_line(INT32 irqline, INT32 state);
 void h6280_init(INT32 (*irqcallback)(INT32));
 
@@ -61,7 +64,6 @@ void h6280_timer_w(UINT32 offset, UINT8 data);
 UINT8 h6280io_get_buffer(void);
 void h6280io_set_buffer(UINT8);
 
-
 // internal
 
-
+#endif

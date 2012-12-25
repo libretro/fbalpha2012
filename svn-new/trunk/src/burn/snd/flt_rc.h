@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_FLT_RC_H
+#define _BURN_SND_FLT_RC_H
+
 #include "rescap.h"
 
 #define FLT_RC_LOWPASS		0
@@ -10,3 +13,5 @@ void filter_rc_init(INT32 num, INT32 type, double R1, double R2, double R3, doub
 void filter_rc_set_src_gain(INT32 num, double gain);
 void filter_rc_set_route(INT32 num, double nVolume, INT32 nRouteDir);
 void filter_rc_exit();
+
+#endif

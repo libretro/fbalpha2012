@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_RF5C68PCM
+#define _BURN_SND_RF5C68PCM
+
 void RF5C68PCMUpdate(INT16* pSoundBuf, INT32 length);
 void RF5C68PCMReset();
 void RF5C68PCMInit(INT32 clock);
@@ -14,3 +17,5 @@ void RF5C68PCMWrite(UINT16 offset, UINT8 data);
 #define RF5C68PCMSetAllRoutes(v, d)					\
 	RF5C68PCMSetRoute(BURN_SND_RF5C68PCM_ROUTE_1, v, d);	\
 	RF5C68PCMSetRoute(BURN_SND_RF5C68PCM_ROUTE_2, v, d);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _BURN_DRV_TNZS_PROT_H
+#define _BURN_DRV_TNZS_PROT_H
+
 enum
 {
 	MCU_NONE,
@@ -98,3 +101,5 @@ extern UINT8 *tnzs_mcu_inputs;
 #define TNZS_COINAGE_JAPAN_OLD(dip) \
 	TNZS_COINA_TYPE1_DIPSETTING(dip) \
 	TNZS_COINB_TYPE1_DIPSETTING(dip)
+
+#endif

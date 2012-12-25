@@ -9,7 +9,7 @@ static UINT16 *pTempDraw;	// pre-zoomed sprites
 static UINT8  *tiletrans;	// tile transparency table
 static UINT8  *texttrans;	// text transparency table
 
-inline static UINT32 CalcCol(UINT16 nColour)
+inline static UINT32 PgmCalcCol(UINT16 nColour)
 {
 	INT32 r, g, b;
 
@@ -622,7 +622,7 @@ INT32 pgmDraw()
 {
 	if (nPgmPalRecalc) {
 		for (INT32 i = 0; i < 0x1200 / 2; i++) {
-			RamCurPal[i] = CalcCol(PGMPalRAM[i]);
+			RamCurPal[i] = PgmCalcCol(PGMPalRAM[i]);
 		}
 		nPgmPalRecalc = 0;
 	}

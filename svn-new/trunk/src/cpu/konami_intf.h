@@ -1,4 +1,8 @@
 // konami.cpp
+
+#ifndef _BURN_CPU_KONAMI_INTF_H
+#define _BURN_CPU_KONAMI_INTF_H
+
 void konami_set_irq_line(INT32 irqline, INT32 state);
 void konami_init(INT32 (*irqcallback)(INT32));
 
@@ -48,3 +52,5 @@ void konamiNewFrame();
 INT32 konamiGetActive();
 
 void konami_write_rom(UINT16 address, UINT8 data);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _BURN_SND_NAMCO_H
+#define _BURN_SND_NAMCO_H
+
 extern UINT8* NamcoSoundProm;
 void NamcoSoundUpdate(INT16* buffer, INT32 length);
 void NamcoSoundUpdateStereo(INT16* buffer, INT32 length);
@@ -16,3 +19,5 @@ UINT8 namcos1_custom30_read(INT32 offset);
 #define NacmoSoundSetAllRoutes(v, d)						\
 	NacmoSoundSetRoute(BURN_SND_NAMCOSND_ROUTE_1, v, d);	\
 	NacmoSoundSetRoute(BURN_SND_NAMCOSND_ROUTE_2, v, d);
+
+#endif

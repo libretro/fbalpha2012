@@ -1,4 +1,8 @@
 // burn_ym2610.h
+
+#ifndef _BURN_SND_YM2610_H
+#define _BURN_SND_YM2610_H
+
 #include "driver.h"
 extern "C" {
  #include "ay8910.h"
@@ -35,4 +39,6 @@ extern INT32 bYM2610UseSeperateVolumes;
 	#define BurnYM2610Write(a, n) if (!DebugSnd_YM2610Initted) bprintf(PRINT_ERROR, _T("BurnYM2610Write called without init\n")); YM2610Write(0, a, n)
 #else
 	#define BurnYM2610Write(a, n) YM2610Write(0, a, n)
+#endif
+
 #endif

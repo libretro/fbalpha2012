@@ -1,4 +1,8 @@
 // burn_ym2612.h
+
+#ifndef _BURN_SND_YM2612_H
+#define _BURN_SND_YM2612_H
+
 #include "driver.h"
 extern "C" {
  #include "fm.h"
@@ -49,4 +53,6 @@ void BurnYM2612Scan(INT32 nAction, INT32* pnMin);
 	#define BurnYM3438Write(i, a, n) if (!DebugSnd_YM2612Initted) bprintf(PRINT_ERROR, _T("BurnYM3438Write called without init\n")); YM2612Write(i, a, n)
 #else
 	#define BurnYM3438Write(i, a, n) YM2612Write(i, a, n)
+#endif
+
 #endif

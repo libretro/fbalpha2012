@@ -1,3 +1,6 @@
+#ifndef _NEOGEO_H
+#define _NEOGEO_H
+
 #include "burnint.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
@@ -162,3 +165,5 @@ UINT8 uPD4990ARead(UINT32 nTicks);
 
 // d_neogeo.cpp
 void kf2k3pcb_bios_decode();
+
+#endif

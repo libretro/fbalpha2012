@@ -1,5 +1,8 @@
 // Z80 (Zed Eight-Ty) Interface
 
+#ifndef _BURN_CPU_Z80_INTF_H
+#define _BURN_CPU_Z80_INTF_H
+
 #ifndef FASTCALL
  #undef __fastcall
  #define __fastcall
@@ -61,3 +64,5 @@ void ZetSetInHandler(UINT8 (__fastcall *pHandler)(UINT16));
 void ZetSetOutHandler(void (__fastcall *pHandler)(UINT16, UINT8));
 
 void ZetSetBUSREQLine(INT32 nStatus);
+
+#endif

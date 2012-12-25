@@ -1,3 +1,5 @@
+#ifndef _BURN_DEVICES_VDC_H
+#define _BURN_DEVICES_VDC_H
 
 // video
 void vdc_reset();
@@ -28,3 +30,5 @@ UINT8 vce_read(UINT8 offset);
 extern UINT16 *vce_data;
 
 INT32 vdc_scan(INT32 nAction, INT32 *pnMin);
+
+#endif

@@ -29,8 +29,10 @@ static cps3snd_chip * chip;
 
 UINT8 __fastcall cps3SndReadByte(UINT32 addr)
 {
+#if 0
 	addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read byte value of location %8x\n"), addr);
+#endif
 	return 0;
 }
 
@@ -43,24 +45,29 @@ UINT16 __fastcall cps3SndReadWord(UINT32 addr)
 	} else
 	if (addr == 0x200)	{
 		return chip->key;
-	} else
+	}
+   //else
 
-	bprintf(PRINT_NORMAL, _T("SND Attempt to read word value of location %8x\n"), addr);
+	//bprintf(PRINT_NORMAL, _T("SND Attempt to read word value of location %8x\n"), addr);
 	return 0;
 }
 
 UINT32 __fastcall cps3SndReadLong(UINT32 addr)
 {
+#if 0
 	addr &= 0x000003ff;
 	
 	bprintf(PRINT_NORMAL, _T("SND Attempt to read long value of location %8x\n"), addr);
+#endif
 	return 0;
 }
 
 void __fastcall cps3SndWriteByte(UINT32 addr, UINT8 data)
 {
+#if 0
 	addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to write byte value %2x to location %8x\n"), data, addr);
+#endif
 }
 
 void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data)
@@ -81,15 +88,19 @@ void __fastcall cps3SndWriteWord(UINT32 addr, UINT16 data)
 			}
 		}
 		chip->key = key;
-	} else
+	}
+#if 0
+   else
 		bprintf(PRINT_NORMAL, _T("SND Attempt to write word value %4x to location %8x\n"), data, addr);
-	
+#endif
 }
 
 void __fastcall cps3SndWriteLong(UINT32 addr, UINT32 data)
 {
+#if 0
 	//addr &= 0x000003ff;
 	bprintf(PRINT_NORMAL, _T("SND Attempt to write long value %8x to location %8x\n"), data, addr);
+#endif
 }
 
 INT32 cps3SndInit(UINT8 * sndrom)
@@ -137,11 +148,13 @@ void cps3SndExit()
 
 void cps3SndUpdate()
 {
+#if 0
 	if (!pBurnSoundOut) {
 		// TODO: ???
 		// chip->key = 0;
 		return;	
 	}
+#endif
 	
 	memset(pBurnSoundOut, 0, nBurnSoundLen * 2 * sizeof(INT16));
 	INT8 * base = (INT8 *)chip->rombase;
@@ -187,9 +200,9 @@ void cps3SndUpdate()
 
 				INT32 nLeftSample = 0, nRightSample = 0;
 				
-				if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+				//if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT)
 					nLeftSample += (INT32)(((sample * vol_l) >> 8) * chip->gain[BURN_SND_CPS3SND_ROUTE_1]);
-				}
+#if 0
 				if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
 					nRightSample += (INT32)(((sample * vol_l) >> 8) * chip->gain[BURN_SND_CPS3SND_ROUTE_1]);
 				}
@@ -197,9 +210,9 @@ void cps3SndUpdate()
 				if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
 					nLeftSample += (INT32)(((sample * vol_r) >> 8) * chip->gain[BURN_SND_CPS3SND_ROUTE_2]);
 				}
-				if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+#endif
+				//if ((chip->output_dir[BURN_SND_CPS3SND_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT)
 					nRightSample += (INT32)(((sample * vol_r) >> 8) * chip->gain[BURN_SND_CPS3SND_ROUTE_2]);
-				}
 				
 				nLeftSample = BURN_SND_CLIP(nLeftSample + buffer[0]);
 				nRightSample = BURN_SND_CLIP(nRightSample + buffer[1]);

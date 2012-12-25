@@ -423,6 +423,7 @@ INT32 BurnYM2610Init(INT32 nClockFrequency, UINT8* YM2610ADPCMAROM, INT32* nYM26
 
 	BurnYM2610StreamCallback = StreamCallback;
 
+#if 0
 	if (nFMInterpolation == 3) {
 		// Set YM2610 core samplerate to match the hardware
 		nBurnYM2610SoundRate = nClockFrequency / 144;
@@ -434,7 +435,10 @@ INT32 BurnYM2610Init(INT32 nClockFrequency, UINT8* YM2610ADPCMAROM, INT32* nYM26
 		BurnYM2610Update = YM2610UpdateResample;
 
 		nSampleSize = (UINT32)nBurnYM2610SoundRate * (1 << 16) / nBurnSoundRate;
-	} else {
+	}
+   else
+#endif
+   {
 		nBurnYM2610SoundRate = nBurnSoundRate;
 
 		BurnYM2610Update = YM2610UpdateNormal;

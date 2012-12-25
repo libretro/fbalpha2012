@@ -1,5 +1,5 @@
 CYCLONE_ENABLED := 0
-HAVE_GRIFFIN    := 0
+HAVE_GRIFFIN    := 1
 
 LOCAL_PATH := $(call my-dir)
 

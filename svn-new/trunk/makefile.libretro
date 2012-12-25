@@ -1,7 +1,7 @@
 DEBUG = 0
 LIBRETRO_OPTIMIZATIONS = 1
 FRONTEND_SUPPORTS_RGB565 = 1
-HAVE_GRIFFIN = 0
+HAVE_GRIFFIN = 1
 
 ifeq ($(platform),)
 platform = unix

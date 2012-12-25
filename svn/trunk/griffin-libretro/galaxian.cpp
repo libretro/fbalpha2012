@@ -1,5 +1,0 @@
-#include "../src/burn/drv/galaxian/d_galaxian.cpp"
-#include "../src/burn/drv/galaxian/gal_gfx.cpp"
-#include "../src/burn/drv/galaxian/gal_run.cpp"
-#include "../src/burn/drv/galaxian/gal_sound.cpp"
-#include "../src/burn/drv/galaxian/gal_stars.cpp"

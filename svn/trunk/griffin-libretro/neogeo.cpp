@@ -1,8 +1,0 @@
-#include "../src/burn/drv/neogeo/d_neogeo.cpp"
-#include "../src/burn/drv/neogeo/neo_decrypt.cpp"
-#include "../src/burn/drv/neogeo/neo_palette.cpp"
-#include "../src/burn/drv/neogeo/neo_run.cpp"
-#include "../src/burn/drv/neogeo/neo_sprite.cpp"
-#include "../src/burn/drv/neogeo/neo_text.cpp"
-#include "../src/burn/drv/neogeo/neo_upd4990a.cpp"
-#include "../src/burn/drv/neogeo/neogeo.cpp"

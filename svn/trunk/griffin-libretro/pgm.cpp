@@ -1,6 +1,0 @@
-#include "../src/burn/drv/pgm/d_pgm.cpp"
-#include "../src/burn/drv/pgm/pgm_crypt.cpp"
-#include "../src/burn/drv/pgm/pgm_draw.cpp"
-#include "../src/burn/drv/pgm/pgm_prot.cpp"
-#include "../src/burn/drv/pgm/pgm_run.cpp"
-#include "../src/burn/drv/pgm/pgm_sprite_create.cpp"

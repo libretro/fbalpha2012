@@ -631,7 +631,8 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 151
+//#define BIND_MAP_COUNT 151
+#define BIND_MAP_COUNT 149
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -639,6 +640,59 @@ static uint8_t keybinds[0x5000][2];
 #define RETRO_DEVICE_ID_JOYPAD_DIP_A      19
 #define RETRO_DEVICE_ID_JOYPAD_DIP_B      20
 #define RETRO_DEVICE_ID_JOYPAD_TEST       21
+
+static const char *print_label(unsigned i)
+{
+   switch(i)
+   {
+      case RETRO_DEVICE_ID_JOYPAD_B:
+         return "RetroPad Button B";
+      case RETRO_DEVICE_ID_JOYPAD_Y:
+         return "RetroPad Button Y";
+      case RETRO_DEVICE_ID_JOYPAD_SELECT:
+         return "RetroPad Button Select";
+      case RETRO_DEVICE_ID_JOYPAD_START:
+         return "RetroPad Button Start";
+      case RETRO_DEVICE_ID_JOYPAD_UP:
+         return "RetroPad D-Pad Up";
+      case RETRO_DEVICE_ID_JOYPAD_DOWN:
+         return "RetroPad D-Pad Down";
+      case RETRO_DEVICE_ID_JOYPAD_LEFT:
+         return "RetroPad D-Pad Left";
+      case RETRO_DEVICE_ID_JOYPAD_RIGHT:
+         return "RetroPad D-Pad Right";
+      case RETRO_DEVICE_ID_JOYPAD_A:
+         return "RetroPad Button A";
+      case RETRO_DEVICE_ID_JOYPAD_X:
+         return "RetroPad Button X";
+      case RETRO_DEVICE_ID_JOYPAD_L:
+         return "RetroPad Button L";
+      case RETRO_DEVICE_ID_JOYPAD_R:
+         return "RetroPad Button R";
+      case RETRO_DEVICE_ID_JOYPAD_L2:
+         return "RetroPad Button L2";
+      case RETRO_DEVICE_ID_JOYPAD_R2:
+         return "RetroPad Button R2";
+      case RETRO_DEVICE_ID_JOYPAD_L3:
+         return "RetroPad Button L3";
+      case RETRO_DEVICE_ID_JOYPAD_R3:
+         return "RetroPad Button R3";
+      case RETRO_DEVICE_ID_JOYPAD_RESET:
+         return "RetroPad Reset";
+      case RETRO_DEVICE_ID_JOYPAD_SERVICE:
+         return "RetroPad Service";
+      case RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC:
+         return "RetroPad Diagnostic";
+      case RETRO_DEVICE_ID_JOYPAD_DIP_A:
+         return "RetroPad DIP A";
+      case RETRO_DEVICE_ID_JOYPAD_DIP_B:
+         return "RetroPad DIP B";
+      case RETRO_DEVICE_ID_JOYPAD_TEST:
+         return "RetroPad Test";
+      default:
+         return "No known label";
+   }
+}
 
 static bool init_input()
 {
@@ -1309,17 +1363,9 @@ static bool init_input()
    bind_map[147].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC;
    bind_map[147].nCode[1] = 0;
 
-   bind_map[148].bii_name = "Dip A";
-   bind_map[148].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIP_A;
+   bind_map[148].bii_name = "Test";
+   bind_map[148].nCode[0] = RETRO_DEVICE_ID_JOYPAD_TEST;
    bind_map[148].nCode[1] = 0;
-
-   bind_map[149].bii_name = "Dip B";
-   bind_map[149].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIP_B;
-   bind_map[149].nCode[1] = 0;
-
-   bind_map[150].bii_name = "Test";
-   bind_map[150].nCode[0] = RETRO_DEVICE_ID_JOYPAD_TEST;
-   bind_map[150].nCode[1] = 0;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {
@@ -1365,7 +1411,7 @@ static bool init_input()
 
          if(value_found)
          {
-            fprintf(stderr, "%s: %d.\n", bii.szName, pgi->Input.Switch.nCode );
+            fprintf(stderr, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
             break;
          }
       }
@@ -1466,36 +1512,28 @@ static void poll_input(void)
 
    for (unsigned i = 0; i < controller_binds_count; i++, pgi++)
    {
-      if (pgi->Input.pVal == NULL)
-         continue;
-
       switch (pgi->nInput)
       {
-         case 0:									// Undefined
-            pgi->Input.nVal = 0;
-            break;
          case GIT_CONSTANT: // Constant value
-            pgi->Input.nVal = pgi->Input.Constant.nConst;
-#ifdef LSB_FIRST
-            *(pgi->Input.pShortVal) = pgi->Input.nVal;
-#else
-            *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
-#endif
+            {
+               pgi->Input.nVal = pgi->Input.Constant.nConst;
+               *(pgi->Input.pShortVal) = pgi->Input.nVal;
+            }
             break;
          case GIT_SWITCH:
             {
                // Digital input
-               INT32 s = CinpState(pgi->Input.Switch.nCode);
+               INT32 id = keybinds[pgi->Input.Switch.nCode][0];
                unsigned port = keybinds[pgi->Input.Switch.nCode][1];
 
                bool state = false;
 
-               if (g_reset || s > 15)
+               if (g_reset || id > 15)
                {
-                  if(g_reset && s == RETRO_DEVICE_ID_JOYPAD_RESET)
+                  if(g_reset && id == RETRO_DEVICE_ID_JOYPAD_RESET)
                   {
                      state = true;
-                     s = RETRO_DEVICE_ID_JOYPAD_RESET;
+                     id = RETRO_DEVICE_ID_JOYPAD_RESET;
                      g_reset = false;
                   }
                   else
@@ -1505,22 +1543,22 @@ static void poll_input(void)
                         input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2) &&
                         input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L) &&
                         input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-                     bool service_pressed = ((s == RETRO_DEVICE_ID_JOYPAD_SERVICE) &&
+                     bool service_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT)
                            && button_combo_down);
-                     bool diag_pressed    = ((s == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC) &&
+                     bool diag_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START)
                            && button_combo_down);
-                     bool reset_pressed   = ((s == RETRO_DEVICE_ID_JOYPAD_RESET) &&
+                     bool reset_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_RESET) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT)
                            && button_combo_down);
-                     bool dip_a_pressed   = ((s == RETRO_DEVICE_ID_JOYPAD_DIP_A) &&
+                     bool dip_a_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_A) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT)
                            && button_combo_down);
-                     bool dip_b_pressed   = ((s == RETRO_DEVICE_ID_JOYPAD_DIP_B) &&
+                     bool dip_b_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_B) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP)
                            && button_combo_down);
-                     bool test_pressed   = ((s == RETRO_DEVICE_ID_JOYPAD_TEST) &&
+                     bool test_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_TEST) &&
                            input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN)
                            && button_combo_down);
 
@@ -1531,7 +1569,9 @@ static void poll_input(void)
                   Reinitialise();
                }
                else
-                  state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, s);
+                  state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);
+
+               //fprintf(stderr, "GIT_SWITCH: %s, port: %d, pressed: %d.\n", print_label(id), port, state);
 
                if (pgi->nType & BIT_GROUP_ANALOG)
                {
@@ -1558,7 +1598,7 @@ static void poll_input(void)
                break;
             }
          case GIT_KEYSLIDER:						// Keyboard slider
-         case GIT_JOYSLIDER:	 					// Joystick slider
+            //fprintf(stderr, "GIT_JOYSLIDER\n");
             {
                int nSlider = pgi->Input.Slider.nSliderValue;
                if (pgi->nType == BIT_ANALOG_REL) {

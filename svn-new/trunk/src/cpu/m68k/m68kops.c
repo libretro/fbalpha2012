@@ -2091,7 +2091,7 @@ void m68ki_build_opcode_table(void)
 		ostruct++;
 	}
 
-	m68ki_instruction_jump_table[0x66ff] = m68k_66ff;	// hack
+	//m68ki_instruction_jump_table[0x66ff] = m68k_66ff;	// hack
 }
 
 

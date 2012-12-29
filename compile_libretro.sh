@@ -1,6 +1,7 @@
 #!/bin/sh
 
 FORMAT=libretro
+SRC_DIR=svn-new/trunk/
 
 #******************
 # PROGRAM FUNCTIONS
@@ -8,19 +9,19 @@ FORMAT=libretro
 
 clean()
 {
-   cd src-0.2.97.27/
+   cd $SRC_DIR
 	make -f makefile.libretro clean
 }
 
 make_libretro()
 {
-   cd src-0.2.97.27/
+   cd $SRC_DIR
 	make -f makefile.libretro -j4
 }
 
 make_debug()
 {
-   cd src-0.2.97.27/
+   cd $SRC_DIR
 	make -f makefile.libretro -j4 DEBUG=1
 }
 

@@ -736,9 +736,6 @@
 					<File
 						RelativePath="..\..\src\burner\libretro\libretro.cpp">
 					</File>
-					<File
-						RelativePath="..\..\src\burner\libretro\neocdlist.cpp">
-					</File>
 				</Filter>
 			</Filter>
 			<Filter

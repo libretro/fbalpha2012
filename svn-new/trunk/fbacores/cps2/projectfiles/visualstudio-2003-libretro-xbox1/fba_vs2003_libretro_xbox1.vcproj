@@ -334,13 +334,7 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\src\burn\drv\capcom\d_cps1.cpp">
-						</File>
-						<File
 							RelativePath="..\..\src\burn\drv\capcom\d_cps2.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\fcrash_snd.cpp">
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\capcom\kabuki.cpp">
@@ -362,9 +356,6 @@
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\capcom\qs_z.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\sf2mdt_snd.cpp">
 						</File>
 					</Filter>
 				</Filter>

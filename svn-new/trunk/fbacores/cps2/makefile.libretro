@@ -223,7 +223,7 @@ FBA_SRC_DIRS += $(FBA_LIB_DIRS)
 endif
 
 FBA_CXXSRCS := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
-FBA_CXXSRCS += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
+FBA_CXXSRCS += $(LIBRETRO_DIR)/libretro.cpp
 FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)
 FBA_CSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
 FBA_COBJ := $(FBA_CSRCS:.c=.o)

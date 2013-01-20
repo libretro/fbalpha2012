@@ -279,90 +279,6 @@ INT32 QscUpdate(INT32 nEnd)
 
 	memset(Qs_s, 0, nLen * 2 * sizeof(INT32));
 
-	if (nInterpolation < 3) {
-
-		// Go through all channels
-		for (INT32 c = 0; c < 16; c++) {
-
-			// If the channel is playing, add the samples to the buffer
-			if (QChan[c].bKey) {
-				INT32 VolL = (QChan[c].nMasterVolume * QChan[c].nVolume[0]) >> 8;
-				INT32 VolR = (QChan[c].nMasterVolume * QChan[c].nVolume[1]) >> 8;
-				INT32* pTemp = Qs_s;
-				INT32 i = nLen;
-				INT32 s, p;
-
-				if (QChan[c].bKey & 2) {
-					QChan[c].bKey &= ~2;
-					QChan[c].nPos = QChan[c].nPlayStart;
-				}
-
-				while (i--) {
-
-					p = (QChan[c].nPos >> 12) & 0xFFFF;
-
-					// Check for end of sample
-					if (QChan[c].nPos >= (QChan[c].nEnd - 0x01000)) {
-						if (QChan[c].nLoop) {						// Loop sample
-							if (QChan[c].nPos < QChan[c].nEnd) {
-								QChan[c].nEndBuffer[0] = QChan[c].PlayBank[(QChan[c].nEnd - QChan[c].nLoop) >> 12];
-							} else {
-								QChan[c].nPos = QChan[c].nEnd - QChan[c].nLoop + (QChan[c].nPos & 0x0FFF);
-								p = (QChan[c].nPos >> 12) & 0xFFFF;
-							}
-						} else {
-							if (QChan[c].nPos < QChan[c].nEnd) {
-								QChan[c].nEndBuffer[0] = QChan[c].PlayBank[p];
-							} else {
-								QChan[c].bKey = 0;					// Quit playing
-								break;
-							}
-						}
-					} else {
-						QChan[c].nEndBuffer[0] = QChan[c].PlayBank[p + 1];
-					}
-
-					// Interpolate sample
-					s = QChan[c].PlayBank[p] * (1 << 6) + ((QChan[c].nPos) & ((1 << 12) - 1)) * (QChan[c].nEndBuffer[0] - QChan[c].PlayBank[p]) / (1 << 6);
-
-					// Add to the sound currently in the buffer
-					pTemp[0] += (s * VolL) >> 3;
-					pTemp[1] += (s * VolR) >> 3;
-
-					pTemp += 2;
-
-					QChan[c].nPos += QChan[c].nAdvance;				// increment sample position based on pitch
-				}
-			}
-		}
-
-		INT16 *pDest = pBurnSoundOut + (nPos << 1);
-		INT32 *pSrc = Qs_s;
-		for (INT32 i = 0; i < nLen; i++) {
-			INT32 nLeftSample = 0, nRightSample = 0;
-			
-			if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-				nLeftSample += (INT32)((pSrc[(i << 1) + 0] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_1]);
-			}
-			if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-				nRightSample += (INT32)((pSrc[(i << 1) + 0] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_1]);
-			}
-			
-			if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-				nLeftSample += (INT32)((pSrc[(i << 1) + 1] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_2]);
-			}
-			if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-				nRightSample += (INT32)((pSrc[(i << 1) + 1] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_2]);
-			}
-			
-			pDest[(i << 1) + 0] = BURN_SND_CLIP(nLeftSample);
-			pDest[(i << 1) + 1] = BURN_SND_CLIP(nRightSample);
-		}
-		nPos = nEnd;
-
-		return 0;
-	}
-
 	// Go through all channels
 	for (INT32 c = 0; c < 16; c++) {
 
@@ -452,19 +368,8 @@ INT32 QscUpdate(INT32 nEnd)
 	for (INT32 i = 0; i < nLen; i++) {
 		INT32 nLeftSample = 0, nRightSample = 0;
 			
-		if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (INT32)((pSrc[(i << 1) + 0] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_1]);
-		}
-		if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (INT32)((pSrc[(i << 1) + 0] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_1]);
-		}
-			
-		if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (INT32)((pSrc[(i << 1) + 1] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_2]);
-		}
-		if ((QsndOutputDir[BURN_SND_QSND_OUTPUT_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (INT32)((pSrc[(i << 1) + 1] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_2]);
-		}
+      nLeftSample += (INT32)((pSrc[(i << 1) + 0] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_1]);
+      nRightSample += (INT32)((pSrc[(i << 1) + 1] >> 8) * QsndGain[BURN_SND_QSND_OUTPUT_2]);
 			
 		pDest[(i << 1) + 0] = BURN_SND_CLIP(nLeftSample);
 		pDest[(i << 1) + 1] = BURN_SND_CLIP(nRightSample);

@@ -1455,6 +1455,7 @@ static inline int CinpJoyAxis(int i, int axis)
 
 static inline int CinpMouseAxis(int i, int axis)
 {
+   return 0;
 }
 
 static inline int CinpState(int i)

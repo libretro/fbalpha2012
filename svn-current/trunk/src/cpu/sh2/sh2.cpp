@@ -767,22 +767,7 @@ SH2_INLINE void sh2_exception(/*const char *message,*/ int irqline)
 			//LOG(("SH-2 #%d exception #%d (internal vector: $%x) after [%s]\n", cpu_getactivecpu(), irqline, vector, message));
 		}
 		else
-		{
-			if(sh2->m[0x38] & 0x00010000)
-			{
-				//vector = sh2->irq_callback(irqline);
-				//LOG(("SH-2 #%d exception #%d (external vector: $%x) after [%s]\n", cpu_getactivecpu(), irqline, vector, message));
-				//bprintf(0, _T("SH-2 exception #%d (external vector: $%x)\n"), irqline, vector);
-				vector = 64 + irqline/2;
-				
-			}
-			else
-			{
-				//sh2->irq_callback(irqline);
-				vector = 64 + irqline/2;
-				//LOG(("SH-2 #%d exception #%d (autovector: $%x) after [%s]\n", cpu_getactivecpu(), irqline, vector, message));
-			}
-		}
+         vector = 64 + irqline/2;
 	}
 	else
 	{
@@ -2450,7 +2435,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 {
 	switch (opcode & 0x3F)
 	{
-	case 0x00: NOP();						break;
+	case 0x00:
 	case 0x01: NOP();						break;
 	case 0x02: STCSR(Rn);					break;
 	case 0x03: BSRF(Rn);					break;
@@ -2467,7 +2452,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x0e: MOVLL0(Rm, Rn);				break;
 	case 0x0f: MAC_L(Rm, Rn);				break;
 
-	case 0x10: NOP();						break;
+	case 0x10: 
 	case 0x11: NOP();						break;
 	case 0x12: STCGBR(Rn);					break;
 	case 0x13: NOP();						break;
@@ -2484,7 +2469,7 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x1e: MOVLL0(Rm, Rn);				break;
 	case 0x1f: MAC_L(Rm, Rn);				break;
 
-	case 0x20: NOP();						break;
+	case 0x20:
 	case 0x21: NOP();						break;
 	case 0x22: STCVBR(Rn);					break;
 	case 0x23: BRAF(Rn);					break;
@@ -2501,17 +2486,17 @@ SH2_INLINE void op0000(UINT16 opcode)
 	case 0x2e: MOVLL0(Rm, Rn);				break;
 	case 0x2f: MAC_L(Rm, Rn);				break;
 
-	case 0x30: NOP();						break;
-	case 0x31: NOP();						break;
-	case 0x32: NOP();						break;
+	case 0x30: 
+	case 0x31: 
+	case 0x32:
 	case 0x33: NOP();						break;
 	case 0x34: MOVBS0(Rm, Rn);				break;
 	case 0x35: MOVWS0(Rm, Rn);				break;
 	case 0x36: MOVLS0(Rm, Rn);				break;
 	case 0x37: MULL(Rm, Rn);				break;
-	case 0x38: NOP();						break;
-	case 0x39: NOP();						break;
-	case 0x3a: NOP();						break;
+	case 0x38:
+	case 0x39:
+	case 0x3a:
 	case 0x3b: NOP();						break;
 	case 0x3c: MOVBL0(Rm, Rn);				break;
 	case 0x3d: MOVWL0(Rm, Rn);				break;
@@ -2590,7 +2575,7 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x09: SHLR2(Rn);					break;
 	case 0x0a: LDSMACH(Rn); 				break;
 	case 0x0b: JSR(Rn); 					break;
-	case 0x0c: NOP();						break;
+	case 0x0c:
 	case 0x0d: NOP();						break;
 	case 0x0e: LDCSR(Rn);					break;
 	case 0x0f: MAC_W(Rm, Rn);				break;
@@ -2607,7 +2592,7 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x19: SHLR8(Rn);					break;
 	case 0x1a: LDSMACL(Rn); 				break;
 	case 0x1b: TAS(Rn); 					break;
-	case 0x1c: NOP();						break;
+	case 0x1c:
 	case 0x1d: NOP();						break;
 	case 0x1e: LDCGBR(Rn);					break;
 	case 0x1f: MAC_W(Rm, Rn);				break;
@@ -2624,25 +2609,25 @@ SH2_INLINE void op0100(UINT16 opcode)
 	case 0x29: SHLR16(Rn);					break;
 	case 0x2a: LDSPR(Rn);					break;
 	case 0x2b: JMP(Rn); 					break;
-	case 0x2c: NOP();						break;
+	case 0x2c:
 	case 0x2d: NOP();						break;
 	case 0x2e: LDCVBR(Rn);					break;
 	case 0x2f: MAC_W(Rm, Rn);				break;
 
-	case 0x30: NOP();						break;
-	case 0x31: NOP();						break;
-	case 0x32: NOP();						break;
-	case 0x33: NOP();						break;
-	case 0x34: NOP();						break;
-	case 0x35: NOP();						break;
-	case 0x36: NOP();						break;
-	case 0x37: NOP();						break;
-	case 0x38: NOP();						break;
-	case 0x39: NOP();						break;
-	case 0x3a: NOP();						break;
-	case 0x3b: NOP();						break;
-	case 0x3c: NOP();						break;
-	case 0x3d: NOP();						break;
+	case 0x30:
+	case 0x31:
+	case 0x32: 
+	case 0x33:
+	case 0x34:
+	case 0x35:
+	case 0x36:
+	case 0x37:
+	case 0x38:
+	case 0x39:
+	case 0x3a:
+	case 0x3b:
+	case 0x3c:
+	case 0x3d:
 	case 0x3e: NOP();						break;
 	case 0x3f: MAC_W(Rm, Rn);				break;
 
@@ -2688,11 +2673,11 @@ SH2_INLINE void op1000(UINT16 opcode)
 	{
 	case  0 << 8: MOVBS4(opcode & 0x0f, Rm); 	break;
 	case  1 << 8: MOVWS4(opcode & 0x0f, Rm); 	break;
-	case  2<< 8: NOP(); 				break;
+	case  2<< 8:
 	case  3<< 8: NOP(); 				break;
 	case  4<< 8: MOVBL4(Rm, opcode & 0x0f); 	break;
 	case  5<< 8: MOVWL4(Rm, opcode & 0x0f); 	break;
-	case  6<< 8: NOP(); 				break;
+	case  6<< 8:
 	case  7<< 8: NOP(); 				break;
 	case  8<< 8: CMPIM(opcode & 0xff);		break;
 	case  9<< 8: BT(opcode & 0xff); 		break;

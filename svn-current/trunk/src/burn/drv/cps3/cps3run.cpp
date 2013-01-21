@@ -1654,13 +1654,11 @@ static void DrvDraw()
 	cps3_gfx_max_x = ((cps3_gfx_width * fsz)  >> 16) - 1;	// 384 ( 496 for SFIII2 Only)
 	cps3_gfx_max_y = ((cps3_gfx_height * fsz) >> 16) - 1;	// 224
 
-	if (nBurnLayer & 1)
-	{
-		UINT32 * pscr = RamScreen;
-		INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
-		for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
-			memset(pscr, 0, clrsz);
-	}
+   UINT32 * pscr = RamScreen;
+   INT32 clrsz = (cps3_gfx_max_x + 1) * sizeof(INT32);
+   for(INT32 yy = 0; yy<=cps3_gfx_max_y; yy++, pscr += 512*2)
+      memset(pscr, 0, clrsz);
+#if 0
 	else
 	{
 		Cps3CurPal[0x20000] = BurnHighCol(0xff, 0x00, 0xff, 0);
@@ -1670,6 +1668,7 @@ static void DrvDraw()
 			RamScreen[i] = 0x20000;
 		}
 	}
+#endif
 	
 	// Draw Sprites
 	{
@@ -1723,35 +1722,30 @@ static void DrvDraw()
 				if (ysize2==0) continue;
 
 				if (xsize2==0)
-				{
-					if (nBurnLayer & 1)
-					{
-						INT32 tilemapnum = ((value3 & 0x00000030)>>4);
-						INT32 startline;
-						INT32 endline;
-						INT32 height = (value3 & 0x7f000000)>>24;
-						UINT32 * regs;
+            {
+               INT32 tilemapnum = ((value3 & 0x00000030)>>4);
+               INT32 startline;
+               INT32 endline;
+               INT32 height = (value3 & 0x7f000000)>>24;
+               UINT32 * regs;
 
-						regs = RamVReg + 8 + tilemapnum * 4;
-						endline = value2;
-						startline = endline - height;
+               regs = RamVReg + 8 + tilemapnum * 4;
+               endline = value2;
+               startline = endline - height;
 
-						startline &=0x3ff;
-						endline &=0x3ff;
+               startline &=0x3ff;
+               endline &=0x3ff;
 
-						if (bg_drawn[tilemapnum]==0)
-						{
-							UINT32 srcy = 0;
-							for (INT32 ry = 0; ry < 224; ry++, srcy += fsz) {
-								cps3_draw_tilemapsprite_line( srcy >> 16, regs );
-							}
-						}
+               if (bg_drawn[tilemapnum]==0)
+               {
+                  UINT32 srcy = 0;
+                  for (INT32 ry = 0; ry < 224; ry++, srcy += fsz) {
+                     cps3_draw_tilemapsprite_line( srcy >> 16, regs );
+                  }
+               }
 
-						bg_drawn[tilemapnum] = 1;
-					}
-				} else {
-					if (~nSpriteEnable & 1) continue;
-
+               bg_drawn[tilemapnum] = 1;
+            } else {
 					ysize2 = tilestable[ysize2];
 					xsize2 = tilestable[xsize2];
 
@@ -1857,26 +1851,23 @@ static void DrvDraw()
 		}
 	}
 	
-	if (nBurnLayer & 2)
-	{
-		// bank select? (sfiii2 intro)
-		INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
-		for (INT32 y=0; y<32-4; y++) {
-			for (INT32 x=0; x<64; x++, count++) {
-				UINT32 data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
-				UINT32 tile = (data >> 16) & 0x1ff;
-				INT32 pal = (data & 0x003f) >> 1;
-				INT32 flipx = data & 0x0080;
-				INT32 flipy = data & 0x0040;
-				pal += ss_pal_base << 5;
+   // bank select? (sfiii2 intro)
+   INT32 count = (ss_bank_base & 0x01000000) ? 0x0000 : 0x0800;
+   for (INT32 y=0; y<32-4; y++) {
+      for (INT32 x=0; x<64; x++, count++) {
+         UINT32 data = RamSS[count]; // +0x800 = 2nd bank, used on sfiii2 intro..
+         UINT32 tile = (data >> 16) & 0x1ff;
+         INT32 pal = (data & 0x003f) >> 1;
+         INT32 flipx = data & 0x0080;
+         INT32 flipy = data & 0x0040;
+         pal += ss_pal_base << 5;
 
-				if (tile == 0) continue; // ok?
+         if (tile == 0) continue; // ok?
 
-				tile+=0x200;
-				cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
-			}
-		}
-	}
+         tile+=0x200;
+         cps3_drawgfxzoom_0(tile,pal,flipx,flipy,x*8,y*8);
+      }
+   }
 }
 
 static INT32 cps_int10_cnt = 0;

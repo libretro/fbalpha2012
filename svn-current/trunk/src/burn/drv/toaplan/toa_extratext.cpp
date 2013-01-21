@@ -26,23 +26,11 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
-#define BPP 24
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 32
-#include "toa_extratext.h"
-#undef BPP
 
 #undef DOCLIP
 #define DOCLIP 1
 
 #define BPP 16
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 24
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 32
 #include "toa_extratext.h"
 #undef BPP
 
@@ -56,23 +44,11 @@ static INT32 nLastBPP = 0;
 #define BPP 16
 #include "toa_extratext.h"
 #undef BPP
-#define BPP 24
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 32
-#include "toa_extratext.h"
-#undef BPP
 
 #undef DOCLIP
 #define DOCLIP 1
 
 #define BPP 16
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 24
-#include "toa_extratext.h"
-#undef BPP
-#define BPP 32
 #include "toa_extratext.h"
 #undef BPP
 
@@ -92,23 +68,11 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
- #define BPP 24
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 32
- #include "toa_extratext.h"
- #undef BPP
 
  #undef DOCLIP
  #define DOCLIP 1
 
  #define BPP 16
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 24
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
 
@@ -122,23 +86,11 @@ static INT32 nLastBPP = 0;
  #define BPP 16
  #include "toa_extratext.h"
  #undef BPP
- #define BPP 24
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 32
- #include "toa_extratext.h"
- #undef BPP
 
  #undef DOCLIP
  #define DOCLIP 1
 
  #define BPP 16
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 24
- #include "toa_extratext.h"
- #undef BPP
- #define BPP 32
  #include "toa_extratext.h"
  #undef BPP
 
@@ -155,8 +107,6 @@ INT32 ToaExtraTextLayer()
 		nLastBPP = nBurnBpp;
 
 #ifdef DRIVER_ROTATION
-		switch (nBurnBpp) {
-			case 2:
 				if (bRotatedScreen) {
 					RenderTile[0] = *RenderTile16_ROT270_NOCLIP_NORMAL;
 					RenderTile[1] = *RenderTile16_ROT270_CLIP_NORMAL;
@@ -168,59 +118,11 @@ INT32 ToaExtraTextLayer()
 					RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
 					RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
 				}
-				break;
-			case 3:
-				if (bRotatedScreen) {
-					RenderTile[0] = *RenderTile24_ROT270_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile24_ROT270_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile24_ROT270_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile24_ROT270_CLIP_ROWSEL;
-				} else {
-					RenderTile[0] = *RenderTile24_ROT0_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile24_ROT0_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile24_ROT0_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile24_ROT0_CLIP_ROWSEL;
-				}
-				break;
-			case 4:
-				if (bRotatedScreen) {
-					RenderTile[0] = *RenderTile32_ROT270_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile32_ROT270_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile32_ROT270_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile32_ROT270_CLIP_ROWSEL;
-				} else {
-					RenderTile[0] = *RenderTile32_ROT0_NOCLIP_NORMAL;
-					RenderTile[1] = *RenderTile32_ROT0_CLIP_NORMAL;
-					RenderTile[2] = *RenderTile32_ROT0_NOCLIP_ROWSEL;
-					RenderTile[3] = *RenderTile32_ROT0_CLIP_ROWSEL;
-				}
-				break;
-			default:
-				return 1;
-		}
 #else
-		switch (nBurnBpp) {
-			case 2:
 				RenderTile[0] = *RenderTile16_ROT0_NOCLIP_NORMAL;
 				RenderTile[1] = *RenderTile16_ROT0_CLIP_NORMAL;
 				RenderTile[2] = *RenderTile16_ROT0_NOCLIP_ROWSEL;
 				RenderTile[3] = *RenderTile16_ROT0_CLIP_ROWSEL;
-				break;
-			case 3:
-				RenderTile[0] = *RenderTile24_ROT0_NOCLIP_NORMAL;
-				RenderTile[1] = *RenderTile24_ROT0_CLIP_NORMAL;
-				RenderTile[2] = *RenderTile24_ROT0_NOCLIP_ROWSEL;
-				RenderTile[3] = *RenderTile24_ROT0_CLIP_ROWSEL;
-				break;
-			case 4:
-				RenderTile[0] = *RenderTile32_ROT0_NOCLIP_NORMAL;
-				RenderTile[1] = *RenderTile32_ROT0_CLIP_NORMAL;
-				RenderTile[2] = *RenderTile32_ROT0_NOCLIP_ROWSEL;
-				RenderTile[3] = *RenderTile32_ROT0_CLIP_ROWSEL;
-				break;
-			default:
-				return 1;
-		}
 #endif
 	}
 

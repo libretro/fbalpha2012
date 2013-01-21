@@ -1,0 +1,40 @@
+This list contains all games supported by FB Alpha.
+
+33 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
+
+  name		  status  full name						  parent	  year	  company	  hardware	  remarks
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+
+| btlkroad	|  	| Battle K-Road						| 		| 1994	| Psikyo	| Psikyo 68EC020| 					|
+| daraku	|  	| Daraku Tenshi - The Fallen Angels			| 		| 1998	| Psikyo	| PS3-V1	| 					|
+| dragnblz	|  	| Dragon Blaze						| 		| 2000	| Psikyo	| PS5V2		| 					|
+| gnbarich	|  	| Gunbarich						| 		| 2001	| Psikyo	| PS5V2		| 					|
+| gunbirdj	|  	| Gunbird (Japan)					| gunbird	| 1994	| Psikyo	| Psikyo 68EC020| 					|
+| gunbirdk	|  	| Gunbird (Korea)					| gunbird	| 1994	| Psikyo	| Psikyo 68EC020| 					|
+| gunbird	|  	| Gunbird (World)					| 		| 1994	| Psikyo	| Psikyo 68EC020| 					|
+| gunbird2	|  	| Gunbird 2						| 		| 1998	| Psikyo	| PS5		| 					|
+| loderndfa	|  	| Lode Runner - The Dig Fight (ver. A)			| loderndf	| 2000	| Psikyo	| PS4		| 					|
+| loderndf	|  	| Lode Runner - The Dig Fight (ver. B)			| 		| 2000	| Psikyo	| PS4		| 					|
+| mjgtaste	|  	| Mahjong G-Taste					| 		| 2002	| Psikyo	| PS5V2		| 					|
+| hotgmcki	|  	| Mahjong Hot Gimmick Integral (Japan)			| 		| 2001	| Psikyo	| PS4		| 					|
+| hotdebut	|  	| Quiz de Idol! Hot Debut (Japan)			| 		| 2000	| Psikyo / Moss	| PS4		| 					|
+| samuraia	|  	| Samurai Aces (World)					| 		| 1993	| Psikyo / Banpr| Psikyo 68EC020| 					|
+| sngkace	|  	| Sengoku Ace (Japan)					| samuraia	| 1993	| Psikyo / Banpr| Psikyo 68EC020| 					|
+| soldivid	|  	| Sol Divide - The Sword Of Darkness			| 		| 1997	| Psikyo	| PS3-V1	| 					|
+| sbombera	|  	| Space Bomber						| sbomber	| 1998	| Psikyo	| PS3-V1	| 					|
+| sbomber	|  	| Space Bomber (ver. B)					| 		| 1998	| Psikyo	| PS3-V1	| 					|
+| s1945		|  	| Strikers 1945						| 		| 1995	| Psikyo	| Psikyo 68EC020| 					|
+| s1945a	|  	| Strikers 1945 (Alt)					| s1945		| 1995	| Psikyo	| Psikyo 68EC020| 					|
+| s1945j	|  	| Strikers 1945 (Japan)					| s1945		| 1995	| Psikyo	| Psikyo 68EC020| 					|
+| s1945jn	|  	| Strikers 1945 (Japan, unprotected)			| s1945		| 1995	| Psikyo	| Psikyo 68EC020| 					|
+| s1945k	|  	| Strikers 1945 (Korea)					| s1945		| 1995	| Psikyo	| Psikyo 68EC020| 					|
+| s1945ii	|  	| Strikers 1945 II					| 		| 1997	| Psikyo	| PS3-V1	| 					|
+| s1945iii	|  	| Strikers 1945 III (World) / Strikers 1999 (Japan)	| 		| 1999	| Psikyo	| PS5		| 					|
+| hotgmck	|  	| Taisen Hot Gimmick (Japan)				| 		| 1997	| Psikyo	| PS4		| 					|
+| hotgmck3	|  	| Taisen Hot Gimmick 3 Digital Surfing (Japan)		| 		| 1999	| Psikyo	| PS4		| 					|
+| hotgm4ev	|  	| Taisen Hot Gimmick 4 Ever (Japan)			| 		| 2000	| Psikyo	| PS4		| 					|
+| hgkairak	|  	| Taisen Hot Gimmick Kairakuten (Japan)			| 		| 1998	| Psikyo	| PS4		| 					|
+| tengai	|  	| Tengai (world)					| 		| 1996	| Psikyo	| Psikyo 68EC020| 					|
+| tengaij	|  	| Tengai\0Sengoku Blade - sengoku ace episode II	| tengai	| 1996	| Psikyo	| Psikyo 68EC020| 					|
+| tgm2		|  	| Tetris the Absolute The Grand Master 2		| 		| 2000	| Arika		| PS5V2		| 					|
+| tgm2p		|  	| Tetris the Absolute The Grand Master 2 Plus		| tgm2		| 2000	| Arika		| PS5V2		| 					|
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+

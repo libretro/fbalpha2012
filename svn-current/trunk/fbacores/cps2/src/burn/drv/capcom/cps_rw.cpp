@@ -22,16 +22,11 @@ INT32 CpsPaddle1 = 0;
 INT32 CpsPaddle2 = 0;
 static INT32 nDial055, nDial05d;
 
-INT32 PangEEP = 0;
-INT32 Forgottn = 0;
-INT32 Cps1QsHack = 0;
 INT32 Kodh = 0;
 INT32 Cawingb = 0;
 INT32 Wofh = 0;
-INT32 Sf2thndr = 0;
 INT32 Pzloop2 = 0;
 INT32 Ssf2tb = 0;
-INT32 Dinohunt = 0;
 INT32 Port6SoundWrite = 0;
 INT32 CpsBootlegEEPROM = 0;
 
@@ -179,35 +174,6 @@ static UINT8 CpsReadPort(const UINT32 ia)
 			return d;
 		}
 		
-		if (Sf2thndr) {
-			// this reads the B-ID from here on startup as well as the normal location in-game
-			if (ia == 0x1c8) {
-				d = (UINT8)CpsBID[1];
-				return d;
-			}
-		
-			if (ia == 0x1c9) {
-				d = (UINT8)CpsBID[2];
-				return d;
-			}
-		}
-		
-		// CPS1 EEPROM read
-		if (ia == 0xC007) {
-			if (Cps1Qs || CpsBootlegEEPROM) {
-				return EEPROMRead();
-			} else {
-				return 0;
-			}
-		}
-		
-		// Pang3 EEPROM
-		if (PangEEP == 1) {
-			if (ia == 0x17B) {
-				return EEPROMRead();
-			}
-		}
-		
 		// Extra Input ports (move from game-to-game)
 		if (ia == 0x006) {
 			d = (UINT8)~Inp006;
@@ -261,22 +227,6 @@ static UINT8 CpsReadPort(const UINT32 ia)
 			d = (UINT8)~Inpc003;
 			return d;
 		}
-		
-		// Forgotten Worlds Dial
-		if (Forgottn) {
-			if (ia == 0x053) {
-				return (nDial055 >>  8) & 0xFF;
-			}
-			if (ia == 0x055) {
-				return (nDial055 >> 16) & 0xFF;
-			}
-			if (ia == 0x05B) {
-				return (nDial05d >>  8) & 0xFF;
-			}
-			if (ia == 0x05D) {
-				return (nDial05d >> 16) & 0xFF;
-			}
-		}	
 	}
 	
 //	bprintf(PRINT_NORMAL, _T("Read Port %x\n"), ia);
@@ -287,53 +237,8 @@ static UINT8 CpsReadPort(const UINT32 ia)
 // Write output port 0x000-0x1ff
 void CpsWritePort(const UINT32 ia, UINT8 d)
 {
-	if ((Cps & 1) && Cps1Qs == 0) {
-		if (!Cps1DisablePSnd) {
-			// CPS1 sound code
-			if (ia == 0x181 || (Port6SoundWrite && (ia == 0x006 || ia == 0x007))) {
-				PsndSyncZ80((INT64)SekTotalCycles() * nCpsZ80Cycles / nCpsCycles);
-
-				PsndCode = d;
-				return;
-			}
-
-			// CPS1 sound fade
-			if (ia == 0x189) {
-				PsndSyncZ80((INT64)SekTotalCycles() * nCpsZ80Cycles / nCpsCycles);
-
-				PsndFade = d;
-				return;
-			}
-		} else {
-			if (ia == 0x181 || (Port6SoundWrite && (ia == 0x006 || ia == 0x007))) {
-				if (CpsRWSoundCommandCallbackFunction) {
-					CpsRWSoundCommandCallbackFunction(d);
-				}
-			}
-		}
-
-		if (ia == 0x041) {
-			nDial055 = 0;
-		}
-		if (ia == 0x049) {
-			nDial05d = 0;
-		}
-	}
-
-	if (Cps == 1 && Cps1QsHack == 1) {
-		if (ia == 0x181) {
-			// Pass the Sound Code to the Q-Sound Shared Ram
-			CpsZRamC0[0x001] = d;
-		}
-	}
-
 	// CPS registers
 	if (ia >= 0x100 && ia < 0x200) {
-		//Pang3 EEPROM
-		if (PangEEP == 1 && ia == 0x17B) {
-			EEPROMWrite(d & 0x40, d & 0x80, d & 0x01);
-			return;
-		}
 		CpsReg[(ia ^ 1) & 0xFF] = d;
 		
 		if (ia == 0x10b) {
@@ -362,14 +267,6 @@ void CpsWritePort(const UINT32 ia, UINT8 d)
 		}
 	}
 
-	if (Cps1Qs == 1 || CpsBootlegEEPROM) {
-		//CPS1 EEPROM write
-		if (ia == 0xc007) {
-			EEPROMWrite(d & 0x40, d & 0x80, d & 0x01);
-			return;
-		}
-	}
-	
 //	bprintf(PRINT_NORMAL, _T("Write Port %x, %x\n"), ia, d);
 }
 
@@ -393,8 +290,6 @@ UINT8 __fastcall CpsReadByte(UINT32 a)
 	if (a >= 0xF1C000 && a <= 0xF1C007) {
 		return CpsReadPort(a & 0xC00F);
 	}
-	
-	if (Dinohunt && a == 0xfc0001) return (UINT8)~Inpc001;
 	
 //	bprintf(PRINT_NORMAL, _T("Read Byte %x\n"), a);
 	
@@ -425,14 +320,6 @@ void __fastcall CpsWriteByte(UINT32 a,UINT8 d)
 		}
 
 		return;
-	}
-	
-	if (Cps1Qs == 1 || CpsBootlegEEPROM) {
-		// CPS1 EEPROM
-		if (a == 0xf1c007) {
-			CpsWritePort(a & 0xC00F, d);
-			return;
-		}
 	}
 	
 //	bprintf(PRINT_NORMAL, _T("Write Byte %x, %x\n"), a, d);
@@ -527,12 +414,6 @@ INT32 CpsRwGetInp()
 	CPSINPEX
 #undef INP
 
-	if (Forgottn) {
-		// Handle analog controls
-		nDial055 += (INT32)((INT16)CpsInp055);
-		nDial05d += (INT32)((INT16)CpsInp05d);
-	}
-	
 	if (Pzloop2) {
 		if (ReadPaddle) {
 			CpsPaddle1Value = 0;
@@ -592,12 +473,6 @@ INT32 CpsRwGetInp()
 			StopOpposite(&Inp177);
 			if (nMaxPlayers == 4) {
 				StopOpposite(&Inp179);
-			}
-			if (Cps1Qs) {
-				StopOpposite(&Inpc001);
-				if (nMaxPlayers == 4) {
-					StopOpposite(&Inpc003);
-				}
 			}
 		}
 	}

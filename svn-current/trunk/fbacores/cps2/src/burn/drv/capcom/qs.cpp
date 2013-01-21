@@ -21,13 +21,8 @@ INT32 QsndInit()
 	}
 	BurnTimerInit(qsndTimerOver, NULL);
 
-	if (Cps1Qs == 1) {
-		nCpsZ80Cycles = 6000000 * 100 / nBurnFPS;
-		BurnTimerAttachZet(6000000);
-	} else {
-		nCpsZ80Cycles = 8000000 * 100 / nBurnFPS;
-		BurnTimerAttachZet(8000000);
-	}
+   nCpsZ80Cycles = 8000000 * 100 / nBurnFPS;
+   BurnTimerAttachZet(8000000);
 
 	if (nBurnSoundRate >= 0) {
 		nRate = nBurnSoundRate;

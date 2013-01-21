@@ -11,25 +11,14 @@ static INT32 QsndZBankMap()
 	nOff = nQsndZBank << 14;
 	nOff += 0x8000;
 
-	if (Cps1Qs == 0) {
 		if (nOff + 0x4000 > nCpsZRomLen) {			// End of bank is out of range
 			nOff = 0;
 		}
 		Bank = CpsZRom + nOff;
-	} else {
-		if (nOff + 0x4000 > (nCpsZRomLen / 2)) {
-			nOff = 0;
-		}
-		Bank = CpsZRom - (nCpsZRomLen / 2) + nOff;
-	}
 
 	// Read and fetch the bank
 	ZetMapArea(0x8000, 0xbfff, 0, Bank);
-	if (Cps1Qs == 0) {
-		ZetMapArea(0x8000, 0xbfff, 2, Bank, CpsZRom + nOff);
-	} else {
-		ZetMapArea(0x8000, 0xbfff, 2, Bank);
-	}
+   ZetMapArea(0x8000, 0xbfff, 2, Bank, CpsZRom + nOff);
 
 	return 0;
 }
@@ -84,13 +73,8 @@ INT32 QsndZInit()
 	ZetSetWriteHandler(QsndZWrite);
 
 	// Read and fetch first 0x8000 of Rom
-	if (Cps1Qs) {
-		ZetMapArea(0x0000, 0x7FFF, 0, CpsZRom - (nCpsZRomLen / 2));
-		ZetMapArea(0x0000, 0x7FFF, 2, CpsZRom, CpsZRom - (nCpsZRomLen / 2));	// If it tries to fetch this area
-	} else {
-		ZetMapArea(0x0000, 0x7FFF, 0 ,CpsZRom);
-		ZetMapArea(0x0000, 0x7FFF, 2, CpsZRom);
-	}
+   ZetMapArea(0x0000, 0x7FFF, 0 ,CpsZRom);
+   ZetMapArea(0x0000, 0x7FFF, 2, CpsZRom);
 
 	// Map first Bank of Rom
 	nQsndZBank = 0;
@@ -103,11 +87,7 @@ INT32 QsndZInit()
 	ZetMemCallback(0xD000, 0xEFFF, 0);
 	ZetMemCallback(0xD000, 0xEFFF, 1);
 
-	if (Cps1Qs) {
-		ZetMapArea(0xD000, 0xEFFF, 2, CpsZRom, CpsZRom - (nCpsZRomLen / 2));	// If it tries to fetch this area
-	} else {
-		ZetMapArea(0xD000, 0xEFFF, 2, CpsZRom);
-	}
+   ZetMapArea(0xD000, 0xEFFF, 2, CpsZRom);
 
 	ZetMapArea(0xF000, 0xFFFF, 0, CpsZRamF0);
 	ZetMapArea(0xF000, 0xFFFF, 1, CpsZRamF0);

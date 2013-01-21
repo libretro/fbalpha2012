@@ -5,12 +5,6 @@ INT32 nCpsObjectBank;
 
 UINT8 *CpsBootlegSpriteRam = NULL;
 
-INT32 Cps1LockSpriteList910000 = 0;
-INT32 Cps1DetectEndSpriteList8000 = 0;
-
-Cps1ObjGetCallback Cps1ObjGetCallbackFunction = NULL;
-Cps1ObjDrawCallback Cps1ObjDrawCallbackFunction = NULL;
-
 // Our copy of the sprite table
 static UINT8 *ObjMem = NULL;
 
@@ -77,11 +71,6 @@ INT32 CpsObjExit()
 	nFrameCount = 0;
 	nMax = 0;
 	
-	Cps1DetectEndSpriteList8000 = 0;
-	
-	Cps1ObjGetCallbackFunction = NULL;
-	Cps1ObjDrawCallbackFunction = NULL;
-
 	return 0;
 }
 
@@ -93,10 +82,6 @@ INT32 CpsObjGet()
 	struct ObjFrame* pof;
 	UINT8* Get = NULL;
 	
-	if (Cps1ObjGetCallbackFunction) {
-		return Cps1ObjGetCallbackFunction();
-	}
-
 	pof = of + nGetNext;
 
 	pof->nCount = 0;
@@ -115,10 +100,6 @@ INT32 CpsObjGet()
 		INT32 nOff = BURN_ENDIAN_SWAP_INT16(*((UINT16*)(CpsReg + 0x00))) << 8;
 		nOff &= 0xfff800;
 		Get = CpsFindGfxRam(nOff, 0x800);		
-		
-		if (Cps1LockSpriteList910000) {
-			Get = CpsFindGfxRam(0x910000, 0x800);
-		}
 	}
 	
 	if (Get==NULL) return 1;
@@ -137,11 +118,6 @@ INT32 CpsObjGet()
 		} else {
 			if (BURN_ENDIAN_SWAP_INT16(ps[3]) >= 0xff00) {													// end of sprite list
 				break;
-			}
-			if (Cps1DetectEndSpriteList8000) {
-				if (BURN_ENDIAN_SWAP_INT16(ps[1]) & 0x8000) {
-					break;
-				}
 			}
 		}
 		
@@ -178,83 +154,6 @@ void CpsObjDrawInit()
 	nMaxZMask = nZOffset;
 
 	return;
-}
-
-INT32 Cps1ObjDraw(INT32 nLevelFrom,INT32 nLevelTo)
-{
-	INT32 i; UINT16 *ps; INT32 nPsAdd;
-	struct ObjFrame *pof;
-	(void)nLevelFrom; (void)nLevelTo;
-	
-	if (Cps1ObjDrawCallbackFunction) {
-		return Cps1ObjDrawCallbackFunction(nLevelFrom, nLevelTo);
-	}
-
-	// Draw the earliest frame we have in history
-	pof=of+nGetNext;
-
-	// Point to Obj list
-	ps=(UINT16 *)pof->Obj;
-
-	if (!CpsDrawSpritesInReverse) {
-		ps+=(pof->nCount-1)<<2; nPsAdd=-4; // CPS1 is reversed
-	} else {
-		nPsAdd=4;
-	}
-
-	// Go through all the Objs
-	for (i=0; i<pof->nCount; i++,ps+=nPsAdd) {
-		INT32 x,y,n,a,bx,by,dx,dy; INT32 nFlip;
-
-		x = BURN_ENDIAN_SWAP_INT16(ps[0]); y = BURN_ENDIAN_SWAP_INT16(ps[1]); n = BURN_ENDIAN_SWAP_INT16(ps[2]); a = BURN_ENDIAN_SWAP_INT16(ps[3]);
-			
-		// Find out sprite size
-		bx=((a>> 8)&15)+1;
-		by=((a>>12)&15)+1;
-		
-		n = GfxRomBankMapper(GFXTYPE_SPRITES, n);
-		if (n == -1) continue;
-		
-		n |= (y & 0x6000) << 3; // high bits of address
-		
-		// CPS1 coords are 9 bit signed?
-		x&=0x01ff; if (x>=0x1c0) x-=0x200;
-		y&=0x01ff; y^=0x100; y-=0x100;
-
-		x+=pof->nShiftX;
-		y+=pof->nShiftY;
-
-		// Find the palette for the tiles on this sprite
-		CpstPal = CpsPal + ((a & 0x1F) << 4);
-
-		nFlip=(a>>5)&3;		
-
-		// Take care with tiles if the sprite goes off the screen
-		if (x<0 || y<0 || x+(bx<<4)>384 || y+(by<<4)>224) {
-			nCpstType=CTT_16X16 | CTT_CARE;
-		} else {
-			nCpstType=CTT_16X16;
-		}
-
-		nCpstFlip=nFlip;
-		for (dy=0;dy<by;dy++) {
-			for (dx=0;dx<bx;dx++) {
-				INT32 ex,ey;
-				if (nFlip&1) ex=(bx-dx-1);
-				else ex=dx;
-				if (nFlip&2) ey=(by-dy-1);
-				else ey=dy;
-
-				nCpstX=x+(ex<<4);
-				nCpstY=y+(ey<<4);
-				nCpstTile = (n & ~0x0F) + (dy << 4) + ((n + dx) & 0x0F);
-				nCpstTile <<= 7;
-				CpstOneObjDoX[0]();
-			}
-		}
-
-	}
-	return 0;
 }
 
 // Delay sprite drawing by one frame

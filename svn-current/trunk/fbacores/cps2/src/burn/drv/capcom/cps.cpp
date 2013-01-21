@@ -2,8 +2,6 @@
 // CPS (general)
 
 INT32 Cps = 0;							// 1 = CPS1, 2 = CPS2, 3 = CPS Changer
-INT32 Cps1Qs = 0;
-INT32 Cps1DisablePSnd = 0;				// Disables the Z80 as well
 INT32 Cps2DisableQSnd = 0;				// Disables the Z80 as well
 
 INT32 nCPS68KClockspeed = 0;
@@ -1606,13 +1604,8 @@ INT32 CpsInit()
 {
 	INT32 nMemLen, i;
 	
-	if (Cps == 1) {
-		BurnSetRefreshRate(59.61);
-	} else {
-		if (Cps == 2) {
-			BurnSetRefreshRate(59.629403);
-		}
-	}
+   if (Cps == 2)
+      BurnSetRefreshRate(59.629403);
 
 	if (!nCPS68KClockspeed) {
 		if (!(Cps & 1)) {
@@ -1625,10 +1618,6 @@ INT32 CpsInit()
 
 	nMemLen = nCpsGfxLen + nCpsRomLen + nCpsCodeLen + nCpsZRomLen + nCpsQSamLen + nCpsAdLen;
 
-	if (Cps1Qs == 1) {
-		nMemLen += nCpsZRomLen * 2;
-	}
-
 	// Allocate Gfx, Rom and Z80 Roms
 	CpsGfx = (UINT8*)BurnMalloc(nMemLen);
 	if (CpsGfx == NULL) {
@@ -1638,12 +1627,7 @@ INT32 CpsInit()
 
 	CpsRom  = CpsGfx + nCpsGfxLen;
 	CpsCode = CpsRom + nCpsRomLen;
-	if (Cps1Qs == 1) {
-		CpsEncZRom = CpsCode + nCpsCodeLen;
-		CpsZRom = CpsEncZRom + nCpsZRomLen * 2;
-	} else {
-		CpsZRom = CpsCode + nCpsCodeLen;
-	}
+   CpsZRom = CpsCode + nCpsCodeLen;
 	CpsQSam =(INT8*)(CpsZRom + nCpsZRomLen);
 	CpsAd   =(UINT8*)(CpsQSam + nCpsQSamLen);
 

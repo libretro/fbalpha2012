@@ -29,7 +29,7 @@ static INT32 CpsMemIndex()
 
 	CpsSavePal    = Next; Next += 0x002000;							// Draw Copy of Correct Palette
 
-	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) {
+	if (((Cps == 2) && !Cps2DisableQSnd)) {
 		CpsZRamC0 = Next; Next += 0x001000;							// Z80 c000-cfff
 		CpsZRamF0 = Next; Next += 0x001000;							// Z80 f000-ffff
 	}
@@ -103,7 +103,7 @@ void CpsMapObjectBanks(INT32 nBank)
 INT32 __fastcall CPSResetCallback()
 {
 	// Reset instruction on 68000
-	if (((Cps & 1) && !Cps1DisablePSnd) || ((Cps == 2) && !Cps2DisableQSnd)) ZetReset();						// Reset Z80 (CPU #1)
+	if (((Cps == 2) && !Cps2DisableQSnd)) ZetReset();						// Reset Z80 (CPU #1)
 
 	return 0;
 }
@@ -301,24 +301,6 @@ INT32 CpsMemInit()
 		SekSetWriteByteHandler(1, CPSQSoundC0WriteByte);
 	}
 
-	if (Cps1Qs == 1) {
-		// Map the 1st 32KB of the QSound ROM into the 68K address space
-		for (INT32 i = 0x7FFF; i >= 0; i--) {
-			CpsEncZRom[(i << 1) + 0] = CpsEncZRom[i];
-			CpsEncZRom[(i << 1) + 1] = 0xFF;
-		}
-		SekMapMemory(CpsEncZRom, 0xF00000, 0xF0FFFF, SM_ROM);
-
-		// QSound shared RAM
-		SekMapHandler(1,	0xF18000, 0xF19FFF, SM_RAM);
-		SekMapHandler(2,	0xF1E000, 0xF1FFFF, SM_RAM);
-
-		SekSetReadByteHandler(1, CPSQSoundC0ReadByte);
-		SekSetWriteByteHandler(1, CPSQSoundC0WriteByte);
-		SekSetReadByteHandler(2, CPSQSoundF0ReadByte);
-		SekSetWriteByteHandler(2, CPSQSoundF0WriteByte);
-	}
-
 	SekClose();
 
 	return 0;
@@ -352,7 +334,7 @@ static INT32 ScanRam()
 	ba.Data = CpsRamFF;  ba.nLen = 0x010000; ba.szName = "CpsRamFF";  BurnAcb(&ba);
 	ba.Data = CpsReg;    ba.nLen = 0x000100; ba.szName = "CpsReg";    BurnAcb(&ba);
 
-	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) {
+	if (((Cps == 2) && !Cps2DisableQSnd)) {
 		ba.Data = CpsZRamC0; ba.nLen = 0x001000; ba.szName = "CpsZRamC0"; BurnAcb(&ba);
 		ba.Data = CpsZRamF0; ba.nLen = 0x001000; ba.szName = "CpsZRamF0"; BurnAcb(&ba);
 	}
@@ -393,7 +375,7 @@ INT32 CpsAreaScan(INT32 nAction, INT32 *pnMin)
 		}
 	}
 
-	if (Cps == 2 || Cps1Qs == 1 || PangEEP == 1 || CpsBootlegEEPROM == 1) {		// Scan EEPROM
+	if (Cps == 2 || CpsBootlegEEPROM == 1) {		// Scan EEPROM
 		EEPROMScan(nAction, pnMin);
 	}
 
@@ -415,20 +397,13 @@ INT32 CpsAreaScan(INT32 nAction, INT32 *pnMin)
 
 		SekScan(nAction);								// Scan 68000 state
 		
-		if (Cps1OverrideLayers) {
-			SCAN_VAR(nCps1Layers);
-			SCAN_VAR(nCps1LayerOffs);
-		}
-
 		if (nAction & ACB_WRITE) {						// Palette could have changed
 			CpsRecalcPal = 1;
 		}
 	}
 
-	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) {						// Scan QSound chips
+	if (((Cps == 2) && !Cps2DisableQSnd)) {						// Scan QSound chips
 		QsndScan(nAction);
-	} else {											// Scan PSound chips
-		if ((Cps & 1) && !Cps1DisablePSnd) PsndScan(nAction);
 	}
 	
 	if (CpsMemScanCallbackFunction) {

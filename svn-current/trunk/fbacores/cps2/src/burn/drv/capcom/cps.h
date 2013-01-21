@@ -3,7 +3,6 @@
 #include "m68000_intf.h"
 #include "z80_intf.h"
 
-#include "msm6295.h"
 #include "eeprom.h"
 #include "timer.h"
 
@@ -15,8 +14,6 @@ extern UINT32 CpsBID[3];										// Board ID changes
 
 // cps.cpp
 extern INT32 Cps;														// 1 = CPS1, 2 = CPS2, 3 = CPS CHanger
-extern INT32 Cps1Qs;
-extern INT32 Cps1DisablePSnd;
 extern INT32 Cps2DisableQSnd;
 extern INT32 nCPS68KClockspeed;
 extern INT32 nCpsCycles;												// Cycles per frame
@@ -176,11 +173,9 @@ extern UINT8 CpsReset;
 extern UINT8 Cpi01A, Cpi01C, Cpi01E;
 extern INT32 nIrqLine50, nIrqLine52;								// The scanlines at which the interrupts are triggered
 extern INT32 nCpsNumScanlines;
-extern INT32 Cps1VBlankIRQLine;
 extern INT32 CpsDrawSpritesInReverse;
 INT32 CpsRunInit();
 INT32 CpsRunExit();
-INT32 Cps1Frame();
 INT32 Cps2Frame();
 typedef INT32 (*CpsRunInitCallback)();
 extern CpsRunInitCallback CpsRunInitCallbackFunction;
@@ -238,7 +233,6 @@ extern UINT16 CpsInpPaddle1, CpsInpPaddle2;
 
 extern INT32 PangEEP;
 extern INT32 Forgottn;
-extern INT32 Cps1QsHack;
 extern INT32 Kodh;
 extern INT32 Cawingb;
 extern INT32 Wofh;
@@ -276,11 +270,7 @@ extern INT32 CpsLayer3XOffs;
 extern INT32 CpsLayer1YOffs;
 extern INT32 CpsLayer2YOffs;
 extern INT32 CpsLayer3YOffs;
-extern INT32 Cps1DisableBgHi;
 extern INT32 CpsDisableRowScroll;
-extern INT32 Cps1OverrideLayers;
-extern INT32 nCps1Layers[4];
-extern INT32 nCps1LayerOffs[3];
 void DrawFnInit();
 INT32  CpsDraw();
 INT32  CpsRedraw();
@@ -356,13 +346,6 @@ INT32 CtvReady();
 // cps_obj.cpp
 extern INT32 nCpsObjectBank;
 extern UINT8 *CpsBootlegSpriteRam;
-extern INT32 Cps1LockSpriteList910000;
-extern INT32 Cps1DetectEndSpriteList8000;
-
-typedef INT32 (*Cps1ObjGetCallback)();
-extern Cps1ObjGetCallback Cps1ObjGetCallbackFunction;
-typedef INT32 (*Cps1ObjDrawCallback)(INT32, INT32);
-extern Cps1ObjDrawCallback Cps1ObjDrawCallbackFunction;
 
 INT32  CpsObjInit();
 INT32  CpsObjExit();
@@ -374,7 +357,6 @@ INT32 DaimakaibObjGet();
 INT32 WofhObjGet();
 INT32 Sf2mdtObjGet();
 void CpsObjDrawInit();
-INT32  Cps1ObjDraw(INT32 nLevelFrom,INT32 nLevelTo);
 INT32  Cps2ObjDraw(INT32 nLevelFrom,INT32 nLevelTo);
 INT32  FcrashObjDraw(INT32 nLevelFrom,INT32 nLevelTo);
 
@@ -388,8 +370,6 @@ extern INT32 Xmcota;
 extern INT32 Scroll1TileMask;
 extern INT32 Scroll2TileMask;
 extern INT32 Scroll3TileMask;
-INT32 Cps1Scr1Draw(UINT8 *Base,INT32 sx,INT32 sy);
-INT32 Cps1Scr3Draw(UINT8 *Base,INT32 sx,INT32 sy);
 INT32 Cps2Scr1Draw(UINT8 *Base,INT32 sx,INT32 sy);
 INT32 Cps2Scr3Draw(UINT8 *Base,INT32 sx,INT32 sy);
 
@@ -410,11 +390,9 @@ struct CpsrLineInfo {
 	INT32 nMaxLeft, nMaxRight;						// Maximum row shifts left and right
 };
 extern struct CpsrLineInfo CpsrLineInfo[15];
-INT32 Cps1rPrepare();
 INT32 Cps2rPrepare();
 
 // cpsrd.cpp
-INT32 Cps1rRender();
 INT32 Cps2rRender();
 
 // dc_input.cpp

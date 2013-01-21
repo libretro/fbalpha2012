@@ -479,8 +479,3 @@ INT32 CpsRwGetInp()
 
 	return 0;
 }
-
-void CpsSoundCmd(UINT16 sound_code) {
-//	CpsWritePort(0x181, sound_code);
-	PsndCode = sound_code;
-}

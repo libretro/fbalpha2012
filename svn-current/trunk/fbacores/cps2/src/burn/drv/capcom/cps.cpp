@@ -1608,11 +1608,7 @@ INT32 CpsInit()
       BurnSetRefreshRate(59.629403);
 
 	if (!nCPS68KClockspeed) {
-		if (!(Cps & 1)) {
 			nCPS68KClockspeed = 11800000;
-		} else {
-			nCPS68KClockspeed = 10000000;
-		}
 	}
 	nCPS68KClockspeed = nCPS68KClockspeed * 100 / nBurnFPS;
 
@@ -1640,11 +1636,7 @@ INT32 CpsInit()
 	nCpsGfxMask = (1 << i) - 1;
 
 	// Offset to Scroll tiles
-	if (!(Cps & 1)) {
-		nCpsGfxScroll[1] = nCpsGfxScroll[2] = nCpsGfxScroll[3] = 0x800000;
-	} else {
-		nCpsGfxScroll[1] = nCpsGfxScroll[2] = nCpsGfxScroll[3] = 0;
-	}
+   nCpsGfxScroll[1] = nCpsGfxScroll[2] = nCpsGfxScroll[3] = 0x800000;
 
 #if 0
 	if (nCpsZRomLen>=5) {
@@ -1684,9 +1676,7 @@ INT32 Cps2Init()
 
 INT32 CpsExit()
 {
-	if (!(Cps & 1)) {
-		CpsRunExit();
-	}
+   CpsRunExit();
 
 	CpsLayEn[1] = CpsLayEn[2] = CpsLayEn[3] = CpsLayEn[4] = CpsLayEn[5] = 0;
 	nCpsLcReg = 0;

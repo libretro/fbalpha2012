@@ -1,13 +1,8 @@
 #include "burnint.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
-#include "nec_intf.h"
 #include "sh2_intf.h"
-#include "m6502_intf.h"
-#include "m6809_intf.h"
-#include "hd6309_intf.h"
 #include "m6800_intf.h"
-#include "s2650_intf.h"
 
 // A hiscore.dat support module for FBA - written by Treble Winner, Feb 2009
 // At some point we really need a CPU interface to track CPU types and numbers,
@@ -43,37 +38,17 @@ static void set_cpu_type()
 	{
 		nCpuType = 1;			// Motorola 68000
 	}
-	else if (nVezCount)
-	{
-		nCpuType = 2;			// NEC V30 / V33
-	}
 	else if (has_sh2)
 	{
 		nCpuType = 3;			// Hitachi SH2
-	}
-	else if (nHD6309Count)
-	{
-		nCpuType = 7;			// HD6309
-	}
-	else if (nM6809Count)
-	{
-		nCpuType = 6;			// M6809
 	}
 	else if (nHasZet > -1)
 	{
 		nCpuType = 5;			// Zilog Z80
 	}
-	else if (nM6502Count)
-	{
-		nCpuType = 4;			// MOS 6502
-	}
 	else if (nM6800Count)
 	{
 		nCpuType = 8;			// M6800 & Family
-	}
-	else if (s2650Count)
-	{
-		nCpuType = 9;			// S2650
 	}
 	else
 	{
@@ -89,35 +64,12 @@ static void cpu_open(INT32 nCpu)
 			SekOpen(nCpu);
 		break;
 
-		case 2:	
-			VezOpen(nCpu);	
-		break;
-
 		case 3:	
 			Sh2Open(nCpu);
 		break;
 
-		case 4:
-			M6502Open(nCpu);
-		break;
-
 		case 5:
 			ZetOpen(nCpu);
-		break;
-			
-		case 6:
-			M6809Open(nCpu);
-		break;
-			
-		case 7:
-			HD6309Open(nCpu);
-		break;
-		
-		case 8:
-		break;
-		
-		case 9: 
-			s2650Open(nCpu);
 		break;
 	}
 }
@@ -130,35 +82,12 @@ static void cpu_close()
 			SekClose();
 		break;
 
-		case 2:
-			VezClose();	
-		break;
-
 		case 3:
 			Sh2Close();
 		break;
 
-		case 4:
-			M6502Close();
-		break;
-
 		case 5:
 			ZetClose();
-		break;
-		
-		case 6:
-			M6809Close();
-		break;
-		
-		case 7:
-			HD6309Close();
-		break;
-		
-		case 8:
-		break;
-		
-		case 9:
-			s2650Close();
 		break;
 	}
 }
@@ -211,29 +140,14 @@ static UINT8 cpu_read_byte(UINT32 a)
 		case 1:
 			return SekReadByte(a);
 
-		case 2:
-			return cpu_readmem20(a);	
-
 		case 3:
 			return Sh2ReadByte(a);
-
-		case 4:
-			return M6502ReadByte(a);
 
 		case 5:
 			return ZetReadByte(a);
 			
-		case 6:
-			return M6809ReadByte(a);
-		
-		case 7:
-			return HD6309ReadByte(a);
-			
 		case 8:
 			return M6800ReadByte(a);
-			
-		case 9:
-			return s2650_read(a);
 	}
 
 	return 0;
@@ -247,37 +161,18 @@ static void cpu_write_byte(UINT32 a, UINT8 d)
 			SekWriteByteROM(a, d);
 		break;
 
-		case 2:
-			cpu_writemem20(a, d);
-		break;
-
 		case 3:
 			Sh2WriteByte(a, d);
-		break;
-
-		case 4:
-			M6502WriteByte(a, d);
 		break;
 
 		case 5:
 			ZetWriteByte(a, d);
 		break;
 		
-		case 6:
-			M6809WriteByte(a, d);
-		break;
-		
-		case 7:
-			HD6309WriteByte(a, d);
-		break;
-		
 		case 8:
 			M6800WriteByte(a, d);
 		break;
 		
-		case 9:
-			s2650_write(a, d);
-		break;
 	}
 }
 

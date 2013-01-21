@@ -635,11 +635,7 @@ INT32 PsikyoshDraw()
 		}
 	}
 
-	if (nBurnBpp == 4) {
-		DrvTmpDraw = (UINT32*)pBurnDraw;
-	} else {
-		DrvTmpDraw = DrvTmpDraw_ptr;
-	}
+   DrvTmpDraw = (UINT32*)pBurnDraw;
 
 	memset (DrvTmpDraw, 0, nScreenWidth * nScreenHeight * sizeof(UINT32));
 	memset (DrvPriBmp, 0, nScreenWidth * nScreenHeight * sizeof(INT16));
@@ -652,13 +648,6 @@ INT32 PsikyoshDraw()
 		draw_sprites(i);
 		draw_background(i);
 		if ((psikyosh_vidregs[2] & 0x0f) == i) postlineblend();
-	}
-
-	if (nBurnBpp < 4) {
-		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
-			INT32 d = DrvTmpDraw[i];
-			PutPix(pBurnDraw + i * nBurnBpp, BurnHighCol(d>>16, d>>8, d, 0));
-		}
 	}
 
 	return 0;

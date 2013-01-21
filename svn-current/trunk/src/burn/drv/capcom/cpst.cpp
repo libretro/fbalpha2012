@@ -1,4 +1,16 @@
 #include "cps.h"
+// CPS Tile Variants
+// horizontal/vertical clip rolls
+UINT32 nCtvRollX=0,nCtvRollY=0;
+// Add 0x7fff after each pixel/line
+// If nRollX/Y&0x20004000 both == 0, you can draw the pixel
+
+UINT8 *pCtvTile=NULL; // Pointer to tile data
+INT32 nCtvTileAdd=0; // Amount to add after each tile line
+UINT8 *pCtvLine=NULL; // Pointer to output bitmap
+
+// Include all tile variants:
+#include "ctv.h"
 
 // CPS Tiles
 UINT32 *CpstPal=NULL;
@@ -61,7 +73,7 @@ static INT32 CpstOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoX[nFun]();
+  return CtvDo2[nFun]();
 }
 
 static INT32 CpstOneBgHi()
@@ -103,7 +115,7 @@ static INT32 CpstOneBgHi()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoXB[nFun]();
+  return CtvDo2b[nFun]();
 }
 
 static INT32 Cps2tOne()
@@ -144,7 +156,7 @@ static INT32 Cps2tOne()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoX[nFun]();
+  return CtvDo2[nFun]();
 }
 
 static INT32 CpstOneObjZ()
@@ -188,5 +200,5 @@ static INT32 CpstOneObjZ()
 
   nFun =nCpstType&0x1e;
   nFun|=nCpstFlip&1;
-  return CtvDoXM[nFun]();
+  return CtvDo2m[nFun]();
 }

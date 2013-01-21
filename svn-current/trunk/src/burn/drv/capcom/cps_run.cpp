@@ -344,9 +344,7 @@ INT32 Cps1Frame()
 //		}
 	}
 	
-	if (pBurnDraw) {
-		CpsDraw();										// Draw frame
-	}
+   CpsDraw();										// Draw frame
 
 	if (Cps1Qs == 1) {
 		QsndEndFrame();
@@ -450,9 +448,7 @@ INT32 Cps2Frame()
 //	nDone += SekRun(nCpsCyclesSegment[0] - nDone);
 
 	SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// VBlank
-	if (pBurnDraw) {
-		CpsDraw();
-	}
+   CpsDraw();
 	SekRun(nCpsCycles - SekTotalCycles());	
 
 	nCpsCyclesExtra = SekTotalCycles() - nCpsCycles;

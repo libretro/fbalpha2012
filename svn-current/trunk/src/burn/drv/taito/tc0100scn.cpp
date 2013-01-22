@@ -7,6 +7,9 @@ UINT8 *TC0100SCNRam[TC0100SCN_MAX_CHIPS];
 UINT16 TC0100SCNCtrl[TC0100SCN_MAX_CHIPS][8];
 UINT8 TC0100SCNBgLayerUpdate[TC0100SCN_MAX_CHIPS];
 UINT8 TC0100SCNFgLayerUpdate[TC0100SCN_MAX_CHIPS];
+UINT8 TC0100SCNCharLayerUpdate[TC0100SCN_MAX_CHIPS];
+UINT8 TC0100SCNCharRamUpdate[TC0100SCN_MAX_CHIPS];
+INT32 TC0100SCNDblWidth[TC0100SCN_MAX_CHIPS];
 static UINT8 *TC0100SCNChars[TC0100SCN_MAX_CHIPS];
 static INT32 BgScrollX[TC0100SCN_MAX_CHIPS];
 static INT32 BgScrollY[TC0100SCN_MAX_CHIPS];
@@ -22,7 +25,6 @@ static UINT8 *TC0100SCNPriorityMap[TC0100SCN_MAX_CHIPS] = { NULL, };
 static INT32 TC0100SCNColourDepth[TC0100SCN_MAX_CHIPS];
 static INT32 TC0100SCNGfxBank[TC0100SCN_MAX_CHIPS];
 static INT32 TC0100SCNGfxMask[TC0100SCN_MAX_CHIPS];
-static INT32 TC0100SCNDblWidth[TC0100SCN_MAX_CHIPS];
 static INT32 TC0100SCNClipWidth[TC0100SCN_MAX_CHIPS];
 static INT32 TC0100SCNClipHeight[TC0100SCN_MAX_CHIPS];
 static INT32 TC0100SCNClipStartX[TC0100SCN_MAX_CHIPS];
@@ -378,8 +380,12 @@ void TC0100SCNRenderCharLayer(INT32 Chip)
 		Rows = 32;
 	}
 	
-	GfxDecode(256, 2, 8, 8, TC0100SCNPlaneOffsets, TC0100SCNXOffsets, TC0100SCNYOffsets, 0x80, (UINT8*)CharRam, TC0100SCNChars[Chip]);
+	if (TC0100SCNCharRamUpdate[Chip]) {
+		GfxDecode(256, 2, 8, 8, TC0100SCNPlaneOffsets, TC0100SCNXOffsets, TC0100SCNYOffsets, 0x80, (UINT8*)CharRam, TC0100SCNChars[Chip]);
+		TC0100SCNCharRamUpdate[Chip] = 0;
+	}
 	
+	// we could use TC0100SCNCharLayerUpdate to render to a temp buffer, but since there is no row/col scroll here, it would probably be slower
 	for (my = 0; my < Rows; my++) {
 		for (mx = 0; mx < Columns; mx++) {
 			Attr = BURN_ENDIAN_SWAP_INT16(VideoRam[TileIndex]);
@@ -466,6 +472,8 @@ void TC0100SCNRenderCharLayer(INT32 Chip)
 			TileIndex++;
 		}
 	}
+	
+	TC0100SCNCharLayerUpdate[Chip] = 0;
 }
 
 void TC0100SCNReset()
@@ -485,6 +493,8 @@ void TC0100SCNReset()
 		TC0100SCNDblWidth[i] = 0;
 		TC0100SCNBgLayerUpdate[i] = 1;
 		TC0100SCNFgLayerUpdate[i] = 1;
+		TC0100SCNCharLayerUpdate[i] = 1;
+		TC0100SCNCharRamUpdate[i] = 1;
 	}
 }
 
@@ -515,6 +525,8 @@ void TC0100SCNInit(INT32 Chip, INT32 nNumTiles, INT32 xOffset, INT32 yOffset, IN
 	TC0100SCNPaletteOffset[Chip] = 0;
 	TC0100SCNFgLayerUpdate[Chip] = 1;
 	TC0100SCNBgLayerUpdate[Chip] = 1;
+	TC0100SCNCharLayerUpdate[Chip] = 1;
+	TC0100SCNCharRamUpdate[Chip] = 1;
 	
 	if (!TC0100SCNClipWidth[Chip] || !TC0100SCNClipHeight[Chip]) bprintf(PRINT_IMPORTANT, _T("TC0100SCNInit called before GenericTilesInit\n"));
 	
@@ -580,6 +592,8 @@ void TC0100SCNExit()
 		TC0100SCNPaletteOffset[i] = 0;
 		TC0100SCNBgLayerUpdate[i] = 0;
 		TC0100SCNFgLayerUpdate[i] = 0;
+		TC0100SCNCharLayerUpdate[i] = 0;
+		TC0100SCNCharRamUpdate[i] = 0;
 	}
 	
 	TC0100SCNNum = 0;

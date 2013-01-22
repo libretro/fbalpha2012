@@ -1,0 +1,312 @@
+This list contains all games supported by FB Alpha.
+
+305 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
+
+  name		  status  full name						  parent	  year	  company	  hardware	  remarks
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+
+| 2020bb	|  	| 2020 Super Baseball (set 1)				| 		| 1991	| SNK / Pallas	| Neo Geo MVS	| 					|
+| 2020bba	|  	| 2020 Super Baseball (set 2)				| 2020bb	| 1991	| SNK / Pallas	| Neo Geo MVS	| 					|
+| 2020bbh	|  	| 2020 Super Baseball (set 3)				| 2020bb	| 1991	| SNK / Pallas	| Neo Geo AES	| 					|
+| 3countb	|  	| 3 Count Bout / Fire Suplex (NGM-043)(NGH-043)		| 		| 1993	| SNK		| Neo Geo MVS	| 					|
+| 4play		|  	| 4 player input test					| 		| ???	| SNK		| Neo Geo MVS	| 4 player  input test cartridge	|
+| sonicwi2	|  	| Aero Fighters 2 / Sonic Wings 2			| 		| 1994	| Video System C| Neo Geo MVS	| 					|
+| sonicwi3	|  	| Aero Fighters 3 / Sonic Wings 3			| 		| 1995	| Video System C| Neo Geo MVS	| 					|
+| aodk		|  	| Aggressors of Dark Kombat / Tsuukai GANGAN Koushinkyok| 		| 1994	| ADK / SNK	| Neo Geo MVS	| 					|
+| alpham2	|  	| Alpha Mission II / ASO II - Last Guardian (NGM-007)(NG| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| alpham2p	|  	| Alpha Mission II / ASO II - Last Guardian (prototype)	| alpham2	| 1991	| SNK		| Neo Geo MVS	| 					|
+| androdun	|  	| Andro Dunos (NGM-049)(NGH-049)			| 		| 1992	| Visco		| Neo Geo MVS	| 					|
+| aof		|  	| Art of Fighting / Ryuuko no Ken (NGM-044)(NGH-044)	| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| aof2a		|  	| Art of Fighting 2 / Ryuuko no Ken 2 (NGH-056)		| aof2		| 1994	| SNK		| Neo Geo MVS	| 					|
+| aof2		|  	| Art of Fighting 2 / Ryuuko no Ken 2 (NGM-056)		| 		| 1994	| SNK		| Neo Geo MVS	| 					|
+| aof3k		|  	| Art of Fighting 3 - The Path of the Warrior (Korean re| aof3		| 1996	| SNK		| Neo Geo MVS	| 					|
+| aof3		|  	| Art of Fighting 3 - The Path of the Warrior / Art of F| 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| bakatono	|  	| Bakatonosama Mahjong Manyuuki (MOM-002)(MOH-002)	| 		| 1991	| Monolith Corp.| Neo Geo MVS	| 					|
+| b2buster	|  	| Bang 2 Busters (Prototype)				| 		| 2000	| Visco		| Neo Geo MVS	| 					|
+| bangbead	|  	| Bang Bead						| 		| 2000	| Visco		| Neo Geo MVS	| 					|
+| bangbedp	|  	| Bang Bead (Prototype?)				| bangbead	| 2000	| Visco		| Neo Geo MVS	| 					|
+| bstars2	|  	| Baseball Stars 2					| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| bstarsh	|  	| Baseball Stars Professional (NGH-002)			| bstars	| 1990	| SNK		| Neo Geo MVS	| 					|
+| bstars	|  	| Baseball Stars Professional (NGM-002)			| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| flipshot	|  	| Battle Flip Shot					| 		| 1998	| Visco		| Neo Geo MVS	| 					|
+| blazstar	|  	| Blazing Star						| 		| 1998	| Yumekobo	| Neo Geo MVS	| 					|
+| bjourney	|  	| Blue's Journey / Raguy (ALM-001)(ALH-001)		| 		| 1990	| Alpha Denshi C| Neo Geo MVS	| 					|
+| breakers	|  	| Breakers						| 		| 1996	| Visco		| Neo Geo MVS	| 					|
+| breakrev	|  	| Breakers Revenge					| 		| 1998	| Visco		| Neo Geo MVS	| 					|
+| burningfh	|  	| Burning Fight (NGH-018)(US)				| burningf	| 1991	| SNK		| Neo Geo AES	| 					|
+| burningf	|  	| Burning Fight (NGM-018)(NGH-018)			| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| burningfp	|  	| Burning Fight (prototype)				| burningf	| 1991	| SNK		| Neo Geo MVS	| 					|
+| ctomaday	|  	| Captain Tomaday					| 		| 1999	| Visco		| Neo Geo MVS	| 					|
+| neodemo	|  	| Chaos Demo (Neo Geo)					| 		| 2002	| Chaos		| Neo Geo MVS	| 					|
+| marukodq	|  	| Chibi Marukochan Deluxe Quiz				| 		| 1995	| Takara	| Neo Geo MVS	| 					|
+| cndi		|  	| Chip n Dale (Intro demo)				| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| ironclad	|  	| Choutetsu Brikin'ger - Iron clad (Prototype)		| 		| 1996	| Saurus	| Neo Geo MVS	| 					|
+| ironclado	|  	| Choutetsu Brikin'ger - Iron clad (Prototype, older)	| ironclad	| 1996	| Saurus	| Neo Geo MVS	| 					|
+| cnbe		|  	| Codename - Blut Engel (2006-01-19)			| 		| 2006	| blastar@gmx.ne| Neo Geo MVS	| 					|
+| columnsn	|  	| Columns (Neo Geo)					| 		| ????	| homebrew	| Neo Geo MVS	| 					|
+| crsword	|  	| Crossed Swords (ALM-002)(ALH-002)			| 		| 1991	| Alpha Denshi C| Neo Geo MVS	| 					|
+| cthd2003	|  	| Crouching Tiger Hidden Dragon 2003 (set 1)		| kof2001	| 2003	| Phenixsoft	| Neo Geo MVS	| Hack of \"The King of Fighters 2001\"	|
+| cthd2k3a	|  	| Crouching Tiger Hidden Dragon 2003 (set 2)		| kof2001	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| ct2k3sp	|  	| Crouching Tiger Hidden Dragon 2003 Super Plus		| kof2001	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| ct2k3sa	|  	| Crouching Tiger Hidden Dragon 2003 Super Plus alternat| kof2001	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| cyberlip	|  	| Cyber-Lip (NGM-010)					| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| dwi		|  	| DarkWing Duck (Intro demo)				| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| dwia		|  	| DarkWing Duck (Intro demo, alt)			| dwi		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| diggerma	|  	| Digger Man						| 		| 2000	| Kyle Hodgetts	| Neo Geo MVS	| 					|
+| doubledr	|  	| Double Dragon (Neo-Geo)				| 		| 1995	| Technos	| Neo Geo MVS	| 					|
+| ducki		|  	| Duck Tales (Intro demo)				| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| eightman	|  	| Eight Man (NGM-025)(NGH-025)				| 		| 1991	| SNK / Pallas	| Neo Geo MVS	| 					|
+| kabukikl	|  	| Far East of Eden - Kabuki Klash / Tengai Makyou - Shin| 		| 1995	| Hudson	| Neo Geo MVS	| 					|
+| fatfury1	|  	| Fatal Fury - King of Fighters / Garou Densetsu - shuku| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| fatfury2	|  	| Fatal Fury 2 / Garou Densetsu 2 - arata-naru tatakai (| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| fatfury3	|  	| Fatal Fury 3 - Road to the Final Victory / Garou Dense| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| fatfursp	|  	| Fatal Fury Special / Garou Densetsu Special (set 1)(NG| 		| 1993	| SNK		| Neo Geo MVS	| 					|
+| fatfurspa	|  	| Fatal Fury Special / Garou Densetsu Special (set 2)(NG| fatfursp	| 1993	| SNK		| Neo Geo MVS	| 					|
+| fightfev	|  	| Fight Fever (set 1)					| 		| 1994	| Viccom	| Neo Geo MVS	| 					|
+| fightfeva	|  	| Fight Fever (set 2)					| fightfev	| 1994	| Viccom	| Neo Geo MVS	| 					|
+| fswords	|  	| Fighters Swords (Korean release of Samurai Shodown III| samsho3	| 1995	| SNK		| Neo Geo MVS	| 					|
+| fbfrenzy	|  	| Football Frenzy (NGM-034)(NGH-034)			| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| ngfrog	|  	| Frog Feast (Neo Geo)					| 		| 2006	| Rastersoft	| Neo Geo MVS	| 					|
+| galaxyfg	|  	| Galaxy Fight - Universal Warriors			| 		| 1995	| Sunsoft	| Neo Geo MVS	| 					|
+| ganryu	|  	| Ganryu / Musashi Ganryuki				| 		| 1999	| Visco		| Neo Geo MVS	| 					|
+| garoubl	|  	| Garou - Mark of the Wolves (bootleg)			| garou		| 1999	| bootleg	| Neo Geo MVS	| 					|
+| garou		|  	| Garou - Mark of the Wolves (NGM-2530)			| 		| 1999	| SNK		| Neo Geo MVS	| 					|
+| garouh	|  	| Garou - Mark of the Wolves (NGM-2530) (NGH-2530)	| garou		| 1999	| SNK		| Neo Geo MVS	| 					|
+| garoup	|  	| Garou - Mark of the Wolves (prototype)		| garou		| 1999	| SNK		| Neo Geo MVS	| 					|
+| ghostbi	|  	| Ghost Busters (Intro demo)				| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| gpilotsh	|  	| Ghost Pilots (NGH-020)(US)				| gpilots	| 1991	| SNK		| Neo Geo MVS	| 					|
+| gpilots	|  	| Ghost Pilots (NGM-020)(NGH-020)			| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| ghostlop	|  	| Ghostlop (prototype)					| 		| 1996	| Data East Corp| Neo Geo MVS	| 					|
+| goalx3	|  	| Goal! Goal! Goal!					| 		| 1995	| Visco		| Neo Geo MVS	| 					|
+| gururin	|  	| Gururin						| 		| 1994	| Face		| Neo Geo MVS	| 					|
+| fr2ch		|  	| Idol Mahjong - final romance 2 (CD to MVS Conversion)	| 		| 1995	| hack		| Neo Geo MVS	| 					|
+| jockeygp	|  	| Jockey Grand Prix (set 1)				| 		| 2001	| Sun Amusement | Neo Geo MVS	| 					|
+| jockeygpa	|  	| Jockey Grand Prix (set 2)				| jockeygp	| 2001	| Sun Amusement | Neo Geo MVS	| 					|
+| ltorb1	|  	| Jonas Indiana and the Lost Temple of RA (20050717)	| 		| 2005	| blastar@gmx.ne| Neo Geo MVS	| 					|
+| janshin	|  	| Jyanshin Densetsu - Quest of Jongmaster		| 		| 1994	| Aicom		| Neo Geo MVS	| 					|
+| karnovr	|  	| Karnov's Revenge / Fighter's History Dynamite		| 		| 1994	| Data East Corp| Neo Geo MVS	| 					|
+| kog		|  	| King of Gladiator (The King of Fighters '97 bootleg)	| kof97		| 1997	| bootleg	| Neo Geo MVS	| 					|
+| kogplus	|  	| King of Gladiator Plus (The King of Fighters '97 bootl| kof97		| 1997	| bootleg	| Neo Geo MVS	| 					|
+| kotm		|  	| King of the Monsters (set 1)				| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| kotmh		|  	| King of the Monsters (set 2)				| kotm		| 1991	| SNK		| Neo Geo MVS	| 					|
+| kotm2		|  	| King of the Monsters 2 - The Next Thing (NGM-039)(NGH-| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| kotm2p	|  	| King of the Monsters 2 - The Next Thing (prototype)	| kotm2		| 1992	| SNK		| Neo Geo MVS	| 					|
+| kizuna	|  	| Kizuna Encounter - Super Tag Battle / Fu'un Super Tag | 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| lans2004	|  	| Lansquenet 2004 (Shock Troopers - 2nd Squad bootleg)	| shocktr2	| 1998	| bootleg	| Neo Geo MVS	| 					|
+| lhcdb		|  	| Last Hope CD Beta (Neo CD conversion)			| 		| 2007	| NG:Dev.Team	| Neo Geo MVS	| Imperfect graphics			|
+| lresort	|  	| Last Resort						| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| lbowling	|  	| League Bowling (NGM-019)(NGH-019)			| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| legendos	|  	| Legend of Success Joe / Ashitano Joe Densetsu		| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| magdrop2	|  	| Magical Drop II					| 		| 1996	| Data East Corp| Neo Geo MVS	| 					|
+| magdrop3	|  	| Magical Drop III					| 		| 1997	| Data East Corp| Neo Geo MVS	| 					|
+| maglordh	|  	| Magician Lord (NGH-005)				| maglord	| 1990	| Alpha Denshi C| Neo Geo MVS	| 					|
+| maglord	|  	| Magician Lord (NGM-005)				| 		| 1990	| Alpha Denshi C| Neo Geo MVS	| 					|
+| mahretsu	|  	| Mahjong Kyo Retsuden (NGM-004)(NGH-004)		| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| matrimbl	|  	| Matrimelee / Shin Gouketsuji Ichizoku Toukon (bootleg)| matrim	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| matrim	|  	| Matrimelee / Shin Gouketsuji Ichizoku Toukon (NGM-2660| 		| 2002	| Noise Factory | Neo Geo MVS	| 					|
+| mslug		|  	| Metal Slug - Super Vehicle-001			| 		| 1996	| Nazca		| Neo Geo MVS	| 					|
+| mslug2	|  	| Metal Slug 2 - Super Vehicle-001/II (NGM-2410) (NGH-24| 		| 1998	| SNK		| Neo Geo MVS	| 					|
+| mslug3h	|  	| Metal Slug 3 (NGH-2560)				| mslug3	| 2000	| SNK		| Neo Geo MVS	| 					|
+| mslug3	|  	| Metal Slug 3 (NGM-2560)				| 		| 2000	| SNK		| Neo Geo MVS	| 					|
+| mslug4h	|  	| Metal Slug 4 (NGH-2630)				| mslug4	| 2002	| Mega		| Neo Geo MVS	| 					|
+| mslug4	|  	| Metal Slug 4 (NGM-2630)				| 		| 2002	| Mega		| Neo Geo MVS	| 					|
+| ms4plus	|  	| Metal Slug 4 Plus (bootleg)				| mslug4	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| mslug5b	|  	| Metal Slug 5 (bootleg)				| mslug5	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| ms5pcb	|  	| Metal Slug 5 (JAMMA PCB)				| 		| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| mslug5h	|  	| Metal Slug 5 (NGH-2680)				| mslug5	| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| mslug5	|  	| Metal Slug 5 (NGM-2680)				| 		| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| ms5plus	|  	| Metal Slug 5 Plus (bootleg)				| mslug5	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| mslug3b6	|  	| Metal Slug 6 (Metal Slug 3 bootleg)			| mslug3	| 2000	| bootleg	| Neo Geo MVS	| 					|
+| mslugx	|  	| Metal Slug X - Super Vehicle-001 (NGM-2500)(NGH-2500)	| 		| 1999	| SNK		| Neo Geo MVS	| 					|
+| minasan	|  	| Minasanno Okagesamadesu! Daisugorokutaikai (MOM-001)(M| 		| 1990	| Monolith Corp.| Neo Geo MVS	| 					|
+| miexchng	|  	| Money Puzzle Exchanger / Money Idol Exchanger		| 		| 1997	| Face		| Neo Geo MVS	| 					|
+| mutnat	|  	| Mutation Nation (NGM-014)(NGH-014)			| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| nam1975	|  	| NAM-1975 (NGM-001)(NGH-001)				| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| neo2500	|  	| Neo 2500 Demo						| 		| 2004	| blastar@gmx.ne| Neo Geo MVS	| 					|
+| neobombe	|  	| Neo Bomberman						| 		| 1997	| Hudson	| Neo Geo MVS	| 					|
+| neocstlv	|  	| Neo CastleVania Demo					| 		| 2004	| Barf/BarfHappy| Neo Geo	| 					|
+| neodrift	|  	| Neo Drift Out - New Technology			| 		| 1996	| Visco		| Neo Geo MVS	| 					|
+| neogeo	|   NW	| Neo Geo						| 		| 1990	| SNK		| Neo Geo MVS	| BIOS only				|
+| neocdz	|  	| Neo Geo CDZ system					| 		| 1996	| SNK		| Neo Geo CDZ	| System - media selected seperately	|
+| neogeo	|  	| Neo Geo MVS system					| 		| 1990	| SNK		| Neo Geo MVS	| System - cartridges selected seperatel|
+| neomrdo	|  	| Neo Mr. Do!						| 		| 1996	| Visco		| Neo Geo MVS	| 					|
+| neonopon	|  	| Neo No Panepon (beta)					| 		| ????	| blastar@gmx.ne| Neo Geo MVS	| 					|
+| neoponga	|  	| Neo Pong (ver 1.0)					| neopong	| 2002	| Neo Dev Corpor| Neo Geo MVS	| 					|
+| neopong	|  	| Neo Pong (ver 1.1)					| 		| 2002	| Neo Dev Corpor| Neo Geo MVS	| 					|
+| syscheck	|  	| Neo System Check (ver 1.0b)				| 		| ????	| blastar@gmx.ne| Neo Geo MVS	| 					|
+| neothndr	|  	| Neo Thunder						| 		| 2012	| Sebastian Miha| Neo Geo	| sebastianmihai.com			|
+| turfmast	|  	| Neo Turf Masters / Big Tournament Golf		| 		| 1996	| Nazca		| Neo Geo MVS	| 					|
+| neocup98	|  	| Neo-Geo Cup '98 - The Road to the Victory		| 		| 1998	| SNK		| Neo Geo MVS	| 					|
+| neo3ddmo	|  	| NeoGeo 3D! Demo					| 		| 2012	| Oxygene	| Neo Geo	| 					|
+| ngem2k	|  	| NGEM2K (beta 2006-01-18)				| 		| 2006	| homebrew	| Neo Geo MVS	| 					|
+| ngftdemo	|  	| NGF Transparency Demo					| 		| 2012	| CeL		| Neo Geo	| redarmor.net				|
+| nitd		|  	| Nightmare in the Dark					| 		| 2000	| Eleven / Gavak| Neo Geo MVS	| 					|
+| nitdbl	|  	| Nightmare in the Dark (bootleg)			| nitd		| 2001	| bootleg	| Neo Geo MVS	| 					|
+| ncombath	|  	| Ninja Combat (NGH-009)				| ncombat	| 1990	| Alpha Denshi C| Neo Geo MVS	| 					|
+| ncombat	|  	| Ninja Combat (NGM-009)				| 		| 1990	| Alpha Denshi C| Neo Geo MVS	| 					|
+| ncommand	|  	| Ninja Commando					| 		| 1992	| Alpha Denshi C| Neo Geo MVS	| 					|
+| ninjamas	|  	| Ninja Master's - haoh-ninpo-cho			| 		| 1996	| ADK / SNK	| Neo Geo MVS	| 					|
+| overtop	|  	| Over Top						| 		| 1996	| ADK		| Neo Geo MVS	| 					|
+| samsho4k	|  	| Pae Wang Jeon Seol / Legend of a Warrior (Korean censo| samsho4	| 1996	| SNK		| Neo Geo MVS	| 					|
+| panicbom	|  	| Panic Bomber						| 		| 1994	| Eighting / Hud| Neo Geo MVS	| 					|
+| pgoal		|  	| Pleasure Goal / Futsal - 5 on 5 Mini Soccer (NGM-219)	| 		| 1996	| Saurus	| Neo Geo MVS	| 					|
+| pnyaa		|  	| Pochi and Nyaa					| 		| 2003	| Aiky / Taito	| Neo Geo MVS	| 					|
+| poknight	|  	| Poker Night						| 		| ????	| Jeff Kurtz	| Neo Geo MVS	| 					|
+| popbounc	|  	| Pop 'n Bounce / Gapporin				| 		| 1997	| Video System C| Neo Geo MVS	| 					|
+| pspikes2	|  	| Power Spikes II (NGM-068)				| 		| 1994	| Video System C| Neo Geo MVS	| 					|
+| preisle2	|  	| Prehistoric Isle 2					| 		| 1999	| Yumekobo	| Neo Geo MVS	| 					|
+| pulstar	|  	| Pulstar						| 		| 1995	| Aicom		| Neo Geo MVS	| 					|
+| pbobblenb	|  	| Puzzle Bobble / Bust-A-Move (Neo-Geo) (bootleg)	| pbobblen	| 1994	| Taito		| Neo Geo MVS	| 					|
+| pbobblen	|  	| Puzzle Bobble / Bust-A-Move (Neo-Geo) (NGM-083)	| 		| 1994	| Taito		| Neo Geo MVS	| 					|
+| pbobbl2n	|  	| Puzzle Bobble 2 / Bust-A-Move Again (Neo-Geo)		| 		| 1999	| Taito (SNK lic| Neo Geo MVS	| 					|
+| puzzledp	|  	| Puzzle De Pon!					| 		| 1995	| Taito (Visco l| Neo Geo MVS	| 					|
+| puzzldpr	|  	| Puzzle De Pon! R!					| puzzledp	| 1997	| Taito (Visco l| Neo Geo MVS	| 					|
+| joyjoy	|  	| Puzzled / Joy Joy Kid (NGM-021)(NGH-021)		| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| quizdaisk	|  	| Quiz Daisousa Sen - The Last Count Down (Korean releas| quizdais	| 1991	| SNK		| Neo Geo MVS	| 					|
+| quizdais	|  	| Quiz Daisousa Sen - The Last Count Down (NGM-023)(NGH-| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| quizkofk	|  	| Quiz King of Fighters (Korean release)		| quizkof	| 1995	| Saurus	| Neo Geo MVS	| 					|
+| quizkof	|  	| Quiz King of Fighters (SAM-080)(SAH-080)		| 		| 1995	| Saurus	| Neo Geo MVS	| 					|
+| quizdai2	|  	| Quiz Meitantei Neo & Geo - Quiz Daisousa Sen part 2 (N| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| rotd		|  	| Rage of the Dragons (NGM-264?)			| 		| 2002	| Evoga / Playmo| Neo Geo MVS	| 					|
+| ragnagrd	|  	| Ragnagard / Shin-Oh-Ken				| 		| 1996	| Saurus	| Neo Geo MVS	| 					|
+| rbff1a	|  	| Real Bout Fatal Fury / Real Bout Garou Densetsu (bug f| rbff1		| 1995	| SNK		| Neo Geo MVS	| 					|
+| rbff1		|  	| Real Bout Fatal Fury / Real Bout Garou Densetsu (NGM-0| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| rbff2k	|  	| Real Bout Fatal Fury 2 - The Newcomers (Korean release| rbff2		| 1998	| SNK		| Neo Geo MVS	| 					|
+| rbff2h	|  	| Real Bout Fatal Fury 2 - The Newcomers / Real Bout Gar| rbff2		| 1998	| SNK		| Neo Geo MVS	| 					|
+| rbff2		|  	| Real Bout Fatal Fury 2 - The Newcomers / Real Bout Gar| 		| 1998	| SNK		| Neo Geo MVS	| 					|
+| rbffspec	|  	| Real Bout Fatal Fury Special / Real Bout Garou Densets| 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| rbffspeck	|  	| Real Bout Fatal Fury Special / Real Bout Garou Densets| rbffspec	| 1996	| SNK		| Neo Geo MVS	| 					|
+| ridhero	|  	| Riding Hero (NGM-006)(NGH-006)			| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| ridheroh	|  	| Riding Hero (set 2)					| ridhero	| 1990	| SNK		| Neo Geo MVS	| 					|
+| roboarmy	|  	| Robo Army						| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| robocopi	|  	| Robocop (Intro demo)					| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| samshoh	|  	| Samurai Shodown / Samurai Spirits (NGH-045)		| samsho	| 1993	| SNK		| Neo Geo MVS	| 					|
+| samsho	|  	| Samurai Shodown / Samurai Spirits (NGM-045)		| 		| 1993	| SNK		| Neo Geo MVS	| 					|
+| samsho2	|  	| Samurai Shodown II / Shin Samurai Spirits - Haohmaru j| 		| 1994	| SNK		| Neo Geo MVS	| 					|
+| samsho3h	|  	| Samurai Shodown III / Samurai Spirits - Zankurou Musou| samsho3	| 1995	| SNK		| Neo Geo MVS	| 					|
+| samsho3	|  	| Samurai Shodown III / Samurai Spirits - Zankurou Musou| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| samsho4	|  	| Samurai Shodown IV - Amakusa's Revenge / Samurai Spiri| 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| samsho5b	|  	| Samurai Shodown V / Samurai Spirits Zero (bootleg)	| samsho5	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| samsho5h	|  	| Samurai Shodown V / Samurai Spirits Zero (NGH-2700)	| samsho5	| 2003	| Yuki Enterpris| Neo Geo MVS	| 					|
+| samsho5	|  	| Samurai Shodown V / Samurai Spirits Zero (NGM-2700)	| 		| 2003	| Yuki Enterpris| Neo Geo MVS	| 					|
+| samsh5spho	|  	| Samurai Shodown V Special / Samurai Spirits Zero Speci| samsh5sp	| 2004	| Yuki Enterpris| Neo Geo MVS	| 					|
+| samsh5sph	|  	| Samurai Shodown V Special / Samurai Spirits Zero Speci| samsh5sp	| 2004	| Yuki Enterpris| Neo Geo MVS	| 					|
+| samsh5sp	|  	| Samurai Shodown V Special / Samurai Spirits Zero Speci| 		| 2004	| Yuki Enterpris| Neo Geo MVS	| 					|
+| samsho2k	|  	| Saulabi Spirits / Jin Saulabi Tu Hon (Korean release o| samsho2	| 1994	| SNK		| Neo Geo MVS	| 					|
+| savagere	|  	| Savage Reign / Fu'un Mokushiroku - kakutou sousei	| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| sengokuh	|  	| Sengoku / Sengoku Denshou (NGH-017)(US)		| sengoku	| 1991	| SNK		| Neo Geo MVS	| 					|
+| sengoku	|  	| Sengoku / Sengoku Denshou (NGM-017)(NGH-017)		| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| sengoku2	|  	| Sengoku 2 / Sengoku Denshou 2				| 		| 1993	| SNK		| Neo Geo MVS	| 					|
+| sengoku3	|  	| Sengoku 3 / Sengoku Densho 2001			| 		| 2001	| SNK / Noise Fa| Neo Geo MVS	| 					|
+| beast		|  	| Shadow of the Beast (Neo Geo demo)			| 		| ????	| Jeff Kurtz	| Neo Geo MVS	| 					|
+| shocktro	|  	| Shock Troopers (set 1)				| 		| 1997	| Saurus	| Neo Geo MVS	| 					|
+| shocktroa	|  	| Shock Troopers (set 2)				| shocktro	| 1997	| Saurus	| Neo Geo MVS	| 					|
+| shocktr2	|  	| Shock Troopers - 2nd Squad				| 		| 1998	| Saurus	| Neo Geo MVS	| 					|
+| svcboot	|  	| SNK vs. Capcom - SVC Chaos (bootleg)			| svc		| 2003	| bootleg	| Neo Geo MVS	| 					|
+| svcpcb	|  	| SNK vs. Capcom - SVC Chaos (JAMMA PCB, set 1)		| 		| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| svcpcba	|  	| SNK vs. Capcom - SVC Chaos (JAMMA PCB, set 2)		| svcpcb	| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| svc		|  	| SNK vs. Capcom - SVC Chaos (NGM-2690)(NGH-2690)	| 		| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| svcplus	|  	| SNK vs. Capcom - SVC Chaos Plus (bootleg set 1)	| svc		| 2003	| bootleg	| Neo Geo MVS	| 					|
+| svcplusa	|  	| SNK vs. Capcom - SVC Chaos Plus (bootleg set 2)	| svc		| 2003	| bootleg	| Neo Geo MVS	| 					|
+| svcsplus	|  	| SNK vs. Capcom - SVC Chaos Super Plus (bootleg)	| svc		| 2003	| bootleg	| Neo Geo MVS	| 					|
+| socbrawlh	|  	| Soccer Brawl (NGH-031)				| socbrawl	| 1991	| SNK		| Neo Geo MVS	| 					|
+| socbrawl	|  	| Soccer Brawl (NGM-031)				| 		| 1991	| SNK		| Neo Geo MVS	| 					|
+| spidermi	|  	| Spiderman (Intro demo)				| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| spinmast	|  	| Spin Master / Miracle Adventure			| 		| 1993	| Data East Corp| Neo Geo MVS	| 					|
+| stakwin	|  	| Stakes Winner / Stakes Winner - GI kinzen seiha e no m| 		| 1995	| Saurus	| Neo Geo MVS	| 					|
+| stakwin2	|  	| Stakes Winner 2					| 		| 1996	| Saurus	| Neo Geo MVS	| 					|
+| strhoop	|  	| Street Hoop / Street Slam / Dunk Dream (DEM-004) (DEH-| 		| 1994	| Data East Corp| Neo Geo MVS	| 					|
+| s1945p	|  	| Strikers 1945 Plus					| 		| 1999	| Psikyo	| Neo Geo MVS	| 					|
+| sbp		| D NW	| Super Bubble Pop					| 		| 2004	| Vektorlogic	| Neo Geo MVS	| 					|
+| sdodgeb	|  	| Super Dodge Ball / Kunio no Nekketsu Toukyuu Densetsu	| 		| 1996	| Technos	| Neo Geo MVS	| 					|
+| ssideki	|  	| Super Sidekicks / Tokuten Ou				| 		| 1992	| SNK		| Neo Geo MVS	| 					|
+| ssideki2	|  	| Super Sidekicks 2 - The World Championship / Tokuten O| 		| 1994	| SNK		| Neo Geo MVS	| 					|
+| ssideki3	|  	| Super Sidekicks 3 - The Next Glory / Tokuten Ou 3 - ei| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| mosyougi	|  	| Syougi No Tatsujin - Master of Syougi			| 		| 1995	| ADK / SNK	| Neo Geo MVS	| 					|
+| tws96		|  	| Tecmo World Soccer '96				| 		| 1996	| Tecmo		| Neo Geo MVS	| 					|
+| tmnti		|  	| Teenage Mutant Ninja Turtles (Intro demo)		| 		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| tmntia	|  	| Teenage Mutant Ninja Turtles (Intro demo, alt)	| tmnti		| 2009	| Sergi		| Neo Geo MVS	| You must use the Universe BIOS and set|
+| irrmaze	|  	| The Irritating Maze / Ultra Denryu Iraira Bou		| 		| 1997	| SNK / Saurus	| Neo Geo MVS	| 					|
+| kof94		|  	| The King of Fighters '94 (NGM-055)(NGH-055)		| 		| 1994	| SNK		| Neo Geo MVS	| 					|
+| kof95h	|  	| The King of Fighters '95 (NGH-084)			| kof95		| 1995	| SNK		| Neo Geo MVS	| 					|
+| kof95		|  	| The King of Fighters '95 (NGM-084)			| 		| 1995	| SNK		| Neo Geo MVS	| 					|
+| kof96ae	|  	| The King of Fighters '96 (Anniversary Edition, EGHT ha| kof96		| 2007	| hack		| Neo Geo MVS	| 					|
+| kof96ep	|  	| The King of Fighters '96 (bootleg / hack)		| kof96		| 1996	| bootleg	| Neo Geo MVS	| 					|
+| kof96cn	|  	| The King of Fighters '96 (Chinese Edition ver 1.0, hac| kof96		| 200?	| hack		| Neo Geo MVS	| 					|
+| kof96h	|  	| The King of Fighters '96 (NGH-214)			| kof96		| 1996	| SNK		| Neo Geo AES	| 					|
+| kof96		|  	| The King of Fighters '96 (NGM-214)			| 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| kof97cn	|  	| The King of Fighters '97 (10th Anniversary Chinese Edi| kof97		| 2007	| hack		| Neo Geo MVS	| 					|
+| kof97k	|  	| The King of Fighters '97 (Korean release)		| kof97		| 1997	| SNK		| Neo Geo MVS	| 					|
+| kof97h	|  	| The King of Fighters '97 (NGH-2320)			| kof97		| 1997	| SNK		| Neo Geo MVS	| 					|
+| kof97		|  	| The King of Fighters '97 (NGM-2320)			| 		| 1997	| SNK		| Neo Geo MVS	| 					|
+| kof97xt	|  	| The King of Fighters '97 - Final Battle (hack)	| kof97		| 2007	| hack		| Neo Geo MVS	| 					|
+| kof97oro	|  	| The King of Fighters '97 oroshi plus 2003		| kof97		| 1997	| bootleg	| Neo Geo MVS	| 					|
+| kof97pls	|  	| The King of Fighters '97 Plus (bootleg)		| kof97		| 1997	| bootleg	| Neo Geo MVS	| 					|
+| kof97pla	|  	| The King of Fighters '97 Plus 2003 (bootleg / hack)	| kof97		| 2003	| bootleg	| Neo Geo MVS	| 					|
+| kof98ae	|  	| The King of Fighters '98 (Anniversary Edition, EGHT ha| kof98		| 2007	| hack		| Neo Geo MVS	| 					|
+| kof98ka	|  	| The King of Fighters '98 - The Slugfest / King of Figh| kof98		| 1998	| SNK		| Neo Geo MVS	| 					|
+| kof98k	|  	| The King of Fighters '98 - The Slugfest / King of Figh| kof98		| 1998	| SNK		| Neo Geo MVS	| 					|
+| kof98h	|  	| The King of Fighters '98 - The Slugfest / King of Figh| kof98		| 1998	| SNK		| Neo Geo MVS	| 					|
+| kof98		|  	| The King of Fighters '98 - The Slugfest / King of Figh| 		| 1998	| SNK		| Neo Geo MVS	| 					|
+| kof99e	|  	| The King of Fighters '99 - Millennium Battle (earlier)| kof99		| 1999	| SNK		| Neo Geo MVS	| 					|
+| kof99k	|  	| The King of Fighters '99 - Millennium Battle (Korean r| kof99		| 1999	| SNK		| Neo Geo MVS	| 					|
+| kof99h	|  	| The King of Fighters '99 - Millennium Battle (NGH-2510| kof99		| 1999	| SNK		| Neo Geo MVS	| 					|
+| kof99		|  	| The King of Fighters '99 - Millennium Battle (NGM-2510| 		| 1999	| SNK		| Neo Geo MVS	| 					|
+| kof99p	|  	| The King of Fighters '99 - Millennium Battle (prototyp| kof99		| 1999	| SNK		| Neo Geo MVS	| 					|
+| kof10th	|  	| The King of Fighters 10th Anniversary (bootleg)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k5uni	|  	| The King of Fighters 10th Anniversary 2005 Unique (boo| kof2002	| 2004	| bootleg	| Neo Geo MVS	| 					|
+| kf10thep	|  	| The King of Fighters 10th Anniversary Extra Plus (boot| kof2002	| 2005	| bootleg	| Neo Geo MVS	| 					|
+| kof2000	|  	| The King of Fighters 2000 (NGM-2570) (NGH-2570)	| 		| 2000	| SNK		| Neo Geo MVS	| 					|
+| kof2000n	|  	| The King of Fighters 2000 (not encrypted)		| kof2000	| 2000	| SNK		| Neo Geo MVS	| 					|
+| kof2001h	|  	| The King of Fighters 2001 (NGH-2621)			| kof2001	| 2001	| SNK / Eolith	| Neo Geo AES	| 					|
+| kof2001	|  	| The King of Fighters 2001 (NGM-262?)			| 		| 2001	| SNK / Eolith	| Neo Geo MVS	| 					|
+| kf2k1pls	|  	| The King of Fighters 2001 Plus (set 1, bootleg / hack)| kof2001	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k1pa	|  	| The King of Fighters 2001 Plus (set 2, bootleg / hack)| kof2001	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kof2002b	|  	| The King of Fighters 2002 (bootleg)			| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kof2002	|  	| The King of Fighters 2002 (NGM-2650)(NGH-2650)	| 		| 2002	| Eolith / Playm| Neo Geo MVS	| 					|
+| kf2k2ps2	|  	| The King of Fighters 2002 (PlayStation 2 ver 0.4, EGHT| kof2002	| 2007	| hack		| Neo Geo MVS	| 					|
+| kf2k2mp	|  	| The King of Fighters 2002 Magic Plus (bootleg)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k2mp2	|  	| The King of Fighters 2002 Magic Plus II (bootleg)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k2pls	|  	| The King of Fighters 2002 Plus (bootleg set 1)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k2pla	|  	| The King of Fighters 2002 Plus (bootleg set 2)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k2plb	|  	| The King of Fighters 2002 Plus (bootleg set 3)	| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k2plc	|  	| The King of Fighters 2002 Super (bootleg)		| kof2002	| 2002	| bootleg	| Neo Geo MVS	| 					|
+| kf2k3bl	|  	| The King of Fighters 2003 (bootleg set 1)		| kof2003	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| kf2k3bla	|  	| The King of Fighters 2003 (bootleg set 2)		| kof2003	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| kof2003h	|  	| The King of Fighters 2003 (NGH-2710)			| kof2003	| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| kof2003	|  	| The King of Fighters 2003 (NGM-2710)			| 		| 2003	| SNK Playmore	| Neo Geo MVS	| 					|
+| kf2k3pcb	|  	| The King of Fighters 2003				| 		| 2003	| Playmore / Cap| dedicated Neo | dedicated PCB version, Japan region	|
+| kf2k3pl	|  	| The King of Fighters 2004 Plus / Hero (bootleg)	| kof2003	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| kf2k3upl	|  	| The King of Fighters 2004 Ultra Plus (bootleg)	| kof2003	| 2003	| bootleg	| Neo Geo MVS	| 					|
+| kof2k4se	|  	| The King of Fighters Special Edition 2004 (bootleg)	| kof2002	| 2004	| bootleg	| Neo Geo MVS	| 					|
+| kf2k4pls	|  	| The King of Fighters Special Edition 2004 Plus (bootle| kof2002	| 2004	| bootleg	| Neo Geo MVS	| 					|
+| lastbladh	|  	| The Last Blade / Bakumatsu Roman - Gekka no Kenshi (NG| lastblad	| 1997	| SNK		| Neo Geo AES	| 					|
+| lastblad	|  	| The Last Blade / Bakumatsu Roman - Gekka no Kenshi (NG| 		| 1997	| SNK		| Neo Geo MVS	| 					|
+| lastbld2	|  	| The Last Blade 2 / Bakumatsu Roman - Dai Ni Maku Gekka| 		| 1998	| SNK		| Neo Geo MVS	| 					|
+| lastsold	|  	| The Last Soldier (Korean release of The Last Blade)	| lastblad	| 1997	| SNK		| Neo Geo MVS	| 					|
+| superspy	|  	| The Super Spy (NGM-011)(NGH-011)			| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| ssideki4	|  	| The Ultimate 11 - The SNK Football Championship / Toku| 		| 1996	| SNK		| Neo Geo MVS	| 					|
+| trally	|  	| Thrash Rally (ALM-003)(ALH-003)			| 		| 1991	| Alpha Denshi C| Neo Geo MVS	| 					|
+| timesup	|  	| Time's Up Demo					| 		| 2012	| NGF Dev. Inc.	| Neo Geo	| 					|
+| tophuntrh	|  	| Top Hunter - Roddy & Cathy (NGH-046)			| tophuntr	| 1994	| SNK		| Neo Geo MVS	| 					|
+| tophuntr	|  	| Top Hunter - Roddy & Cathy (NGM-046)			| 		| 1994	| SNK		| Neo Geo MVS	| 					|
+| tpgolf	|  	| Top Player's Golf (NGM-003)(NGH-003)			| 		| 1990	| SNK		| Neo Geo MVS	| 					|
+| totcarib	|  	| Treasure of the Carribean (Prototype)			| 		| 1994	| FACE Corporati| Neo Geo MVS	| 					|
+| twinspri	|  	| Twinkle Star Sprites					| 		| 1996	| ADK		| Neo Geo MVS	| 					|
+| vliner	|  	| V-Liner (set 1)					| 		| 2001	| Dyna / BreezaS| Neo Geo MVS	| 					|
+| vlinero	|  	| V-Liner (set 2)					| vliner	| 2001	| Dyna / BreezaS| Neo Geo MVS	| 					|
+| viewpoin	|  	| Viewpoint						| 		| 1992	| Sammy / Aicom	| Neo Geo MVS	| 					|
+| gowcaizr	|  	| Voltage Fighter - Gowcaizer / Choujin Gakuen Gowcaizer| 		| 1995	| Technos	| Neo Geo MVS	| 					|
+| wakuwak7	|  	| Waku Waku 7						| 		| 1996	| Sunsoft	| Neo Geo MVS	| 					|
+| wjammers	|  	| Windjammers / Flying Power Disc			| 		| 1994	| Data East Corp| Neo Geo MVS	| 					|
+| wh1h		|  	| World Heroes (ALH-005					| wh1		| 1992	| Alpha Denshi C| Neo Geo MVS	| 					|
+| wh1		|  	| World Heroes (ALM-005)				| 		| 1992	| Alpha Denshi C| Neo Geo MVS	| 					|
+| wh1ha		|  	| World Heroes (set 3)					| wh1		| 1992	| Alpha Denshi C| Neo Geo MVS	| 					|
+| wh2		|  	| World Heroes 2 (ALM-006)(ALH-006)			| 		| 1993	| ADK		| Neo Geo MVS	| 					|
+| wh2j		|  	| World Heroes 2 Jet (ADM-007)(ADH-007)			| 		| 1994	| ADK / SNK	| Neo Geo MVS	| 					|
+| whp		|  	| World Heroes Perfect					| 		| 1995	| ADK / SNK	| Neo Geo MVS	| 					|
+| neoww2	|  	| WW2 Demo - Arcade Development Project			| 		| 2012	| Charles DOTY/R| Neo Geo	| 					|
+| zedblade	|  	| Zed Blade / Operation Ragnarok			| 		| 1994	| NMK		| Neo Geo MVS	| 					|
+| zintrckb	|  	| Zintrick / Oshidashi Zentrix (hack / bootleg)		| 		| 1996	| hack / bootleg| Neo Geo MVS	| 					|
+| zintrkcd	|  	| Zintrick / Oshidashi Zentrix (Neo CD conversion)	| zintrckb	| 1996	| hack		| Neo Geo MVS	| 					|
+| zupapa	|  	| Zupapa!						| 		| 2001	| SNK		| Neo Geo MVS	| 					|
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+

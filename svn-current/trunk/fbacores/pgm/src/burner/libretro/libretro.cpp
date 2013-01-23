@@ -54,7 +54,7 @@ static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)
 {
-   info->library_name = "FB Alpha";
+   info->library_name = "FBA Cores PGM";
    info->library_version = "v0.2.97.28";
    info->need_fullpath = true;
    info->block_extract = true;

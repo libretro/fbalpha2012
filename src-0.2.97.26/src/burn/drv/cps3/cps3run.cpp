@@ -20,9 +20,7 @@ Port to FBA by OopsWare
 #include "cps3.h"
 #include "sh2.h"
 
-#ifdef __LIBRETRO_OPTIMIZATIONS__
 #include "burn_libretro_opts.h"
-#endif
 
 #define	BE_GFX		1
 //#define	FAST_BOOT	1
@@ -694,20 +692,7 @@ void __fastcall cps3WriteWord(UINT32 addr, UINT16 data)
 					coldata = (r << 0) | (g << 5) | (b << 10);
 				}
 				
-#ifndef __LIBRETRO_OPTIMIZATIONS__
-				r = r << 3;
-				g = g << 3;
-				b = b << 3;
-#endif
-
-#ifdef __LIBRETRO_OPTIMIZATIONS__
-				RamPal[(paldma_dest + i)] = LIBRETRO_COLOR_15BPP_BGR(coldata);
-#else
-				RamPal[(paldma_dest + i)] = coldata;
-#endif
-#ifndef __LIBRETRO_OPTIMIZATIONS__
-				Cps3CurPal[(paldma_dest + i) ] = BurnHighCol(r, g, b, 0);
-#endif
+				RamPal[(paldma_dest + i)] = BurnHighCol(r << 3, g << 3, b << 3, 0);
 			}
 			Sh2SetIRQLine(10, SH2_IRQSTATUS_AUTO);
 		}

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 FORMAT=libretro
-SRC_DIR=svn-new/trunk/
+SRC_DIR=svn-current/trunk/
 
 #******************
 # PROGRAM FUNCTIONS

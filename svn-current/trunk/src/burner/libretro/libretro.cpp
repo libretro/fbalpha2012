@@ -631,7 +631,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 183
+#define BIND_MAP_COUNT 187
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1510,6 +1510,26 @@ static bool init_input()
    bind_map[182].bii_name = "P2 Shoot 3";
    bind_map[182].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
    bind_map[182].nCode[1] = 1;
+
+   /* Chase HQ */
+
+   bind_map[183].bii_name = "Turbo";
+   bind_map[183].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[183].nCode[1] = 0;
+
+   /* WWF Wrestlefest */
+
+   bind_map[184].bii_name = "Start 3";
+   bind_map[184].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[184].nCode[1] = 2;
+
+   bind_map[185].bii_name = "Start 4";
+   bind_map[185].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[185].nCode[1] = 3;
+
+   bind_map[186].bii_name = "Diagnostics";
+   bind_map[186].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC;
+   bind_map[186].nCode[1] = 0;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

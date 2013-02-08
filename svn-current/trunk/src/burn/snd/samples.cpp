@@ -239,7 +239,16 @@ void BurnSampleInit(INT32 bAdd /*add sample to stream?*/)
 	char setname[128];
 	void *destination = NULL;
 	char szTempPath[MAX_PATH];
-	sprintf(szTempPath, _TtoA(SAMPLE_DIRECTORY));
+#ifdef __LIBRETRO__
+#ifdef _WIN32
+   char slash = '\\';
+#else
+   char slash = '/';
+#endif
+	snprintf(szTempPath, sizeof(szTempPath), "%s%csamples", g_rom_dir, slash);
+#else
+	snprintf(szTempPath, sizeof(szTempPath), _TtoA(SAMPLE_DIRECTORY));
+#endif
 
 	// test to see if file exists
 	INT32 nEnableSamples = 0;
@@ -250,7 +259,7 @@ void BurnSampleInit(INT32 bAdd /*add sample to stream?*/)
 	}
 
 	strcpy(setname, BurnDrvGetTextA(DRV_SAMPLENAME));
-	sprintf(path, "%s%s.zip", szTempPath, setname);
+	snprintf(path, sizeof(path), "%s%s.zip", szTempPath, setname);
 	
 	FILE *test = fopen(path, "rb");
 	if (test) 
@@ -260,7 +269,7 @@ void BurnSampleInit(INT32 bAdd /*add sample to stream?*/)
 	}
 	
 #ifdef INCLUDE_7Z_SUPPORT
-	sprintf(path, "%s%s.7z", szTempPath, setname);
+	snprintf(path, "%s%s.7z", szTempPath, setname);
 	
 	test = fopen(path, "rb");
 	if (test)

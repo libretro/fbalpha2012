@@ -631,7 +631,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 161
+#define BIND_MAP_COUNT 173
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1382,41 +1382,87 @@ static bool init_input()
    bind_map[152].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
    bind_map[152].nCode[1] = 0;
 
-   bind_map[152].bii_name = "Start 2";
-   bind_map[152].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
-   bind_map[152].nCode[1] = 1;
+   bind_map[153].bii_name = "Start 2";
+   bind_map[153].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[153].nCode[1] = 1;
 
-   bind_map[153].bii_name = "P1 Low Attack";
-   bind_map[153].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
-   bind_map[153].nCode[1] = 0;
-
-   bind_map[154].bii_name = "P1 High Attack";
-   bind_map[154].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[154].bii_name = "P1 Low Attack";
+   bind_map[154].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[154].nCode[1] = 0;
 
-   bind_map[155].bii_name = "P1 Weapon";
-   bind_map[155].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[155].bii_name = "P1 High Attack";
+   bind_map[155].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
    bind_map[155].nCode[1] = 0;
 
-   bind_map[156].bii_name = "P1 Boost";
-   bind_map[156].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[156].bii_name = "P1 Weapon";
+   bind_map[156].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
    bind_map[156].nCode[1] = 0;
 
-   bind_map[157].bii_name = "P2 Low Attack";
-   bind_map[157].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
-   bind_map[157].nCode[1] = 1;
+   bind_map[157].bii_name = "P1 Boost";
+   bind_map[157].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[157].nCode[1] = 0;
 
-   bind_map[158].bii_name = "P2 High Attack";
-   bind_map[158].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[158].bii_name = "P2 Low Attack";
+   bind_map[158].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[158].nCode[1] = 1;
 
-   bind_map[159].bii_name = "P2 Weapon";
-   bind_map[159].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[159].bii_name = "P2 High Attack";
+   bind_map[159].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
    bind_map[159].nCode[1] = 1;
 
-   bind_map[160].bii_name = "P2 Boost";
-   bind_map[160].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[160].bii_name = "P2 Weapon";
+   bind_map[160].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
    bind_map[160].nCode[1] = 1;
+
+   bind_map[161].bii_name = "P2 Boost";
+   bind_map[161].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[161].nCode[1] = 1;
+
+   /* Bad Dudes */
+
+   bind_map[162].bii_name = "Fire 4";
+   bind_map[162].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[162].nCode[1] = 0;
+
+   bind_map[163].bii_name = "Fire 5";
+   bind_map[163].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[163].nCode[1] = 0;
+
+   bind_map[164].bii_name = "Up (Cocktail)";
+   bind_map[164].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[164].nCode[1] = 1;
+
+   bind_map[165].bii_name = "Down (Cocktail)";
+   bind_map[165].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
+   bind_map[165].nCode[1] = 1;
+
+   bind_map[166].bii_name = "Left (Cocktail)";
+   bind_map[166].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[166].nCode[1] = 1;
+
+   bind_map[167].bii_name = "Right (Cocktail)";
+   bind_map[167].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
+   bind_map[167].nCode[1] = 1;
+
+   bind_map[168].bii_name = "Fire 1 (Cocktail)";
+   bind_map[168].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[168].nCode[1] = 1;
+
+   bind_map[169].bii_name = "Fire 2 (Cocktail)";
+   bind_map[169].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[169].nCode[1] = 1;
+
+   bind_map[170].bii_name = "Fire 3 (Cocktail)";
+   bind_map[170].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[170].nCode[1] = 1;
+
+   bind_map[171].bii_name = "Fire 4 (Cocktail)";
+   bind_map[171].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[171].nCode[1] = 1;
+
+   bind_map[172].bii_name = "Fire 5 (Cocktail)";
+   bind_map[172].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[172].nCode[1] = 1;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

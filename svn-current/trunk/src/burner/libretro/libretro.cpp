@@ -1343,18 +1343,18 @@ static bool init_input()
    bind_map[141].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SELECT;
    bind_map[141].nCode[1] = 3;
 
+   /* Afterburner */
    bind_map[142].bii_name = "Missile";
    bind_map[142].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
-   bind_map[142].nCode[1] = 3;
+   bind_map[142].nCode[1] = 0;
 
-   /* Afterburner */
    bind_map[143].bii_name = "Vulcan";
    bind_map[143].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
-   bind_map[143].nCode[1] = 3;
+   bind_map[143].nCode[1] = 0;
 
    bind_map[144].bii_name = "Throttle";
    bind_map[144].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
-   bind_map[144].nCode[1] = 3;
+   bind_map[144].nCode[1] = 0;
 
    bind_map[145].bii_name = "Reset";
    bind_map[145].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RESET;

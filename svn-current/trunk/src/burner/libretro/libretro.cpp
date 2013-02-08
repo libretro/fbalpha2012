@@ -631,7 +631,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 177
+#define BIND_MAP_COUNT 183
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1485,6 +1485,31 @@ static bool init_input()
    bind_map[176].bii_name = "Diagnostics 2";
    bind_map[176].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2;
    bind_map[176].nCode[1] = 0;
+
+   /* Armed Police Batrider */
+   bind_map[177].bii_name = "P1 Shoot 1";
+   bind_map[177].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[177].nCode[1] = 0;
+
+   bind_map[178].bii_name = "P1 Shoot 2";
+   bind_map[178].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[178].nCode[1] = 0;
+
+   bind_map[179].bii_name = "P1 Shoot 3";
+   bind_map[179].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[179].nCode[1] = 0;
+
+   bind_map[180].bii_name = "P2 Shoot 1";
+   bind_map[180].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[180].nCode[1] = 1;
+
+   bind_map[181].bii_name = "P2 Shoot 2";
+   bind_map[181].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[181].nCode[1] = 1;
+
+   bind_map[182].bii_name = "P2 Shoot 3";
+   bind_map[182].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[182].nCode[1] = 1;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

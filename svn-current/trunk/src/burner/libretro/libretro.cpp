@@ -631,8 +631,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-//#define BIND_MAP_COUNT 151
-#define BIND_MAP_COUNT 149
+#define BIND_MAP_COUNT 161
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1367,10 +1366,60 @@ static bool init_input()
    bind_map[148].nCode[0] = RETRO_DEVICE_ID_JOYPAD_TEST;
    bind_map[148].nCode[1] = 0;
 
+   bind_map[149].bii_name = "Up";
+   bind_map[149].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[149].nCode[1] = 0;
+
+   bind_map[150].bii_name = "Down";
+   bind_map[150].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
+   bind_map[150].nCode[1] = 0;
+
+   bind_map[151].bii_name = "Left";
+   bind_map[151].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[151].nCode[1] = 0;
+
+   bind_map[152].bii_name = "Right";
+   bind_map[152].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
+   bind_map[152].nCode[1] = 0;
+
+   bind_map[152].bii_name = "Start 2";
+   bind_map[152].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[152].nCode[1] = 1;
+
+   bind_map[153].bii_name = "P1 Low Attack";
+   bind_map[153].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[153].nCode[1] = 0;
+
+   bind_map[154].bii_name = "P1 High Attack";
+   bind_map[154].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[154].nCode[1] = 0;
+
+   bind_map[155].bii_name = "P1 Weapon";
+   bind_map[155].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[155].nCode[1] = 0;
+
+   bind_map[156].bii_name = "P1 Boost";
+   bind_map[156].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[156].nCode[1] = 0;
+
+   bind_map[157].bii_name = "P2 Low Attack";
+   bind_map[157].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[157].nCode[1] = 1;
+
+   bind_map[158].bii_name = "P2 High Attack";
+   bind_map[158].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[158].nCode[1] = 1;
+
+   bind_map[159].bii_name = "P2 Weapon";
+   bind_map[159].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[159].nCode[1] = 1;
+
+   bind_map[160].bii_name = "P2 Boost";
+   bind_map[160].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
+   bind_map[160].nCode[1] = 1;
+
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {
-      /* TODO: Cyberbots: Full Metal Madness */
-      /* TODO: Armored Warriors */
       BurnDrvGetInputInfo(&bii, i);
 
       bool value_found = false;

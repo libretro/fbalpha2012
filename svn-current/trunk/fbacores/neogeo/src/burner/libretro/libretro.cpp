@@ -51,7 +51,7 @@ void retro_set_input_poll(retro_input_poll_t cb) { poll_cb = cb; }
 void retro_set_input_state(retro_input_state_t cb) { input_cb = cb; }
 void retro_set_environment(retro_environment_t cb) { environ_cb = cb; }
 
-static char g_rom_dir[1024];
+char g_rom_dir[1024];
 static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)

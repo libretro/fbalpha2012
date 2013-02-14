@@ -9,8 +9,6 @@
 #include <string>
 #include <ctype.h>
 
-#include "cd/cd_interface.h"
-
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 #define STAT_NOFIND	0
@@ -80,20 +78,6 @@ void IpsApplyPatches(UINT8 *, char *) {}
 TCHAR szAppHiscorePath[MAX_PATH];
 TCHAR szAppSamplesPath[MAX_PATH];
 TCHAR szAppBurnVer[16];
-
-CDEmuStatusValue CDEmuStatus;
-
-const char* isowavLBAToMSF(const int LBA) { return ""; }
-int isowavMSFToLBA(const char* address) { return 0; }
-TCHAR* GetIsoPath() { return NULL; }
-INT32 CDEmuInit() { return 0; }
-INT32 CDEmuExit() { return 0; }
-INT32 CDEmuStop() { return 0; }
-INT32 CDEmuPlay(UINT8 M, UINT8 S, UINT8 F) { return 0; }
-INT32 CDEmuLoadSector(INT32 LBA, char* pBuffer) { return 0; }
-UINT8* CDEmuReadTOC(INT32 track) { return 0; }
-UINT8* CDEmuReadQChannel() { return 0; }
-INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
 
 static int nDIPOffset;
 

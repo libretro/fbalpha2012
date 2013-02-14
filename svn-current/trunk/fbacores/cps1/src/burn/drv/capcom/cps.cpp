@@ -1265,7 +1265,7 @@ INT32 CpsInit()
 {
 	INT32 nMemLen, i;
 	
-   BurnSetRefreshRate(59.61);
+   BurnSetRefreshRate(59.629403);
 
 	if (!nCPS68KClockspeed) {
 		if (!(Cps & 1)) {

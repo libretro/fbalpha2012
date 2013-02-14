@@ -615,8 +615,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-//#define BIND_MAP_COUNT 151
-#define BIND_MAP_COUNT 149
+#define BIND_MAP_COUNT 153
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1351,9 +1350,24 @@ static bool init_input()
    bind_map[148].nCode[0] = RETRO_DEVICE_ID_JOYPAD_TEST;
    bind_map[148].nCode[1] = 0;
 
+   bind_map[149].bii_name = "P1 Turn 1";
+   bind_map[149].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
+   bind_map[149].nCode[1] = 0;
+
+   bind_map[150].bii_name = "P2 Turn 1";
+   bind_map[150].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
+   bind_map[150].nCode[1] = 1;
+
+   bind_map[151].bii_name = "P1 Turn 2";
+   bind_map[151].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[151].nCode[1] = 0;
+
+   bind_map[152].bii_name = "P2 Turn 2";
+   bind_map[152].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[152].nCode[1] = 1;
+
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {
-      /* TODO: Cyberbots: Full Metal Madness */
       /* TODO: Armored Warriors */
       BurnDrvGetInputInfo(&bii, i);
 

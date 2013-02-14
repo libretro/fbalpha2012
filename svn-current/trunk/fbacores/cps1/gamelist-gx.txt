@@ -1,0 +1,251 @@
+This list contains all games supported by FB Alpha.
+
+244 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
+
+  name		  status  full name						  parent	  year	  company	  hardware	  remarks
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+
+| 1941u		|  	| 1941 - Counter Attack (900227 USA)			| 1941		| 1990	| Capcom	| CPS1		| 					|
+| 1941		|  	| 1941 - Counter Attack (900227 World)			| 		| 1990	| Capcom	| CPS1		| 					|
+| 1941j		|  	| 1941 - Counter Attack (Japan)				| 1941		| 1990	| Capcom	| CPS1		| 					|
+| 1941r1	|  	| 1941 - Counter Attack (World)				| 1941		| 1990	| Capcom	| CPS1		| 					|
+| area88r	|  	| Area 88 (Japan Resale ver.)				| unsquad	| 1989	| Daipro / Capco| CPS1		| 					|
+| area88	|  	| Area 88 (Japan)					| unsquad	| 1989	| Daipro / Capco| CPS1		| 					|
+| punisherbz	|  	| Biaofeng Zhanjing (Chinese bootleg)			| punisher	| 2002	| bootleg	| CPS1		| 					|
+| dino		|  	| Cadillacs & Dinosaurs (930201 etc)			| 		| 1993	| Capcom	| CPS1 / QSound	| 					|
+| dinou		|  	| Cadillacs & Dinosaurs (930201 USA)			| dino		| 1993	| Capcom	| CPS1 / QSound	| 					|
+| dinopic	|  	| Cadillacs and Dinosaurs (bootleg set 1 (with PIC16c57)| dino		| 1993	| Capcom	| CPS1		| No sound				|
+| dinopic2	|  	| Cadillacs and Dinosaurs (bootleg set 2 (with PIC16c57)| dino		| 1993	| Capcom	| CPS1		| No sound				|
+| dinoh		|  	| Cadillacs and Dinosaurs (bootleg set 3, 930223 Asia TW| dino		| 1993	| bootleg	| CPS1 / QSound	| 					|
+| dinoeh	|  	| Cadillacs and Dinosaurs (hack, 930201 etc)		| dino		| 1993	| Capcom	| CPS1 / QSound	| 					|
+| dinot		|  	| Cadillacs and Dinosaurs Turbo (bootleg set 1, 930223 A| dino		| 1993	| bootleg	| CPS1 / QSound	| 					|
+| dinotpic	|  	| Cadillacs and Dinosaurs Turbo (bootleg set 2 (with PIC| dino		| 1993	| bootleg	| CPS1		| No sound				|
+| dinoj		|  	| Cadillacs Kyouryuu-Shinseiki (Cadillacs 930201 Japan)	| dino		| 1993	| Capcom	| CPS1 / QSound	| 					|
+| cworld2j	|  	| Capcom World 2 (920611 Japan)				| 		| 1992	| Capcom	| CPS1		| 					|
+| captcommjr1	|  	| Captain Commando (910928 Japan)			| captcomm	| 1991	| Capcom	| CPS1		| 					|
+| captcommu	|  	| Captain Commando (910928 USA)				| captcomm	| 1991	| Capcom	| CPS1		| 					|
+| captcommr1	|  	| Captain Commando (911014 other country)		| captcomm	| 1991	| Capcom	| CPS1		| 					|
+| captcommj	|  	| Captain Commando (911202 Japan)			| captcomm	| 1991	| Capcom	| CPS1		| 					|
+| captcomm	|  	| Captain Commando (911202 other country)		| 		| 1991	| Capcom	| CPS1		| 					|
+| captcommb	|  	| Captain Commando (bootleg set 1, 911014 other country)| captcomm	| 1991	| bootleg	| CPS1		| 					|
+| captcommb2	|  	| Captain Commando (bootleg set 2 (with YM2151 + 2xMSM52| captcomm	| 1991	| bootleg	| CPS1		| 					|
+| cawingbl	|  	| Carrier Air Wing (bootleg set 1 (with 2xYM2203 + 2xMSM| cawing	| 1990	| bootleg	| CPS1		| 					|
+| cawingb2	|  	| Carrier Air Wing (bootleg set 2 (with 2xYM2203 + 2xMSM| cawing	| 1990	| bootleg	| CPS1		| 					|
+| cawingr1	|  	| Carrier Air Wing (U.S. navy 901009 etc)		| cawing	| 1990	| Capcom	| CPS1		| 					|
+| cawing	|  	| Carrier Air Wing (U.S. navy 901012 etc)		| 		| 1990	| Capcom	| CPS1		| 					|
+| cawingu	|  	| Carrier Air Wing (U.S. navy 901012 USA)		| cawing	| 1990	| Capcom	| CPS1		| 					|
+| cps1demo	|  	| Chaos Demo (CPS-1)					| 		| 2000	| Chaos		| CPS1		| 					|
+| chikij	|  	| Chiki Chiki Boys (900619 Japan)			| mtwins	| 1990	| Capcom	| CPS1		| 					|
+| daimakaib	|  	| Dai Makai-Mura (bootleg, Japan)			| ghouls	| 1988	| Capcom	| CPS1		| 					|
+| daimakair	|  	| Dai Makai-Mura (Japan Resale Ver.)			| ghouls	| 1988	| Capcom	| CPS1		| 					|
+| daimakai	|  	| Dai Makai-Mura (Japan)				| ghouls	| 1988	| Capcom	| CPS1		| 					|
+| dinohunt	|  	| Dinosaur Hunter (Chinese bootleg, 930223 Asia TW)	| dino		| 1993	| bootleg	| CPS1		| 					|
+| dynwar	|  	| Dynasty Wars (US set 1)				| 		| 1989	| Capcom	| CPS1		| 					|
+| dynwara	|  	| Dynasty Wars (US set 2)				| dynwar	| 1989	| Capcom	| CPS1		| 					|
+| fcrash	|  	| Final Crash (bootleg (with 2xYM2203 + 2xMSM5205))	| ffight	| 1990	| Playmark	| CPS1		| 					|
+| ffightj1	|  	| Final Fight (900112 Japan)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightua	|  	| Final Fight (900112 USA)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightj2	|  	| Final Fight (900305 Japan)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightub	|  	| Final Fight (900613 USA)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightj	|  	| Final Fight (Japan)					| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightu	|  	| Final Fight (USA, set 1)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffightu1	|  	| Final Fight (USA, set 2)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| ffight	|  	| Final Fight (World, set 1)				| 		| 1989	| Capcom	| CPS1		| 					|
+| ffighta	|  	| Final Fight (World, set 2)				| ffight	| 1989	| Capcom	| CPS1		| 					|
+| forgottnua	|  	| Forgotten Worlds (US, B-Board 88618B-2, rev A)	| forgottn	| 1988	| Capcom	| CPS1		| 					|
+| forgottnu1	|  	| Forgotten Worlds (US, B-Board 88618B-2, Rev C)	| forgottn	| 1988	| Capcom	| CPS1		| 					|
+| forgottnu	|  	| Forgotten Worlds (US, B-Board 88621B-2, rev C)	| forgottn	| 1988	| Capcom	| CPS1		| 					|
+| forgottn	|  	| Forgotten Worlds (World)				| 		| 1988	| Capcom	| CPS1		| 					|
+| cps1frog	|  	| Frog Feast (CPS-1)					| 		| 2006	| Rastersoft (Ho| CPS1		| 					|
+| ganbare	|  	| Ganbare! Marine kkun (Marine 2K0411 JPN)		| 		| 2000	| Capcom	| CPS1		| 					|
+| ghoulsu	|  	| Ghouls'n Ghosts (US)					| ghouls	| 1988	| Capcom	| CPS1		| 					|
+| ghouls	|  	| Ghouls'n Ghosts (World)				| 		| 1988	| Capcom	| CPS1		| 					|
+| knights	|  	| Knights of the Round (911127 etc)			| 		| 1991	| Capcom	| CPS1		| 					|
+| knightsja	|  	| Knights of the Round (911127 Japan, B-Board 89625B-1)	| knights	| 1991	| Capcom	| CPS1		| 					|
+| knightsj	|  	| Knights of the Round (911127 Japan, B-Board 91634B-2)	| knights	| 1991	| Capcom	| CPS1		| 					|
+| knightsu	|  	| Knights of the Round (911127 USA)			| knights	| 1991	| Capcom	| CPS1		| 					|
+| knightsb	|  	| Knights of the Round (bootleg set 1 (with YM2151 + 2xM| knights	| 1991	| bootleg	| CPS1		| 					|
+| knightsb2	|  	| Knights of the Round (bootleg set 2, 911127 etc)	| knights	| 1991	| bootleg	| CPS1		| 					|
+| knightsb3	|  	| Knights of the Round (bootleg set 3, 911127 Japan)	| knights	| 1991	| bootleg	| CPS1		| 					|
+| knightsb4	|  	| Knights of the Round (bootleg set 4 (with YM2151 + 2xM| knights	| 1991	| bootleg	| CPS1		| 					|
+| knightsh	|  	| Knights of the Round (hack set 1)			| knights	| 1991	| hack		| CPS1		| 					|
+| knightsh2	|  	| Knights of the Round (hack set 2, 911127 etc)		| knights	| 1991	| hack		| CPS1		| 					|
+| lostwrldo	|  	| Lost Worlds (Japan Old ver.)				| forgottn	| 1988	| Capcom	| CPS1		| 					|
+| lostwrld	|  	| Lost Worlds (Japan)					| forgottn	| 1988	| Capcom	| CPS1		| 					|
+| mswordj	|  	| Magic Sword (23.06.1990 Japan)			| msword	| 1990	| Capcom	| CPS1		| 					|
+| mswordr1	|  	| Magic Sword - heroic fantasy (23.06.1990 other country| msword	| 1990	| Capcom	| CPS1		| 					|
+| msword	|  	| Magic Sword - heroic fantasy (25.07.1990 other country| 		| 1990	| Capcom	| CPS1		| 					|
+| mswordu	|  	| Magic Sword - heroic fantasy (25.07.1990 USA)		| msword	| 1990	| Capcom	| CPS1		| 					|
+| megamana	|  	| Mega Man - the power battle (951006 Asia)		| megaman	| 1995	| Capcom	| CPS1		| 					|
+| megaman	|  	| Mega Man - the power battle (951006 USA)		| 		| 1995	| Capcom	| CPS1		| 					|
+| mtwins	|  	| Mega Twins (chiki chiki boys 900619 etc)		| 		| 1990	| Capcom	| CPS1		| 					|
+| mercs		|  	| Mercs (900302 etc)					| 		| 1990	| Capcom	| CPS1		| 					|
+| mercsur1	|  	| Mercs (900302 USA)					| mercs		| 1990	| Capcom	| CPS1		| 					|
+| mercsu	|  	| Mercs (900608 USA)					| mercs		| 1990	| Capcom	| CPS1		| 					|
+| mbomberj	|  	| Muscle Bomber - the body explosion (930713 Japan)	| slammast	| 1993	| Capcom	| CPS1		| 					|
+| mbombdje	| X	| Muscle Bomber Duo - heat up warriors (931206 Japan E)	| mbombrd	| 1993	| Capcom	| CPS1		| 					|
+| mbombrdj	|  	| Muscle Bomber Duo - heat up warriors (931206 Japan)	| mbombrd	| 1993	| Capcom	| CPS1		| 					|
+| mbombrda	| X	| Muscle Bomber Duo - ultimate team battle (931206 Asia)| mbombrd	| 1993	| Capcom	| CPS1		| 					|
+| mbombrd	|  	| Muscle Bomber Duo - ultimate team battle (931206 etc)	| 		| 1993	| Capcom	| CPS1		| 					|
+| mbombrdh	| X	| Muscle Bomber Duo - ultimate team battle (931206 Hispa| mbombrd	| 1993	| Capcom	| CPS1		| 					|
+| mbombrdu	| X	| Muscle Bomber Duo - ultimate team battle (931206 USA)	| mbombrd	| 1993	| Capcom	| CPS1		| 					|
+| nemoj		|  	| Nemo (90 11 20 Japan)					| nemo		| 1990	| Capcom	| CPS1		| 					|
+| nemo		|  	| Nemo (90 11 30 etc)					| 		| 1990	| Capcom	| CPS1		| 					|
+| pang3r1	|  	| Pang! 3 (950511 Euro)					| pang3		| 1995	| Mitchell	| CPS1		| 					|
+| pang3		|  	| Pang! 3 (950601 Euro)					| 		| 1995	| Mitchell	| CPS1		| 					|
+| pang3b	|  	| Pang! 3 (bootleg set 1, 950511 Euro)			| pang3		| 1995	| Mitchell	| CPS1		| 					|
+| pang3b2	|  	| Pang! 3 (bootleg set 2, 950511 Euro)			| pang3		| 1995	| Mitchell	| CPS1		| 					|
+| pang3b3	|  	| Pang! 3 (bootleg set 3, 950601 Euro)			| pang3		| 1995	| Mitchell	| CPS1		| 					|
+| pang3j	|  	| Pang! 3: Kaitou Tachi no Karei na Gogo (950511 Japan)	| pang3		| 1995	| Mitchell	| CPS1		| 					|
+| pnickj	|  	| Pnickies (940608 Japan)				| 		| 1994	| Compile (Capco| CPS1		| 					|
+| pnicku	| X	| Pnickies (940608 USA)					| pnickj	| 1994	| Compile (Capco| CPS1		| 					|
+| qadjr		|  	| Quiz & Dragons (940921 Japan Resale Ver.)		| qad		| 1992	| Capcom	| CPS1		| 					|
+| qad		|  	| Quiz & Dragons (capcom quiz game 920701 USA)		| 		| 1992	| Capcom	| CPS1		| 					|
+| qtono2j	|  	| Quiz Tonosama no Yabou 2 Zenkoku-ban (tonosama 2 95012| 		| 1995	| Capcom	| CPS1		| 					|
+| rockmanj	|  	| Rockman - the power battle (950922 Japan)		| megaman	| 1995	| Capcom	| CPS1		| 					|
+| wofa		|  	| Sangokushi II (921005 Asia)				| wof		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| wofah		|  	| Sangokushi II (hack set 1, 921005 Asia)		| wof		| 1992	| hack		| CPS1 / QSound	| 					|
+| wofaha	|  	| Sangokushi II (hack set 2, 921005 Asia)		| wof		| 1992	| hack		| CPS1 / QSound	| 					|
+| wofahb	|  	| Sangokushi II (hack set 3, 921005 Asia)		| wof		| 1992	| hack		| CPS1 / QSound	| 					|
+| wofhfh	|  	| Sangokushi II: Huo Fenghuang (Chinese bootleg, 921005 | wof		| 1992	| bootleg	| CPS1		| 					|
+| wof3js	|  	| Sangokushi II: San Jian Sheng (Chinese bootleg set 1, | wof		| 1992	| bootleg	| CPS1		| 					|
+| wof3jsa	|  	| Sangokushi II: San Jian Sheng (Chinese bootleg set 2, | wof		| 1992	| bootleg	| CPS1		| 					|
+| wof3sj	|  	| Sangokushi II: San Sheng Jian (Chinese bootleg set 1, | wof		| 1992	| bootleg	| CPS1		| 					|
+| wof3sja	|  	| Sangokushi II: San Sheng Jian (Chinese bootleg set 2, | wof		| 1992	| bootleg	| CPS1		| 					|
+| wofh		|  	| Sangokushi II: Sanguo Yingxiong Zhuan (Chinese bootleg| wof		| 1992	| bootleg	| CPS1		| 					|
+| wofha		|  	| Sangokushi II: Sanguo Yingxiong Zhuan (Chinese bootleg| wof		| 1992	| bootleg	| CPS1		| 					|
+| sgyxz		|  	| Sangokushi II: Sanguo Yingxiong Zhuan (Chinese bootleg| wof		| 1992	| bootleg	| CPS1		| 					|
+| wofsj		|  	| Sangokushi II: Sheng Jian Sanguo (Chinese bootleg set | wof		| 1992	| bootleg	| CPS1		| 					|
+| wofsja	|  	| Sangokushi II: Sheng Jian Sanguo (Chinese bootleg set | wof		| 1992	| bootleg	| CPS1		| 					|
+| wofsjb	|  	| Sangokushi II: Sheng Jian Sanguo (Chinese bootleg set | wof		| 1992	| bootleg	| CPS1		| No sound				|
+| slammasa	| X	| Saturday Night Slam Masters (Slam Masters 930301 Asia)| slammast	| 1993	| Capcom	| CPS1		| 					|
+| slammast	|  	| Saturday Night Slam Masters (Slam Masters 930713 etc)	| 		| 1993	| Capcom	| CPS1		| 					|
+| slammash	| X	| Saturday Night Slam Masters (Slam Masters 930713 Hispa| slammast	| 1993	| Capcom	| CPS1		| 					|
+| slammastu	|  	| Saturday Night Slam Masters (slam masters 930713 USA)	| slammast	| 1993	| Capcom	| CPS1		| 					|
+| mercsj	|  	| Senjo no Ookami II (Ookami 2 900302 Japan)		| mercs		| 1990	| Capcom	| CPS1		| 					|
+| sfach		| X	| Street Fighter Alpha (CPS Changer, 950727 Publicity US| sfzch		| 1995	| Capcom	| CPS Changer	| 					|
+| sf2amf	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2amf2	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2amf3	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2amf4	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2amf5	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2amf6	|  	| Street Fighter II - champion edition (Alpha Magic-F bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ua		|  	| Street Fighter II - the world warrior (910206 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2eb		|  	| Street Fighter II - the world warrior (910214 etc)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ja		|  	| Street Fighter II - the world warrior (910214 Japan)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ub		|  	| Street Fighter II - the world warrior (910214 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ee		|  	| Street Fighter II - the world warrior (910228 etc)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ue		|  	| Street Fighter II - the world warrior (910228 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2jc		|  	| Street Fighter II - the world warrior (910306 Japan)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2uc		|  	| Street Fighter II - the world warrior (910306 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ud		|  	| Street Fighter II - the world warrior (910318 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2uf		|  	| Street Fighter II - the world warrior (910411 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2		|  	| Street Fighter II - the world warrior (910522 etc)	| 		| 1991	| Capcom	| CPS1		| 					|
+| sf2ug		|  	| Street Fighter II - the world warrior (910522 USA, rev| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2ui		|  	| Street Fighter II - the world warrior (910522 USA, rev| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2uk		|  	| Street Fighter II - the world warrior (911101 USA)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2j		|  	| Street Fighter II - the world warrior (911210 Japan)	| sf2		| 1991	| Capcom	| CPS1		| 					|
+| sf2b		| X NW	| Street Fighter II - the world warrior (bootleg)	| sf2		| 1991	| Capcom	| CPS1		| Bad dump?, Resets itself		|
+| sf2qp1	|  	| Street Fighter II - the world warrior (Quicken Pt-I bo| sf2		| 1991	| bootleg	| CPS1		| 					|
+| sf2stt	|  	| Street Fighter II - the world warrior (STT, TAB Austri| sf2		| 1992	| bootleg	| CPS1		| 					|
+| sf2ebbl	|  	| Street Fighter II - the world warrior (TAB Austria boo| sf2		| 1992	| bootleg	| CPS1		| 					|
+| sf2thndr	|  	| Street Fighter II - the world warrior (Thunder Edition| sf2		| 1991	| bootleg	| CPS1		| 					|
+| sf2ceeabl	|  	| Street Fighter II' - champion edition (920313 etc boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceeab2	|  	| Street Fighter II' - champion edition (920313 etc boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceuabl	|  	| Street Fighter II' - champion edition (920313 USA boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceuab2	|  	| Street Fighter II' - champion edition (920313 USA boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceuab3	|  	| Street Fighter II' - champion edition (920313 USA boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceuab4	|  	| Street Fighter II' - champion edition (920313 USA boot| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2cejabl	|  	| Street Fighter II' - champion edition (920322 Japan bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2cejab2	|  	| Street Fighter II' - champion edition (920322 Japan bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2accp2	|  	| Street Fighter II' - champion edition (Accelerator Pt.| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2acc	|  	| Street Fighter II' - champion edition (Accelerator! bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2acca	|  	| Street Fighter II' - champion edition (Accelerator! bo| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2any	| D NW	| Street Fighter II' - champion edition (bootleg)	| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2cebr	| X	| Street Fighter II' - champion edition (bootleg, Brazil| sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ceh	| X	| Street Fighter II' - champion edition (bootleg, Hispan| sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2dkot2	|  	| Street Fighter II' - champion edition (Double K.O. Tur| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2mega	|  	| Street Fighter II' - champion edition (Mega Co bootleg| sf2ce		| 1992	| Mega Co	| CPS1		| 					|
+| sf2mega2	|  	| Street Fighter II' - champion edition (Mega Co bootleg| sf2ce		| 1992	| Mega Co	| CPS1		| 					|
+| sf2rb		|  	| Street Fighter II' - champion edition (Rainbow bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2rb2	|  	| Street Fighter II' - champion edition (Rainbow bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2rb3	|  	| Street Fighter II' - champion edition (Rainbow bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2rb4	|  	| Street Fighter II' - champion edition (Rainbow bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2rb5	|  	| Street Fighter II' - champion edition (Rainbow bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2red	|  	| Street Fighter II' - champion edition (Red Wave bootle| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2red2	|  	| Street Fighter II' - champion edition (Red Wave bootle| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2ceea	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ceua	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ceja	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ce		|  	| Street Fighter II' - champion edition (street fighter | 		| 1992	| Capcom	| CPS1		| 					|
+| sf2cejb	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ceub	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2cejc	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2ceuc	|  	| Street Fighter II' - champion edition (street fighter | sf2ce		| 1992	| Capcom	| CPS1		| 					|
+| sf2tlona	|  	| Street Fighter II' - champion edition (Tu Long bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2tlonb	|  	| Street Fighter II' - champion edition (Tu Long bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2tlonc	|  	| Street Fighter II' - champion edition (Tu Long bootleg| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2v004	|  	| Street Fighter II' - champion edition (V004 bootleg se| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2v0042	|  	| Street Fighter II' - champion edition (V004 bootleg se| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2v0043	|  	| Street Fighter II' - champion edition (V004 bootleg se| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2yyc	|  	| Street Fighter II' - champion edition (YYC bootleg set| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2yyc2	|  	| Street Fighter II' - champion edition (YYC bootleg set| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2hf		|  	| Street Fighter II' - hyper fighting (street fighter 2'| 		| 1992	| Capcom	| CPS1		| 					|
+| sf2hfu	|  	| Street Fighter II' - hyper fighting (street fighter 2'| sf2hf		| 1992	| Capcom	| CPS1		| 					|
+| sf2mdt	|  	| Street Fighter II' - Magic Delta Turbo (bootleg set 1 | sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2mdta	|  	| Street Fighter II' - Magic Delta Turbo (bootleg set 2 | sf2ce		| 1992	| bootleg	| CPS1		| Bad graphics rom dump			|
+| sf2koryu	|  	| Street Fighter II' - Xiang Long (bootleg set 1, 811102| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2koryu2	|  	| Street Fighter II' - Xiang Long (bootleg set 2, 811102| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2koryu3	|  	| Street Fighter II' - Xiang Long (bootleg set 3, 811102| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sf2hfjb	|  	| Street Fighter II' Turbo - hyper fighting (bootleg set| sf2hf		| 1992	| Capcom	| CPS1		| 					|
+| sf2hfjb2	|  	| Street Fighter II' Turbo - hyper fighting (bootleg set| sf2hf		| 1992	| Capcom	| CPS1		| 					|
+| sf2hfj	|  	| Street Fighter II' Turbo - hyper fighting (street figh| sf2hf		| 1992	| Capcom	| CPS1		| 					|
+| sf2dongb	|  	| Street Fighter II': Champion Edition (Dongfang Bubai p| sf2ce		| 1992	| bootleg	| CPS1		| 					|
+| sfzbch	| X	| Street Fighter Zero (CPS Changer, 950727 Brazil)	| sfzch		| 1995	| Capcom	| CPS Changer	| 					|
+| sfzech	| X	| Street Fighter Zero (CPS Changer, 950727 Euro)	| sfzch		| 1995	| Capcom	| CPS Changer	| 					|
+| sfzhch	| X	| Street Fighter Zero (CPS Changer, 950727 Hispanic)	| sfzch		| 1995	| Capcom	| CPS Changer	| 					|
+| sfzach	| X	| Street Fighter Zero (CPS Changer, 950925 Asia)	| sfzch		| 1995	| Capcom	| CPS Changer	| 					|
+| sfzch		|  	| Street Fighter Zero (CPS Changer, 951020 Japan)	| 		| 1995	| Capcom	| CPS Changer	| 					|
+| ffightjh	|  	| Street Smart / Final Fight (Japan, hack)		| ffight	| 1989	| Capcom	| CPS1		| 					|
+| strider	|  	| Strider (US set 1)					| 		| 1989	| Capcom	| CPS1		| 					|
+| striderua	|  	| Strider (US set 2)					| strider	| 1989	| Capcom	| CPS1		| 					|
+| striderjr	|  	| Strider Hiryu (Japan Resale Ver.)			| strider	| 1989	| Capcom	| CPS1		| 					|
+| striderj	|  	| Strider Hiryu (Japan)					| strider	| 1989	| Capcom	| CPS1		| 					|
+| dynwarjr	|  	| Tenchi wo Kurau (Japan Resale Ver.)			| dynwar	| 1989	| Capcom	| CPS1		| 					|
+| dynwarj	|  	| Tenchi wo Kurau (Japan)				| dynwar	| 1989	| Capcom	| CPS1		| 					|
+| wofj		|  	| Tenchi wo Kurau II - Sekiheki no Tatakai (921031 Japan| wof		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| wofch		|  	| Tenchi wo Kurau II - Sekiheki no Tatakai (CPS Changer,| 		| 1992	| Capcom	| CPS Changer	| 					|
+| wofjh		|  	| Tenchi wo Kurau II - Sekiheki no Tatakai (hack, 921031| wof		| 1992	| hack		| CPS1 / QSound	| 					|
+| kodr1		|  	| The King of Dragons (910711 etc)			| kod		| 1991	| Capcom	| CPS1		| 					|
+| kod		|  	| The King of Dragons (910805 etc)			| 		| 1991	| Capcom	| CPS1		| 					|
+| kodb		|  	| The King of Dragons (bootleg, 910731 etc)		| kod		| 1991	| Capcom	| CPS1		| 					|
+| kodh		|  	| The King of Dragons (hack)				| kod		| 2002	| Capcom	| CPS1		| 					|
+| kodja		|  	| The King of Dragons (Japan 910805, B-Board 89625B-1)	| kod		| 1991	| Capcom	| CPS1		| 					|
+| kodj		|  	| The King of Dragons (Japan 910805, B-Board 90629B-3)	| kod		| 1991	| Capcom	| CPS1		| 					|
+| kodda		|  	| The King of Dragons (Phoenix bootleg, 910731 etc)	| kod		| 1991	| Capcom	| CPS1		| 					|
+| kodu		|  	| The King of Dragons (US 910910)			| kod		| 1991	| Capcom	| CPS1		| 					|
+| punisher	|  	| The Punisher (930422 etc)				| 		| 1993	| Capcom	| CPS1 / QSound	| 					|
+| punisherh	|  	| The Punisher (930422 Hispanic)			| punisher	| 1993	| Capcom	| CPS1 / QSound	| 					|
+| punisherj	|  	| The Punisher (930422 Japan)				| punisher	| 1993	| Capcom	| CPS1 / QSound	| 					|
+| punisheru	|  	| The Punisher (930422 USA)				| punisher	| 1993	| Capcom	| CPS1 / QSound	| 					|
+| punipic	|  	| The Punisher (bootleg set 1 (with PIC16c57), 930422 et| punisher	| 1993	| bootleg	| CPS1		| No sound				|
+| punipic2	|  	| The Punisher (bootleg set 2 (with PIC16c57), 930422 et| punisher	| 1993	| bootleg	| CPS1		| No sound				|
+| punipic3	|  	| The Punisher (bootleg set 3 (with PIC16c57), 930422 et| punisher	| 1993	| bootleg	| CPS1		| No sound				|
+| 3wondersh	|  	| Three Wonders (bootleg, wonder 3 910520 etc)		| 3wonders	| 1991	| Capcom	| CPS1		| 					|
+| 3wonders	|  	| Three Wonders (wonder 3 910520 etc)			| 		| 1991	| Capcom	| CPS1		| 					|
+| 3wondersu	|  	| Three Wonders (wonder 3 910520 USA)			| 3wonders	| 1991	| Capcom	| CPS1		| 					|
+| unsquad	|  	| U.N. Squadron (US)					| 		| 1989	| Daipro / Capco| CPS1		| 					|
+| cawingj	|  	| U.S. Navy (901012 Japan)				| cawing	| 1990	| Capcom	| CPS1		| 					|
+| varthr1	|  	| Varth - operation thunderstorm (920612 etc)		| varth		| 1992	| Capcom	| CPS1		| 					|
+| varthu	|  	| Varth - operation thunderstorm (920612 USA)		| varth		| 1992	| Capcom (Romsta| CPS1		| 					|
+| varth		|  	| Varth - operation thunderstorm (920714 etc)		| 		| 1992	| Capcom	| CPS1		| 					|
+| varthj	|  	| Varth - operation thunderstorm (920714 Japan)		| varth		| 1992	| Capcom	| CPS1		| 					|
+| wofr1		|  	| Warriors of Fate (921002 etc)				| wof		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| wof		|  	| Warriors of Fate (921031 etc)				| 		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| wofu		|  	| Warriors of Fate (921031 USA)				| wof		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| wofb		|  	| Warriors of Fate (bootleg, 921002 etc)		| wof		| 1992	| bootleg	| CPS1		| 					|
+| woffr		| X	| Warriors of Fate (French Translation)			| wof		| 1992	| Capcom	| CPS1 / QSound	| 					|
+| willowj	|  	| Willow (Japan, Japanese)				| willow	| 1989	| Capcom	| CPS1		| 					|
+| willowo	|  	| Willow (US old ver.)					| willow	| 1989	| Capcom	| CPS1		| 					|
+| willow	|  	| Willow (US)						| 		| 1989	| Capcom	| CPS1		| 					|
+| wonder3	|  	| Wonder 3 (910520 Japan)				| 3wonders	| 1991	| Capcom	| CPS1		| 					|
++---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+

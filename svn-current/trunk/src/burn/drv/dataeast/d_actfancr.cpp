@@ -208,11 +208,11 @@ static inline void palette_update(INT32 offset)
 
 	INT32 p = (DrvPalRAM[offset+0] << 0) | (DrvPalRAM[offset+1] << 8);
 
-	INT32 r = (p >> 0) & 0x0f;
-	INT32 g = (p >> 4) & 0x0f;
-	INT32 b = (p >> 8) & 0x0f;
+	INT32 r = ((p >> 0) & 0x0f) << 4 | r;
+	INT32 g = ((p >> 4) & 0x0f) << 4 | g;
+	INT32 b = ((p >> 8) & 0x0f) << 4 | b;
 
-	DrvPalette[offset/2] = BurnHighCol((r << 4) | r, (g << 4) | g, (b << 4) | b, 0);
+	DrvPalette[offset/2] = BurnHighCol(r, g, b, 0);
 }
 
 void actfan_main_write(UINT32 address, UINT8 data)

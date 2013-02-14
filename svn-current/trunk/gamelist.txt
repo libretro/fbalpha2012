@@ -1,6 +1,6 @@
 This list contains all games supported by FB Alpha.
 
-5865 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
+5867 games supported in total; X = excluded from build; D = included in debug build only; NW = not working
 
   name		  status  full name						  parent	  year	  company	  hardware	  remarks
 +---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+
@@ -900,6 +900,7 @@ This list contains all games supported by FB Alpha.
 | md_commands	|  	| Commandos (Rus)					| 		| 199?	| <unknown>	| Sega Megadrive| 					|
 | md_congo	|  	| Congo (Prototype)					| 		| 199?	| <unknown>	| Sega Megadrive| 					|
 | conquer	| D NW	| Conquer						| 		| 1982	| unknown	| Galaxian	| Bad dump				|
+| contcircj	|  	| Continental Circus (Japan)				| contcirc	| 1987	| Taito Corporat| Taito-Z	| 					|
 | contcircu	|  	| Continental Circus (US set 1)				| contcirc	| 1987	| Taito America | Taito-Z	| 					|
 | contcircua	|  	| Continental Circus (US set 2)				| contcirc	| 1987	| Taito America | Taito-Z	| 					|
 | contcirc	|  	| Continental Circus (World)				| 		| 1987	| Taito Corporat| Taito-Z	| 					|
@@ -2326,6 +2327,7 @@ This list contains all games supported by FB Alpha.
 | kov2p205	|  	| Knights of Valour 2 Plus - Nine Dragons (VM205XX, Chin| kov2p		| 2001	| IGS		| PolyGameMaster| 					|
 | kovplusa	|  	| Knights of Valour Plus - Sangoku Senki Plus (V119 alt)| kovplus	| 1999	| IGS		| PolyGameMaster| 					|
 | kovplus	|  	| Knights of Valour Plus - Sangoku Senki Plus (V119)	| 		| 1999	| IGS		| PolyGameMaster| 					|
+| kovshytzy	|  	| Knights of Valour Super Heroes / Sangoku Senki Super H| kovshp	| 1999	| IGS		| PolyGameMaster| Imperfect Protection Emulation	|
 | kovshp	|  	| Knights of Valour Super Heroes Plus / Sangoku Senki Su| 		| 2004	| IGS		| PolyGameMaster| Imperfect Protection Emulation	|
 | kovshb	|  	| Knights of Valour Superheroes / Sangoku Senki Superher| kovsh		| 1999	| IGS		| PolyGameMaster| 					|
 | kovsh101	|  	| Knights of Valour Superheroes / Sangoku Senki Superher| kovsh		| 1999	| IGS		| PolyGameMaster| 					|

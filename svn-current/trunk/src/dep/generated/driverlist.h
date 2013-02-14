@@ -918,6 +918,7 @@ DRV		BurnDrvmd_congo;
 #if defined FBA_DEBUG
 DRV		BurnDrvConquer;			// Bad dump [NOT WORKING]
 #endif
+DRV		BurnDrvContcircj;
 DRV		BurnDrvContcircu;
 DRV		BurnDrvContcircua;
 DRV		BurnDrvContcirc;
@@ -2370,6 +2371,7 @@ DRV		BurnDrvKov2p;
 DRV		BurnDrvKov2p205;
 DRV		BurnDrvKovplusa;
 DRV		BurnDrvKovplus;
+DRV		BurnDrvkovshytzy;
 DRV		BurnDrvkovshp;
 DRV		BurnDrvKovshb;
 DRV		BurnDrvKovsh101;
@@ -6910,6 +6912,7 @@ static struct BurnDriver* pDriver[] = {
 #if defined FBA_DEBUG
 	&BurnDrvConquer,			// Conquer [Bad dump, NOT WORKING]
 #endif
+	&BurnDrvContcircj,			// Continental Circus (Japan)
 	&BurnDrvContcircu,			// Continental Circus (US set 1)
 	&BurnDrvContcircua,			// Continental Circus (US set 2)
 	&BurnDrvContcirc,			// Continental Circus (World)
@@ -8362,6 +8365,7 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvKov2p205,			// Knights of Valour 2 Plus - Nine Dragons (VM205XX, China)
 	&BurnDrvKovplusa,			// Knights of Valour Plus - Sangoku Senki Plus (V119 alt)
 	&BurnDrvKovplus,			// Knights of Valour Plus - Sangoku Senki Plus (V119)
+	&BurnDrvkovshytzy,			// Knights of Valour Super Heroes / Sangoku Senki Super Heroes (ver. 201, China)
 	&BurnDrvkovshp,				// Knights of Valour Super Heroes Plus / Sangoku Senki Super Heroes Plus (ver. 100)
 	&BurnDrvKovshb,				// Knights of Valour Superheroes / Sangoku Senki Superheroes (bootleg, V104, China)
 	&BurnDrvKovsh101,			// Knights of Valour Superheroes / Sangoku Senki Superheroes (V101)

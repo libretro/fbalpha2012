@@ -636,7 +636,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 193
+#define BIND_MAP_COUNT 197
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1559,6 +1559,22 @@ static bool init_input()
    bind_map[192].bii_name = "P2 start";
    bind_map[192].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
    bind_map[192].nCode[1] = 1;
+
+   bind_map[193].bii_name = "Brake 2";
+   bind_map[193].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
+   bind_map[193].nCode[1] = 0;
+   
+   bind_map[194].bii_name = "Brake 3";
+   bind_map[194].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L2;
+   bind_map[194].nCode[1] = 0;
+
+   bind_map[195].bii_name = "Accelerate 2";
+   bind_map[195].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[195].nCode[1] = 0;
+
+   bind_map[196].bii_name = "Accelerate 3";
+   bind_map[196].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[196].nCode[1] = 0;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

@@ -338,7 +338,7 @@ void retro_run()
 
    poll_input();
 
-   //nBurnLayer = 0xff;
+   nBurnLayer = 0xff;
    pBurnSoundOut = g_audio_buf;
    nBurnSoundRate = AUDIO_SAMPLERATE;
    //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
@@ -636,7 +636,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 191
+#define BIND_MAP_COUNT 193
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1551,6 +1551,14 @@ static bool init_input()
    bind_map[190].bii_name = "P2 Turn 2";
    bind_map[190].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
    bind_map[190].nCode[1] = 1;
+
+   bind_map[191].bii_name = "P1 start";
+   bind_map[191].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[191].nCode[1] = 0;
+
+   bind_map[192].bii_name = "P2 start";
+   bind_map[192].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
+   bind_map[192].nCode[1] = 1;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

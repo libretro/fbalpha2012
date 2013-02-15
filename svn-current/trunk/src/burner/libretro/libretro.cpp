@@ -349,15 +349,19 @@ void retro_run()
    unsigned drv_flags = BurnDrvGetFlags();
    uint32_t height_tmp = height;
    size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
-   if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED) == BDF_ORIENTATION_VERTICAL ||
-         drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED) == BDF_ORIENTATION_FLIPPED)
+
+   switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
    {
-      nBurnPitch = height * pitch_size;
-      height = width;
-      width = height_tmp;
+      case BDF_ORIENTATION_VERTICAL:
+      case BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED:
+         nBurnPitch = height * pitch_size;
+         height = width;
+         width = height_tmp;
+         break;
+      case BDF_ORIENTATION_FLIPPED:
+      default:
+         nBurnPitch = width * pitch_size;
    }
-   else
-      nBurnPitch = width * pitch_size;
 
    video_cb(g_fba_frame, width, height, nBurnPitch);
    audio_batch_cb(g_audio_buf, nBurnSoundLen);

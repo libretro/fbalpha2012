@@ -349,7 +349,8 @@ void retro_run()
    unsigned drv_flags = BurnDrvGetFlags();
    uint32_t height_tmp = height;
    size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
-   if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED))
+   if (drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED) == BDF_ORIENTATION_VERTICAL ||
+         drv_flags & (BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED) == BDF_ORIENTATION_FLIPPED)
    {
       nBurnPitch = height * pitch_size;
       height = width;

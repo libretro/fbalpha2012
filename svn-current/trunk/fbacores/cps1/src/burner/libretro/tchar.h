@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <wchar.h>
 
-#include "inp_keys.h"
+#include "../../src/intf/input/inp_keys.h"
 #define TCHAR char
 #define _T(x) x
 #define _tfopen fopen

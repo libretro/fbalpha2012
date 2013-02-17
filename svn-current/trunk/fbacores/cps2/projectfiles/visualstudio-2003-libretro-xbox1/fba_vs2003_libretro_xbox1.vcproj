@@ -383,9 +383,6 @@
 					RelativePath="..\..\src\burner\state.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\burner\statec.cpp">
-				</File>
-				<File
 					RelativePath="..\..\src\burner\zipfn.cpp">
 				</File>
 				<Filter

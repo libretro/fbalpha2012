@@ -3,7 +3,7 @@
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#ifdef GEKKO
+#if defined(GEKKO) || defined(_XBOX1)
 #include "driverlist-gx.h"
 #else
 #include "driverlist.h"

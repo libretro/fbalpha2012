@@ -207,9 +207,6 @@
 					RelativePath="..\..\src\burn\burn_sound.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\burn\burn_sound_a.asm">
-				</File>
-				<File
 					RelativePath="..\..\src\burn\burn_sound_c.cpp">
 				</File>
 				<File
@@ -289,43 +286,7 @@
 							RelativePath="..\..\src\burn\drv\capcom\ctv.cpp">
 						</File>
 						<File
-							RelativePath="..\..\src\burn\drv\capcom\ctv_make.cpp">
-							<FileConfiguration
-								Name="Debug|Xbox"
-								ExcludedFromBuild="TRUE">
-								<Tool
-									Name="VCCLCompilerTool"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Profile|Xbox"
-								ExcludedFromBuild="TRUE">
-								<Tool
-									Name="VCCLCompilerTool"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Profile_FastCap|Xbox"
-								ExcludedFromBuild="TRUE">
-								<Tool
-									Name="VCCLCompilerTool"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Xbox"
-								ExcludedFromBuild="TRUE">
-								<Tool
-									Name="VCCLCompilerTool"/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release_LTCG|Xbox"
-								ExcludedFromBuild="TRUE">
-								<Tool
-									Name="VCCLCompilerTool"/>
-							</FileConfiguration>
-						</File>
-						<File
 							RelativePath="..\..\src\burn\drv\capcom\d_cps2.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\kabuki.cpp">
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\capcom\qs.cpp">

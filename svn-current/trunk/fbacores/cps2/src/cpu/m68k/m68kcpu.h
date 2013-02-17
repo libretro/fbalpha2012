@@ -1991,3 +1991,4 @@ INLINE void m68ki_check_interrupts(void)
 /* ======================================================================== */
 
 #endif /* M68KCPU__HEADER */
+

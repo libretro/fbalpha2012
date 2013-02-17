@@ -2,26 +2,6 @@
 /* ========================= LICENSING & COPYRIGHT ======================== */
 /* ======================================================================== */
 
-#if 1
-static const char* copyright_notice =
-"MUSASHI\n"
-"Version 3.3 (2001-01-29)\n"
-"A portable Motorola M680x0 processor emulation engine.\n"
-"Copyright 1998-2001 Karl Stenerud.  All rights reserved.\n"
-"\n"
-"This code may be freely used for non-commercial purpooses as long as this\n"
-"copyright notice remains unaltered in the source code and any binary files\n"
-"containing this code in compiled form.\n"
-"\n"
-"All other lisencing terms must be negotiated with the author\n"
-"(Karl Stenerud).\n"
-"\n"
-"The latest version of this code can be obtained at:\n"
-"http://kstenerud.cjb.net\n"
-;
-#endif
-
-
 /* ======================================================================== */
 /* ================================= NOTES ================================ */
 /* ======================================================================== */
@@ -44,35 +24,9 @@ int  m68ki_remaining_cycles = 0;                     /* Number of clocks remaini
 uint m68ki_tracing = 0;
 uint m68ki_address_space;
 
-#ifdef M68K_LOG_ENABLE
-const char* m68ki_cpu_names[] =
-{
-	"Invalid CPU",
-	"M68000",
-	"M68008",
-	"Invalid CPU",
-	"M68010",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"M68EC020",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"Invalid CPU",
-	"M68020"
-};
-#endif /* M68K_LOG_ENABLE */
 
 /* The CPU core */
 m68ki_cpu_core m68ki_cpu = {0};
-
-#if M68K_EMULATE_ADDRESS_ERROR
-jmp_buf m68ki_aerr_trap;
-#endif /* M68K_EMULATE_ADDRESS_ERROR */
 
 uint    m68ki_aerr_address;
 uint    m68ki_aerr_write_mode;
@@ -422,12 +376,6 @@ static void default_instr_hook_callback(void)
 }
 
 
-#if M68K_EMULATE_ADDRESS_ERROR
-	#include <setjmp.h>
-	jmp_buf m68ki_aerr_trap;
-#endif /* M68K_EMULATE_ADDRESS_ERROR */
-
-
 /* ======================================================================== */
 /* ================================= API ================================== */
 /* ======================================================================== */
@@ -607,7 +555,7 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 3;
 			CYC_SHIFT        = 1;
 			CYC_RESET        = 132;
-			break;
+			return;
 		case M68K_CPU_TYPE_68008:
 			CPU_TYPE         = CPU_TYPE_008;
 			CPU_ADDRESS_MASK = 0x003fffff;
@@ -623,7 +571,7 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 3;
 			CYC_SHIFT        = 1;
 			CYC_RESET        = 132;
-			break;
+			return;
 		case M68K_CPU_TYPE_68010:
 			CPU_TYPE         = CPU_TYPE_010;
 			CPU_ADDRESS_MASK = 0x00ffffff;
@@ -639,7 +587,7 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 3;
 			CYC_SHIFT        = 1;
 			CYC_RESET        = 130;
-			break;
+			return;
 		case M68K_CPU_TYPE_68EC020:
 			CPU_TYPE         = CPU_TYPE_EC020;
 			CPU_ADDRESS_MASK = 0x00ffffff;
@@ -655,7 +603,7 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 2;
 			CYC_SHIFT        = 0;
 			CYC_RESET        = 518;
-			break;
+			return;
 		case M68K_CPU_TYPE_68020:
 			CPU_TYPE         = CPU_TYPE_020;
 			CPU_ADDRESS_MASK = 0xffffffff;
@@ -671,10 +619,8 @@ void m68k_set_cpu_type(unsigned int cpu_type)
 			CYC_MOVEM_L      = 2;
 			CYC_SHIFT        = 0;
 			CYC_RESET        = 518;
-			break;
+			return;
 	}
-	
-	m68ki_build_opcode_table(CPU_TYPE_IS_000(CPU_TYPE));
 }
 
 /* Execute some instructions until we use up num_cycles clock cycles */
@@ -787,7 +733,7 @@ void m68k_init(void)
 	/* The first call to this function initializes the opcode handler jump table */
 	if(!emulation_initialized)
 		{
-		m68ki_build_opcode_table(CPU_TYPE_IS_000(CPU_TYPE));
+		m68ki_build_opcode_table();
 		emulation_initialized = 1;
 	}
 
@@ -923,3 +869,4 @@ void m68k_state_register(const char *type)
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */
 /* ======================================================================== */
+

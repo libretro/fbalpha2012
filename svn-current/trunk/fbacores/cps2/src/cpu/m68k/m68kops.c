@@ -1989,15 +1989,8 @@ static opcode_handler_struct m68k_opcode_handler_table[] =
 };
 
 
-// This is a hack for specific cases like sf2accp2. For some reason MAME ignores this
-// but FBA does not. This should be investigated further at some point.
-static void m68k_66ff(void)
-{
-	return;
-}
-
 /* Build the opcode handler jump table */
-void m68ki_build_opcode_table(int is_000)
+void m68ki_build_opcode_table(void)
 {
 	opcode_handler_struct *ostruct;
 	int instr;
@@ -2090,13 +2083,12 @@ void m68ki_build_opcode_table(int is_000)
 			m68ki_cycles[k][ostruct->match] = ostruct->cycles[k];
 		ostruct++;
 	}
-
-	if (is_000) m68ki_instruction_jump_table[0x66ff] = m68k_66ff;	// hack
 }
 
 
 /* ======================================================================== */
 /* ============================== END OF FILE ============================= */
 /* ======================================================================== */
+
 
 

@@ -302,9 +302,6 @@
 				<Filter
 					Name="snd"
 					Filter="">
-					<File
-						RelativePath="..\..\src\burn\snd\dac.cpp">
-					</File>
 				</Filter>
 			</Filter>
 			<Filter

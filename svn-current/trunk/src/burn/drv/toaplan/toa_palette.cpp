@@ -21,14 +21,9 @@ INT32 ToaPalExit()
 
 inline static UINT32 CalcCol(UINT16 nColour)
 {
-	INT32 r, g, b;
-
-	r = (BURN_ENDIAN_SWAP_INT16(nColour) & 0x001F) << 3;	// Red
-	r |= r >> 5;
-	g = (BURN_ENDIAN_SWAP_INT16(nColour) & 0x03E0) >> 2;  	// Green
-	g |= g >> 5;
-	b = (BURN_ENDIAN_SWAP_INT16(nColour) & 0x7C00) >> 7;	// Blue
-	b |= b >> 5;
+	INT32 r = ((nColour & 0x001F) << 3) | r >> 5;	// Red
+	INT32 g = ((nColour & 0x03E0) >> 2) | g >> 5;  	// Green
+	INT32 b = ((nColour & 0x7C00) >> 7) | b >> 5;	// Blue
 
 	return BurnHighCol(r, g, b, 0);
 }
@@ -41,7 +36,8 @@ INT32 ToaPalUpdate()
 	pBurnDrvPalette = ToaPalette;
 
 	for (INT32 i = 0; i < nToaPalLen; i++) {
-		pd[i] = CalcCol(ps[i]);
+      UINT16 nColour = BURN_ENDIAN_SWAP_INT16(ps[i]);
+		pd[i] = CalcCol(nColour);
 	}
 	return 0;
 }
@@ -54,7 +50,8 @@ INT32 ToaPal2Update()
 //	pBurnDrvPalette = ToaPalette2;
 
 	for (INT32 i = 0; i < nToaPalLen; i++) {
-		pd[i] = CalcCol(ps[i]);
+      UINT16 nColour = BURN_ENDIAN_SWAP_INT16(ps[i]);
+		pd[i] = CalcCol(nColour);
 	}
 	return 0;
 }

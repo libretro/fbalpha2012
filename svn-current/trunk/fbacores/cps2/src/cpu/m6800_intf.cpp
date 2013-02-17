@@ -123,8 +123,6 @@ static cpu_core_config M6803CheatCpuConfig =
 
 INT32 M6800CoreInit(INT32 num, INT32 type)
 {
-	DebugCPU_M6800Initted = 1;
-	
 	nM6800Count = num % MAX_CPU;
 	
 	M6800CPUContext = (M6800Ext*)malloc(num * sizeof(M6800Ext));
@@ -216,8 +214,6 @@ void M6800Exit()
 		free(M6800CPUContext);
 		M6800CPUContext = NULL;
 	}
-	
-	DebugCPU_M6800Initted = 0;
 }
 
 void M6800SetIRQLine(INT32 vector, INT32 status)

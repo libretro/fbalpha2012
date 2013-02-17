@@ -207,13 +207,7 @@
 					RelativePath="..\..\src\burn\burn_sound.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\burn\burn_sound_c.cpp">
-				</File>
-				<File
 					RelativePath="..\..\src\burn\cheat.cpp">
-				</File>
-				<File
-					RelativePath="..\..\src\burn\debug_track.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\burn\hiscore.cpp">

@@ -869,8 +869,6 @@ static cpu_core_config SekCheatCpuConfig =
 
 INT32 SekInit(INT32 nCount, INT32 nCPUType)
 {
-	DebugCPU_SekInitted = 1;
-	
 	struct SekExt* ps = NULL;
 
 #if !defined BUILD_A68K
@@ -1063,8 +1061,6 @@ INT32 SekExit()
 	nSekActive = -1;
 	nSekCount = -1;
 	
-	DebugCPU_SekInitted = 0;
-
 	return 0;
 }
 

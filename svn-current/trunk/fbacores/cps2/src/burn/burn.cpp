@@ -827,19 +827,11 @@ static INT32 nTransWidth, nTransHeight;
 
 void BurnTransferClear()
 {
-#if defined FBA_DEBUG
-	if (!Debug_BurnTransferInitted) bprintf(PRINT_ERROR, _T("BurnTransferClear called without init\n"));
-#endif
-
 	memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(UINT16));
 }
 
 INT32 BurnTransferCopy(UINT32* pPalette)
 {
-#if defined FBA_DEBUG
-	if (!Debug_BurnTransferInitted) bprintf(PRINT_ERROR, _T("BurnTransferCopy called without init\n"));
-#endif
-
 	UINT16* pSrc = pTransDraw;
 	UINT8* pDest = pBurnDraw;
 	
@@ -856,22 +848,14 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 
 void BurnTransferExit()
 {
-#if defined FBA_DEBUG
-	if (!Debug_BurnTransferInitted) bprintf(PRINT_ERROR, _T("BurnTransferClear called without init\n"));
-#endif
-
 	if (pTransDraw) {
 		free(pTransDraw);
 		pTransDraw = NULL;
 	}
-	
-	Debug_BurnTransferInitted = 0;
 }
 
 INT32 BurnTransferInit()
 {
-	Debug_BurnTransferInitted = 1;
-	
 	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
 		BurnDrvGetVisibleSize(&nTransHeight, &nTransWidth);
 	} else {

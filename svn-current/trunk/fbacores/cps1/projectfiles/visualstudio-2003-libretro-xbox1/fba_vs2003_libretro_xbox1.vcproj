@@ -917,6 +917,13 @@
 						RelativePath="..\..\src\cpu\z80\z80daisy.cpp">
 					</File>
 				</Filter>
+				<Filter
+					Name="m6800"
+					Filter="">
+					<File
+						RelativePath="..\..\src\cpu\m6800\m6800.cpp">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

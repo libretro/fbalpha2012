@@ -704,7 +704,7 @@ static const char *print_label(unsigned i)
    }
 }
 
-static bool init_input()
+static bool init_input(void)
 {
    GameInpInit();
    GameInpDefault();

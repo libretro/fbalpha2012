@@ -636,7 +636,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 201
+#define BIND_MAP_COUNT 209
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1591,6 +1591,38 @@ static bool init_input()
    bind_map[200].bii_name = "P2 Shot2";
    bind_map[200].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
    bind_map[200].nCode[1] = 1;
+
+   bind_map[201].bii_name = "P1 Attack Left";
+   bind_map[201].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[201].nCode[1] = 0;
+
+   bind_map[202].bii_name = "P1 Attack Right";
+   bind_map[202].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[202].nCode[1] = 0;
+
+   bind_map[203].bii_name = "P2 Attack Left";
+   bind_map[203].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[203].nCode[1] = 1;
+
+   bind_map[204].bii_name = "P2 Attack Right";
+   bind_map[204].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
+   bind_map[204].nCode[1] = 1;
+
+   bind_map[205].bii_name = "P1 Button 5";
+   bind_map[205].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
+   bind_map[205].nCode[1] = 0;
+
+   bind_map[206].bii_name = "P1 Button 6";
+   bind_map[206].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[206].nCode[1] = 0;
+
+   bind_map[207].bii_name = "P2 Button 5";
+   bind_map[207].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
+   bind_map[207].nCode[1] = 1;
+
+   bind_map[208].bii_name = "P2 Button 6";
+   bind_map[208].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[208].nCode[1] = 1;
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {

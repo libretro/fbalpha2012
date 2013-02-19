@@ -639,6 +639,8 @@ static uint8_t keybinds[0x5000][2];
 #define RETRO_DEVICE_ID_JOYPAD_DIP_A      19
 #define RETRO_DEVICE_ID_JOYPAD_DIP_B      20
 #define RETRO_DEVICE_ID_JOYPAD_TEST       21
+#define RETRO_DEVICE_ID_JOYPAD_SERVICE2   22
+#define RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2 23
 
 static const char *print_label(unsigned i)
 {

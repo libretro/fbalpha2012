@@ -50,6 +50,15 @@ else ifeq ($(platform), osx)
    fpic := -fPIC
    SHARED := -dynamiclib
    ENDIANNESS_DEFINES := -DLSB_FIRST
+else ifeq ($(platform), ios)
+   TARGET := fb_alpha_libretro.dylib
+   fpic := -fPIC
+   SHARED := -dynamiclib
+   
+   CC = clang -arch armv7 -isysroot $(IOSSDK)
+   CXX = clang -arch armv7 -isysroot $(IOSSDK)
+   CFLAGS += -DIOS
+   ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), ps3)
    TARGET := fb_alpha_libretro_ps3.a
    CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe

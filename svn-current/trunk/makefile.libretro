@@ -56,7 +56,7 @@ else ifeq ($(platform), ios)
    SHARED := -dynamiclib
    
    CC = clang -arch armv7 -isysroot $(IOSSDK)
-   CXX = clang -arch armv7 -isysroot $(IOSSDK)
+   CXX = clang++ -arch armv7 -isysroot $(IOSSDK)
    CFLAGS += -DIOS
    ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), ps3)

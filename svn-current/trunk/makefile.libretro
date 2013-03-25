@@ -59,6 +59,17 @@ else ifeq ($(platform), ios)
    CXX = clang++ -arch armv7 -isysroot $(IOSSDK)
    CFLAGS += -DIOS
    ENDIANNESS_DEFINES := -DLSB_FIRST
+else ifeq ($(platform), qnx)
+   TARGET := fb_alpha_libretro.so
+   fpic := -fPIC
+   SHARED := -lm -shared -Wl,-no-undefined -Wl,--version-script=$(LIBRETRO_DIR)/link.T
+   ENDIANNESS_DEFINES := -DLSB_FIRST
+
+	CC = qcc -Vgcc_ntoarmv7le
+	CXX = QCC -Vgcc_ntoarmv7le
+	AR = QCC -Vgcc_ntoarmv7le
+	PLATFORM_DEFINES := -D__BLACKBERRY_QNX__ -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp
+
 else ifeq ($(platform), ps3)
    TARGET := fb_alpha_libretro_ps3.a
    CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
@@ -336,10 +347,9 @@ ifeq ($(platform), sncps3)
 WARNINGS_DEFINES =
 else
 WARNINGS_DEFINES = -Wno-write-strings
-C_STD_DEFINES = -std=gnu99
 endif
 
-CFLAGS += $(C_STD_DEFINES) $(fpic) $(WARNINGS_DEFINES) $(FBA_DEFINES)
+CFLAGS += $(fpic) $(WARNINGS_DEFINES) $(FBA_DEFINES)
 CXXFLAGS += $(fpic) $(WARNINGS_DEFINES) $(FBA_DEFINES)
 LDFLAGS += $(fpic)
 

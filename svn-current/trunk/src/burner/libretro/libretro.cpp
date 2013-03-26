@@ -728,9 +728,12 @@ static bool init_input(void)
    INT32	hardware	= BurnDrvGetHardwareCode();
 
    fprintf(stderr, "has_analog: %d\n", has_analog);
-   fprintf(stderr, "parentrom: %s\n", parentrom);
-   fprintf(stderr, "boardrom: %s\n", boardrom);
-   fprintf(stderr, "drvname: %s\n", drvname);
+   if(parentrom)
+	   fprintf(stderr, "parentrom: %s\n", parentrom);
+   if(boardrom)
+	   fprintf(stderr, "boardrom: %s\n", boardrom);
+   if(drvname)
+	   fprintf(stderr, "drvname: %s\n", drvname);
    fprintf(stderr, "genre: %d\n", genre);
    fprintf(stderr, "hardware: %d\n", hardware);
 

@@ -1729,47 +1729,6 @@ static void poll_input(void)
    struct GameInp* pgi = GameInp;
    unsigned controller_binds_count = nGameInpCount;
 
-   for (int i = 0; i < controller_binds_count; i++, pgi++)
-   {
-      int nAdd = 0;
-
-      if ((pgi->nInput & GIT_GROUP_SLIDER) == 0)                           // not a slider
-         continue;
-
-      if (pgi->nInput == GIT_KEYSLIDER)
-      {
-         // Get states of the two keys
-			if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT))
-				nAdd -= 0x100;
-			if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT))
-				nAdd += 0x100;
-      }
-
-      // nAdd is now -0x100 to +0x100
-
-      // Change to slider speed
-      nAdd *= pgi->Input.Slider.nSliderSpeed;
-      nAdd /= 0x100;
-
-      if (pgi->Input.Slider.nSliderCenter)
-      {                                          // Attact to center
-         int v = pgi->Input.Slider.nSliderValue - 0x8000;
-         v *= (pgi->Input.Slider.nSliderCenter - 1);
-         v /= pgi->Input.Slider.nSliderCenter;
-         v += 0x8000;
-         pgi->Input.Slider.nSliderValue = v;
-      }
-
-      pgi->Input.Slider.nSliderValue += nAdd;
-      // Limit slider
-      if (pgi->Input.Slider.nSliderValue < 0x0100)
-         pgi->Input.Slider.nSliderValue = 0x0100;
-      if (pgi->Input.Slider.nSliderValue > 0xFF00)
-         pgi->Input.Slider.nSliderValue = 0xFF00;
-   }
-
-   pgi = GameInp;
-
    for (unsigned i = 0; i < controller_binds_count; i++, pgi++)
    {
       switch (pgi->nInput)
@@ -1866,6 +1825,36 @@ static void poll_input(void)
          case GIT_KEYSLIDER:						// Keyboard slider
             //fprintf(stderr, "GIT_JOYSLIDER\n");
             {
+               int nAdd = 0;
+
+               // Get states of the two keys
+               if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT))
+                  nAdd -= 0x100;
+               if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT))
+                  nAdd += 0x100;
+
+               // nAdd is now -0x100 to +0x100
+
+               // Change to slider speed
+               nAdd *= pgi->Input.Slider.nSliderSpeed;
+               nAdd /= 0x100;
+
+               if (pgi->Input.Slider.nSliderCenter)
+               {                                          // Attact to center
+                  int v = pgi->Input.Slider.nSliderValue - 0x8000;
+                  v *= (pgi->Input.Slider.nSliderCenter - 1);
+                  v /= pgi->Input.Slider.nSliderCenter;
+                  v += 0x8000;
+                  pgi->Input.Slider.nSliderValue = v;
+               }
+
+               pgi->Input.Slider.nSliderValue += nAdd;
+               // Limit slider
+               if (pgi->Input.Slider.nSliderValue < 0x0100)
+                  pgi->Input.Slider.nSliderValue = 0x0100;
+               if (pgi->Input.Slider.nSliderValue > 0xFF00)
+                  pgi->Input.Slider.nSliderValue = 0xFF00;
+
                int nSlider = pgi->Input.Slider.nSliderValue;
                if (pgi->nType == BIT_ANALOG_REL) {
                   nSlider -= 0x8000;

@@ -133,27 +133,7 @@ void InpDIPSWResetDIPs (void)
 }
 
 int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
-
-void Reinitialise(void)
-{
-#if 0 // ?!
-	int width, height;
-	BurnDrvGetVisibleSize(&width, &height);
-	unsigned drv_flags = BurnDrvGetFlags();
-	if (drv_flags & BDF_ORIENTATION_VERTICAL)
-		nBurnPitch = height * sizeof(uint16_t);
-	else
-		nBurnPitch = width * sizeof(uint16_t);
-
-	if (environ_cb)
-	{
-		BurnDrvGetVisibleSize(&width, &height);
-		retro_geometry geom = { width, height, width, height };
-		environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &geom);
-		environ_cb(RETRO_ENVIRONMENT_SET_PITCH, &nBurnPitch);
-	}
-#endif
-}
+void Reinitialise(void) { }
 
 // Non-idiomatic (OutString should be to the left to match strcpy())
 // Seems broken to not check nOutSize.
@@ -1728,17 +1708,14 @@ static void poll_input(void)
    poll_cb();
 
    struct GameInp* pgi = GameInp;
-   unsigned controller_binds_count = nGameInpCount;
 
-   for (unsigned i = 0; i < controller_binds_count; i++, pgi++)
+   for (unsigned i = 0; i < nGameInpCount; i++, pgi++)
    {
       switch (pgi->nInput)
       {
          case GIT_CONSTANT: // Constant value
-            {
-               pgi->Input.nVal = pgi->Input.Constant.nConst;
-               *(pgi->Input.pVal) = pgi->Input.nVal;
-            }
+            pgi->Input.nVal = pgi->Input.Constant.nConst;
+            *(pgi->Input.pVal) = pgi->Input.nVal;
             break;
          case GIT_SWITCH:
             {
@@ -1791,8 +1768,6 @@ static void poll_input(void)
                      state = diag_pressed || service_pressed || reset_pressed || dip_a_pressed
                         || dip_b_pressed || test_pressed || service2_pressed || diag2_pressed;
                   }
-
-                  Reinitialise();
                }
                else
                   state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);
@@ -1871,14 +1846,12 @@ static void poll_input(void)
                break;
             }
          case GIT_MOUSEAXIS:						// Mouse axis
-            {
-               pgi->Input.nVal = (UINT16)(CinpMouseAxis(pgi->Input.MouseAxis.nMouse, pgi->Input.MouseAxis.nAxis) * nAnalogSpeed);
+            pgi->Input.nVal = (UINT16)(CinpMouseAxis(pgi->Input.MouseAxis.nMouse, pgi->Input.MouseAxis.nAxis) * nAnalogSpeed);
 #ifdef LSB_FIRST
-               *(pgi->Input.pShortVal) = pgi->Input.nVal;
+            *(pgi->Input.pShortVal) = pgi->Input.nVal;
 #else
-               *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
+            *((int *)pgi->Input.pShortVal) = pgi->Input.nVal;
 #endif
-            }
             break;
          case GIT_JOYAXIS_FULL:
             {				// Joystick axis

@@ -638,7 +638,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 209
+#define BIND_MAP_COUNT 300
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -685,8 +685,6 @@ static const char *print_label(unsigned i)
          return "RetroPad Button L3";
       case RETRO_DEVICE_ID_JOYPAD_R3:
          return "RetroPad Button R3";
-      case RETRO_DEVICE_ID_JOYPAD_RESET:
-         return "RetroPad Reset";
       case RETRO_DEVICE_ID_JOYPAD_SERVICE:
          return "RetroPad Service";
       case RETRO_DEVICE_ID_JOYPAD_SERVICE2:
@@ -1370,10 +1368,6 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
 
-   bind_map[PTR_INCR].bii_name = "Reset";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RESET;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
    bind_map[PTR_INCR].bii_name = "Service";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SERVICE;
    bind_map[PTR_INCR].nCode[1] = 0;
@@ -1638,7 +1632,8 @@ static bool init_input(void)
       BurnDrvGetInputInfo(&bii, i);
 
       bool value_found = false;
-      for(int j = 0; j < BIND_MAP_COUNT; j++)
+
+      for(int j = 0; j < counter; j++)
       {
          if((strcmp(bii.szName,"P1 Select") ==0) && (boardrom && (strcmp(boardrom,"neogeo") == 0)))
          {
@@ -1673,12 +1668,12 @@ static bool init_input(void)
          else
             value_found = false;
 
-         if(value_found)
-         {
-            fprintf(stderr, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
-            fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
-            break;
-         }
+         if (!value_found)
+            continue;
+
+         fprintf(stderr, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
+         fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
+         break;
       }
 
       if(!value_found)

@@ -49,7 +49,18 @@ void retro_set_audio_sample(retro_audio_sample_t) {}
 void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb) { audio_batch_cb = cb; }
 void retro_set_input_poll(retro_input_poll_t cb) { poll_cb = cb; }
 void retro_set_input_state(retro_input_state_t cb) { input_cb = cb; }
-void retro_set_environment(retro_environment_t cb) { environ_cb = cb; }
+
+void retro_set_environment(retro_environment_t cb)
+{
+   environ_cb = cb;
+
+   static const struct retro_variable vars[] = {
+      { "diagnostics", "Diagnostics; disabled|enabled" },
+      { NULL, NULL },
+   };
+
+   cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
+}
 
 char g_rom_dir[1024];
 static bool driver_inited;
@@ -57,10 +68,7 @@ static bool driver_inited;
 void retro_get_system_info(struct retro_system_info *info)
 {
    info->library_name = "FB Alpha";
-   info->library_version = "v0.2.97.28";
-   info->need_fullpath = true;
-   info->block_extract = true;
-   info->valid_extensions = "iso|ISO|zip|ZIP";
+   info->library_version = "v0.2.97.28"; info->need_fullpath = true; info->block_extract = true; info->valid_extensions = "iso|ISO|zip|ZIP";
 }
 
 /////
@@ -299,7 +307,7 @@ void retro_init()
    BurnLibInit();
 }
 
-void retro_deinit()
+void retro_deinit(void)
 {
    if (driver_inited)
       BurnDrvExit();
@@ -307,7 +315,7 @@ void retro_deinit()
    BurnLibExit();
 }
 
-void retro_reset()
+void retro_reset(void)
 {
    struct GameInp* pgi = GameInp;
 
@@ -328,11 +336,52 @@ void retro_reset()
    //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
    nCurrentFrame++;
 
-
    BurnDrvFrame();
 }
 
-void retro_run()
+static void check_variables(void)
+{
+   struct retro_variable var = {0};
+   var.key = "diagnostics";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      static bool old_value = false;
+      bool value = false;
+
+      if (strcmp(var.value, "disabled") == 0)
+         value = false;
+      else if (strcmp(var.value, "enabled") == 0)
+         value = true;
+
+      if (old_value != value)
+      {
+         old_value = value;
+         struct GameInp* pgi = GameInp;
+
+         for (unsigned i = 0; i < nGameInpCount; i++, pgi++)
+         {
+            if (pgi->Input.Switch.nCode != FBK_F2)
+               continue;
+
+            pgi->Input.nVal = 1;
+            *(pgi->Input.pVal) = pgi->Input.nVal;
+
+            break;
+         }
+
+         nBurnLayer = 0xff;
+         pBurnSoundOut = g_audio_buf;
+         nBurnSoundRate = AUDIO_SAMPLERATE;
+         //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+         nCurrentFrame++;
+
+         BurnDrvFrame();
+      }
+   }
+}
+
+void retro_run(void)
 {
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
@@ -367,6 +416,10 @@ void retro_run()
 
    video_cb(g_fba_frame, width, height, nBurnPitch);
    audio_batch_cb(g_audio_buf, nBurnSoundLen);
+
+   bool updated = false;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+      check_variables();
 }
 
 static uint8_t *write_state_ptr;
@@ -586,6 +639,7 @@ static void extract_directory(char *buf, const char *path, size_t size)
 
 bool analog_controls_enabled = false;
 
+
 bool retro_load_game(const struct retro_game_info *info)
 {
    bool retval = false;
@@ -611,6 +665,7 @@ bool retro_load_game(const struct retro_game_info *info)
    else
       fprintf(stderr, "[FBA] Cannot find driver.\n");
 
+   check_variables();
 
    return retval;
 }
@@ -639,15 +694,6 @@ struct key_map
 static uint8_t keybinds[0x5000][2]; 
 
 #define BIND_MAP_COUNT 300
-
-#define RETRO_DEVICE_ID_JOYPAD_RESET      16
-#define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
-#define RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC 18
-#define RETRO_DEVICE_ID_JOYPAD_DIP_A      19
-#define RETRO_DEVICE_ID_JOYPAD_DIP_B      20
-#define RETRO_DEVICE_ID_JOYPAD_TEST       21
-#define RETRO_DEVICE_ID_JOYPAD_SERVICE2   22
-#define RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2 23
 
 static const char *print_label(unsigned i)
 {
@@ -685,20 +731,6 @@ static const char *print_label(unsigned i)
          return "RetroPad Button L3";
       case RETRO_DEVICE_ID_JOYPAD_R3:
          return "RetroPad Button R3";
-      case RETRO_DEVICE_ID_JOYPAD_SERVICE:
-         return "RetroPad Service";
-      case RETRO_DEVICE_ID_JOYPAD_SERVICE2:
-         return "RetroPad Service 2";
-      case RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC:
-         return "RetroPad Diagnostic";
-      case RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2:
-         return "RetroPad Diagnostic 2";
-      case RETRO_DEVICE_ID_JOYPAD_DIP_A:
-         return "RetroPad DIP A";
-      case RETRO_DEVICE_ID_JOYPAD_DIP_B:
-         return "RetroPad DIP B";
-      case RETRO_DEVICE_ID_JOYPAD_TEST:
-         return "RetroPad Test";
       default:
          return "No known label";
    }
@@ -1368,18 +1400,6 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
 
-   bind_map[PTR_INCR].bii_name = "Service";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SERVICE;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Diagnostic";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Test";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_TEST;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
    bind_map[PTR_INCR].bii_name = "Up";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
    bind_map[PTR_INCR].nCode[1] = 0;
@@ -1478,22 +1498,6 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
    bind_map[PTR_INCR].nCode[1] = 1;
 
-   bind_map[PTR_INCR].bii_name = "Service 1";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SERVICE;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Service 2";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SERVICE2;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Diagnostics 1";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Diagnostics 2";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
    /* Armed Police Batrider */
    bind_map[PTR_INCR].bii_name = "P1 Shoot 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
@@ -1534,10 +1538,6 @@ static bool init_input(void)
    bind_map[PTR_INCR].bii_name = "Start 4";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
    bind_map[PTR_INCR].nCode[1] = 3;
-
-   bind_map[PTR_INCR].bii_name = "Diagnostics";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC;
-   bind_map[PTR_INCR].nCode[1] = 0;
 
    bind_map[PTR_INCR].bii_name = "P1 Turn 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
@@ -1739,42 +1739,7 @@ static void poll_input(void)
                INT32 id = keybinds[pgi->Input.Switch.nCode][0];
                unsigned port = keybinds[pgi->Input.Switch.nCode][1];
 
-               bool state = false;
-
-               if (id > 15)
-               {
-                  bool button_combo_down = 
-                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2) &&
-                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2) &&
-                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L) &&
-                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-                  bool service_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT)
-                        && button_combo_down);
-                  bool diag2_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START)
-                        && button_combo_down);
-                  bool diag_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X)
-                        && button_combo_down);
-                  bool dip_a_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_A) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT)
-                        && button_combo_down);
-                  bool dip_b_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_B) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP)
-                        && button_combo_down);
-                  bool test_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_TEST) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN)
-                        && button_combo_down);
-                  bool service2_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE2) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y)
-                        && button_combo_down);
-
-                  state = diag_pressed || service_pressed || dip_a_pressed
-                     || dip_b_pressed || test_pressed || service2_pressed || diag2_pressed;
-               }
-               else
-                  state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);
+               bool state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);
 
                //fprintf(stderr, "GIT_SWITCH: %s, port: %d, pressed: %d.\n", print_label(id), port, state);
 

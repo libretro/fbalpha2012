@@ -1670,6 +1670,7 @@ static bool init_input(void)
          if(value_found)
          {
             fprintf(stderr, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
+            fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
             break;
          }
       }

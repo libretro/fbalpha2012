@@ -307,8 +307,30 @@ void retro_deinit()
    BurnLibExit();
 }
 
-static bool g_reset;
-void retro_reset() { g_reset = true; }
+void retro_reset()
+{
+   struct GameInp* pgi = GameInp;
+
+   for (unsigned i = 0; i < nGameInpCount; i++, pgi++)
+   {
+      if (pgi->Input.Switch.nCode != FBK_F3)
+         continue;
+
+      pgi->Input.nVal = 1;
+      *(pgi->Input.pVal) = pgi->Input.nVal;
+
+      break;
+   }
+
+   nBurnLayer = 0xff;
+   pBurnSoundOut = g_audio_buf;
+   nBurnSoundRate = AUDIO_SAMPLERATE;
+   //nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+   nCurrentFrame++;
+
+
+   BurnDrvFrame();
+}
 
 void retro_run()
 {
@@ -1698,11 +1720,6 @@ static inline int CinpMouseAxis(int i, int axis)
    return 0;
 }
 
-static inline int CinpState(int i)
-{
-   return keybinds[i][0];
-}
-
 static void poll_input(void)
 {
    poll_cb();
@@ -1725,49 +1742,37 @@ static void poll_input(void)
 
                bool state = false;
 
-               if (g_reset || id > 15)
+               if (id > 15)
                {
-                  if(g_reset && id == RETRO_DEVICE_ID_JOYPAD_RESET)
-                  {
-                     state = true;
-                     id = RETRO_DEVICE_ID_JOYPAD_RESET;
-                     g_reset = false;
-                  }
-                  else
-                  {
-                     bool button_combo_down = 
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L) &&
-                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-                     bool service_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT)
-                           && button_combo_down);
-                     bool diag2_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START)
-                           && button_combo_down);
-                     bool diag_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X)
-                           && button_combo_down);
-                     bool reset_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_RESET) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT)
-                           && button_combo_down);
-                     bool dip_a_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_A) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT)
-                           && button_combo_down);
-                     bool dip_b_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_B) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP)
-                           && button_combo_down);
-                     bool test_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_TEST) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN)
-                           && button_combo_down);
-                     bool service2_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE2) &&
-                           input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y)
-                           && button_combo_down);
+                  bool button_combo_down = 
+                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2) &&
+                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2) &&
+                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L) &&
+                     input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
+                  bool service_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT)
+                        && button_combo_down);
+                  bool diag2_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START)
+                        && button_combo_down);
+                  bool diag_pressed    = ((id == RETRO_DEVICE_ID_JOYPAD_DIAGNOSTIC2) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X)
+                        && button_combo_down);
+                  bool dip_a_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_A) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT)
+                        && button_combo_down);
+                  bool dip_b_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_DIP_B) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP)
+                        && button_combo_down);
+                  bool test_pressed   = ((id == RETRO_DEVICE_ID_JOYPAD_TEST) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN)
+                        && button_combo_down);
+                  bool service2_pressed = ((id == RETRO_DEVICE_ID_JOYPAD_SERVICE2) &&
+                        input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y)
+                        && button_combo_down);
 
-                     state = diag_pressed || service_pressed || reset_pressed || dip_a_pressed
-                        || dip_b_pressed || test_pressed || service2_pressed || diag2_pressed;
-                  }
+                  state = diag_pressed || service_pressed || dip_a_pressed
+                     || dip_b_pressed || test_pressed || service2_pressed || diag2_pressed;
                }
                else
                   state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);

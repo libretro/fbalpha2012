@@ -1749,7 +1749,10 @@ static bool init_input(void)
       }
 
       if(!value_found)
+      {
          fprintf(stderr, "WARNING! Button unaccounted for: [%s].\n", bii.szName);
+         fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
+      }
    }
 
    return has_analog;

@@ -56,7 +56,7 @@ void retro_set_environment(retro_environment_t cb)
 
    static const struct retro_variable vars[] = {
       { "diagnostics", "Diagnostics; disabled|enabled" },
-      { "cpu-speed-adjust", "CPU Speed Overclock; 100%|110%|120%|130%|140%|150%|160%|170%|180%|190%|200%" },
+      { "cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
       { NULL, NULL },
    };
 

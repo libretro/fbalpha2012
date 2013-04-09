@@ -103,21 +103,23 @@ UINT8* CDEmuReadTOC(INT32 track) { return 0; }
 UINT8* CDEmuReadQChannel() { return 0; }
 INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
 
+static unsigned char nPrevDIPSettings[4];
 static int nDIPOffset;
 
 static void InpDIPSWGetOffset (void)
 {
-	BurnDIPInfo bdi;
-	nDIPOffset = 0;
+   BurnDIPInfo bdi;
+   nDIPOffset = 0;
 
-	for(int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
-	{
-		if (bdi.nFlags == 0xF0)
-		{
-			nDIPOffset = bdi.nInput;
-			break;
-		}
-	}
+   for(int i = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
+   {
+      if (bdi.nFlags == 0xF0) /* 0xF0 is beginning of DIP switch list */
+      {
+         nDIPOffset = bdi.nInput;
+         fprintf(stderr, "DIP switches offset: %d.\n", bdi.nInput);
+         break;
+      }
+   }
 }
 
 void InpDIPSWResetDIPs (void)
@@ -133,11 +135,50 @@ void InpDIPSWResetDIPs (void)
 		if (bdi.nFlags == 0xFF)
 		{
 			pgi = GameInp + bdi.nInput + nDIPOffset;
+
 			if (pgi)
 				pgi->Input.Constant.nConst = (pgi->Input.Constant.nConst & ~bdi.nMask) | (bdi.nSetting & bdi.nMask);	
 		}
 		i++;
 	}
+}
+
+static int InpDIPSWInit()
+{
+   BurnDIPInfo bdi;
+   struct GameInp *pgi;
+
+   InpDIPSWGetOffset();
+   InpDIPSWResetDIPs();
+
+   for(int i = 0, j = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
+   {
+      /* 0xFE is the beginning label for a DIP switch entry */
+      /* 0xFD are region DIP switches */
+      if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD)
+      {
+         fprintf(stderr, "DIP switch label: %s.\n", bdi.szText);
+
+         int l = 0;
+         for (int k = 0; l < bdi.nSetting; k++)
+         {
+            BurnDIPInfo bdi_tmp;
+            BurnDrvGetDIPInfo(&bdi_tmp, k+i+1);
+
+            if (bdi_tmp.nMask == 0x3F ||
+                  bdi_tmp.nMask == 0x30) /* filter away NULL entries */
+               continue;
+
+            fprintf(stderr, "DIP switch option: %s.\n", bdi_tmp.szText);
+            l++;
+         }
+         pgi = GameInp + bdi.nInput + nDIPOffset;
+         nPrevDIPSettings[j] = pgi->Input.Constant.nConst;
+         j++;
+      }
+   }
+
+   return 0;
 }
 
 int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
@@ -664,6 +705,8 @@ bool retro_load_game(const struct retro_game_info *info)
    }
    else
       fprintf(stderr, "[FBA] Cannot find driver.\n");
+
+   InpDIPSWInit();
 
    check_variables();
 

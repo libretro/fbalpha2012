@@ -56,6 +56,7 @@ void retro_set_environment(retro_environment_t cb)
 
    static const struct retro_variable vars[] = {
       { "diagnostics", "Diagnostics; disabled|enabled" },
+      { "cpu-speed-adjust", "CPU Speed Overclock; 100%|110%|120%|130%|140%|150%|160%|170%|180%|190%|200%" },
       { NULL, NULL },
    };
 
@@ -419,6 +420,34 @@ static void check_variables(void)
 
          BurnDrvFrame();
       }
+   }
+
+   var.key = "cpu-speed-adjust";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "100%") == 0)
+         nBurnCPUSpeedAdjust = 0x0100;
+      else if (strcmp(var.value, "110%") == 0)
+         nBurnCPUSpeedAdjust = 0x0110;
+      else if (strcmp(var.value, "120%") == 0)
+         nBurnCPUSpeedAdjust = 0x0120;
+      else if (strcmp(var.value, "130%") == 0)
+         nBurnCPUSpeedAdjust = 0x0130;
+      else if (strcmp(var.value, "140%") == 0)
+         nBurnCPUSpeedAdjust = 0x0140;
+      else if (strcmp(var.value, "150%") == 0)
+         nBurnCPUSpeedAdjust = 0x0150;
+      else if (strcmp(var.value, "160%") == 0)
+         nBurnCPUSpeedAdjust = 0x0160;
+      else if (strcmp(var.value, "170%") == 0)
+         nBurnCPUSpeedAdjust = 0x0170;
+      else if (strcmp(var.value, "180%") == 0)
+         nBurnCPUSpeedAdjust = 0x0180;
+      else if (strcmp(var.value, "190%") == 0)
+         nBurnCPUSpeedAdjust = 0x0190;
+      else if (strcmp(var.value, "200%") == 0)
+         nBurnCPUSpeedAdjust = 0x0200;
    }
 }
 

@@ -426,27 +426,27 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "100%") == 0)
+      if (strcmp(var.value, "100") == 0)
          nBurnCPUSpeedAdjust = 0x0100;
-      else if (strcmp(var.value, "110%") == 0)
+      else if (strcmp(var.value, "110") == 0)
          nBurnCPUSpeedAdjust = 0x0110;
-      else if (strcmp(var.value, "120%") == 0)
+      else if (strcmp(var.value, "120") == 0)
          nBurnCPUSpeedAdjust = 0x0120;
-      else if (strcmp(var.value, "130%") == 0)
+      else if (strcmp(var.value, "130") == 0)
          nBurnCPUSpeedAdjust = 0x0130;
-      else if (strcmp(var.value, "140%") == 0)
+      else if (strcmp(var.value, "140") == 0)
          nBurnCPUSpeedAdjust = 0x0140;
-      else if (strcmp(var.value, "150%") == 0)
+      else if (strcmp(var.value, "150") == 0)
          nBurnCPUSpeedAdjust = 0x0150;
-      else if (strcmp(var.value, "160%") == 0)
+      else if (strcmp(var.value, "160") == 0)
          nBurnCPUSpeedAdjust = 0x0160;
-      else if (strcmp(var.value, "170%") == 0)
+      else if (strcmp(var.value, "170") == 0)
          nBurnCPUSpeedAdjust = 0x0170;
-      else if (strcmp(var.value, "180%") == 0)
+      else if (strcmp(var.value, "180") == 0)
          nBurnCPUSpeedAdjust = 0x0180;
-      else if (strcmp(var.value, "190%") == 0)
+      else if (strcmp(var.value, "190") == 0)
          nBurnCPUSpeedAdjust = 0x0190;
-      else if (strcmp(var.value, "200%") == 0)
+      else if (strcmp(var.value, "200") == 0)
          nBurnCPUSpeedAdjust = 0x0200;
    }
 }

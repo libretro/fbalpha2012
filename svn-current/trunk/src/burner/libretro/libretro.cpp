@@ -69,10 +69,12 @@ static bool driver_inited;
 void retro_get_system_info(struct retro_system_info *info)
 {
    info->library_name = "FB Alpha";
-   info->library_version = "v0.2.97.28"; info->need_fullpath = true; info->block_extract = true; info->valid_extensions = "iso|ISO|zip|ZIP";
+   info->library_version = "v0.2.97.28";
+   info->need_fullpath = true;
+   info->block_extract = true;
+   info->valid_extensions = "iso|ISO|zip|ZIP";
 }
 
-/////
 static void poll_input();
 static bool init_input();
 
@@ -90,6 +92,7 @@ TCHAR szAppHiscorePath[MAX_PATH];
 TCHAR szAppSamplesPath[MAX_PATH];
 TCHAR szAppBurnVer[16];
 
+#ifdef WANT_NEOGEOCD
 CDEmuStatusValue CDEmuStatus;
 
 const char* isowavLBAToMSF(const int LBA) { return ""; }
@@ -103,6 +106,7 @@ INT32 CDEmuLoadSector(INT32 LBA, char* pBuffer) { return 0; }
 UINT8* CDEmuReadTOC(INT32 track) { return 0; }
 UINT8* CDEmuReadQChannel() { return 0; }
 INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
+#endif
 
 static unsigned char nPrevDIPSettings[4];
 static int nDIPOffset;

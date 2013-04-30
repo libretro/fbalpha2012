@@ -72,7 +72,7 @@ void retro_get_system_info(struct retro_system_info *info)
    info->library_version = "v0.2.97.28";
    info->need_fullpath = true;
    info->block_extract = true;
-   info->valid_extensions = "iso|ISO|zip|ZIP";
+   info->valid_extensions = "iso";
 }
 
 static void poll_input();

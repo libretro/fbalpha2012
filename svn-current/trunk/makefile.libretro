@@ -62,7 +62,7 @@ else ifeq ($(platform), ios)
    CFLAGS += -DIOS
    ENDIANNESS_DEFINES := -DLSB_FIRST
 else ifeq ($(platform), qnx)
-   TARGET := $(TARGET_NAME)_libretro.so
+   TARGET := $(TARGET_NAME)_libretro_qnx.so
    fpic := -fPIC
    SHARED := -lcpp -lm -shared -Wl,-no-undefined -Wl,--version-script=$(LIBRETRO_DIR)/link.T
    ENDIANNESS_DEFINES := -DLSB_FIRST

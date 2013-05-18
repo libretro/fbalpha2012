@@ -4,6 +4,7 @@ FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 
 ifeq ($(platform),)
+ifeq ($(platform),pc)
 platform = unix
 ifeq ($(shell uname -a),)
    platform = win
@@ -11,6 +12,7 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
    platform = osx
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
    platform = win
+endif
 endif
 endif
 

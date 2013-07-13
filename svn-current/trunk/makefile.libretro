@@ -133,6 +133,29 @@ else ifeq ($(platform), wii)
 	NO_NEO = 1
 	NO_PCE = 1
 	STATIC_LINKING = 1
+else ifneq (,$(findstring armv,$(platform)))
+   TARGET := $(TARGET_NAME)_libretro.so
+   fpic := -fPIC
+   SHARED := -shared -Wl,-no-undefined -Wl,--version-script=$(LIBRETRO_DIR)/link.T
+ifneq (,$(findstring cortexa8,$(platform)))
+   PLATFORM_DEFINES += -marm -mcpu=cortex-a8
+else ifneq (,$(findstring cortexa9,$(platform)))
+   PLATFORM_DEFINES += -marm -mcpu=cortex-a9
+endif
+   PLATFORM_DEFINES += -marm
+ifneq (,$(findstring neon,$(platform)))
+   PLATFORM_DEFINES += -mfpu=neon
+   HAVE_NEON = 1
+endif
+ifneq (,$(findstring softfloat,$(platform)))
+   PLATFORM_DEFINES += -mfloat-abi=softfp
+else ifneq (,$(findstring hardfloat,$(platform)))
+   PLATFORM_DEFINES += -mfloat-abi=hard
+endif
+   ENDIANNESS_DEFINES := -DLSB_FIRST
+   CFLAGS += -DARM
+   CC = gcc
+   CXX = g++
 else
    TARGET := $(TARGET_NAME)_libretro.dll
    CC = gcc

@@ -385,12 +385,14 @@ void retro_reset(void)
    BurnDrvFrame();
 }
 
+static bool first_init = true;
+
 static void check_variables(void)
 {
    struct retro_variable var = {0};
    var.key = "diagnostics";
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && !first_init)
    {
       static bool old_value = false;
       bool value = false;
@@ -425,6 +427,8 @@ static void check_variables(void)
          BurnDrvFrame();
       }
    }
+   else if (first_init)
+      first_init = false;
 
    var.key = "cpu-speed-adjust";
 

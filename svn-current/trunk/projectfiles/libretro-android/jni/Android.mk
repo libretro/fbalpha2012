@@ -21,9 +21,6 @@ GRIFFIN_DIR := ../../../griffin-libretro
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CXXFLAGS += -DANDROID_ARM
 LOCAL_ARM_MODE := arm
-LOCAL_C_FLAGS += -fuse-ld=gold
-LOCAL_CPP_FLAGS+= -fuse-ld=gold
-LOCAL_LDLIBS := -fuse-ld=gold
 ifeq ($(CYCLONE_ENABLED), 1)
 CYCLONE_SRC := $(FBA_CPU_DIR)/cyclone/cyclone.s
 CYCLONE_DEFINES := -DBUILD_C68K

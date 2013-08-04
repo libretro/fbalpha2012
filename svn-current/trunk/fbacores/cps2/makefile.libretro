@@ -3,6 +3,10 @@ LIBRETRO_OPTIMIZATIONS = 1
 FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 
+ifneq ($(EMSCRIPTEN),)
+   platform = emscripten
+endif
+
 ifeq ($(platform),)
 platform = unix
 ifeq ($(shell uname -a),)
@@ -97,6 +101,12 @@ else ifeq ($(platform), wii)
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
    EXTERNAL_ZLIB = 1
+else ifeq ($(platform), emscripten)
+   TARGET := libretro_emscripten.so
+   fpic := -fPIC
+   SHARED := -shared -Wl,-no-undefined -Wl,--version-script=$(LIBRETRO_DIR)/link.T
+   PLATFORM_DEFINES := -DUSE_FILE32API
+   ENDIANNESS_DEFINES := -DLSB_FIRST
 else
    TARGET := retro.dll
    CC = gcc

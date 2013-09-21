@@ -89,6 +89,152 @@ static void YM2610Render(INT32 nSegmentLength)
 // ----------------------------------------------------------------------------
 // Update the sound buffer
 
+static void YM2610UpdateResample(INT16* pSoundBuf, INT32 nSegmentEnd)
+{
+#if defined FBA_DEBUG
+	if (!DebugSnd_YM2610Initted) bprintf(PRINT_ERROR, _T("YM2610UpdateResample called without init\n"));
+#endif
+
+	INT32 nSegmentLength = nSegmentEnd;
+	INT32 nSamplesNeeded = nSegmentEnd * nBurnYM2610SoundRate / nBurnSoundRate + 1;
+
+	if (nSamplesNeeded < nAY8910Position) {
+		nSamplesNeeded = nAY8910Position;
+	}
+	if (nSamplesNeeded < nYM2610Position) {
+		nSamplesNeeded = nYM2610Position;
+	}
+
+	if (nSegmentLength > nBurnSoundLen) {
+		nSegmentLength = nBurnSoundLen;
+	}
+	nSegmentLength <<= 1;
+
+	YM2610Render(nSamplesNeeded);
+	AY8910Render(nSamplesNeeded);
+
+	pYM2610Buffer[0] = pBuffer + 0 * 4096 + 4;
+	pYM2610Buffer[1] = pBuffer + 1 * 4096 + 4;
+	pYM2610Buffer[2] = pBuffer + 2 * 4096 + 4;
+	pYM2610Buffer[3] = pBuffer + 3 * 4096 + 4;
+	pYM2610Buffer[4] = pBuffer + 4 * 4096 + 4;
+	pYM2610Buffer[5] = pBuffer + 5 * 4096 + 4;
+
+	for (INT32 i = (nFractionalPosition >> 16) - 4; i < nSamplesNeeded; i++) {
+		pYM2610Buffer[5][i] = pYM2610Buffer[2][i] + pYM2610Buffer[3][i] + pYM2610Buffer[4][i];
+	}
+
+	for (INT32 i = (nFractionalPosition & 0xFFFF0000) >> 15; i < nSegmentLength; i += 2, nFractionalPosition += nSampleSize) {
+		INT32 nLeftSample[4] = {0, 0, 0, 0};
+		INT32 nRightSample[4] = {0, 0, 0, 0};
+		INT32 nTotalLeftSample, nTotalRightSample;
+		
+		if (bYM2610UseSeperateVolumes) {
+			nLeftSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610LeftVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nLeftSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610LeftVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nLeftSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610LeftVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nLeftSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610LeftVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			
+			nLeftSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nLeftSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nLeftSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nLeftSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			
+			nLeftSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nLeftSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nLeftSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nLeftSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610LeftVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				
+			nRightSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610RightVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nRightSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610RightVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nRightSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610RightVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			nRightSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610RightVolumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			
+			nRightSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nRightSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nRightSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			nRightSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			
+			nRightSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nRightSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nRightSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			nRightSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610RightVolumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+		} else {
+			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+				nLeftSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nLeftSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nLeftSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nLeftSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			}
+			if ((YM2610RouteDirs[BURN_SND_YM2610_AY8910_ROUTE] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+				nRightSample[0] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nRightSample[1] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nRightSample[2] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+				nRightSample[3] += (INT32)(pYM2610Buffer[5][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_AY8910_ROUTE]);
+			}
+		
+			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+				nLeftSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nLeftSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nLeftSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nLeftSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			}
+			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+				nRightSample[0] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nRightSample[1] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nRightSample[2] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+				nRightSample[3] += (INT32)(pYM2610Buffer[0][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_1]);
+			}
+		
+			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
+				nLeftSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nLeftSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nLeftSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nLeftSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			}
+			if ((YM2610RouteDirs[BURN_SND_YM2610_YM2610_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
+				nRightSample[0] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 3] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nRightSample[1] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 2] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nRightSample[2] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 1] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+				nRightSample[3] += (INT32)(pYM2610Buffer[1][(nFractionalPosition >> 16) - 0] * YM2610Volumes[BURN_SND_YM2610_YM2610_ROUTE_2]);
+			}
+		}
+		
+		nTotalLeftSample = INTERPOLATE4PS_16BIT((nFractionalPosition >> 4) & 0x0fff, nLeftSample[0], nLeftSample[1], nLeftSample[2], nLeftSample[3]);
+		nTotalRightSample = INTERPOLATE4PS_16BIT((nFractionalPosition >> 4) & 0x0fff, nRightSample[0], nRightSample[1], nRightSample[2], nRightSample[3]);
+		
+		nTotalLeftSample = BURN_SND_CLIP(nTotalLeftSample);
+		nTotalRightSample = BURN_SND_CLIP(nTotalRightSample);
+			
+		if (bYM2610AddSignal) {
+			pSoundBuf[i + 0] += nTotalLeftSample;
+			pSoundBuf[i + 1] += nTotalRightSample;
+		} else {
+			pSoundBuf[i + 0] = nTotalLeftSample;
+			pSoundBuf[i + 1] = nTotalRightSample;
+		}
+	}
+	
+	if (nSegmentEnd >= nBurnSoundLen) {
+		INT32 nExtraSamples = nSamplesNeeded - (nFractionalPosition >> 16);
+
+		for (INT32 i = -4; i < nExtraSamples; i++) {
+			pYM2610Buffer[0][i] = pYM2610Buffer[0][(nFractionalPosition >> 16) + i];
+			pYM2610Buffer[1][i] = pYM2610Buffer[1][(nFractionalPosition >> 16) + i];
+			pYM2610Buffer[2][i] = pYM2610Buffer[2][(nFractionalPosition >> 16) + i];
+			pYM2610Buffer[3][i] = pYM2610Buffer[3][(nFractionalPosition >> 16) + i];
+			pYM2610Buffer[4][i] = pYM2610Buffer[4][(nFractionalPosition >> 16) + i];
+		}
+
+		nFractionalPosition &= 0xFFFF;
+
+		nYM2610Position = nExtraSamples;
+		nAY8910Position = nExtraSamples;
+
+		dTime += 100.0 / nBurnFPS;
+	}
+}
+
 static void YM2610UpdateNormal(INT16* pSoundBuf, INT32 nSegmentEnd)
 {
 #if defined FBA_DEBUG
@@ -277,9 +423,22 @@ INT32 BurnYM2610Init(INT32 nClockFrequency, UINT8* YM2610ADPCMAROM, INT32* nYM26
 
 	BurnYM2610StreamCallback = StreamCallback;
 
-   nBurnYM2610SoundRate = nBurnSoundRate;
+	if (nFMInterpolation == 3) {
+		// Set YM2610 core samplerate to match the hardware
+		nBurnYM2610SoundRate = nClockFrequency / 144;
+		// Bring YM2610 core samplerate within usable range
+		while (nBurnYM2610SoundRate > nBurnSoundRate * 3) {
+			nBurnYM2610SoundRate >>= 1;
+		}
 
-   BurnYM2610Update = YM2610UpdateNormal;
+		BurnYM2610Update = YM2610UpdateResample;
+
+		nSampleSize = (UINT32)nBurnYM2610SoundRate * (1 << 16) / nBurnSoundRate;
+	} else {
+		nBurnYM2610SoundRate = nBurnSoundRate;
+
+		BurnYM2610Update = YM2610UpdateNormal;
+	}
 
 	AY8910InitYM(0, nClockFrequency, nBurnYM2610SoundRate, NULL, NULL, NULL, NULL, BurnAY8910UpdateRequest);
 	YM2610Init(1, nClockFrequency, nBurnYM2610SoundRate, (void**)(&YM2610ADPCMAROM), nYM2610ADPCMASize, (void**)(&YM2610ADPCMBROM), nYM2610ADPCMBSize, &BurnOPNTimerCallback, IRQCallback);

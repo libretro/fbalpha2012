@@ -99,7 +99,20 @@ INT32 BurnTransferInit();
 // ---------------------------------------------------------------------------
 // Plotting pixels
 
-#define PutPix(pPix, c) (*((UINT16*)pPix) = (UINT16)c)
+inline static void PutPix(UINT8* pPix, UINT32 c)
+{
+	if (nBurnBpp >= 4) {
+		*((UINT32*)pPix) = c;
+	} else {
+		if (nBurnBpp == 2) {
+			*((UINT16*)pPix) = (UINT16)c;
+		} else {
+			pPix[0] = (UINT8)(c >>  0);
+			pPix[1] = (UINT8)(c >>  8);
+			pPix[2] = (UINT8)(c >> 16);
+		}
+	}
+}
 
 // ---------------------------------------------------------------------------
 // Setting up cpus for cheats
@@ -201,7 +214,7 @@ extern UINT8 DebugCPU_S2650Initted;
 extern UINT8 DebugCPU_SekInitted;
 extern UINT8 DebugCPU_VezInitted;
 extern UINT8 DebugCPU_ZetInitted;
-
+extern UINT8 DebugCPU_PIC16C5XInitted;
 extern UINT8 DebugCPU_I8039Initted;
 extern UINT8 DebugCPU_SH2Initted;
 

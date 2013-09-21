@@ -1073,6 +1073,28 @@ static struct BurnRomInfo WintbobRomDesc[] = {
 STD_ROM_PICK(Wintbob)
 STD_ROM_FN(Wintbob)
 
+static struct BurnRomInfo SnowbroswbRomDesc[] = {
+	{ "toa03.bin",     0x10000, 0x55d302da, BRF_ESS | BRF_PRG }, //  0	68000 Program Code
+	{ "toa01.bin",     0x10000, 0x3c64e145, BRF_ESS | BRF_PRG }, //  1	68000 Program Code
+	{ "wb04.bin",      0x10000, 0x53be758d, BRF_ESS | BRF_PRG }, //  2	68000 Program Code
+	{ "wb02.bin",      0x10000, 0xfc8e292e, BRF_ESS | BRF_PRG }, //  3	68000 Program Code
+
+	{ "wb13.bin",      0x10000, 0x426921de, BRF_GRA },			 //  4	Sprites
+	{ "wb06.bin",      0x10000, 0x68204937, BRF_GRA },			 //  5	Sprites
+	{ "wb12.bin",      0x10000, 0xef4e04c7, BRF_GRA },			 //  6	Sprites
+	{ "wb07.bin",      0x10000, 0x53f40978, BRF_GRA },			 //  7	Sprites
+	{ "wb11.bin",      0x10000, 0x41cb4563, BRF_GRA },			 //  8	Sprites
+	{ "wb08.bin",      0x10000, 0x9497b88c, BRF_GRA },			 //  9	Sprites
+	{ "wb10.bin",      0x10000, 0x5fa22b1e, BRF_GRA },			 //  10	Sprites
+	{ "wb09.bin",      0x10000, 0x9be718ca, BRF_GRA },			 //  11	Sprites
+
+	{ "wb05.bin",      0x10000, 0x53fe59df, BRF_SND },			 //  12	Z80 Program Code
+};
+
+
+STD_ROM_PICK(Snowbroswb)
+STD_ROM_FN(Snowbroswb)
+
 static struct BurnRomInfo Snowbro3RomDesc[] = {
 	{ "ur4",           0x020000, 0x19c13ffd, BRF_ESS | BRF_PRG }, 		 //  0	68000 Program Code
 	{ "ur3",           0x020000, 0x3f32fa15, BRF_ESS | BRF_PRG }, 		 //  1	68000 Program Code
@@ -1090,6 +1112,24 @@ static struct BurnRomInfo Snowbro3RomDesc[] = {
 
 STD_ROM_PICK(Snowbro3)
 STD_ROM_FN(Snowbro3)
+
+static struct BurnRomInfo BallboyRomDesc[] = {
+	{ "27c010.ur4",    0x020000, 0x5fb51b99, BRF_ESS | BRF_PRG }, 		 //  0	68000 Program Code
+	{ "27c010.ur3",    0x020000, 0xa9c1fdda, BRF_ESS | BRF_PRG }, 		 //  1	68000 Program Code
+
+	{ "27c040.ua5",    0x080000, 0x0604e385, BRF_GRA },			 //  2	4bpp Sprites
+	
+	{ "27c160.un7",    0x200000, 0x4a79da4c, BRF_GRA },			 //  3	8bpp Sprites
+	{ "27c160.un8",    0x200000, 0xbfef8c44, BRF_GRA },			 //  4	8bpp Sprites
+
+	{ "27c040.us5",    0x080000, 0x7c6368ef, BRF_SND },			 //  5	Samples
+	
+	{ "sound.mcu",     0x010000, 0x00000000, BRF_PRG | BRF_NODUMP },	 //  6	Sound MCU
+};
+
+
+STD_ROM_PICK(Ballboy)
+STD_ROM_FN(Ballboy)
 
 static INT32 HyperpacDoReset()
 {
@@ -2596,8 +2636,6 @@ static INT32 SnowbrosInit()
 
 	BurnSetRefreshRate(57.5);
 	
-	if (!strcmp(BurnDrvGetTextA(DRV_NAME), "wintbob")) Wintbob = 1;
-	
 	HyperpacNumTiles = 4096;
 
 	// Allocate and Blank all required memory
@@ -2680,6 +2718,13 @@ static INT32 SnowbrosInit()
 	SnowbrosDoReset();
 
 	return 0;
+}
+
+static INT32 WintbobInit()
+{
+	Wintbob = 1;
+	
+	return SnowbrosInit();
 }
 
 static INT32 Snowbro3Init()
@@ -3246,7 +3291,7 @@ static INT32 HyperpacCalcPalette()
 	UINT32* pd;
 
 	for (i = 0, ps = (UINT16*)HyperpacPaletteRam, pd = HyperpacPalette; i < 0x200; i++, ps++, pd++) {
-      *pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
+		*pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
 	}
 
 	return 0;
@@ -3259,7 +3304,7 @@ static INT32 HoneydolCalcPalette()
 	UINT32* pd;
 
 	for (i = 0, ps = (UINT16*)HyperpacPaletteRam, pd = HyperpacPalette; i < 0x800; i++, ps++, pd++) {
-      *pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
+		*pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
 	}
 
 	return 0;
@@ -3272,7 +3317,7 @@ static INT32 Snowbro3CalcPalette()
 	UINT32* pd;
 
 	for (i = 0, ps = (UINT16*)HyperpacPaletteRam, pd = HyperpacPalette; i < 0x400; i++, ps++, pd++) {
-      *pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
+		*pd = CalcCol(BURN_ENDIAN_SWAP_INT16(*((UINT16*)ps)));
 	}
 
 	return 0;
@@ -4096,16 +4141,36 @@ struct BurnDriver BurnDrvWintbob = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_MISC_POST90S, GBF_PLATFORM, 0,
 	NULL, WintbobRomInfo, WintbobRomName, NULL, NULL, SnowbrosInputInfo, SnowbrosDIPInfo,
-	SnowbrosInit, SnowbrosExit, SnowbrosFrame, NULL, SnowbrosScan,
+	WintbobInit, SnowbrosExit, SnowbrosFrame, NULL, SnowbrosScan,
+	NULL, 0x200, 256, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvSnowbroswb = {
+	"snowbroswb", "snowbros", NULL, NULL, "1990",
+	"Snow Bros. - Nick & Tom (The Winter Bobble hardware bootleg)\0", NULL, "bootleg", "Kaneko Pandora based",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_MISC_POST90S, GBF_PLATFORM, 0,
+	NULL, SnowbroswbRomInfo, SnowbroswbRomName, NULL, NULL, SnowbrosInputInfo, SnowbrosDIPInfo,
+	WintbobInit, SnowbrosExit, SnowbrosFrame, NULL, SnowbrosScan,
 	NULL, 0x200, 256, 224, 4, 3
 };
 
 struct BurnDriver BurnDrvSnowbro3 = {
-	"snowbros3", "snowbros", NULL, NULL, "2002",
+	"snowbro3", NULL, NULL, NULL, "2002",
 	"Snow Brothers 3 - Magical Adventure\0", NULL, "bootleg", "Kaneko Pandora based",
 	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_MISC_POST90S, GBF_PLATFORM, 0,
+	BDF_GAME_WORKING | BDF_BOOTLEG, 2, HARDWARE_MISC_POST90S, GBF_PLATFORM, 0,
 	NULL, Snowbro3RomInfo, Snowbro3RomName, NULL, NULL, SnowbrosInputInfo, SnowbrojDIPInfo,
+	Snowbro3Init, SnowbrosExit, Snowbro3Frame, NULL, Snowbro3Scan,
+	NULL, 0x400, 256, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvBallboy = {
+	"ballboy", "snowbro3", NULL, NULL, "2003",
+	"Ball Boy\0", NULL, "bootleg", "Kaneko Pandora based",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_MISC_POST90S, GBF_PLATFORM, 0,
+	NULL, BallboyRomInfo, BallboyRomName, NULL, NULL, SnowbrosInputInfo, SnowbrojDIPInfo,
 	Snowbro3Init, SnowbrosExit, Snowbro3Frame, NULL, Snowbro3Scan,
 	NULL, 0x400, 256, 224, 4, 3
 };

@@ -435,6 +435,38 @@ static void Cps2Layers()
 void CpsClearScreen()
 {
 	if (Cps == 1) {
+		switch (nBurnBpp) {
+			case 4: {
+				UINT32* pClear = (UINT32*)pBurnDraw;
+				UINT32 nColour = CpsPal[0xbff ^ 15];
+				for (INT32 i = 0; i < 384 * 224 / 8; i++) {
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+					*pClear++ = nColour;
+				}
+				break;
+			}
+
+			case 3: {
+				UINT8* pClear = pBurnDraw;
+				UINT8 r = CpsPal[0xbff ^ 15];
+				UINT8 g = (CpsPal[0xbff ^ 15] >> 8) & 0xFF;
+				UINT8 b = (CpsPal[0xbff ^ 15] >> 16) & 0xFF;
+				r &= 0xFF;
+				for (INT32 i = 0; i < 384 * 224; i++) {
+					*pClear++ = r;
+					*pClear++ = g;
+					*pClear++ = b;
+				}
+				break;
+			}
+
+			case 2: {
 				UINT32* pClear = (UINT32*)pBurnDraw;
 				UINT32 nColour = CpsPal[0xbff ^ 15] | CpsPal[0xbff ^ 15] << 16;
 				for (INT32 i = 0; i < 384 * 224 / 16; i++) {
@@ -447,6 +479,9 @@ void CpsClearScreen()
 					*pClear++ = nColour;
 					*pClear++ = nColour;
 				}
+				break;
+			}
+		}
 	} else {
 		memset(pBurnDraw, 0, 384 * 224 * nBurnBpp);
 	}

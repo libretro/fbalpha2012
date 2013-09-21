@@ -20,6 +20,7 @@ static UINT16 *DrvPriBmp;
 static UINT8 *DrvZoomBmp;
 static INT32 nDrvZoomPrev = -1;
 static UINT32  *DrvTmpDraw;
+static UINT32  *DrvTmpDraw_ptr;
 
 static INT32 nGraphicsMin0;  // minimum tile number 4bpp
 static INT32 nGraphicsMin1;  // for 8bpp
@@ -634,7 +635,11 @@ INT32 PsikyoshDraw()
 		}
 	}
 
-   DrvTmpDraw = (UINT32*)pBurnDraw;
+	if (nBurnBpp == 4) {
+		DrvTmpDraw = (UINT32*)pBurnDraw;
+	} else {
+		DrvTmpDraw = DrvTmpDraw_ptr;
+	}
 
 	memset (DrvTmpDraw, 0, nScreenWidth * nScreenHeight * sizeof(UINT32));
 	memset (DrvPriBmp, 0, nScreenWidth * nScreenHeight * sizeof(INT16));
@@ -647,6 +652,13 @@ INT32 PsikyoshDraw()
 		draw_sprites(i);
 		draw_background(i);
 		if ((psikyosh_vidregs[2] & 0x0f) == i) postlineblend();
+	}
+
+	if (nBurnBpp < 4) {
+		for (INT32 i = 0; i < nScreenWidth * nScreenHeight; i++) {
+			INT32 d = DrvTmpDraw[i];
+			PutPix(pBurnDraw + i * nBurnBpp, BurnHighCol(d>>16, d>>8, d, 0));
+		}
 	}
 
 	return 0;
@@ -693,6 +705,7 @@ void PsikyoshVideoInit(INT32 gfx_max, INT32 gfx_min)
 {
 	DrvZoomBmp	= (UINT8 *)BurnMalloc(16 * 16 * 16 * 16);
 	DrvPriBmp	= (UINT16*)BurnMalloc(320 * 240 * sizeof(INT16));
+	DrvTmpDraw_ptr	= (UINT32  *)BurnMalloc(320 * 240 * sizeof(UINT32));
 
 	if (BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL) {
 		BurnDrvGetVisibleSize(&nScreenHeight, &nScreenWidth);
@@ -714,6 +727,7 @@ void PsikyoshVideoExit()
 {
 	BurnFree (DrvZoomBmp);
 	BurnFree (DrvPriBmp);
+	BurnFree (DrvTmpDraw_ptr);
 	DrvTmpDraw = NULL;
 	BurnFree (DrvTransTab);
 	

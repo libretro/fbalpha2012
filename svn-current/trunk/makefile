@@ -40,7 +40,7 @@ TOAPLAN_SOUND_SAMPLES_HACK = 1
 #SYMBOL = 1
 
 # Include features for debugging drivers
-DEBUG	= 1
+#DEBUG	= 1
 
 # Include rom set verifying features (comment this for release builds)
 #ROM_VERIFY = 1

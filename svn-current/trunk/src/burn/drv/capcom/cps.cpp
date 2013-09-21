@@ -506,6 +506,46 @@ static INT32 CpsLoadOneSf2ebbl(UINT8* Tile, INT32 nNum, INT32 nWord, INT32 nShif
 	return 0;
 }
 
+static INT32 CpsLoadOneSf2b(UINT8* Tile, INT32 nNum, INT32 nWord, INT32 nShift)
+{
+	UINT8 *Rom = NULL; INT32 nRomLen=0;
+	UINT8 *pt = NULL, *pr = NULL;
+	INT32 i;
+
+	LoadUp(&Rom, &nRomLen, nNum);
+	if (Rom == NULL) {
+		return 1;
+	}
+	nRomLen &= ~1;								// make sure even
+
+	for (i = 0, pt = Tile + 4, pr = Rom; i < 0x10000; pt += 8) {
+		UINT32 Pix;						// Eight pixels
+		UINT8 b;
+		b = *pr++; i++; Pix = SepTable[b];
+		if (nWord) {
+			b = *pr++; i++; Pix |= SepTable[b] << 1;
+		}
+
+		Pix <<= nShift;
+		*((UINT32 *)pt) |= Pix;
+	}
+
+	for (i = 0, pt = Tile, pr = Rom + 0x10000; i < 0x10000; pt += 8) {
+		UINT32 Pix;						// Eight pixels
+		UINT8 b;
+		b = *pr++; i++; Pix = SepTable[b];
+		if (nWord) {
+			b = *pr++; i++; Pix |= SepTable[b] << 1;
+		}
+
+		Pix <<= nShift;
+		*((UINT32 *)pt) |= Pix;
+	}
+
+	BurnFree(Rom);
+	return 0;
+}
+
 static INT32 CpsLoadOneSf2koryu(UINT8* Tile, INT32 nNum, INT32 nWord, INT32 nShift)
 {
 	UINT8 *Rom = NULL; INT32 nRomLen=0;
@@ -577,6 +617,47 @@ static INT32 CpsLoadOneSf2stt(UINT8* Tile, INT32 nNum, INT32 nWord, INT32 nShift
 	Tile += 4;
 	
 	for (i = 0, pt = Tile, pr = Rom; i < nRomLen >> 1; pt += 8) {
+		UINT32 Pix;						// Eight pixels
+		UINT8 b;
+		b = *pr++; i++; Pix = SepTable[b];
+		if (nWord) {
+			b = *pr++; i++; Pix |= SepTable[b] << 1;
+		}
+
+		Pix <<= nShift;
+		*((UINT32 *)pt) |= Pix;
+	}
+
+	BurnFree(Rom);
+	return 0;
+}
+
+static INT32 CpsLoadOneWonder3b(UINT8* Tile, INT32 nNum, INT32 nWord, INT32 nShift)
+{
+	UINT8 *Rom = NULL; INT32 nRomLen=0;
+	UINT8 *pt = NULL, *pr = NULL;
+	INT32 i;
+
+	LoadUp(&Rom, &nRomLen, nNum);
+	if (Rom == NULL) {
+		return 1;
+	}
+
+	nRomLen &= ~1;								// make sure even
+
+	for (i = 0, pt = Tile, pr = Rom; i < (nRomLen >> 1); pt += 8) {
+		UINT32 Pix;						// Eight pixels
+		UINT8 b;
+		b = *pr++; i++; Pix = SepTable[b];
+		if (nWord) {
+			b = *pr++; i++; Pix |= SepTable[b] << 1;
+		}
+
+		Pix <<= nShift;
+		*((UINT32 *)pt) |= Pix;
+	}
+	
+	for (i = 0, pt = Tile + 0x200000, pr = Rom + 0x40000; i < (nRomLen >> 1); pt += 8) {
 		UINT32 Pix;						// Eight pixels
 		UINT8 b;
 		b = *pr++; i++; Pix = SepTable[b];
@@ -957,6 +1038,16 @@ INT32 CpsLoadTilesSf2ebbl(UINT8 *Tile, INT32 nStart)
 	return 0;
 }
 
+INT32 CpsLoadTilesSf2b(UINT8 *Tile, INT32 nStart)
+{
+	CpsLoadOneSf2b(Tile, nStart + 0, 0, 0);
+	CpsLoadOneSf2b(Tile, nStart + 1, 0, 2);
+	CpsLoadOneSf2b(Tile, nStart + 2, 0, 1);
+	CpsLoadOneSf2b(Tile, nStart + 3, 0, 3);
+	
+	return 0;
+}
+
 INT32 CpsLoadTilesSf2koryuExtra(UINT8* Tile, INT32 nStart)
 {
 	CpsLoadOneSf2koryu(Tile, nStart + 0, 1, 0);
@@ -1122,10 +1213,47 @@ INT32 CpsLoadTilesDinopic(INT32 nStart)
 	return 0;
 }
 
+INT32 CpsLoadTilesSlampic(INT32 nStart)
+{
+	CpsLoadTilesBootleg(CpsGfx + 0x000000, nStart + 0);
+	CpsLoadTilesBootleg(CpsGfx + 0x200000, nStart + 4);
+	CpsLoadTilesBootleg(CpsGfx + 0x400000, nStart + 8);
+	
+	return 0;
+}
+
 INT32 CpsLoadTilesKodb(INT32 nStart)
 {
 	CpsLoadTilesByte(CpsGfx, nStart);
 
+	return 0;
+}
+
+INT32 CpsLoadTilesWonder3b(INT32 nStart)
+{
+	CpsLoadOneWonder3b(CpsGfx + 0x000000, nStart + 0, 0, 0);
+	CpsLoadOneWonder3b(CpsGfx + 0x000000, nStart + 1, 0, 2);
+	CpsLoadOneWonder3b(CpsGfx + 0x000004, nStart + 2, 0, 0);
+	CpsLoadOneWonder3b(CpsGfx + 0x000004, nStart + 3, 0, 2);
+	CpsLoadOneWonder3b(CpsGfx + 0x000000, nStart + 4, 0, 1);
+	CpsLoadOneWonder3b(CpsGfx + 0x000000, nStart + 5, 0, 3);
+	CpsLoadOneWonder3b(CpsGfx + 0x000004, nStart + 6, 0, 1);
+	CpsLoadOneWonder3b(CpsGfx + 0x000004, nStart + 7, 0, 3);
+	
+	return 0;
+}
+
+INT32 CpsLoadTilesPang3r1a(INT32 nStart)
+{
+	CpsLoadOne(CpsGfx + 0x000000, nStart + 0, 1, 0);
+	CpsLoadOne(CpsGfx + 0x200000, nStart + 1, 1, 0);
+	CpsLoadOne(CpsGfx + 0x000004, nStart + 2, 1, 0);
+	CpsLoadOne(CpsGfx + 0x200004, nStart + 3, 1, 0);
+	CpsLoadOne(CpsGfx + 0x000000, nStart + 4, 1, 2);
+	CpsLoadOne(CpsGfx + 0x200000, nStart + 5, 1, 2);
+	CpsLoadOne(CpsGfx + 0x000004, nStart + 6, 1, 2);
+	CpsLoadOne(CpsGfx + 0x200004, nStart + 7, 1, 2);
+	
 	return 0;
 }
 

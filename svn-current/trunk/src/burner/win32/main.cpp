@@ -485,6 +485,412 @@ bool SetNumLock(bool bState)
 
 #include <wininet.h>
 
+void GenBurnDrvHeader()
+{
+	// create custom burn_drivers.h with all drivers info
+	FILE* fp = NULL;
+	fp = fopen("burn_drivers.h", "w");
+	if(fp) 
+	{
+		fprintf(fp, "// Driverlist Generated via custom %s [ v%.20s ][ Windows ]\n", APP_TITLE, TCHARToANSI(szAppBurnVer, NULL, 0));
+		fprintf(fp, "#include <stdio.h>\n");
+		fprintf(fp, "#include <stdint.h>\n");
+
+		fprintf(fp, "\n");
+
+		fprintf(fp, "struct FBA_DRV \n{ \n");
+
+		fprintf(fp, "\t" "uint32_t nDrv; \n");
+		fprintf(fp, "\t" "char szName[32]; \n");
+		fprintf(fp, "\t" "char szParent[32];\n");
+		fprintf(fp, "\t" "char szBoardROM[32];\n");
+		fprintf(fp, "\t" "char szTitle[256];\n");
+		fprintf(fp, "\t" "char szYear[8];\n");
+		fprintf(fp, "\t" "char szCompany[256];\n");
+		fprintf(fp, "\t" "char szSystem[256];\n");
+		fprintf(fp, "\t" "uint32_t nMaxPlayers;\n");
+		fprintf(fp, "\t" "uint32_t nWidth; \n");
+		fprintf(fp, "\t" "uint32_t nHeight;\n");
+		fprintf(fp, "\t" "uint32_t nAspectX;\n");
+		fprintf(fp, "\t" "uint32_t nAspectY;\n");
+		fprintf(fp, "\t" "char szSystemFilter[32];\n");
+
+		fprintf(fp, "};\n");
+		
+		fprintf(fp, "\n");
+
+		fprintf(fp, "FBA_DRV fba_drv[] = \n{ \n");
+
+		static int CapcomMiscValue		= HARDWARE_PREFIX_CAPCOM_MISC >> 24;
+		static int MASKCAPMISC			= 1 << CapcomMiscValue;
+		static int CaveValue			= HARDWARE_PREFIX_CAVE >> 24;
+		static int MASKCAVE				= 1 << CaveValue;
+		static int CpsValue				= HARDWARE_PREFIX_CAPCOM >> 24;
+		static int MASKCPS				= 1 << CpsValue;
+		static int Cps2Value			= HARDWARE_PREFIX_CPS2 >> 24;
+		static int MASKCPS2				= 1 << Cps2Value;
+		static int Cps3Value			= HARDWARE_PREFIX_CPS3 >> 24;
+		static int MASKCPS3				= 1 << Cps3Value;
+		static int DataeastValue		= HARDWARE_PREFIX_DATAEAST >> 24;
+		static int MASKDATAEAST			= 1 << DataeastValue;
+		static int GalaxianValue		= HARDWARE_PREFIX_GALAXIAN >> 24;
+		static int MASKGALAXIAN			= 1 << GalaxianValue;
+		static int IremValue			= HARDWARE_PREFIX_IREM >> 24;
+		static int MASKIREM				= 1 << IremValue;
+		static int KanekoValue			= HARDWARE_PREFIX_KANEKO >> 24;
+		static int MASKKANEKO			= 1 << KanekoValue;
+		static int KonamiValue			= HARDWARE_PREFIX_KONAMI >> 24;
+		static int MASKKONAMI			= 1 << KonamiValue;
+		static int NeogeoValue			= HARDWARE_PREFIX_SNK >> 24;
+		static int MASKNEOGEO			= 1 << NeogeoValue;
+		static int PacmanValue			= HARDWARE_PREFIX_PACMAN >> 24;
+		static int MASKPACMAN			= 1 << PacmanValue;
+		static int PgmValue				= HARDWARE_PREFIX_IGS_PGM >> 24;
+		static int MASKPGM				= 1 << PgmValue;
+		static int PsikyoValue			= HARDWARE_PREFIX_PSIKYO >> 24;
+		static int MASKPSIKYO			= 1 << PsikyoValue;
+		static int SegaValue			= HARDWARE_PREFIX_SEGA >> 24;
+		static int MASKSEGA				= 1 << SegaValue;
+		static int SetaValue			= HARDWARE_PREFIX_SETA >> 24;
+		static int MASKSETA				= 1 << SetaValue;
+		static int TaitoValue			= HARDWARE_PREFIX_TAITO >> 24;
+		static int MASKTAITO			= 1 << TaitoValue;
+		static int TechnosValue			= HARDWARE_PREFIX_TECHNOS >> 24;
+		static int MASKTECHNOS			= 1 << TechnosValue;
+		static int ToaplanValue			= HARDWARE_PREFIX_TOAPLAN >> 24;
+		static int MASKTOAPLAN			= 1 << ToaplanValue;
+		static int MiscPre90sValue		= HARDWARE_PREFIX_MISC_PRE90S >> 24;
+		static int MASKMISCPRE90S		= 1 << MiscPre90sValue;
+		static int MiscPost90sValue		= HARDWARE_PREFIX_MISC_POST90S >> 24;
+		static int MASKMISCPOST90S		= 1 << MiscPost90sValue;
+		static int MegadriveValue		= HARDWARE_PREFIX_SEGA_MEGADRIVE >> 24;
+		static int MASKMEGADRIVE		= 1 << MegadriveValue;
+		static int PCEngineValue		= HARDWARE_PREFIX_PCENGINE >> 24;
+		static int MASKPCENGINE			= 1 << PCEngineValue;
+		static int SnesValue			= HARDWARE_PREFIX_NINTENDO_SNES >> 24;
+		static int MASKSNES				= 1 << SnesValue;
+		//static int MASKALL				= MASKCAPMISC | MASKCAVE | MASKCPS | MASKCPS2 | MASKCPS3 | MASKDATAEAST | MASKGALAXIAN | MASKIREM | MASKKANEKO | MASKKONAMI | MASKNEOGEO | MASKPACMAN | MASKPGM | MASKPSIKYO | MASKSEGA | MASKSETA | MASKTAITO | MASKTECHNOS | MASKTOAPLAN | MASKMISCPRE90S | MASKMISCPOST90S | MASKMEGADRIVE | MASKPCENGINE | MASKSNES;
+
+		int nTotalDrv = 0;
+		for (unsigned int i = 0; i < nBurnDrvCount; i++) 
+		{
+			nBurnDrvActive = i;
+
+			int nHardware = 1 << (BurnDrvGetHardwareCode() >> 24);
+
+			char szSystemFilter[32] = { 0 };
+
+			if ((nHardware & MASKCAPMISC))		sprintf(szSystemFilter, "MASKCAPMISC");
+			if ((nHardware & MASKCAVE))			sprintf(szSystemFilter, "MASKCAVE");
+			if ((nHardware & MASKCPS))			sprintf(szSystemFilter, "MASKCPS");
+			if ((nHardware & MASKCPS2))			sprintf(szSystemFilter, "MASKCPS2");
+			if ((nHardware & MASKCPS3))			sprintf(szSystemFilter, "MASKCPS3");
+			if ((nHardware & MASKDATAEAST))		sprintf(szSystemFilter, "MASKDATAEAST");
+			if ((nHardware & MASKGALAXIAN))		sprintf(szSystemFilter, "MASKGALAXIAN");
+			if ((nHardware & MASKIREM))			sprintf(szSystemFilter, "MASKIREM");
+			if ((nHardware & MASKKANEKO))		sprintf(szSystemFilter, "MASKKANEKO");
+			if ((nHardware & MASKKONAMI))		sprintf(szSystemFilter, "MASKKONAMI");
+			if ((nHardware & MASKNEOGEO))		sprintf(szSystemFilter, "MASKNEOGEO");
+			if ((nHardware & MASKPACMAN))		sprintf(szSystemFilter, "MASKPACMAN");
+			if ((nHardware & MASKPGM))			sprintf(szSystemFilter, "MASKPGM");
+			if ((nHardware & MASKPSIKYO))		sprintf(szSystemFilter, "MASKPSIKYO");
+			if ((nHardware & MASKSEGA))			sprintf(szSystemFilter, "MASKSEGA");
+			if ((nHardware & MASKSETA))			sprintf(szSystemFilter, "MASKSETA");
+			if ((nHardware & MASKTAITO))		sprintf(szSystemFilter, "MASKTAITO");
+			if ((nHardware & MASKTECHNOS))		sprintf(szSystemFilter, "MASKTECHNOS");
+			if ((nHardware & MASKTOAPLAN))		sprintf(szSystemFilter, "MASKTOAPLAN");
+			if ((nHardware & MASKMISCPRE90S))	sprintf(szSystemFilter, "MASKMISCPRE90S");
+			if ((nHardware & MASKMISCPOST90S))	sprintf(szSystemFilter, "MASKMISCPOST90S");
+
+			//if ((nHardware & MASKMEGADRIVE))	sprintf(szSystemFilter, "MASKMEGADRIVE");
+			//if ((nHardware & MASKPCENGINE))		sprintf(szSystemFilter, "MASKPCENGINE");
+			//if ((nHardware & MASKSNES))			sprintf(szSystemFilter, "MASKSNES");
+
+			// skip WIP drivers...
+			if ((nHardware & MASKMEGADRIVE) || 
+				(nHardware & MASKPCENGINE) ||
+				(nHardware & MASKSNES)) 
+			{
+				continue;
+			}
+
+			nTotalDrv++;
+
+			INT32 nWidth, nHeight;
+			BurnDrvGetFullSize(&nWidth, &nHeight);
+
+			INT32 nAspectX, nAspectY;
+			BurnDrvGetAspect(&nAspectX, &nAspectY);
+
+			fprintf(fp, "\t" "{ %d, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d, %d, %d, %d, \"%s\" }, \n", 
+				i,									// Drv ID
+				BurnDrvGetTextA(DRV_NAME),			// Romset (Ex. mslug)
+				BurnDrvGetTextA(DRV_PARENT) ? BurnDrvGetTextA(DRV_PARENT) : " ",		// Parent (Ex. sf2)
+				BurnDrvGetTextA(DRV_BOARDROM) ? BurnDrvGetTextA(DRV_BOARDROM) : " ",	// ...
+				BurnDrvGetTextA(DRV_FULLNAME),		// Title
+				BurnDrvGetTextA(DRV_DATE),			// Year
+				BurnDrvGetTextA(DRV_MANUFACTURER),	// Company (Ex. Capcom)
+				BurnDrvGetTextA(DRV_SYSTEM),		// System (Ex. Neo-Geo)
+				BurnDrvGetMaxPlayers(),				// No. Players
+				nWidth,								// Game Width
+				nHeight,							// Game Height
+				nAspectX,							// Aspect Ratio (X)
+				nAspectY,							// Aspect Ratio (Y)
+				szSystemFilter						// System Filter			
+			);
+		}
+
+		fprintf(fp, "}; \n");
+
+		fprintf(fp, "// --------------------------------------------------------- \n");
+		fprintf(fp, "// Total Drivers: %d \n", nTotalDrv);
+		fprintf(fp, "// --------------------------------------------------------- \n");
+		fclose(fp);
+		fp = NULL;
+	}
+}
+
+void GenRomInfoHeader()
+{
+	FILE* fp = NULL;
+	fp = fopen("burn_rominfo.h", "w");
+	if(fp)
+	{
+		fprintf(fp, "// Romsinfo Generated via custom %s [ v%.20s ][ Windows ]\n", APP_TITLE, TCHARToANSI(szAppBurnVer, NULL, 0));
+		fprintf(fp, "#include <stdio.h>\n");
+		fprintf(fp, "#include <stdint.h>\n");
+
+		fprintf(fp, "\n");
+
+		fprintf(fp, "struct BurnRomInfo { \n");
+		fprintf(fp, "\tchar szName[100]; \n");
+		fprintf(fp, "\tuint32_t nLen; \n");
+		fprintf(fp, "\tuint32_t nCrc; \n");
+		fprintf(fp, "\tchar szType[128]; \n");
+		fprintf(fp, "}; \n\n");
+
+		fprintf(fp, "struct BurnSampleInfo { \n");
+		fprintf(fp, "\tchar szName[100]; \n");
+		fprintf(fp, "\tuint32_t nFlags; \n");
+		fprintf(fp, "}; \n\n");
+
+		fprintf(fp, "struct FBA_ROMINFO { \n");
+		fprintf(fp, "\tunsigned int nDrv; \n");
+		fprintf(fp, "\tchar szName[32];\n");
+		fprintf(fp, "\tBurnRomInfo roms_info[0x100];\n");
+		fprintf(fp, "\tBurnRomInfo board_roms_info[0x100];\n");
+		fprintf(fp, "\tBurnSampleInfo samples_info[0x100];\n");
+		fprintf(fp, "};\n");
+
+		fprintf(fp, "\n");
+
+		fprintf(fp, "FBA_ROMINFO fba_romsinfo[] = \n{ \n");
+						
+		for (unsigned int ii = 0; ii < nBurnDrvCount; ii++) 
+		{
+			nBurnDrvActive = ii;			
+			
+			fprintf(fp, "\t// --------------------------------------------------------- \n");
+			fprintf(fp, "\t// %s \n", BurnDrvGetTextA(DRV_FULLNAME));
+			fprintf(fp, "\t// --------------------------------------------------------- \n");
+			
+			fprintf(fp, "\t{ \n");
+
+			fprintf(fp, "\t\t// [ driver index ] \n");
+
+			fprintf(fp, "\t\t%d, \n", ii);
+
+			fprintf(fp, "\t\t// [ romset ] \n");
+
+			fprintf(fp, "\t\t\"%s\", \n", BurnDrvGetTextA(DRV_NAME));
+
+			fprintf(fp, "\t\t// [ roms_info ] \n");
+
+			fprintf(fp, "\t\t{ \n");
+
+			int RomPos = 0;
+			for (int i = 0; i < 0x100; i++) { // assume max 0x100 roms per game
+
+				int nRet;
+				struct BurnRomInfo ri;
+				//char nLen[10] = "";
+				char nCrc[8] = "";
+				char *szRomName = NULL;
+				TCHAR Type[100] = _T("");
+				TCHAR FormatType[100] = _T("");
+
+				memset(&ri, 0, sizeof(ri));
+	
+				nRet = BurnDrvGetRomInfo(&ri, i);
+				nRet += BurnDrvGetRomName(&szRomName, i, 0);
+		
+				if (ri.nLen == 0) continue;		
+				if (ri.nType & BRF_BIOS) continue;
+		
+				fprintf(fp, "\t\t\t{ ");
+				
+				fprintf(fp, "\"%s\", ", szRomName);
+
+				//sprintf(nLen, "%d", ri.nLen);
+				fprintf(fp, "%d, ", ri.nLen);
+		
+				sprintf(nCrc, "%08X", ri.nCrc);
+				if (!(ri.nType & BRF_NODUMP)) 
+				{
+					fprintf(fp, "0x%s, ", nCrc);
+				} else {
+					fprintf(fp, "0x00000000, ");
+				}
+		
+				if (ri.nType & BRF_ESS) _stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_ESSENTIAL, true), Type);
+				if (ri.nType & BRF_OPT) _stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_OPTIONAL, true), Type);
+				if (ri.nType & BRF_PRG)	_stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_PROGRAM, true), Type);
+				if (ri.nType & BRF_GRA) _stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_GRAPHICS, true), Type);
+				if (ri.nType & BRF_SND) _stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_SOUND, true), Type);
+				if (ri.nType & BRF_BIOS) _stprintf(Type, FBALoadStringEx(hAppInst, IDS_ROMINFO_BIOS, true), Type);
+				
+				for (int j = 0; j < 98; j++) {
+					FormatType[j] = Type[j + 2];
+				}
+		
+				if (ri.nType & BRF_NODUMP) 
+				{
+					fprintf(fp, "\"%s\", ", "No Dump");
+				} else {
+					fprintf(fp, "\"%s\", ", TCHARToANSI(FormatType, NULL, 0));
+				}
+
+				fprintf(fp, "}, \n");
+
+				RomPos++;
+			}
+
+			fprintf(fp, "\t\t}, \n");
+			
+			fprintf(fp, "\t\t// [ board_roms_info ] \n");
+
+			fprintf(fp, "\t\t{ \n");					
+
+			// Check for board roms
+			if (BurnDrvGetTextA(DRV_BOARDROM)) {				
+				
+				char szBoardName[8] = "";
+				unsigned int nOldDrvSelect = nBurnDrvActive;
+				strcpy(szBoardName, BurnDrvGetTextA(DRV_BOARDROM));
+			
+				for (unsigned int i = 0; i < nBurnDrvCount; i++) {
+					nBurnDrvActive = i;
+					if (!strcmp(szBoardName, BurnDrvGetTextA(DRV_NAME))) break;
+				}
+			
+				for (int j = 0; j < 0x100; j++) {					
+
+					int nRetBoard;
+					struct BurnRomInfo riBoard;
+					//char nLenBoard[10] = "";
+					char nCrcBoard[8] = "";
+					char *szBoardRomName = NULL;
+					TCHAR BoardType[100] = _T("");
+					TCHAR BoardFormatType[100] = _T("");
+
+					memset(&riBoard, 0, sizeof(riBoard));
+
+					nRetBoard = BurnDrvGetRomInfo(&riBoard, j);
+					nRetBoard += BurnDrvGetRomName(&szBoardRomName, j, 0);
+		
+					if (riBoard.nLen == 0) continue;
+				
+					fprintf(fp, "\t\t\t{ ");
+
+					fprintf(fp, "\"%s\", ", szBoardRomName);
+
+					//sprintf(nLenBoard, "%d", riBoard.nLen);
+					fprintf(fp, "%d, ", riBoard.nLen);
+		
+					sprintf(nCrcBoard, "%08X", riBoard.nCrc);
+					if (!(riBoard.nType & BRF_NODUMP)) 
+					{
+						fprintf(fp, "0x%s, ", nCrcBoard);
+					} else {
+						fprintf(fp, "0x00000000, ");
+					}
+			
+					if (riBoard.nType & BRF_ESS) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_ESSENTIAL, true), BoardType);
+					if (riBoard.nType & BRF_OPT) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_OPTIONAL, true), BoardType);
+					if (riBoard.nType & BRF_PRG) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_PROGRAM, true), BoardType);
+					if (riBoard.nType & BRF_GRA) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_GRAPHICS, true), BoardType);
+					if (riBoard.nType & BRF_SND) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_SOUND, true), BoardType);
+					if (riBoard.nType & BRF_BIOS) _stprintf(BoardType, FBALoadStringEx(hAppInst, IDS_ROMINFO_BIOS, true), BoardType);
+		
+					for (int k = 0; k < 98; k++) {
+						BoardFormatType[k] = BoardType[k + 2];
+					}
+		
+					if (riBoard.nType & BRF_NODUMP) 
+					{
+						fprintf(fp, "\"%s\", ", "No Dump");
+					} else {
+						fprintf(fp, "\"%s\", ", TCHARToANSI(BoardFormatType, NULL, 0));
+					}
+								
+					fprintf(fp, "}, \n");
+
+					RomPos++;
+				}
+		
+				nBurnDrvActive = nOldDrvSelect;
+			} else {			
+				fprintf(fp, "\t\t\t{ 0 }, \n");				
+			}
+
+			fprintf(fp, "\t\t}, \n");
+
+			fprintf(fp, "\t\t// [ samples ] \n");
+
+			fprintf(fp, "\t\t{ \n");
+
+			int SamplePos = 0;
+			if (BurnDrvGetTextA(DRV_SAMPLENAME) != NULL) 
+			{
+				for (int i = 0; i < 0x100; i++) { // assume max 0x100 samples per game
+					
+					int nRet;
+					struct BurnSampleInfo si;
+					char *szSampleName = NULL;
+
+					memset(&si, 0, sizeof(si));
+
+					nRet = BurnDrvGetSampleInfo(&si, i);
+					nRet += BurnDrvGetSampleName(&szSampleName, i, 0);
+		
+					if (si.nFlags == 0) continue;		
+		
+					fprintf(fp, "\t\t\t{ ");
+		
+					fprintf(fp, "\"%s\", \n", szSampleName);
+
+					fprintf(fp, "%d \n", si.nFlags);
+
+					fprintf(fp, "}, \n");
+
+					SamplePos++;
+				}
+			} else {
+				fprintf(fp, "\t\t\t{ 0 }, \n");
+			}
+
+			fprintf(fp, "\t\t}, \n");
+
+			fprintf(fp, "\t}, \n");
+		}
+
+		fprintf(fp, "}; \n");
+
+		fclose(fp);
+		fp = NULL;
+	}
+}
+
 static int AppInit()
 {
 #if defined (_MSC_VER) && defined (_DEBUG)
@@ -553,6 +959,9 @@ static int AppInit()
 		LoadDrvIcons();
 		bIconsLoaded = 1;
 	}
+
+	GenBurnDrvHeader();
+	GenRomInfoHeader();
 
 	return 0;
 }

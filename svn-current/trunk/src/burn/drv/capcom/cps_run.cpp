@@ -344,7 +344,9 @@ INT32 Cps1Frame()
 //		}
 	}
 	
-   CpsDraw();										// Draw frame
+	if (pBurnDraw) {
+		CpsDraw();										// Draw frame
+	}
 
 	if (Cps1Qs == 1) {
 		QsndEndFrame();
@@ -387,6 +389,18 @@ INT32 Cps2Frame()
 	SekSetCyclesScanline(nCpsCycles / nCpsNumScanlines);
 
 	CpsRwGetInp();											// Update the input port values
+	
+	// Check the volumes every 5 frames or so
+	if (GetCurrentFrame() % 5 == 0) {
+		if (Cps2VolUp) Cps2Volume++;
+		if (Cps2VolDwn) Cps2Volume--;
+		
+		if (Cps2Volume > 39) Cps2Volume = 39;
+		if (Cps2Volume < 0) Cps2Volume = 0;
+		
+		QscSetRoute(BURN_SND_QSND_OUTPUT_1, Cps2Volume / 39.0, BURN_SND_ROUTE_LEFT);
+		QscSetRoute(BURN_SND_QSND_OUTPUT_2, Cps2Volume / 39.0, BURN_SND_ROUTE_RIGHT);
+	}
 	
 	nDisplayEnd = nCpsCycles * (nFirstLine + 224) / nCpsNumScanlines;	// Account for VBlank
 
@@ -448,7 +462,9 @@ INT32 Cps2Frame()
 //	nDone += SekRun(nCpsCyclesSegment[0] - nDone);
 
 	SekSetIRQLine(2, SEK_IRQSTATUS_AUTO);				// VBlank
-   CpsDraw();
+	if (pBurnDraw) {
+		CpsDraw();
+	}
 	SekRun(nCpsCycles - SekTotalCycles());	
 
 	nCpsCyclesExtra = SekTotalCycles() - nCpsCycles;

@@ -3954,7 +3954,7 @@ static INT32 MemIndex()
 	DrvGfxROM1		= Next; Next += 0x800000;
 	DrvGfxROM2		= Next; Next += 0x800000;
 
-	if (strcmp(BurnDrvGetTextA(DRV_NAME), "raphero") == 0) {
+	if (strcmp(BurnDrvGetTextA(DRV_NAME), "raphero") == 0 || strcmp(BurnDrvGetTextA(DRV_NAME), "arcadia") == 0) {
 					Next += 0x800000;
 	}
 
@@ -3965,7 +3965,7 @@ static INT32 MemIndex()
 	DrvSndROM0		= Next; Next += 0x300000;
 	DrvSndROM1		= Next; Next += 0x300000;
 
-	if (strcmp(BurnDrvGetTextA(DRV_NAME), "raphero") == 0) {
+	if (strcmp(BurnDrvGetTextA(DRV_NAME), "raphero") == 0 || strcmp(BurnDrvGetTextA(DRV_NAME), "arcadia") == 0) {
 					Next += 0x600000;
 	}
 
@@ -6438,7 +6438,7 @@ struct BurnDriver BurnDrvRedhawkb = {
 };
 
 
-// Guardian Storm
+// Guardian Storm (horizontal, not encrypted)
 
 static struct BurnRomInfo grdnstrmRomDesc[] = {
 	{ "afega4.u112",	0x040000, 0x2244713a, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
@@ -6489,14 +6489,13 @@ static INT32 GrdnstrmInit()
 
 struct BurnDriver BurnDrvGrdnstrm = {
 	"grdnstrm", NULL, NULL, NULL, "1998",
-	"Guardian Storm\0", NULL, "Afega (Apples Industries license)", "NMK16",
+	"Guardian Storm (horizontal, not encrypted)\0", NULL, "Afega (Apples Industries license)", "NMK16",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
 	NULL, grdnstrmRomInfo, grdnstrmRomName, NULL, NULL, CommonInputInfo, GrdnstrmDIPInfo,
 	GrdnstrmInit, AfegaExit, AfegaFrame, FirehawkDraw, NULL, NULL, 0x300,
 	256, 224, 4, 3
 };
-
 
 // Sen Jin - Guardian Storm (Korea)
 
@@ -6541,7 +6540,116 @@ struct BurnDriver BurnDrvGrdnstrmk = {
 };
 
 
-// Red Fox War Planes II (China)
+// Guardian Storm (vertical)
+
+static struct BurnRomInfo grdnstrmvRomDesc[] = {
+	{ "afega2.u112",	    0x040000, 0x16d41050, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
+	{ "afega3.u107",		0x040000, 0x05920a99, 1 | BRF_PRG | BRF_ESS }, //  1
+
+	{ "afega7.u92",		    0x010000, 0x5d8cf28e, 2 | BRF_PRG | BRF_ESS }, //  2 Z80 code
+
+	{ "afega1.u4",			0x010000, 0x9e7ef086, 3 | BRF_GRA },           //  3 Characters
+
+	{ "afega_af1-b2.uc8",	0x200000, 0xd68588c2, 4 | BRF_GRA },           //  4 Tiles
+	{ "afega_af1-b1.uc3",	0x200000, 0xf8b200a8, 4 | BRF_GRA },           //  5
+
+	{ "afega6.uc13",	    0x200000, 0x9b54ff84, 5 | BRF_GRA },           //  6 Sprites
+
+	{ "afega1.u95",		    0x040000, 0xe911ce33, 6 | BRF_SND },           //  7 OKI1 Samples
+};
+
+STD_ROM_PICK(grdnstrmv)
+STD_ROM_FN(grdnstrmv)
+
+struct BurnDriver BurnDrvGrdnstrmv = {
+	"grdnstrmv", "grdnstrm", NULL, NULL, "1998",
+	"Guardian Storm (vertical)\0", NULL, "Afega (Apples Industries license)", "NMK16",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
+	NULL, grdnstrmvRomInfo, grdnstrmvRomName, NULL, NULL, CommonInputInfo, GrdnstrkDIPInfo,
+	GrdnstrmkInit, AfegaExit, AfegaFrame, AfegaDraw, NULL, NULL, 0x300,
+	224, 256, 3, 4
+};
+
+
+// Guardian Storm (Germany)
+
+static struct BurnRomInfo grdnstrmgRomDesc[] = {
+	{ "gs6_c2.uc9",         0x040000, 0xea363e4d, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
+    { "gs5_c1.uc1",         0x040000, 0xc0263e4a, 1 | BRF_PRG | BRF_ESS }, //  1
+
+	{ "gs1_s1.uc14",		0x010000, 0x5d8cf28e, 2 | BRF_PRG | BRF_ESS }, //  2 Z80 code
+
+	{ "gs3_t1.uc2",			0x010000, 0x88c423ef, 3 | BRF_GRA },           //  3 Characters
+
+	{ "gs10_cr5.uc15",	    0x080000, 0x2c8c23e3, 4 | BRF_GRA },           //  4 Tiles
+	{ "gs4_cr7.uc19",	    0x080000, 0xc3f6c908, 4 | BRF_GRA },           //  5
+	{ "gs8_cr1.uc6",	    0x080000, 0xdc0125f0, 4 | BRF_GRA },           //  6
+	{ "gs9_cr3.uc12",	    0x080000, 0xd8a0636b, 4 | BRF_GRA },           //  7
+	
+	{ "gs8_br3.uc10",		0x080000, 0x7b42a57a, 5 | BRF_GRA },           //  8 Sprites
+	{ "gs7_br1.uc3",		0x080000, 0xe6794265, 5 | BRF_GRA },           //  9
+	{ "gs10_br4.uc11",		0x080000, 0x1d3b57e1, 5 | BRF_GRA },           // 10
+	{ "gs9_br2.uc4",		0x080000, 0x4d2c220b, 5 | BRF_GRA },           // 11
+
+	{ "gs2_s2.uc18",		0x040000, 0xe911ce33, 6 | BRF_SND },           // 12 OKI1 Samples
+};
+
+STD_ROM_PICK(grdnstrmg)
+STD_ROM_FN(grdnstrmg)
+
+static INT32 GrdnstrmgLoadCallback()
+{
+	if (BurnLoadRom(Drv68KROM  + 0x000001,  0, 2)) return 1;
+	if (BurnLoadRom(Drv68KROM  + 0x000000,  1, 2)) return 1;
+
+	if (BurnLoadRom(DrvZ80ROM  + 0x000000,  2, 1)) return 1;
+
+	if (BurnLoadRom(DrvGfxROM0 + 0x000000,  3, 1)) return 1;
+
+	if (BurnLoadRom(DrvGfxROM1 + 0x000000,  4, 1)) return 1;
+	if (BurnLoadRom(DrvGfxROM1 + 0x080000,  5, 1)) return 1;
+	if (BurnLoadRom(DrvGfxROM1 + 0x100000,  6, 1)) return 1;
+	if (BurnLoadRom(DrvGfxROM1 + 0x180000,  7, 1)) return 1;
+
+	if (BurnLoadRom(DrvGfxROM2 + 0x000001,  8, 2)) return 1;
+	if (BurnLoadRom(DrvGfxROM2 + 0x000000,  9, 2)) return 1;
+	if (BurnLoadRom(DrvGfxROM2 + 0x100001, 10, 2)) return 1;
+	if (BurnLoadRom(DrvGfxROM2 + 0x100000, 11, 2)) return 1;
+
+	if (BurnLoadRom(DrvSndROM0 + 0x000000, 12, 1)) return 1;
+
+	GrdnstrmGfxDecode(0x10000, 0x400000, 0x200000);
+
+	return 0;
+}
+
+static INT32 GrdnstrmgInit()
+{
+	INT32 nRet = AfegaInit(GrdnstrmgLoadCallback, pAfegaZ80Callback, 1);
+
+	if (nRet == 0) {
+		decryptcode(0x80000, 13, 17, 16, 15, 14);
+		decryptcode(0x80000, 17, 16, 14, 15, 13);
+		decryptcode(0x80000, 17, 15, 16, 14, 13);
+		decryptcode(0x80000, 16, 17, 15, 14, 13);
+	}
+
+	return nRet;
+}
+
+struct BurnDriver BurnDrvGrdnstrmg = {
+	"grdnstrmg", "grdnstrm", NULL, NULL, "1998",
+	"Guardian Storm (Germany)\0", NULL, "Afega", "NMK16",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
+	NULL, grdnstrmgRomInfo, grdnstrmgRomName, NULL, NULL, CommonInputInfo, GrdnstrkDIPInfo,
+	GrdnstrmgInit, AfegaExit, AfegaFrame, AfegaDraw, NULL, NULL, 0x300,
+	224, 256, 3, 4
+};
+
+
+// Red Fox War Planes II (China, set 1)
 
 static struct BurnRomInfo redfoxwp2RomDesc[] = {
 	{ "u112",	        0x040000, 0x3f31600b, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
@@ -6564,11 +6672,56 @@ STD_ROM_FN(redfoxwp2)
 
 struct BurnDriver BurnDrvRedfoxwp2 = {
 	"redfoxwp2", "grdnstrm", NULL, NULL, "1998",
-	"Red Fox War Planes II (China)\0", NULL, "Afega", "NMK16",
-	L"\u7D05\u5B64\u6230\u6A5FII\0Red Fox War Planes II (China)\0", NULL, NULL, NULL,
+	"Red Fox War Planes II (China, set 1)\0", NULL, "Afega", "NMK16",
+	L"\u7D05\u5B64\u6230\u6A5FII\0Red Fox War Planes II (China, set 1)\0", NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
 	NULL, redfoxwp2RomInfo, redfoxwp2RomName, NULL, NULL, CommonInputInfo, GrdnstrkDIPInfo,
 	GrdnstrmkInit, AfegaExit, AfegaFrame, AfegaDraw, NULL, NULL, 0x300,
+	224, 256, 3, 4
+};
+
+
+// Red Fox War Planes II (China, set 2)
+
+static struct BurnRomInfo redfoxwp2aRomDesc[] = {
+	{ "afega_4.u112",		0x040000, 0xe6e6682a, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
+	{ "afega_5.u107",		0x040000, 0x2faa2ed6, 1 | BRF_PRG | BRF_ESS }, //  1
+
+	{ "afega_1.u92",		0x010000, 0x5d8cf28e, 2 | BRF_PRG | BRF_ESS }, //  2 Z80 code
+
+	{ "afega_3.u4",			0x010000, 0x64608687, 3 | BRF_GRA },           //  3 Characters
+
+	{ "afega_af1-b2.uc8",	0x200000, 0xd68588c2, 4 | BRF_GRA },           //  4 Tiles
+	{ "afega_af1-b1.uc3",	0x200000, 0xf8b200a8, 4 | BRF_GRA },           //  5
+
+	{ "afega_af1-sp.uc13",	0x200000, 0x7d4d4985, 5 | BRF_GRA },           //  6 Sprites
+
+	{ "afega_2.u95",		0x040000, 0xe911ce33, 6 | BRF_SND },           //  7 OKI1 Samples
+};
+
+STD_ROM_PICK(redfoxwp2a)
+STD_ROM_FN(redfoxwp2a)
+
+static INT32 Redfoxwp2Init()
+{
+	INT32 nRet = AfegaInit(GrdnstrmLoadCallback, pAfegaZ80Callback, 1);
+
+	if (nRet == 0) {
+		decryptcode(0x80000, 17, 16, 13, 15, 14);
+		decryptcode(0x80000, 17, 16, 14, 15, 13);
+		decryptcode(0x80000, 16, 17, 15, 14, 13);
+	}
+
+	return nRet;
+}
+
+struct BurnDriver BurnDrvRedfoxwp2a = {
+	"redfoxwp2a", "grdnstrm", NULL, NULL, "1998",
+	"Red Fox War Planes II (China, set 2)\0", NULL, "Afega", "NMK16",
+	L"\u7D05\u5B64\u6230\u6A5FII\0Red Fox War Planes II (China, set 2)\0", NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
+	NULL, redfoxwp2aRomInfo, redfoxwp2aRomName, NULL, NULL, CommonInputInfo, GrdnstrkDIPInfo,
+	Redfoxwp2Init, AfegaExit, AfegaFrame, AfegaDraw, NULL, NULL, 0x300,
 	224, 256, 3, 4
 };
 
@@ -8867,6 +9020,46 @@ struct BurnDriver BurnDrvRaphero = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
 	NULL, rapheroRomInfo, rapheroRomName, NULL, NULL, Tdragon2InputInfo, RapheroDIPInfo,
+	RapheroInit, NMK004Exit, NMK004Frame, RapheroDraw, NULL, NULL, 0x400,
+	224, 384, 3, 4
+};
+
+// Aracdia
+
+static struct BurnRomInfo arcadiaRomDesc[] = {
+	{ "arcadia.3",		0x080000, 0x8b46d609, 1 | BRF_PRG | BRF_ESS }, //  0 68k code
+
+	{ "rhp94099.2",		0x020000, 0xfe01ece1, 2 | BRF_PRG | BRF_ESS }, //  1 Tmp90c841 Code
+
+	{ "arcadia.1",		0x020000, 0x1c2c4008, 3 | BRF_GRA },           //  2 Characters
+
+	{ "rhp94099.4",		0x200000, 0x076eee7b, 4 | BRF_GRA },           //  3 Tiles
+
+	{ "rhp94099.8",		0x200000, 0x49892f07, 5 | BRF_GRA },           //  4 Sprites
+	{ "rhp94099.9",		0x200000, 0xea2e47f0, 5 | BRF_GRA },           //  5
+	{ "rhp94099.10",	0x200000, 0x512cb839, 5 | BRF_GRA },           //  6
+
+	{ "rhp94099.7",		0x200000, 0x0d99547e, 6 | BRF_SND },           //  7 OKI1 Samples
+
+	{ "rhp94099.5",		0x200000, 0x515eba93, 7 | BRF_SND },           //  8 OKI2 Samples
+	{ "rhp94099.6",		0x200000, 0xf1a80e5a, 7 | BRF_SND },           //  9
+	{ "rhp94099.7",		0x200000, 0x0d99547e, 7 | BRF_SND },           // 10
+	{ "rhp94099.7",		0x200000, 0x0d99547e, 7 | BRF_SND },           // 11
+
+	{ "prom1.u19",		0x000100, 0x4299776e, 0 | BRF_OPT },           // 12 Unused proms
+	{ "prom2.u53",		0x000100, 0xe6ead349, 0 | BRF_OPT },           // 13
+	{ "prom3.u60",		0x000100, 0x304f98c6, 0 | BRF_OPT },           // 14
+};
+
+STD_ROM_PICK(arcadia)
+STD_ROM_FN(arcadia)
+
+struct BurnDriver BurnDrvArcadia = {
+	"arcadia", "raphero", NULL, NULL, "1994",
+	"Arcadia\0", "Incomplete sound", "NMK", "NMK16",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_ORIENTATION_VERTICAL | BDF_CLONE, 2, HARDWARE_MISC_POST90S, GBF_VERSHOOT, 0,
+	NULL, arcadiaRomInfo, arcadiaRomName, NULL, NULL, Tdragon2InputInfo, RapheroDIPInfo,
 	RapheroInit, NMK004Exit, NMK004Frame, RapheroDraw, NULL, NULL, 0x400,
 	224, 384, 3, 4
 };

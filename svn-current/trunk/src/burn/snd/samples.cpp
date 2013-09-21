@@ -269,7 +269,7 @@ void BurnSampleInit(INT32 bAdd /*add sample to stream?*/)
 	}
 	
 #ifdef INCLUDE_7Z_SUPPORT
-	snprintf(path, "%s%s.7z", szTempPath, setname);
+	snprintf(path, sizeof(path), "%s%s.7z", szTempPath, setname);
 	
 	test = fopen(path, "rb");
 	if (test)

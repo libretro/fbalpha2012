@@ -14,7 +14,9 @@
 #define STRICT
 
 #if defined (_UNICODE)
+#ifndef UNICODE
  #define UNICODE
+#endif
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -291,6 +293,7 @@ extern int nSelDlgHeight;
 int SelDialog(int nMVSCartsOnly, HWND hParentWND);
 extern UINT_PTR nTimer;
 extern HBITMAP hPrevBmp;
+extern HBITMAP hTitleBmp;
 extern int nDialogSelect;
 void CreateToolTipForRect(HWND hwndParent, PTSTR pszText);
 int SelMVSDialog();

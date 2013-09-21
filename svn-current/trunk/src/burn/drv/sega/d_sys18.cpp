@@ -885,7 +885,7 @@ static struct BurnRomInfo AstormjRomDesc[] = {
 	{ "epr-13079.bin",  0x40000, 0xde9221ed, SYS16_ROM_SPRITES | BRF_GRA },
 	{ "epr-13086.bin",  0x40000, 0x8c9a71c4, SYS16_ROM_SPRITES | BRF_GRA },
 
-	{ "epr-13083.bin",  0x20000, 0x5df3af20, SYS16_ROM_Z80PROG | BRF_ESS | BRF_PRG },
+	{ "epr-13083b.bin", 0x20000, 0x169b4b5f, SYS16_ROM_Z80PROG | BRF_ESS | BRF_PRG },
 	
 	{ "epr-13076.bin",  0x40000, 0x94e6c76e, SYS16_ROM_RF5C68DATA | BRF_SND },
 	{ "epr-13077.bin",  0x40000, 0xe2ec0d8d, SYS16_ROM_RF5C68DATA | BRF_SND },
@@ -898,35 +898,6 @@ static struct BurnRomInfo AstormjRomDesc[] = {
 STD_ROM_PICK(Astormj)
 STD_ROM_FN(Astormj)
 
-static struct BurnRomInfo AstormjaRomDesc[] = {
-	{ "epr-13085.a6",   0x40000, 0x15f74e2d, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
-	{ "epr-13084.a5",   0x40000, 0x9687b38f, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
-
-	{ "epr-13073.bin",  0x40000, 0xdf5d0a61, SYS16_ROM_TILES | BRF_GRA },
-	{ "epr-13074.bin",  0x40000, 0x787afab8, SYS16_ROM_TILES | BRF_GRA },
-	{ "epr-13075.bin",  0x40000, 0x4e01b477, SYS16_ROM_TILES | BRF_GRA },
-	
-	{ "mpr-13082.bin",  0x40000, 0xa782b704, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "mpr-13089.bin",  0x40000, 0x2a4227f0, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "mpr-13081.bin",  0x40000, 0xeb510228, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "mpr-13088.bin",  0x40000, 0x3b6b4c55, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "mpr-13080.bin",  0x40000, 0xe668eefb, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "mpr-13087.bin",  0x40000, 0x2293427d, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "epr-13079.bin",  0x40000, 0xde9221ed, SYS16_ROM_SPRITES | BRF_GRA },
-	{ "epr-13086.bin",  0x40000, 0x8c9a71c4, SYS16_ROM_SPRITES | BRF_GRA },
-
-	{ "epr-13083b.bin", 0x20000, 0x169b4b5f, SYS16_ROM_Z80PROG | BRF_ESS | BRF_PRG },
-	
-	{ "epr-13076.bin",  0x40000, 0x94e6c76e, SYS16_ROM_RF5C68DATA | BRF_SND },
-	{ "epr-13077.bin",  0x40000, 0xe2ec0d8d, SYS16_ROM_RF5C68DATA | BRF_SND },
-	{ "epr-13078.bin",  0x40000, 0x15684dc5, SYS16_ROM_RF5C68DATA | BRF_SND },
-	
-	{ "317-0146.key",   0x02000, 0xe94991c5, SYS16_ROM_KEY | BRF_ESS | BRF_PRG},
-};
-
-
-STD_ROM_PICK(Astormja)
-STD_ROM_FN(Astormja)
 
 static struct BurnRomInfo AstormuRomDesc[] = {
 	{ "epr-13095.a6",   0x40000, 0x55d40742, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
@@ -1135,6 +1106,38 @@ STD_ROM_PICK(Ddcrew2)
 STD_ROM_FN(Ddcrew2)
 
 static struct BurnRomInfo DdcrewjRomDesc[] = {
+	{ "epr-14150.a4",   0x40000, 0xfc866b19, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
+	{ "epr-14151.a6",   0x40000, 0x46d23fe4, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
+	{ "mpr-14139.a5",   0x40000, 0x06c31531, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
+	{ "mpr-14141.a7",   0x40000, 0x080a494b, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
+
+	{ "epr-14127.c1",   0x40000, 0x2228cd88, SYS16_ROM_TILES | BRF_GRA },
+	{ "epr-14128.c2",   0x40000, 0xedba8e10, SYS16_ROM_TILES | BRF_GRA },
+	{ "epr-14129.c3",   0x40000, 0xe8ecc305, SYS16_ROM_TILES | BRF_GRA },
+	
+	{ "mpr-14134.c10",  0x80000, 0x4fda6a4b, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "mpr-14142.a10",  0x80000, 0x3cbf1f2a, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "mpr-14135.c11",  0x80000, 0xe9c74876, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "mpr-14143.a11",  0x80000, 0x59022c31, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "mpr-14136.c12",  0x80000, 0x720d9858, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "mpr-14144.a12",  0x80000, 0x7775fdd4, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "epr-14137.c13",  0x80000, 0x846c4265, SYS16_ROM_SPRITES | BRF_GRA },
+	{ "epr-14145.a13",  0x80000, 0x0e76c797, SYS16_ROM_SPRITES | BRF_GRA },
+
+	{ "epr-14133.c7",   0x20000, 0xcff96665, SYS16_ROM_Z80PROG | BRF_ESS | BRF_PRG },
+	
+	{ "mpr-14132.c6",   0x80000, 0x1fae0220, SYS16_ROM_RF5C68DATA | BRF_SND },
+	{ "mpr-14131.c5",   0x80000, 0xbe5a7d0b, SYS16_ROM_RF5C68DATA | BRF_SND },
+	{ "epr-14130.c4",   0x80000, 0x948f34a1, SYS16_ROM_RF5C68DATA | BRF_SND },
+	
+	{ "317-0185.key",   0x02000, 0xa650b506, SYS16_ROM_KEY | BRF_ESS | BRF_PRG},
+};
+
+
+STD_ROM_PICK(Ddcrewj)
+STD_ROM_FN(Ddcrewj)
+
+static struct BurnRomInfo Ddcrewj2RomDesc[] = {
 	{ "epr-14138.a4",   0x40000, 0xdf280b1b, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
 	{ "epr-14140.a6",   0x40000, 0x48f223ee, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
 	{ "mpr-14139.a5",   0x40000, 0x06c31531, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
@@ -1163,8 +1166,8 @@ static struct BurnRomInfo DdcrewjRomDesc[] = {
 };
 
 
-STD_ROM_PICK(Ddcrewj)
-STD_ROM_FN(Ddcrewj)
+STD_ROM_PICK(Ddcrewj2)
+STD_ROM_FN(Ddcrewj2)
 
 static struct BurnRomInfo DdcrewuRomDesc[] = {
 	{ "epr-14152.a4",   0x40000, 0x69c7b571, SYS16_ROM_PROG | BRF_ESS | BRF_PRG },
@@ -2524,20 +2527,10 @@ struct BurnDriver BurnDrvAstorm3 = {
 
 struct BurnDriver BurnDrvAstormj = {
 	"astormj", "astorm", NULL, NULL, "1990",
-	"Alien Storm (set 1, Japan, 2 Players, FD1094 317-0146)\0", NULL, "Sega", "System 18",
+	"Alien Storm (set 1, Japan Rev B, 2 Players, FD1094 317-0146)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_PLATFORM, 0,
 	NULL, AstormjRomInfo, AstormjRomName, NULL, NULL, System18InputInfo, Astorm2pDIPInfo,
-	Astorm3Init, System18Exit, System18Frame, NULL, System18Scan,
-	NULL, 0x1800, 320, 224, 4, 3
-};
-
-struct BurnDriver BurnDrvAstormja = {
-	"astormja", "astorm", NULL, NULL, "1990",
-	"Alien Storm (set 5, Japan Rev B, 2 Players, FD1094 317-0146)\0", NULL, "Sega", "System 18",
-	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_PLATFORM, 0,
-	NULL, AstormjaRomInfo, AstormjaRomName, NULL, NULL, System18InputInfo, Astorm2pDIPInfo,
 	Astorm3Init, System18Exit, System18Frame, NULL, System18Scan,
 	NULL, 0x1800, 320, 224, 4, 3
 };
@@ -2584,7 +2577,7 @@ struct BurnDriver BurnDrvCltchitrj = {
 
 struct BurnDriver BurnDrvDdcrew = {
 	"ddcrew", NULL, NULL, NULL, "1991",
-	"D. D. Crew (set 4, World, 3 Player, FD1094 317-0190)\0", NULL, "Sega", "System 18",
+	"D. D. Crew (set 4, World, 3 Players, FD1094 317-0190)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING, 3, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
 	NULL, DdcrewRomInfo, DdcrewRomName, NULL, NULL, DdcrewInputInfo, DdcrewDIPInfo,
@@ -2594,7 +2587,7 @@ struct BurnDriver BurnDrvDdcrew = {
 
 struct BurnDriver BurnDrvDdcrew1 = {
 	"ddcrew1", "ddcrew", NULL, NULL, "1991",
-	"D. D. Crew (set 1, World, 4 Player, FD1094 317-?)\0", NULL, "Sega", "System 18",
+	"D. D. Crew (set 1, World, 4 Players, FD1094 317-?)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 4, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
 	NULL, Ddcrew1RomInfo, Ddcrew1RomName, NULL, NULL, DdcrewuInputInfo, DdcrewuDIPInfo,
@@ -2604,7 +2597,7 @@ struct BurnDriver BurnDrvDdcrew1 = {
 
 struct BurnDriver BurnDrvDdcrew2 = {
 	"ddcrew2", "ddcrew", NULL, NULL, "1991",
-	"D. D. Crew (set 2, World, 2 Player, FD1094 317-0184)\0", NULL, "Sega", "System 18",
+	"D. D. Crew (set 2, World, 2 Players, FD1094 317-0184)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
 	NULL, Ddcrew2RomInfo, Ddcrew2RomName, NULL, NULL, Ddcrew2InputInfo, Ddcrew2DIPInfo,
@@ -2614,17 +2607,27 @@ struct BurnDriver BurnDrvDdcrew2 = {
 
 struct BurnDriver BurnDrvDdcrewj = {
 	"ddcrewj", "ddcrew", NULL, NULL, "1991",
-	"D. D. Crew (set 5, Japan, 2 Player, FD1094 317-0182)\0", NULL, "Sega", "System 18",
+	"D. D. Crew (set 5, Japan, 4 Players, FD1094 317-0185)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
-	NULL, DdcrewjRomInfo, DdcrewjRomName, NULL, NULL, Ddcrew2InputInfo, Ddcrew2DIPInfo,
+	NULL, DdcrewjRomInfo, DdcrewjRomName, NULL, NULL, DdcrewuInputInfo, DdcrewuDIPInfo,
+	DdcrewuInit, System18Exit, System18Frame, NULL, System18Scan,
+	NULL, 0x1800, 320, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvDdcrewj2 = {
+	"ddcrewj2", "ddcrew", NULL, NULL, "1991",
+	"D. D. Crew (set 6, Japan, 2 Players, FD1094 317-0182)\0", NULL, "Sega", "System 18",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
+	NULL, Ddcrewj2RomInfo, Ddcrewj2RomName, NULL, NULL, Ddcrew2InputInfo, Ddcrew2DIPInfo,
 	System18Bank40000Init, System18Exit, System18Frame, NULL, System18Scan,
 	NULL, 0x1800, 320, 224, 4, 3
 };
 
 struct BurnDriver BurnDrvDdcrewu = {
 	"ddcrewu", "ddcrew", NULL, NULL, "1991",
-	"D. D. Crew (set 3, US, 4 Player, FD1094 317-0186)\0", NULL, "Sega", "System 18",
+	"D. D. Crew (set 3, US, 4 Players, FD1094 317-0186)\0", NULL, "Sega", "System 18",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 4, HARDWARE_SEGA_SYSTEM18 | HARDWARE_SEGA_FD1094_ENC, GBF_SCRFIGHT, 0,
 	NULL, DdcrewuRomInfo, DdcrewuRomName, NULL, NULL, DdcrewuInputInfo, DdcrewuDIPInfo,

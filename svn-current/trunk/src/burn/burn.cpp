@@ -3,11 +3,7 @@
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#if defined(GEKKO) || defined(_XBOX1)
-#include "driverlist-gx.h"
-#else
 #include "driverlist.h"
-#endif
 
 // filler function, used if the application is not printing debug messages
 static INT32 __cdecl BurnbprintfFiller(INT32, TCHAR* , ...) { return 0; }
@@ -709,6 +705,7 @@ INT32 BurnDrvCartridgeSetup(BurnCartrigeCommand nCommand)
 // Do one frame of game emulation
 extern "C" INT32 BurnDrvFrame()
 {
+	CheatApply();									// Apply cheats (if any)
 	HiscoreApply();
 	return pDriver[nBurnDrvActive]->Frame();		// Forward to drivers function
 }
@@ -849,11 +846,36 @@ INT32 BurnTransferCopy(UINT32* pPalette)
 	
 	pBurnDrvPalette = pPalette;
 
-   for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch)
-   {
-      for (INT32 x = 0; x < nTransWidth; x ++)
-         ((UINT16*)pDest)[x] = pPalette[pSrc[x]];
-   }
+	switch (nBurnBpp) {
+		case 2: {
+			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+				for (INT32 x = 0; x < nTransWidth; x ++) {
+					((UINT16*)pDest)[x] = pPalette[pSrc[x]];
+				}
+			}
+			break;
+		}
+		case 3: {
+			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+				for (INT32 x = 0; x < nTransWidth; x++) {
+					UINT32 c = pPalette[pSrc[x]];
+					*(pDest + (x * 3) + 0) = c & 0xFF;
+					*(pDest + (x * 3) + 1) = (c >> 8) & 0xFF;
+					*(pDest + (x * 3) + 2) = c >> 16;
+
+				}
+			}
+			break;
+		}
+		case 4: {
+			for (INT32 y = 0; y < nTransHeight; y++, pSrc += nTransWidth, pDest += nBurnPitch) {
+				for (INT32 x = 0; x < nTransWidth; x++) {
+					((UINT32*)pDest)[x] = pPalette[pSrc[x]];
+				}
+			}
+			break;
+		}
+	}
 
 	return 0;
 }

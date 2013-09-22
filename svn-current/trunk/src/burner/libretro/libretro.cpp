@@ -14,9 +14,10 @@
 #define FBA_VERSION "v0.2.97.30" // Sept 16, 2013 (SVN)
 
 // FBARL ---
-bool g_opt_bUseUNIBIOS = false;
 
 static unsigned int BurnDrvGetIndexByName(const char* name);
+
+static bool g_opt_bUseUNIBIOS = false;
 
 #define STAT_NOFIND	0
 #define STAT_OK		1
@@ -60,8 +61,9 @@ void retro_set_environment(retro_environment_t cb)
    environ_cb = cb;
 
    static const struct retro_variable vars[] = {
-      { "diagnostics", "Diagnostics; disabled|enabled" },
-      { "cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
+      { "fba-diagnostics", "Diagnostics; disabled|enabled" },
+      { "fba-unibios", "Neo Geo UniBIOS; disabled|enabled" },
+      { "fba-cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
       { NULL, NULL },
    };
 
@@ -283,6 +285,15 @@ static bool open_archive()
 {
 	memset(g_find_list, 0, sizeof(g_find_list));
 
+   struct retro_variable var = {0};
+   var.key = "fba-unibios";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "enabled") == 0)
+         g_opt_bUseUNIBIOS = true;
+   }
+
 	// FBA wants some roms ... Figure out how many.
 	g_rom_count = 0;
 	while (!BurnDrvGetRomInfo(&g_find_list[g_rom_count].ri, g_rom_count))
@@ -346,8 +357,8 @@ static bool open_archive()
 			int index = -1;
 
 			// USE UNI-BIOS...
-			if(g_opt_bUseUNIBIOS) 
-			{		 
+			if (g_opt_bUseUNIBIOS) 
+			{
 				char *szPossibleName=NULL;
 				BurnDrvGetRomName(&szPossibleName, i, 0);
 				if(strcmp(szPossibleName, "asia-s3.rom") == 0)
@@ -466,7 +477,7 @@ static bool first_init = true;
 static void check_variables(void)
 {
    struct retro_variable var = {0};
-   var.key = "diagnostics";
+   var.key = "fba-diagnostics";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && !first_init)
    {
@@ -506,7 +517,17 @@ static void check_variables(void)
    else if (first_init)
       first_init = false;
 
-   var.key = "cpu-speed-adjust";
+   var.key = "fba-unibios";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "disabled") == 0)
+         g_opt_bUseUNIBIOS = false;
+      if (strcmp(var.value, "enabled") == 0)
+         g_opt_bUseUNIBIOS = true;
+   }
+
+   var.key = "fba-cpu-speed-adjust";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {

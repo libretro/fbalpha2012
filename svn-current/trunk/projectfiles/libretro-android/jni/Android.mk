@@ -90,6 +90,7 @@ FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DIR)/devices \
 	$(FBA_BURN_DIR)/snd \
 	$(CPS2_DIR) \
+	$(FBA_BURN_DRIVERS_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/cave \
 	$(CPS3_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/dataeast \
@@ -104,6 +105,7 @@ FBA_BURN_DIRS := $(FBA_BURN_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/psikyo \
 	$(FBA_BURN_DRIVERS_DIR)/pst90s \
 	$(FBA_BURN_DRIVERS_DIR)/sega \
+	$(FBA_BURN_DRIVERS_DIR)/sms \
 	$(SNES_DIR) \
 	$(FBA_BURN_DRIVERS_DIR)/taito \
 	$(FBA_BURN_DRIVERS_DIR)/toaplan
@@ -122,6 +124,7 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/m6809 \
 	$(FBA_CPU_DIR)/nec \
 	$(FBA_CPU_DIR)/s2650 \
+	$(FBA_CPU_DIR)/pic16c5x \
 	$(FBA_CPU_DIR)/sh2 \
 	$(FBA_CPU_DIR)/z80
 

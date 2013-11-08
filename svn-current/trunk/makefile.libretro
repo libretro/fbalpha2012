@@ -115,10 +115,6 @@ else ifeq ($(platform), ngc)
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float
    EXTERNAL_ZLIB = 1
-	NO_MD = 1
-	NO_CPS = 1
-	NO_NEO = 1
-	NO_PCE = 1
 	STATIC_LINKING = 1
 else ifeq ($(platform), wii)
    TARGET := $(TARGET_NAME)_libretro_wii.a
@@ -128,10 +124,6 @@ else ifeq ($(platform), wii)
    ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN
    PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
    EXTERNAL_ZLIB = 1
-	NO_MD = 1
-	NO_CPS = 1
-	NO_NEO = 1
-	NO_PCE = 1
 	STATIC_LINKING = 1
 else ifneq (,$(findstring armv,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.so

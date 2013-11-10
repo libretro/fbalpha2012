@@ -3,6 +3,10 @@ LIBRETRO_OPTIMIZATIONS = 1
 FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 
+ifneq ($(EMSCRIPTEN),)
+   platform = emscripten
+endif
+
 ifeq ($(platform),)
 platform = unix
 ifeq ($(shell uname -a),)
@@ -148,6 +152,10 @@ endif
    CFLAGS += -DARM
    CC = gcc
    CXX = g++
+else ifeq ($(platform), emscripten)
+   TARGET := $(TARGET_NAME)_libretro_emscripten.bc
+   PLATFORM_DEFINES := -DUSE_FILE32API
+   ENDIANNESS_DEFINES := -DLSB_FIRST -DNO_UNALIGNED_MEM
 else
    TARGET := $(TARGET_NAME)_libretro.dll
    CC = gcc
@@ -367,6 +375,9 @@ endif
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -g
 CXXFLAGS += -O0 -g
+else ifeq ($(platform), emscripten)
+CFLAGS += -O2 -DNDEBUG
+CXXFLAGS += -O2 -DNDEBUG
 else
 CFLAGS += -O3 -DNDEBUG
 CXXFLAGS += -O3 -DNDEBUG

@@ -9,8 +9,6 @@
 #include <string>
 #include <ctype.h>
 
-#include "cd/cd_interface.h"
-
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 #define STAT_NOFIND	0

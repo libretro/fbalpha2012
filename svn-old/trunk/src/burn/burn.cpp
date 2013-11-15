@@ -3,11 +3,7 @@
 #include "version.h"
 #include "burnint.h"
 #include "burn_sound.h"
-#if defined(GEKKO) || defined(_XBOX1)
-#include "driverlist-gx.h"
-#else
 #include "driverlist.h"
-#endif
 
 // filler function, used if the application is not printing debug messages
 static INT32 __cdecl BurnbprintfFiller(INT32, TCHAR* , ...) { return 0; }

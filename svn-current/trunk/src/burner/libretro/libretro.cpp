@@ -13,6 +13,13 @@
 
 #define FBA_VERSION "v0.2.97.30" // Sept 16, 2013 (SVN)
 
+static retro_environment_t environ_cb;
+static retro_log_printf_t log_cb;
+static retro_video_refresh_t video_cb;
+static retro_input_poll_t poll_cb;
+static retro_input_state_t input_cb;
+static retro_audio_sample_batch_t audio_batch_cb;
+
 // FBARL ---
 
 static unsigned int BurnDrvGetIndexByName(const char* name);
@@ -45,11 +52,6 @@ static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
 
 // libretro globals
 
-static retro_environment_t environ_cb;
-static retro_video_refresh_t video_cb;
-static retro_input_poll_t poll_cb;
-static retro_input_state_t input_cb;
-static retro_audio_sample_batch_t audio_batch_cb;
 void retro_set_video_refresh(retro_video_refresh_t cb) { video_cb = cb; }
 void retro_set_audio_sample(retro_audio_sample_t) {}
 void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb) { audio_batch_cb = cb; }
@@ -127,7 +129,8 @@ static void InpDIPSWGetOffset (void)
 		if (bdi.nFlags == 0xF0)
 		{
 			nDIPOffset = bdi.nInput;
-         fprintf(stderr, "DIP switches offset: %d.\n", bdi.nInput);
+         if (log_cb)
+            log_cb(RETRO_LOG_INFO, "DIP switches offset: %d.\n", bdi.nInput);
 			break;
 		}
 	}
@@ -167,7 +170,8 @@ static int InpDIPSWInit()
       /* 0xFD are region DIP switches */
       if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD)
       {
-         fprintf(stderr, "DIP switch label: %s.\n", bdi.szText);
+         if (log_cb)
+            log_cb(RETRO_LOG_INFO, "DIP switch label: %s.\n", bdi.szText);
 
          int l = 0;
          for (int k = 0; l < bdi.nSetting; k++)
@@ -179,7 +183,8 @@ static int InpDIPSWInit()
                   bdi_tmp.nMask == 0x30) /* filter away NULL entries */
                continue;
 
-            fprintf(stderr, "DIP switch option: %s.\n", bdi_tmp.szText);
+            if (log_cb)
+               log_cb(RETRO_LOG_INFO, "DIP switch option: %s.\n", bdi_tmp.szText);
             l++;
          }
          pgi = GameInp + bdi.nInput + nDIPOffset;
@@ -223,9 +228,11 @@ static int find_rom_by_name(char *name, const ZipEntry *list, unsigned elems)
 			return i; 
 		}
 	}
-	//char msg[256] = "";
-	//sprintf(msg, "Not found: %s (name = %s)\n", list[i].szName, name);
-	//dlog(msg);
+
+#if 0
+   if (log_cb)
+      log_cb(RETRO_LOG_ERROR, "Not found: %s (name = %s)\n", list[i].szName, name);
+#endif
 
 	return -1;
 }
@@ -240,9 +247,11 @@ static int find_rom_by_crc(uint32_t crc, const ZipEntry *list, unsigned elems)
          return i;
 	  }
    }
-   //char msg[256] = "";
-   //sprintf(msg, "Not found: 0x%X (crc: 0x%X)\n", list[i].nCrc, crc);
-   //dlog(msg);
+
+#if 0
+   if (log_cb)
+      log_cb(RETRO_LOG_ERROR, "Not found: 0x%X (crc: 0x%X)\n", list[i].nCrc, crc);
+#endif
    
    return -1;
 }
@@ -309,7 +318,8 @@ static bool open_archive()
 		if (BurnDrvGetZipName(&rom_name, index))
 			continue;
 
-		fprintf(stderr, "[FBA] Archive: %s\n", rom_name);
+      if (log_cb)
+         log_cb(RETRO_LOG_INFO, "[FBA] Archive: %s\n", rom_name);
 
 		char path[1024];
 #ifdef _XBOX
@@ -320,7 +330,8 @@ static bool open_archive()
 
 		if (ZipOpen(path) != 0)
 		{
-			fprintf(stderr, "[FBA] Failed to find archive: %s\n", path);
+         if (log_cb)
+            log_cb(RETRO_LOG_ERROR, "[FBA] Failed to find archive: %s\n", path);
 			return false;
 		}
 		ZipClose();
@@ -332,7 +343,8 @@ static bool open_archive()
 	{
 		if (ZipOpen((char*)g_find_list_path[z].c_str()) != 0)
 		{
-			fprintf(stderr, "[FBA] Failed to open archive %s\n", g_find_list_path[z].c_str());
+         if (log_cb)
+            log_cb(RETRO_LOG_ERROR, "[FBA] Failed to open archive %s\n", g_find_list_path[z].c_str());
 			return false;
 		}
 
@@ -419,11 +431,8 @@ static bool open_archive()
 	{
 		if (g_find_list[i].nState != STAT_OK)
 		{
-			//char msg[256] = "";
-			//sprintf(msg, "[FBA] ROM index %i was not found ... CRC: 0x%08x\n", i, g_find_list[i].ri.nCrc);
-			//dlog(msg);
-
-			fprintf(stderr, "[FBA] ROM index %i was not found ... CRC: 0x%08x\n", i, g_find_list[i].ri.nCrc);
+         if (log_cb)
+            log_cb(RETRO_LOG_ERROR, "[FBA] ROM index %i was not found ... CRC: 0x%08x\n", i, g_find_list[i].ri.nCrc);
 
 			if(!(g_find_list[i].ri.nType & BRF_OPT)) {
 				return false;
@@ -437,6 +446,11 @@ static bool open_archive()
 
 void retro_init()
 {
+   struct retro_log_callback log;
+   environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log);
+   if (log.log)
+      log_cb = log.log;
+
 	BurnLibInit();
 }
 
@@ -735,7 +749,9 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
    {
       nBurnBpp = 4;
    }
-   fprintf(stderr, "Game: %s\n", game_zip_name);
+
+   if (log_cb)
+      log_cb(RETRO_LOG_INFO, "Game: %s\n", game_zip_name);
 
    environ_cb(RETRO_ENVIRONMENT_SET_ROTATION, &rotation);
 
@@ -746,15 +762,15 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
    {
       enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
 
-      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
-         fprintf(stderr, "Frontend supports XRGB888 - will use that instead of XRGB1555.\n");
+      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt) && log_cb) 
+         log_cb(RETRO_LOG_INFO, "Frontend supports XRGB888 - will use that instead of XRGB1555.\n");
    }
    else
    {
       enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
 
-      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) 
-         fprintf(stderr, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+      if(environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt) && log_cb) 
+         log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
    }
 #endif
 
@@ -836,8 +852,8 @@ bool retro_load_game(const struct retro_game_info *info)
 
       retval = true;
    }
-   else
-      fprintf(stderr, "[FBA] Cannot find driver.\n");
+   else if (log_cb)
+      log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
 
    InpDIPSWInit();
 
@@ -944,15 +960,18 @@ static bool init_input(void)
    INT32	genre		= BurnDrvGetGenreFlags();
    INT32	hardware	= BurnDrvGetHardwareCode();
 
-   fprintf(stderr, "has_analog: %d\n", has_analog);
-   if(parentrom)
-	   fprintf(stderr, "parentrom: %s\n", parentrom);
-   if(boardrom)
-	   fprintf(stderr, "boardrom: %s\n", boardrom);
-   if(drvname)
-	   fprintf(stderr, "drvname: %s\n", drvname);
-   fprintf(stderr, "genre: %d\n", genre);
-   fprintf(stderr, "hardware: %d\n", hardware);
+   if (log_cb)
+   {
+      log_cb(RETRO_LOG_INFO, "has_analog: %d\n", has_analog);
+      if(parentrom)
+         log_cb(RETRO_LOG_INFO, "parentrom: %s\n", parentrom);
+      if(boardrom)
+         log_cb(RETRO_LOG_INFO, "boardrom: %s\n", boardrom);
+      if(drvname)
+         log_cb(RETRO_LOG_INFO, "drvname: %s\n", drvname);
+      log_cb(RETRO_LOG_INFO, "genre: %d\n", genre);
+      log_cb(RETRO_LOG_INFO, "hardware: %d\n", hardware);
+   }
 
    /* initialization */
    struct BurnInputInfo bii;
@@ -1854,15 +1873,18 @@ static bool init_input(void)
          if (!value_found)
             continue;
 
-         fprintf(stderr, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
-         fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
+         if (log_cb)
+         {
+            log_cb(RETRO_LOG_INFO, "%s - assigned to key: %s, port: %d.\n", bii.szName, print_label(keybinds[pgi->Input.Switch.nCode][0]),keybinds[pgi->Input.Switch.nCode][1]);
+            log_cb(RETRO_LOG_INFO, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
+         }
          break;
       }
 
-      if(!value_found)
+      if(!value_found && log_cb)
       {
-         fprintf(stderr, "WARNING! Button unaccounted for: [%s].\n", bii.szName);
-         fprintf(stderr, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
+         log_cb(RETRO_LOG_INFO, "WARNING! Button unaccounted for: [%s].\n", bii.szName);
+         log_cb(RETRO_LOG_INFO, "%s - has nSwitch.nCode: %x.\n", bii.szName, pgi->Input.Switch.nCode);
       }
    }
 
@@ -1970,7 +1992,9 @@ static void poll_input(void)
 
                bool state = input_cb(port, RETRO_DEVICE_JOYPAD, 0, id);
 
-               //fprintf(stderr, "GIT_SWITCH: %s, port: %d, pressed: %d.\n", print_label(id), port, state);
+#if 0
+               log_cb(RETRO_LOG_INFO, "GIT_SWITCH: %s, port: %d, pressed: %d.\n", print_label(id), port, state);
+#endif
 
                if (pgi->nType & BIT_GROUP_ANALOG)
                {
@@ -1997,7 +2021,10 @@ static void poll_input(void)
                break;
             }
          case GIT_KEYSLIDER:						// Keyboard slider
-            //fprintf(stderr, "GIT_JOYSLIDER\n");
+#if 0
+            if (log_cb)
+               log_cb(RETRO_LOG_INFO, "GIT_JOYSLIDER\n");
+#endif
             {
                int nSlider = pgi->Input.Slider.nSliderValue;
                if (pgi->nType == BIT_ANALOG_REL) {

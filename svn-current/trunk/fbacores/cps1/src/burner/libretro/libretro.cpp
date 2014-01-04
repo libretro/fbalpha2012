@@ -145,13 +145,16 @@ static int InpDIPSWInit()
    InpDIPSWGetOffset();
    InpDIPSWResetDIPs();
 
+   // TODO: why does this crash on Wii?
+#if 0
    for(int i = 0, j = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
    {
       /* 0xFE is the beginning label for a DIP switch entry */
       /* 0xFD are region DIP switches */
       if (bdi.nFlags == 0xFE || bdi.nFlags == 0xFD)
       {
-         fprintf(stderr, "DIP switch label: %s.\n", bdi.szText);
+         if (log_cb)
+            log_cb(RETRO_LOG_INFO, "DIP switch label: %s.\n", bdi.szText);
 
          int l = 0;
          for (int k = 0; l < bdi.nSetting; k++)
@@ -163,7 +166,8 @@ static int InpDIPSWInit()
                   bdi_tmp.nMask == 0x30) /* filter away NULL entries */
                continue;
 
-            fprintf(stderr, "DIP switch option: %s.\n", bdi_tmp.szText);
+            if (log_cb)
+               log_cb(RETRO_LOG_INFO, "DIP switch option: %s.\n", bdi_tmp.szText);
             l++;
          }
          pgi = GameInp + bdi.nInput + nDIPOffset;
@@ -171,6 +175,7 @@ static int InpDIPSWInit()
          j++;
       }
    }
+#endif
 
    return 0;
 }

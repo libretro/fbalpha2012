@@ -164,6 +164,8 @@ static int InpDIPSWInit()
    InpDIPSWGetOffset();
    InpDIPSWResetDIPs();
 
+   // TODO: why does this crash on Wii?
+#if 0
    for(int i = 0, j = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
    {
       /* 0xFE is the beginning label for a DIP switch entry */
@@ -192,6 +194,7 @@ static int InpDIPSWInit()
          j++;
       }
    }
+#endif
 
    return 0;
 }

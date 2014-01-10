@@ -1544,8 +1544,41 @@ void __fastcall MstworldSoundZ80Write(UINT16 a, UINT8 d)
 	}
 }
 
+#if defined(GEKKO) || defined(_XBOX1)
+static INT32 bytedecode(INT32 src,INT32 swap_key1,INT32 swap_key2,INT32 xor_key,INT32 select)
+{
+	src = bitswap1(src,swap_key1 & 0xffff,select & 0xff);
+	src = ((src & 0x7f) << 1) | ((src & 0x80) >> 7);
+	src = bitswap2(src,swap_key1 >> 16,select & 0xff);
+	src ^= xor_key;
+	src = ((src & 0x7f) << 1) | ((src & 0x80) >> 7);
+	src = bitswap2(src,swap_key2 & 0xffff,select >> 8);
+	src = ((src & 0x7f) << 1) | ((src & 0x80) >> 7);
+	src = bitswap1(src,swap_key2 >> 16,select >> 8);
+	return src;
+}
+
+static void kabuki_decode(UINT8 *src,UINT8 *dest_op,UINT8 *dest_data,
+		INT32 base_addr,INT32 length,INT32 swap_key1,INT32 swap_key2,INT32 addr_key,INT32 xor_key)
+{
+	INT32 A;
+	INT32 select;
+
+	for (A = 0;A < length;A++)
+	{
+		/* decode opcodes */
+		select = (A + base_addr) + addr_key;
+		dest_op[A] = (UINT8)bytedecode(src[A],swap_key1,swap_key2,xor_key,select);
+
+		/* decode data */
+		select = ((A + base_addr) ^ 0x1fc0) + addr_key + 1;
+		dest_data[A] = (UINT8)bytedecode(src[A],swap_key1,swap_key2,xor_key,select);
+	}
+}
+#else
 // Kabuki - we use the module from the CPS-1 Q-Sound games
 extern void kabuki_decode(UINT8 *src, UINT8 *dest_op, UINT8 *dest_data, INT32 base_addr, INT32 length, INT32 swap_key1, INT32 swap_key2, INT32 addr_key, INT32 xor_key);
+#endif
 
 static void mitchell_decode(INT32 swap_key1, INT32 swap_key2, INT32 addr_key, INT32 xor_key)
 {

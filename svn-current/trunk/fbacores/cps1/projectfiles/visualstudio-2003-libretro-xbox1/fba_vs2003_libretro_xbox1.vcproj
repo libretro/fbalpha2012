@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)\..\..\src\dep\generated&quot;;&quot;$(SolutionDir)\..\..\src\burn&quot;;&quot;$(SolutionDir)\..\..\src\burn\devices&quot;;&quot;$(SolutionDir)\..\..\src\burn\drv\taito&quot;;&quot;$(SolutionDir)\..\..\src\burn\snd&quot;;&quot;$(SolutionDir)\..\..\src\burner&quot;;&quot;$(SolutionDir)\..\..\src\burner\libretro&quot;;&quot;$(SolutionDir)\..\..\src\cpu&quot;;&quot;$(SolutionDir)\..\..\src\cpu\i8039&quot;;&quot;$(SolutionDir)\..\..\src\intf&quot;;&quot;$(SolutionDir)\..\..\src\intf\cd&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)\..\..\src\burn&quot;;&quot;$(SolutionDir)\..\..\src\dep\generated&quot;;&quot;$(SolutionDir)\..\..\src\burn\devices&quot;;&quot;$(SolutionDir)\..\..\src\burn\drv\taito&quot;;&quot;$(SolutionDir)\..\..\src\burn\snd&quot;;&quot;$(SolutionDir)\..\..\src\burner&quot;;&quot;$(SolutionDir)\..\..\src\burner\libretro&quot;;&quot;$(SolutionDir)\..\..\src\cpu&quot;;&quot;$(SolutionDir)\..\..\src\cpu\i8039&quot;;&quot;$(SolutionDir)\..\..\src\intf&quot;;&quot;$(SolutionDir)\..\..\src\intf\input&quot;;&quot;$(SolutionDir)\..\..\src\intf\cd&quot;;&quot;$(SolutionDir)\..\..\src\dep\&quot;"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_XBOX1;_LIB;USE_SPEEDHACKS;__LIBRETRO__;INLINE=__inline static;EXTERNAL_ZLIB;__fastcall=;MAME_INLINE=_inline static;LSB_FIRST;__LIBRETRO_OPTIMIZATIONS__;FRONTEND_SUPPORTS_RGB565"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

@@ -1009,21 +1009,6 @@ DRV		BurnDrvJigkmgri;
 DRV		BurnDrvJoemacra;
 DRV		BurnDrvJoemacr;
 DRV		BurnDrvjoinem;
-DRV		BurnDrvJojobaner1;
-DRV		BurnDrvJojobane;
-DRV		BurnDrvJojobar1;
-DRV		BurnDrvJojobanr1;
-DRV		BurnDrvJojoba;
-DRV		BurnDrvJojoban;
-DRV		BurnDrvJojonr2;
-DRV		BurnDrvJojonr1;
-DRV		BurnDrvJojon;
-DRV		BurnDrvJojojr2;
-DRV		BurnDrvJojojr1;
-DRV		BurnDrvJojoj;
-DRV		BurnDrvJojor2;
-DRV		BurnDrvJojor1;
-DRV		BurnDrvJojo;
 DRV		BurnDrvjoyman;
 DRV		BurnDrvJuju;
 DRV		BurnDrvJujuba;
@@ -1663,8 +1648,6 @@ DRV		BurnDrvRastsaga;
 DRV		BurnDrvRastsagaa;
 DRV		BurnDrvRastsag2;
 DRV		BurnDrvphotoy2k102;
-DRV		BurnDrvRedearthr1;
-DRV		BurnDrvRedearth;
 DRV		BurnDrvRedfoxwp2;
 DRV		BurnDrvRedhawke;
 DRV		BurnDrvRedhawki;
@@ -1921,19 +1904,6 @@ DRV		BurnDrvsfp;
 DRV		BurnDrvsfu;
 DRV		BurnDrvsfua;
 DRV		BurnDrvsf;
-DRV		BurnDrvSfiii2n;
-DRV		BurnDrvSfiii2j;
-DRV		BurnDrvSfiii2;
-DRV		BurnDrvSfiii3r1;
-DRV		BurnDrvSfiii3;
-DRV		BurnDrvSfiii3nr1;
-DRV		BurnDrvSfiii3n;
-DRV		BurnDrvSfiii3ur1;
-DRV		BurnDrvSfiii3u;
-DRV		BurnDrvSfiiin;
-DRV		BurnDrvSfiiih;
-DRV		BurnDrvSfiiij;
-DRV		BurnDrvSfiii;
 DRV		BurnDrvstreetsj;
 DRV		BurnDrvstreets1;
 DRV		BurnDrvstreetsm;
@@ -2354,8 +2324,6 @@ DRV		BurnDrvWarofbug;
 DRV		BurnDrvWarofbugg;		// no comment [NOT WORKING]
 #endif
 DRV		BurnDrvWarofbugu;
-DRV		BurnDrvWarzardr1;
-DRV		BurnDrvWarzard;
 DRV		BurnDrvWarriorb;
 DRV		BurnDrvWatrball;
 DRV		BurnDrvWmatch;
@@ -3464,21 +3432,6 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvJoemacra,			// Joe & Mac Returns (World, Version 1.0, 1994.05.19)
 	&BurnDrvJoemacr,			// Joe & Mac Returns (World, Version 1.1, 1994.05.27)
 	&BurnDrvjoinem,				// Joinem
-	&BurnDrvJojobaner1,			// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Euro 990913, NO CD)
-	&BurnDrvJojobane,			// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Euro 990927, NO CD)
-	&BurnDrvJojobar1,			// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Japan 990913)
-	&BurnDrvJojobanr1,			// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Japan 990913, NO CD)
-	&BurnDrvJojoba,				// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Japan 990927)
-	&BurnDrvJojoban,			// JoJo's Bizarre Adventure: Heritage for the Future / JoJo no Kimyou na Bouken: Mirai e no Isan (Japan 990927, NO CD)
-	&BurnDrvJojonr2,			// JoJo's Venture / JoJo no Kimyou na Bouken (Asia 981202, NO CD)
-	&BurnDrvJojonr1,			// JoJo's Venture / JoJo no Kimyou na Bouken (Asia 990108, NO CD)
-	&BurnDrvJojon,				// JoJo's Venture / JoJo no Kimyou na Bouken (Asia 990128, NO CD)
-	&BurnDrvJojojr2,			// JoJo's Venture / JoJo no Kimyou na Bouken (Japan 981202)
-	&BurnDrvJojojr1,			// JoJo's Venture / JoJo no Kimyou na Bouken (Japan 990108)
-	&BurnDrvJojoj,				// JoJo's Venture / JoJo no Kimyou na Bouken (Japan 990128)
-	&BurnDrvJojor2,				// JoJo's Venture / JoJo no Kimyou na Bouken (USA 981202)
-	&BurnDrvJojor1,				// JoJo's Venture / JoJo no Kimyou na Bouken (USA 990108)
-	&BurnDrvJojo,				// JoJo's Venture / JoJo no Kimyou na Bouken (USA 990128)
 	&BurnDrvjoyman,				// Joyman
 	&BurnDrvJuju,				// JuJu Densetsu (Japan)
 	&BurnDrvJujuba,				// JuJu Densetsu (Japan, bootleg)
@@ -4118,8 +4071,6 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvRastsagaa,			// Rastan Saga (Japan)
 	&BurnDrvRastsag2,			// Rastan Saga 2 (Japan)
 	&BurnDrvphotoy2k102,		// Real and Fake\0Photo Y2K (V102, Japan)
-	&BurnDrvRedearthr1,			// Red Earth / War-Zard (Euro 961023)
-	&BurnDrvRedearth,			// Red Earth / War-Zard (Euro 961121)
 	&BurnDrvRedfoxwp2,			// Red Fox War Planes II (China)
 	&BurnDrvRedhawke,			// Red Hawk (Excellent Co., Ltd)
 	&BurnDrvRedhawki,			// Red Hawk (Italy)
@@ -4376,19 +4327,6 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvsfu,				// Street Fighter (US set 1)
 	&BurnDrvsfua,				// Street Fighter (US set 2)
 	&BurnDrvsf,					// Street Fighter (World)
-	&BurnDrvSfiii2n,			// Street Fighter III 2nd Impact: Giant Attack (Asia 970930, NO CD)
-	&BurnDrvSfiii2j,			// Street Fighter III 2nd Impact: Giant Attack (Japan 970930)
-	&BurnDrvSfiii2,				// Street Fighter III 2nd Impact: Giant Attack (USA 970930)
-	&BurnDrvSfiii3r1,			// Street Fighter III 3rd Strike: Fight for the Future (Euro 990512)
-	&BurnDrvSfiii3,				// Street Fighter III 3rd Strike: Fight for the Future (Euro 990608)
-	&BurnDrvSfiii3nr1,			// Street Fighter III 3rd Strike: Fight for the Future (Japan 990512, NO CD)
-	&BurnDrvSfiii3n,			// Street Fighter III 3rd Strike: Fight for the Future (Japan 990608, NO CD)
-	&BurnDrvSfiii3ur1,			// Street Fighter III 3rd Strike: Fight for the Future (USA 990512)
-	&BurnDrvSfiii3u,			// Street Fighter III 3rd Strike: Fight for the Future (USA 990608)
-	&BurnDrvSfiiin,				// Street Fighter III: New Generation (Asia 970204, NO CD)
-	&BurnDrvSfiiih,				// Street Fighter III: New Generation (Hispanic 970204)
-	&BurnDrvSfiiij,				// Street Fighter III: New Generation (Japan 970204)
-	&BurnDrvSfiii,				// Street Fighter III: New Generation (USA 970204)
 	&BurnDrvstreetsj,			// Street Smart (Japan version 1)
 	&BurnDrvstreets1,			// Street Smart (US version 1)
 	&BurnDrvstreetsm,			// Street Smart (US version 2)
@@ -4809,8 +4747,6 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvWarofbugg,			// War of the Bugs or Monsterous Manouvers in a Mushroom Maze (German) [no comment, NOT WORKING]
 #endif
 	&BurnDrvWarofbugu,			// War of the Bugs or Monsterous Manouvers in a Mushroom Maze (US)
-	&BurnDrvWarzardr1,			// War-Zard / Red Earth (Japan 961023)
-	&BurnDrvWarzard,			// War-Zard / Red Earth (Japan 961121)
 	&BurnDrvWarriorb,			// Warrior Blade - Rastan Saga Episode III (Japan)
 	&BurnDrvWatrball,			// Water Balls
 	&BurnDrvWmatch,				// Water Match (315-5064)

@@ -276,19 +276,9 @@
 					<File
 						RelativePath="..\..\src\burn\drv\d_parent.cpp">
 					</File>
-					<Filter
-						Name="cps3"
-						Filter="">
-						<File
-							RelativePath="..\..\src\burn\drv\cps3\cps3run.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\cps3\cps3snd.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\cps3\d_cps3.cpp">
-						</File>
-					</Filter>
+					<File
+						RelativePath="..\..\src\burn\drv\capcom\kabuki.cpp">
+					</File>
 					<Filter
 						Name="cave"
 						Filter="">
@@ -1350,85 +1340,6 @@
 						</File>
 						<File
 							RelativePath="..\..\src\burn\drv\psikyo\psikyosh_render.cpp">
-						</File>
-					</Filter>
-					<Filter
-						Name="capcom"
-						Filter="">
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps2_crpt.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_config.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_draw.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_mem.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_obj.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_pal.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_run.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_rw.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cps_scr.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cpsr.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cpsrd.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\cpst.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ctv.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\d_cps1.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\d_cps2.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\fcrash_snd.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\kabuki.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps_m.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\ps_z.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\qs.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\qs_c.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\qs_z.cpp">
-						</File>
-						<File
-							RelativePath="..\..\src\burn\drv\capcom\sf2mdt_snd.cpp">
 						</File>
 					</Filter>
 				</Filter>

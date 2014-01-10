@@ -324,7 +324,16 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\burn\snd\burn_ym2203.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\burn\snd\burn_ym2608.cpp">
+					</File>
+					<File
 						RelativePath="..\..\src\burn\snd\burn_ym2610.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\burn\snd\burn_ym2612.cpp">
 					</File>
 					<File
 						RelativePath="..\..\src\burn\snd\burn_ymf278b.cpp">

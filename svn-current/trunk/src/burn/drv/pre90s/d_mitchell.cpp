@@ -1545,6 +1545,34 @@ void __fastcall MstworldSoundZ80Write(UINT16 a, UINT8 d)
 }
 
 #if defined(GEKKO) || defined(_XBOX1)
+static INT32 bitswap1(INT32 src,INT32 key,INT32 select)
+{
+	if (select & (1 << ((key >> 0) & 7)))
+		src = (src & 0xfc) | ((src & 0x01) << 1) | ((src & 0x02) >> 1);
+	if (select & (1 << ((key >> 4) & 7)))
+		src = (src & 0xf3) | ((src & 0x04) << 1) | ((src & 0x08) >> 1);
+	if (select & (1 << ((key >> 8) & 7)))
+		src = (src & 0xcf) | ((src & 0x10) << 1) | ((src & 0x20) >> 1);
+	if (select & (1 << ((key >>12) & 7)))
+		src = (src & 0x3f) | ((src & 0x40) << 1) | ((src & 0x80) >> 1);
+
+	return src;
+}
+
+static INT32 bitswap2(INT32 src,INT32 key,INT32 select)
+{
+	if (select & (1 << ((key >>12) & 7)))
+		src = (src & 0xfc) | ((src & 0x01) << 1) | ((src & 0x02) >> 1);
+	if (select & (1 << ((key >> 8) & 7)))
+		src = (src & 0xf3) | ((src & 0x04) << 1) | ((src & 0x08) >> 1);
+	if (select & (1 << ((key >> 4) & 7)))
+		src = (src & 0xcf) | ((src & 0x10) << 1) | ((src & 0x20) >> 1);
+	if (select & (1 << ((key >> 0) & 7)))
+		src = (src & 0x3f) | ((src & 0x40) << 1) | ((src & 0x80) >> 1);
+
+	return src;
+}
+
 static INT32 bytedecode(INT32 src,INT32 swap_key1,INT32 swap_key2,INT32 xor_key,INT32 select)
 {
 	src = bitswap1(src,swap_key1 & 0xffff,select & 0xff);

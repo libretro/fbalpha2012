@@ -129,6 +129,20 @@ else ifeq ($(platform), wii)
    PLATFORM_DEFINES := -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
    EXTERNAL_ZLIB = 1
 	STATIC_LINKING = 1
+else ifeq ($(platform), psp1)
+   TARGET := $(TARGET_NAME)_libretro_psp1.a
+   CC = psp-gcc$(EXE_EXT)
+   CXX = psp-g++$(EXE_EXT)
+   AS = psp-as$(EXE_EXT)
+   AR = psp-ar$(EXE_EXT)
+	ENDIANNESS_DEFINES = -DLSB_FIRST
+	CPU_FLAGS := -mgp32
+   PLATFORM_DEFINES := -DPSP -G0 -DEMU_A68K $(CPU_FLAGS)
+	CFLAGS += $(CPU_FLAGS)
+	ASFLAGS += $(CPU_FLAGS)
+   EXTERNAL_ZLIB = 1
+	STATIC_LINKING = 1
+	FBA_CXXOBJ += src/cpu/a68k/mips/a68k.o
 else ifneq (,$(findstring armv,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.so
    fpic := -fPIC
@@ -325,9 +339,9 @@ else
 FBA_SRC_DIRS += $(FBA_LIB_DIRS)
 endif
 
-FBA_CXXSRCS := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
+FBA_CXXSRCS += $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 FBA_CXXSRCS += $(LIBRETRO_DIR)/libretro.cpp
-FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)
+FBA_CXXOBJ += $(FBA_CXXSRCS:.cpp=.o)
 FBA_CSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
 FBA_COBJ := $(FBA_CSRCS:.c=.o)
 
@@ -374,15 +388,14 @@ endif
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -g
 CXXFLAGS += -O0 -g
-else ifeq ($(platform), emscripten)
-CFLAGS += -O2 -DNDEBUG
-CXXFLAGS += -O2 -DNDEBUG
 else
-CFLAGS += -O3 -DNDEBUG
-CXXFLAGS += -O3 -DNDEBUG
+CFLAGS += -O2
+CXXFLAGS += -O2
 endif
 
 ifeq ($(platform), sncps3)
+WARNINGS_DEFINES =
+else ifeq ($(platform), psp1)
 WARNINGS_DEFINES =
 else
 WARNINGS_DEFINES = -Wno-write-strings
@@ -476,6 +489,10 @@ endif
 %.o: %.c
 	@echo "CC $<"
 	@$(CC) -c -o $@ $< $(CFLAGS) $(INCDIRS)
+
+%.o: %.s
+	@echo "AS $<"
+	@$(AS) -o $@ $< $(ASFLAGS) $(INCDIRS)
 
 clean-objs:
 	rm -f $(OBJS)

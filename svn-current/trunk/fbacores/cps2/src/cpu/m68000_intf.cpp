@@ -1,5 +1,9 @@
 #if 1
+#ifdef BUILD_C68K
+#include "m68000_intf_c68k.h"
+#else
 #include "m68000_intf_musashi.h"
+#endif
 #else
 // 680x0 (Sixty Eight K) Interface
 #include "burnint.h"

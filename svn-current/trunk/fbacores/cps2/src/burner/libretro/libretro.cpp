@@ -568,7 +568,7 @@ void retro_run()
    BurnDrvFrame();
    unsigned drv_flags = BurnDrvGetFlags();
    uint32_t height_tmp = height;
-   size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
+   size_t pitch_size = sizeof(uint16_t);
 
    switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
    {
@@ -686,7 +686,7 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    unsigned drv_flags = BurnDrvGetFlags();
-   size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
+   size_t pitch_size = sizeof(uint16_t);
    if (drv_flags & BDF_ORIENTATION_VERTICAL)
       nBurnPitch = height * pitch_size;
    else

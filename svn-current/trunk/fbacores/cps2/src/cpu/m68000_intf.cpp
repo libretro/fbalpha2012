@@ -1,3 +1,6 @@
+#if 1
+#include "m68000_intf_musashi.h"
+#else
 // 680x0 (Sixty Eight K) Interface
 #include "burnint.h"
 #include "m68000_intf.h"
@@ -2054,3 +2057,4 @@ INT32 SekScan(INT32 nAction)
 
 	return 0;
 }
+#endif

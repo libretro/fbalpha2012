@@ -47,7 +47,7 @@ static unsigned g_rom_count;
 #define AUDIO_SAMPLERATE 32000
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 
-static uint32_t g_fba_frame[1024 * 1024];
+static uint16_t *g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
 
 // libretro globals
@@ -455,6 +455,7 @@ void retro_init()
    else
       log_cb = NULL;
 
+   g_fba_frame = (uint16_t*)malloc(320 * 224 * sizeof(uint16_t));
 	BurnLibInit();
 }
 
@@ -464,6 +465,8 @@ void retro_deinit()
       BurnDrvExit();
    driver_inited = false;
    BurnLibExit();
+   if (g_fba_frame)
+      free(g_fba_frame);
 }
 
 void retro_reset()
@@ -592,7 +595,7 @@ void retro_run()
    BurnDrvFrame();
    unsigned drv_flags = BurnDrvGetFlags();
    uint32_t height_tmp = height;
-   size_t pitch_size = nBurnBpp == 2 ? sizeof(uint16_t) : sizeof(uint32_t);
+   size_t pitch_size = sizeof(uint16_t);
 
    switch (drv_flags & (BDF_ORIENTATION_FLIPPED | BDF_ORIENTATION_VERTICAL))
    {

@@ -40,7 +40,7 @@ static unsigned g_rom_count;
 #define AUDIO_SAMPLERATE 32000
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 
-static uint32_t *g_fba_frame;
+static uint16_t *g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
 
 // libretro globals
@@ -428,7 +428,7 @@ static bool open_archive()
 
 void retro_init()
 {
-   g_fba_frame = (uint32_t*)malloc(384 * 224 * sizeof(uint32_t));
+   g_fba_frame = (uint16_t*)malloc(384 * 224 * sizeof(uint16_t));
 	BurnLibInit();
 }
 

@@ -428,18 +428,18 @@ static bool open_archive()
 
 void retro_init()
 {
-   g_fba_frame = (uint16_t*)malloc(384 * 224 * sizeof(uint16_t));
 	BurnLibInit();
+   g_fba_frame = (uint16_t*)malloc(384 * 224 * sizeof(uint16_t));
 }
 
 void retro_deinit()
 {
-   if (g_fba_frame)
-      free(g_fba_frame);
    if (driver_inited)
       BurnDrvExit();
    driver_inited = false;
    BurnLibExit();
+   if (g_fba_frame)
+      free(g_fba_frame);
 }
 
 void retro_reset()

@@ -47,7 +47,7 @@ static unsigned g_rom_count;
 #define AUDIO_SAMPLERATE 32000
 #define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 
-static uint32_t g_fba_frame[1024 * 1024];
+static uint32_t *g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
 
 // libretro globals
@@ -456,6 +456,7 @@ void retro_init()
       log_cb = NULL;
 
 	BurnLibInit();
+
 }
 
 void retro_deinit()
@@ -464,6 +465,8 @@ void retro_deinit()
       BurnDrvExit();
    driver_inited = false;
    BurnLibExit();
+   if (g_fba_frame)
+      free(g_fba_frame);
 }
 
 void retro_reset()
@@ -857,7 +860,15 @@ bool retro_load_game(const struct retro_game_info *info)
       retval = true;
    }
    else if (log_cb)
+   {
       log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
+      return false;
+   }
+
+   int32_t width, height;
+   BurnDrvGetFullSize(&width, &height);
+
+   g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));
 
    InpDIPSWInit();
 

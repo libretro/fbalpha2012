@@ -1607,5 +1607,11 @@
     <ClCompile Include="..\..\src\burn\devices\8257dma.cpp">
       <Filter>Source Files\burn\devices</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\pst90s\d_drgnmst.cpp">
+      <Filter>Source Files\burn\drv\pst90s</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\pst90s\d_playmark.cpp">
+      <Filter>Source Files\burn\drv\pst90s</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

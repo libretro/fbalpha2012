@@ -293,6 +293,7 @@
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_ddragon3.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_deniam.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_diverboy.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pst90s\d_drgnmst.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_drtomy.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_egghunt.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_esd16.cpp" />
@@ -319,6 +320,7 @@
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_ohmygod.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_pass.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_pirates.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pst90s\d_playmark.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_powerins.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_pushman.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_raiden.cpp" />

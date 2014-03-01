@@ -1613,5 +1613,14 @@
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_playmark.cpp">
       <Filter>Source Files\burn\drv\pst90s</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\burn\drv\d_parent.cpp">
+      <Filter>Source Files\burn\drv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\cpu\pic16c5x\pic16c5x.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\cpu\pic16c5x_intf.cpp">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

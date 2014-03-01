@@ -127,6 +127,7 @@
     <ClCompile Include="..\..\src\burn\drv\dataeast\d_supbtime.cpp" />
     <ClCompile Include="..\..\src\burn\drv\dataeast\d_tumblep.cpp" />
     <ClCompile Include="..\..\src\burn\drv\dataeast\d_vaportra.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\d_parent.cpp" />
     <ClCompile Include="..\..\src\burn\drv\galaxian\d_galaxian.cpp" />
     <ClCompile Include="..\..\src\burn\drv\galaxian\gal_gfx.cpp" />
     <ClCompile Include="..\..\src\burn\drv\galaxian\gal_run.cpp" />
@@ -774,6 +775,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\src\cpu\nec_intf.cpp" />
+    <ClCompile Include="..\..\src\cpu\pic16c5x\pic16c5x.cpp" />
+    <ClCompile Include="..\..\src\cpu\pic16c5x_intf.cpp" />
     <ClCompile Include="..\..\src\cpu\s2650\s2650.cpp" />
     <ClCompile Include="..\..\src\cpu\s2650_intf.cpp" />
     <ClCompile Include="..\..\src\cpu\sh2\sh2.cpp" />

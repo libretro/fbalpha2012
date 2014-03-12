@@ -5,11 +5,11 @@
 
 #define MAX_MEMORY	0x04000000 // max
 #define MAX_MASK	0x03ffffff // max-1
-#define PAGE_SIZE	0x00001000 // 400 would be better...
-#define PAGE_COUNT	(MAX_MEMORY/PAGE_SIZE)
-#define PAGE_SHIFT	12	// 0x1000 -> 12 bits
-#define PAGE_BYTE_AND	0x00fff	// 0x1000 - 1 (byte align)
-#define PAGE_LONG_AND	0x00ffc // 0x1000 - 4 (ignore last 4 bytes, long align)
+#define ARM_PAGE_SIZE	0x00001000 // 400 would be better...
+#define ARM_PAGE_COUNT	(MAX_MEMORY/ARM_PAGE_SIZE)
+#define ARM_PAGE_SHIFT	12	// 0x1000 -> 12 bits
+#define ARM_PAGE_BYTE_AND	0x00fff	// 0x1000 - 1 (byte align)
+#define ARM_PAGE_LONG_AND	0x00ffc // 0x1000 - 4 (ignore last 4 bytes, long align)
 
 #define READ	0
 #define WRITE	1
@@ -73,8 +73,8 @@ void ArmInit(INT32 /*num*/) // only one cpu supported
 	DebugCPU_ARMInitted = 1;
 	
 	for (INT32 i = 0; i < 3; i++) {
-		membase[i] = (UINT8**)malloc(PAGE_COUNT * sizeof(UINT8**));
-		memset (membase[i], 0, PAGE_COUNT * sizeof(UINT8**));
+		membase[i] = (UINT8**)malloc(ARM_PAGE_COUNT * sizeof(UINT8**));
+		memset (membase[i], 0, ARM_PAGE_COUNT * sizeof(UINT8**));
 	}
 
 	pWriteLongHandler = NULL;
@@ -110,14 +110,14 @@ void ArmMapMemory(UINT8 *src, INT32 start, INT32 finish, INT32 type)
 	if (!DebugCPU_ARMInitted) bprintf(PRINT_ERROR, _T("ArmMapMemory called without init\n"));
 #endif
 
-	UINT32 len = (finish-start) >> PAGE_SHIFT;
+	UINT32 len = (finish-start) >> ARM_PAGE_SHIFT;
 
 	for (UINT32 i = 0; i < len+1; i++)
 	{
-		UINT32 offset = i + (start >> PAGE_SHIFT);
-		if (type & (1 <<  READ)) membase[ READ][offset] = src + (i << PAGE_SHIFT);
-		if (type & (1 << WRITE)) membase[WRITE][offset] = src + (i << PAGE_SHIFT);
-		if (type & (1 << FETCH)) membase[FETCH][offset] = src + (i << PAGE_SHIFT);
+		UINT32 offset = i + (start >> ARM_PAGE_SHIFT);
+		if (type & (1 <<  READ)) membase[ READ][offset] = src + (i << ARM_PAGE_SHIFT);
+		if (type & (1 << WRITE)) membase[WRITE][offset] = src + (i << ARM_PAGE_SHIFT);
+		if (type & (1 << FETCH)) membase[FETCH][offset] = src + (i << ARM_PAGE_SHIFT);
 	}
 }
 
@@ -169,8 +169,8 @@ void Arm_program_write_byte_32le(UINT32 addr, UINT8 data)
 	bprintf (PRINT_NORMAL, _T("%5.5x, %2.2x wb\n"), addr, data);
 #endif
 
-	if (membase[WRITE][addr >> PAGE_SHIFT] != NULL) {
-		membase[WRITE][addr >> PAGE_SHIFT][addr & PAGE_BYTE_AND] = data;
+	if (membase[WRITE][addr >> ARM_PAGE_SHIFT] != NULL) {
+		membase[WRITE][addr >> ARM_PAGE_SHIFT][addr & ARM_PAGE_BYTE_AND] = data;
 		return;
 	}
 
@@ -191,8 +191,8 @@ void Arm_program_write_dword_32le(UINT32 addr, UINT32 data)
 	bprintf (PRINT_NORMAL, _T("%5.5x, %8.8x wd\n"), addr, data);
 #endif
 
-	if (membase[WRITE][addr >> PAGE_SHIFT] != NULL) {
-		*((UINT32*)(membase[WRITE][addr >> PAGE_SHIFT] + (addr & PAGE_LONG_AND))) = BURN_ENDIAN_SWAP_INT32(data);
+	if (membase[WRITE][addr >> ARM_PAGE_SHIFT] != NULL) {
+		*((UINT32*)(membase[WRITE][addr >> ARM_PAGE_SHIFT] + (addr & ARM_PAGE_LONG_AND))) = BURN_ENDIAN_SWAP_INT32(data);
 		return;
 	}
 
@@ -214,8 +214,8 @@ UINT8 Arm_program_read_byte_32le(UINT32 addr)
 	bprintf (PRINT_NORMAL, _T("%5.5x, rb\n"), addr);
 #endif
 
-	if (membase[ READ][addr >> PAGE_SHIFT] != NULL) {
-		return membase[READ][addr >> PAGE_SHIFT][addr & PAGE_BYTE_AND];
+	if (membase[ READ][addr >> ARM_PAGE_SHIFT] != NULL) {
+		return membase[READ][addr >> ARM_PAGE_SHIFT][addr & ARM_PAGE_BYTE_AND];
 	}
 
 	if (pReadByteHandler) {
@@ -237,8 +237,8 @@ UINT32 Arm_program_read_dword_32le(UINT32 addr)
 	bprintf (PRINT_NORMAL, _T("%5.5x, rl\n"), addr);
 #endif
 
-	if (membase[ READ][addr >> PAGE_SHIFT] != NULL) {
-		return BURN_ENDIAN_SWAP_INT32(*((UINT32*)(membase[ READ][addr >> PAGE_SHIFT] + (addr & PAGE_LONG_AND))));
+	if (membase[ READ][addr >> ARM_PAGE_SHIFT] != NULL) {
+		return BURN_ENDIAN_SWAP_INT32(*((UINT32*)(membase[ READ][addr >> ARM_PAGE_SHIFT] + (addr & ARM_PAGE_LONG_AND))));
 	}
 
 	if (pReadLongHandler) {
@@ -276,8 +276,8 @@ UINT32 Arm_program_opcode_dword_32le(UINT32 addr)
 	}
 #endif
 
-	if (membase[FETCH][addr >> PAGE_SHIFT] != NULL) {
-		return BURN_ENDIAN_SWAP_INT32(*((UINT32*)(membase[FETCH][addr >> PAGE_SHIFT] + (addr & PAGE_LONG_AND))));
+	if (membase[FETCH][addr >> ARM_PAGE_SHIFT] != NULL) {
+		return BURN_ENDIAN_SWAP_INT32(*((UINT32*)(membase[FETCH][addr >> ARM_PAGE_SHIFT] + (addr & ARM_PAGE_LONG_AND))));
 	}
 
 	// good enough for now...
@@ -315,12 +315,12 @@ void Arm_write_rom_byte(UINT32 addr, UINT8 data)
 	addr &= MAX_MASK;
 
 	// write to rom & ram
-	if (membase[WRITE][addr >> PAGE_SHIFT] != NULL) {
-		membase[WRITE][addr >> PAGE_SHIFT][addr & PAGE_BYTE_AND] = data;
+	if (membase[WRITE][addr >> ARM_PAGE_SHIFT] != NULL) {
+		membase[WRITE][addr >> ARM_PAGE_SHIFT][addr & ARM_PAGE_BYTE_AND] = data;
 	}
 
-	if (membase[READ][addr >> PAGE_SHIFT] != NULL) {
-		membase[READ][addr >> PAGE_SHIFT][addr & PAGE_BYTE_AND] = data;
+	if (membase[READ][addr >> ARM_PAGE_SHIFT] != NULL) {
+		membase[READ][addr >> ARM_PAGE_SHIFT][addr & ARM_PAGE_BYTE_AND] = data;
 	}
 
 	if (pWriteByteHandler) {

@@ -1400,7 +1400,7 @@
     <ClCompile Include="..\..\src\cpu\s2650_intf.cpp">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\burn\vector.cpp">
+    <ClCompile Include="..\..\src\burn\burn_vector.cpp">
       <Filter>Source Files\burn</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\burn\burn.cpp">

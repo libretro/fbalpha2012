@@ -475,7 +475,7 @@
     <ClCompile Include="..\..\src\burn\snd\ymz280b.cpp" />
     <ClCompile Include="..\..\src\burn\tiles_generic.cpp" />
     <ClCompile Include="..\..\src\burn\timer.cpp" />
-    <ClCompile Include="..\..\src\burn\vector.cpp" />
+    <ClCompile Include="..\..\src\burn\burn_vector.cpp" />
     <ClCompile Include="..\..\src\cpu\arm7\arm7.cpp" />
     <ClCompile Include="..\..\src\cpu\arm7\arm7core.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

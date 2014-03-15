@@ -119,6 +119,6 @@
 
 :end
 
-msbuild fba_vs2010_libretro_360.sln /p:Configuration=Release_LTCG /target:clean
-msbuild fba_vs2010_libretro_360.sln /p:Configuration=Release_LTCG
+msbuild msvc-2010-360.sln /p:Configuration=Release_LTCG /target:clean
+msbuild msvc-2010-360.sln /p:Configuration=Release_LTCG
 exit

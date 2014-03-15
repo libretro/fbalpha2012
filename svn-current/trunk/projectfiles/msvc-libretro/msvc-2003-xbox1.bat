@@ -42,6 +42,6 @@
 
 :end
 
-devenv /clean Release_LTCG fba_vs2003_libretro_xbox1.sln
-devenv /build Release_LTCG fba_vs2003_libretro_xbox1.sln
+devenv /clean Release_LTCG msvc-2003-xbox1.sln
+devenv /build Release_LTCG msvc-2003-xbox1.sln
 exit

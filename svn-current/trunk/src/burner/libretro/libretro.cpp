@@ -1,9 +1,6 @@
 #include "libretro.h"
 #include "burner.h"
-#include "input/inp_keys.h"
 #include "state.h"
-#include <string.h>
-#include <stdio.h>
 
 #include <vector>
 #include <string>

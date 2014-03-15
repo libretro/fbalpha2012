@@ -3,8 +3,8 @@
 
 // Burner emulation library
 //
-#ifndef _BURN_H
-#define _BURN_H
+#ifndef _BURNH_H
+#define _BURNH_H
 
 #ifdef __cplusplus
  extern "C" {

@@ -1,3 +1,7 @@
+#ifndef _GAMEINP_H
+#define _GAMEINP_H
+
+#include "burn.h"
 
 struct giConstant {
 	UINT8 nConst;				// The constant value
@@ -97,3 +101,4 @@ struct GameInp {
 	};
 };
 
+#endif

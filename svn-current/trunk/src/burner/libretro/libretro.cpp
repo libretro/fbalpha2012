@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <string>
-#include <ctype.h>
 
 #include "cd/cd_interface.h"
 

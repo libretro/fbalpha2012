@@ -1,5 +1,7 @@
 // FB Alpha - Emulator for MC68000/Z80 based arcade games
 //            Refer to the "license.txt" file for more info
+#ifndef _BURN_H
+#define _BURN_H
 
 #include <limits.h>
 #include <stdarg.h>
@@ -187,3 +189,5 @@ extern TCHAR szAppTitlesPath[MAX_PATH];
 extern TCHAR szAppCheatsPath[MAX_PATH];
 extern TCHAR szAppIpsPath[MAX_PATH];
 extern TCHAR szAppIconsPath[MAX_PATH];
+
+#endif

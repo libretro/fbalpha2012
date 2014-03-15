@@ -1,3 +1,6 @@
+#ifndef _BURN_BITSWAP_H
+#define _BURN_BITSWAP_H
+
 #define BITSWAP32(n, 														\
 				  bit31, bit30, bit29, bit28, bit27, bit26, bit25, bit24,	\
 				  bit23, bit22, bit21, bit20, bit19, bit18, bit17, bit16,	\
@@ -113,4 +116,6 @@
 	#define BYTE4_XOR_LE(a) 	((a) ^ 3)				/* read/write a byte to a 32-bit space */
 	#define WORD_XOR_BE(a)  	(a)
 	#define WORD_XOR_LE(a)  	((a) ^ 2)				/* read/write a word to a 32-bit space */
+#endif
+
 #endif

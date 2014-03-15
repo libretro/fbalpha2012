@@ -4,7 +4,7 @@
 #include "burnint.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
-#include "vector.h"
+#include "burn_vector.h"
 #include "driver.h"
 extern "C" {
 #include "ay8910.h"

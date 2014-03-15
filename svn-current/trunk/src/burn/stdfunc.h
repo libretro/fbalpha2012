@@ -1,3 +1,6 @@
+#ifndef _FBA_STDFUNC_H
+#define _FBA_STDFUNC_H
+
 // Standard ROM/input/DIP info functions
 
 // A function to pick a rom, or return NULL if i is out of range
@@ -146,3 +149,5 @@ static INT32 Name##SampleName(char** pszName, UINT32 i, INT32 nAka)		\
 	*pszName = por->szName;												\
 	return 0;															\
 }
+
+#endif

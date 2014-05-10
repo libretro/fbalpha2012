@@ -20,6 +20,7 @@ static retro_audio_sample_batch_t audio_batch_cb;
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 static bool g_opt_bUseUNIBIOS = false;
+static bool alternate_controls = false;
 
 #define STAT_NOFIND	0
 #define STAT_OK		1
@@ -61,6 +62,7 @@ void retro_set_environment(retro_environment_t cb)
       { "fba-diagnostics", "Diagnostics; disabled|enabled" },
       { "fba-unibios", "Neo Geo UniBIOS; disabled|enabled" },
       { "fba-cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
+      { "fba-controls", "Controls; default|alternate" },
       { NULL, NULL },
    };
 
@@ -570,6 +572,16 @@ static void check_variables(void)
       else if (strcmp(var.value, "200") == 0)
          nBurnCPUSpeedAdjust = 0x0200;
    }
+
+   var.key = "fba-controls";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "default") == 0)
+         alternate_controls = false;
+      else if (strcmp(var.value, "alternate") == 0)
+         alternate_controls = true;
+   }
 }
 
 void retro_run()
@@ -849,6 +861,7 @@ bool retro_load_game(const struct retro_game_info *info)
       if (!fba_init(i, basename))
          return false;
 
+      check_variables();
       driver_inited = true;
       analog_controls_enabled = init_input();
 

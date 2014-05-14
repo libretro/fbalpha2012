@@ -20,7 +20,7 @@ static retro_audio_sample_batch_t audio_batch_cb;
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 static bool g_opt_bUseUNIBIOS = false;
-static bool alternate_controls = false;
+static bool gamepad_controls = false;
 
 #define STAT_NOFIND	0
 #define STAT_OK		1
@@ -62,7 +62,7 @@ void retro_set_environment(retro_environment_t cb)
       { "fba-diagnostics", "Diagnostics; disabled|enabled" },
       { "fba-unibios", "Neo Geo UniBIOS; disabled|enabled" },
       { "fba-cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
-      { "fba-controls", "Controls; default|alternate" },
+      { "fba-controls", "Controls; default|gamepad" },
       { NULL, NULL },
    };
 
@@ -578,9 +578,9 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
       if (strcmp(var.value, "default") == 0)
-         alternate_controls = false;
-      else if (strcmp(var.value, "alternate") == 0)
-         alternate_controls = true;
+         gamepad_controls = false;
+      else if (strcmp(var.value, "gamepad") == 0)
+         gamepad_controls = true;
    }
 }
 
@@ -1014,7 +1014,7 @@ static bool init_input(void)
    unsigned counter = 0;
    unsigned incr = 0;
 
-   if (alternate_controls == false)
+   if (gamepad_controls == false)
    {
    bind_map[PTR_INCR].bii_name = "P1 Coin";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SELECT;
@@ -1962,7 +1962,7 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
    bind_map[PTR_INCR].nCode[1] = 1;
    }
-   if (alternate_controls == true)
+   if (gamepad_controls == true)
    {
    bind_map[PTR_INCR].bii_name = "P1 Coin";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_SELECT;

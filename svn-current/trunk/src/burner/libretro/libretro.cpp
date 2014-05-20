@@ -20,7 +20,7 @@ static retro_audio_sample_batch_t audio_batch_cb;
 static unsigned int BurnDrvGetIndexByName(const char* name);
 
 static bool g_opt_bUseUNIBIOS = false;
-static bool gamepad_controls = false;
+static bool gamepad_controls = true;
 
 #define STAT_NOFIND	0
 #define STAT_OK		1
@@ -62,7 +62,7 @@ void retro_set_environment(retro_environment_t cb)
       { "fba-diagnostics", "Diagnostics; disabled|enabled" },
       { "fba-unibios", "Neo Geo UniBIOS; disabled|enabled" },
       { "fba-cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
-      { "fba-controls", "Controls; default|gamepad" },
+      { "fba-controls", "Controls; gamepad|default" },
       { NULL, NULL },
    };
 

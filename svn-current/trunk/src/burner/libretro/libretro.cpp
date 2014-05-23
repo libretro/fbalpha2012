@@ -2974,10 +2974,44 @@ static bool init_input(void)
             keybinds[pgi->Input.Switch.nCode][1] = 1;
             value_found = true;
          }
+
+         /* Alien vs. Predator and Armored Warriors both use "Px Shot" which usually serves as the shoot button for shmups
+          * To make sure the controls don't overlap with each other if statements are used */
+
+         else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P1 Shot") ==0))
+         {
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+            keybinds[pgi->Input.Switch.nCode][1] = 0;
+            value_found = true;
+         }
          else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P2 Shot") ==0))
          {
-            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_A;
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 1;
+            value_found = true;
+         }
+         else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P3 Shot") ==0))
+         {
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+            keybinds[pgi->Input.Switch.nCode][1] = 2;
+            value_found = true;
+         }
+         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P1 Shot") ==0))
+         {
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+            keybinds[pgi->Input.Switch.nCode][1] = 0;
+            value_found = true;
+         }
+         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P2 Shot") ==0))
+         {
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+            keybinds[pgi->Input.Switch.nCode][1] = 1;
+            value_found = true;
+         }
+         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P3 Shot") ==0))
+         {
+            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+            keybinds[pgi->Input.Switch.nCode][1] = 2;
             value_found = true;
          }
          else if(strcmp(bii.szName, bind_map[j].bii_name) == 0)

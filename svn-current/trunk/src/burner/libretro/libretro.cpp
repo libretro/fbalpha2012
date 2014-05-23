@@ -62,7 +62,7 @@ void retro_set_environment(retro_environment_t cb)
       { "fba-diagnostics", "Diagnostics; disabled|enabled" },
       { "fba-unibios", "Neo Geo UniBIOS; disabled|enabled" },
       { "fba-cpu-speed-adjust", "CPU Speed Overclock; 100|110|120|130|140|150|160|170|180|190|200" },
-      { "fba-controls", "Controls; gamepad|default" },
+      { "fba-controls", "Controls; gamepad|arcade" },
       { NULL, NULL },
    };
 
@@ -577,7 +577,7 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "default") == 0)
+      if (strcmp(var.value, "arcade") == 0)
          gamepad_controls = false;
       else if (strcmp(var.value, "gamepad") == 0)
          gamepad_controls = true;

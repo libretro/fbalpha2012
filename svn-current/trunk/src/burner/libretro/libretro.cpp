@@ -1103,21 +1103,7 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_START;
    bind_map[PTR_INCR].nCode[1] = 1;
 
-   /* Movement controls
-    *
-    * FIXME: After Burner, Space Harrier and Thunder Blade use a joystick for movement
-    * which FBA binds to the X/Y axis with "Left/Right" and "Up/Down"
-    *
-    * FIXME: Forgotten Worlds uses a rotatable switch to turn around which is bound to "P1/2 Turn"
-    *
-    * FIXME: Lord of Gun and other games use "P1/2 Right / left" and "P1/2 Up / Down" for aiming
-    *
-    * FIXME: Various light gun shooters use "P1/2 Gun X" and "P1/2 Gun Y" for aiming
-    *
-    * FIXME: Thunder Blade uses a handle to "Throttle" which is bound to the Z axis
-    *
-    * FIXME: Cyber Tank uses a unique control setup: "P1 Handle" controls movement on the
-    * X axis and "P2 Gun L-R" and "P2 Gun U-D" are used to move the gun turret */
+   /* Movement controls */
 
    bind_map[PTR_INCR].bii_name = "Up";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
@@ -1359,6 +1345,138 @@ static bool init_input(void)
 
    bind_map[PTR_INCR].bii_name = "P3 Right 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   /* Analog controls
+    *
+    * FIXME: Analog controls still need to be added properly */
+
+   bind_map[PTR_INCR].bii_name = "Left/Right";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "Up/Down";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Right / left";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Up / Down";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Right / left";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Up / Down";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P1 X-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Y-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 X-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Y-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P3 X-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 2;
+
+   bind_map[PTR_INCR].bii_name = "P3 Y-Axis";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 2;
+
+   bind_map[PTR_INCR].bii_name = "P1 Trackball X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Trackball Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Trackball X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Trackball Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "Target Left/Right";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "Target Up/Down";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "Crosshair X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "Crosshair Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Gun X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P1 Gun Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Gun X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Gun Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P1 Turn";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Turn";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P1 Bat Swing";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Bat Swing";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P1 Handle";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "P2 Gun L-R";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Gun U-D";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "Throttle";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L2;
    bind_map[PTR_INCR].nCode[1] = 0;
 
    if (gamepad_controls == false)
@@ -2063,10 +2181,6 @@ static bool init_input(void)
 
    bind_map[PTR_INCR].bii_name = "Vulcan";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Throttle";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
    bind_map[PTR_INCR].nCode[1] = 0;
 
    bind_map[PTR_INCR].bii_name = "Cannon";
@@ -2890,10 +3004,6 @@ static bool init_input(void)
 
    bind_map[PTR_INCR].bii_name = "Vulcan";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
-   bind_map[PTR_INCR].nCode[1] = 0;
-
-   bind_map[PTR_INCR].bii_name = "Throttle";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
 
    bind_map[PTR_INCR].bii_name = "Cannon";

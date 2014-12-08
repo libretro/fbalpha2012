@@ -1285,67 +1285,67 @@ static bool init_input(void)
 
    bind_map[PTR_INCR].bii_name = "P2 Up 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Down 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Left 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Right 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Up 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L2;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Down 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R2;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Left 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Right 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P3 Up 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_UP;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Down 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Left 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Right 1";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Up 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L2;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Down 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R2;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Left 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_L;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    bind_map[PTR_INCR].bii_name = "P3 Right 2";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_R;
-   bind_map[PTR_INCR].nCode[1] = 0;
+   bind_map[PTR_INCR].nCode[1] = 2;
 
    /* Analog controls
     *
@@ -1423,6 +1423,14 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
    
+   bind_map[PTR_INCR].bii_name = "P2 Gun L-R";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_X;
+   bind_map[PTR_INCR].nCode[1] = 1;
+
+   bind_map[PTR_INCR].bii_name = "P2 Gun U-D";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
+   bind_map[PTR_INCR].nCode[1] = 1;
+   
    /* Light gun controls
     *
     * FIXME: Controls don't seem to work properly */
@@ -1472,14 +1480,6 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[1] = 1;
 
    bind_map[PTR_INCR].bii_name = "P2 Gun Y";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
-   bind_map[PTR_INCR].nCode[1] = 1;
-    
-   bind_map[PTR_INCR].bii_name = "P2 Gun L-R";
-   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_X;
-   bind_map[PTR_INCR].nCode[1] = 1;
-
-   bind_map[PTR_INCR].bii_name = "P2 Gun U-D";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
    bind_map[PTR_INCR].nCode[1] = 1;
 

@@ -2187,7 +2187,7 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
    bind_map[PTR_INCR].nCode[1] = 0;
 
-   /* OutRun, Chase HQ, Super Chase, Cyber Tank, etc. */
+   /* OutRun, Chase HQ, Super Chase, Cyber Tank, Racing Beat, etc. */
 
    bind_map[PTR_INCR].bii_name = "Accelerate";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_A;
@@ -2218,6 +2218,10 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[1] = 0;
 
    bind_map[PTR_INCR].bii_name = "Super Charger";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
+   bind_map[PTR_INCR].nCode[1] = 0;
+   
+   bind_map[PTR_INCR].bii_name = "Pit In";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
 
@@ -3014,7 +3018,7 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
    bind_map[PTR_INCR].nCode[1] = 0;
 
-   /* OutRun, Chase HQ, Super Chase, Cyber Tank, etc. */
+   /* OutRun, Chase HQ, Super Chase, Cyber Tank, Racing Beat, etc. */
 
    bind_map[PTR_INCR].bii_name = "Accelerate";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_B;
@@ -3045,6 +3049,10 @@ static bool init_input(void)
    bind_map[PTR_INCR].nCode[1] = 0;
 
    bind_map[PTR_INCR].bii_name = "Super Charger";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
+   bind_map[PTR_INCR].nCode[1] = 0;
+   
+   bind_map[PTR_INCR].bii_name = "Pit In";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_JOYPAD_X;
    bind_map[PTR_INCR].nCode[1] = 0;
 

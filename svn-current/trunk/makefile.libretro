@@ -93,6 +93,18 @@ ifeq ($(OSX_LT_MAVERICKS),"YES")
    CXX +=  -miphoneos-version-min=5.0
    CFLAGS += -miphoneos-version-min=5.0
 endif
+else ifeq ($(platform), theos_ios)
+DEPLOYMENT_IOSVERSION = 5.0
+TARGET = iphone:latest:$(DEPLOYMENT_IOSVERSION)
+ARCHS = armv7 armv7s
+TARGET_IPHONEOS_DEPLOYMENT_VERSION=$(DEPLOYMENT_IOSVERSION)
+THEOS_BUILD_DIR := objs
+include $(THEOS)/makefiles/common.mk
+
+LIBRARY_NAME = $(TARGET_NAME)_libretro_ios
+
+ENDIANNESS_DEFINES := -DLSB_FIRST
+CFLAGS += -DIOS
 else ifeq ($(platform), qnx)
    TARGET := $(TARGET_NAME)_libretro_qnx.so
    fpic := -fPIC
@@ -201,12 +213,12 @@ else
    ENDIANNESS_DEFINES := -DLSB_FIRST
 endif
 
+ifeq ($(EXTERNAL_ZLIB), 0)
+LDFLAGS += -lz
+endif
+
 CC_SYSTEM = gcc
 CXX_SYSTEM = g++
-
-.PHONY: clean generate-files generate-files-clean clean-objs
-
-all: $(TARGET)
 
 BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/arm7/arm7exec.c \
@@ -361,11 +373,11 @@ else
 FBA_SRC_DIRS += $(FBA_LIB_DIRS)
 endif
 
-FBA_CXXSRCS := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
-FBA_CXXSRCS += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
-FBA_CXXOBJ := $(FBA_CXXSRCS:.cpp=.o)
-FBA_CSRCS := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
-FBA_COBJ := $(FBA_CSRCS:.c=.o)
+SOURCES_CXX := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
+SOURCES_CXX += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
+FBA_CXXOBJ := $(SOURCES_CXX:.cpp=.o)
+SOURCES_C := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
+FBA_COBJ := $(SOURCES_C:.c=.o)
 
 OBJS := $(FBA_COBJ) $(FBA_CXXOBJ)
 
@@ -379,7 +391,7 @@ ifneq ($(platform),qnx)
    FBA_DEFINES += -DINLINE="static inline" -DSH2_INLINE="static inline"
 endif
 
-INCDIRS := -I$(FBA_BURNER_DIR)/win32 \
+INCFLAGS := -I$(FBA_BURNER_DIR)/win32 \
 	-I$(LIBRETRO_DIR) \
 	-I$(LIBRETRO_DIR)/tchar \
 	-I$(FBA_BURN_DIR) \
@@ -435,7 +447,7 @@ CXXFLAGS += -DFRONTEND_SUPPORTS_RGB565
 endif
 
 ifeq ($(ZLIB_INTERNAL), 0)
-INCDIRS += -I$(FBA_LIB_DIR)
+INCFLAGS += -I$(FBA_LIB_DIR)
 endif
 
 ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
@@ -449,6 +461,18 @@ M68KMAKE_EXE = m68kmake$(EXE_EXT)
 CTVMAKE_EXE = ctvmake$(EXE_EXT)
 PGM_SPRITE_CREATE_EXE = pgmspritecreate$(EXE_EXT)
 EXE_PREFIX = ./
+
+.PHONY: clean generate-files generate-files-clean clean-objs
+
+ifeq ($(platform), theos_ios)
+COMMON_FLAGS := -DIOS -DARM $(COMMON_DEFINES) $(INCFLAGS) -I$(THEOS_INCLUDE_PATH) -Wno-error
+$(LIBRARY_NAME)_CFLAGS += $(CFLAGS) $(COMMON_FLAGS)
+$(LIBRARY_NAME)_CXXFLAGS += $(CXXFLAGS) $(COMMON_FLAGS)
+${LIBRARY_NAME}_FILES = $(SOURCES_CXX) $(SOURCES_C)
+include $(THEOS_MAKE_PATH)/library.mk
+else
+all: $(TARGET)
+
 
 generate-files-clean:
 	rm -rf $(FBA_GENERATED_DIR)/
@@ -499,6 +523,14 @@ generate-files:
 	@echo ""
 	$(EXE_PREFIX)$(CTVMAKE_EXE) > $(FBA_GENERATED_DIR)/ctv.h
 
+%.o: %.cpp
+	@echo "CXX $<"
+	@$(CXX) -c -o $@ $< $(CXXFLAGS) $(INCFLAGS)
+
+%.o: %.c
+	@echo "CC $<"
+	@$(CC) -c -o $@ $< $(CFLAGS) $(INCFLAGS)
+
 $(TARGET): $(OBJS)
 	@echo "LD $@"
 ifeq ($(STATIC_LINKING), 1)
@@ -507,13 +539,6 @@ else
 	@$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS)
 endif
 
-%.o: %.cpp
-	@echo "CXX $<"
-	@$(CXX) -c -o $@ $< $(CXXFLAGS) $(INCDIRS)
-
-%.o: %.c
-	@echo "CC $<"
-	@$(CC) -c -o $@ $< $(CFLAGS) $(INCDIRS)
 
 clean-objs:
 	rm -f $(OBJS)
@@ -524,3 +549,4 @@ clean:
 	rm -f $(M68KMAKE_EXE)
 	rm -f $(PGM_SPRITE_CREATE_EXE)
 	rm -f $(CTVMAKE_EXE)
+endif

@@ -912,7 +912,7 @@ struct key_map
 };
 static uint8_t keybinds[0x5000][2]; 
 
-#define BIND_MAP_COUNT 302
+#define BIND_MAP_COUNT 310
 
 #define RETRO_DEVICE_ID_JOYPAD_RESET      16
 #define RETRO_DEVICE_ID_JOYPAD_SERVICE    17
@@ -1422,7 +1422,7 @@ static bool init_input(void)
    bind_map[PTR_INCR].bii_name = "Throttle";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
    bind_map[PTR_INCR].nCode[1] = 0;
-   
+
    bind_map[PTR_INCR].bii_name = "P2 Gun L-R";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_X;
    bind_map[PTR_INCR].nCode[1] = 1;
@@ -1430,7 +1430,15 @@ static bool init_input(void)
    bind_map[PTR_INCR].bii_name = "P2 Gun U-D";
    bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
    bind_map[PTR_INCR].nCode[1] = 1;
-   
+
+   bind_map[PTR_INCR].bii_name = "Stick X";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_X;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
+   bind_map[PTR_INCR].bii_name = "Stick Y";
+   bind_map[PTR_INCR].nCode[0] = RETRO_DEVICE_ID_ANALOG_Y;
+   bind_map[PTR_INCR].nCode[1] = 0;
+
    /* Light gun controls
     *
     * FIXME: Controls don't seem to work properly */

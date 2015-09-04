@@ -877,7 +877,8 @@ bool retro_load_game(const struct retro_game_info *info)
       return false;
    }
 
-   int32_t width, height;
+   INT32 width;
+   INT32 height;
    BurnDrvGetFullSize(&width, &height);
 
    g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));

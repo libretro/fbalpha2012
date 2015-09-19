@@ -3,10 +3,6 @@ LIBRETRO_OPTIMIZATIONS = 1
 FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 
-ifneq ($(EMSCRIPTEN),)
-   platform = emscripten
-endif
-
 ifeq ($(platform),)
 platform = unix
 ifeq ($(shell uname -a),)

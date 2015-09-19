@@ -1990,6 +1990,7 @@ static void majtitle_draw_sprites()
 
 static void dodrawline(INT32 start, INT32 finish)
 {
+   if(!pBurnDraw) return;
 	if (*video_enable) return;
 
 	draw_layer(1, 1, m72_video_type, start, finish);

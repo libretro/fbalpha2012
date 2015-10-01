@@ -605,10 +605,10 @@ void program_write_dword_32be(unsigned int /*A*/, unsigned int /*V*/)
 
 #if FAST_OP_FETCH
 
-#ifdef LSB_FIRST
-#define cpu_readop16(A)	*(unsigned short *)(pSh2Ext->opbase + ((A) ^ 0x02))
-#else
+#ifdef MSB_FIRST
 #define cpu_readop16(A)	(*(unsigned short *)(pSh2Ext->opbase + ((A))))
+#else
+#define cpu_readop16(A)	*(unsigned short *)(pSh2Ext->opbase + ((A) ^ 0x02))
 #endif
 
 #else
@@ -618,7 +618,7 @@ SH2_INLINE unsigned short cpu_readop16(unsigned int A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
 	if ( (unsigned int)pr >= SH2_MAXHANDLER ) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 2;
 #endif
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
@@ -640,7 +640,7 @@ SH2_INLINE UINT8 RB(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 3;
 #endif
 		return pr[A & SH2_PAGEM];
@@ -658,7 +658,7 @@ SH2_INLINE UINT16 RW(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ A >> SH2_SHIFT ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 2;
 #endif
 		//return (pr[A & SH2_PAGEM] << 8) | pr[(A & SH2_PAGEM) + 1];
@@ -673,7 +673,7 @@ SH2_INLINE UINT16 OPRW(UINT32 A)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[ (A >> SH2_SHIFT) + SH2_WADD * 2 ];
 	if ( (uintptr_t)pr >= SH2_MAXHANDLER ) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 2;
 #endif
 		return *((unsigned short *)(pr + (A & SH2_PAGEM)));
@@ -708,7 +708,7 @@ SH2_INLINE void WB(UINT32 A, UINT8 V)
 	unsigned char* pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
 	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 3;
 #endif
 		pr[A & SH2_PAGEM] = (unsigned char)V;
@@ -727,7 +727,7 @@ SH2_INLINE void WW(UINT32 A, UINT16 V)
 	unsigned char * pr;
 	pr = pSh2Ext->MemMap[(A >> SH2_SHIFT) + SH2_WADD];
 	if ((uintptr_t)pr >= SH2_MAXHANDLER) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		A ^= 2;
 #endif
 		*((unsigned short *)(pr + (A & SH2_PAGEM))) = (unsigned short)V;

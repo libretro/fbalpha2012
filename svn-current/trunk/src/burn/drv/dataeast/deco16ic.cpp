@@ -1502,7 +1502,7 @@ static void deco_decrypt(UINT8 *src, INT32 len, const UINT8 *xor_table,const UIN
 		for (i = 0;i < len;i++)
 			rom[i] = BIG_ENDIANIZE_INT16(rom[i]);
 #else
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	for (i = 0; i < len; i++) {
 		rom[i] = (rom[i] << 8) | (rom[i] >> 8);
 	}
@@ -1546,7 +1546,7 @@ static void deco_decrypt(UINT8 *src, INT32 len, const UINT8 *xor_table,const UIN
 		for (i = 0;i < len;i++)
 			rom[i] = BIG_ENDIANIZE_INT16(rom[i]);
 #else
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	for (i = 0; i < len; i++) {
 		rom[i] = (rom[i] << 8) | (rom[i] >> 8);
 	}

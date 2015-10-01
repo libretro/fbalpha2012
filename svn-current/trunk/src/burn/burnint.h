@@ -22,7 +22,10 @@
 
 #include "burn.h"
 
-#ifdef LSB_FIRST
+#ifdef MSB_FIRST
+// define the above union and BURN_ENDIAN_SWAP macros in the following platform specific header
+#include "burn_endian.h"
+#else
 typedef union
 {
 	struct { UINT8 l,h,h2,h3; } b;
@@ -30,13 +33,10 @@ typedef union
 	UINT32 d;
 } PAIR;
 
-#define BURN_ENDIAN_SWAP_INT8(x)				x
+#define BURN_ENDIAN_SWAP_INT8(x)				   x
 #define BURN_ENDIAN_SWAP_INT16(x)				x
 #define BURN_ENDIAN_SWAP_INT32(x)				x
 #define BURN_ENDIAN_SWAP_INT64(x)				x
-#else
-// define the above union and BURN_ENDIAN_SWAP macros in the following platform specific header
-#include "burn_endian.h"
 #endif
 
 #ifdef NO_UNALIGNED_MEM

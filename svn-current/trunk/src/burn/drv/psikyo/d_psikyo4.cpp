@@ -241,7 +241,7 @@ static struct BurnDIPInfo HotgmckDIPList[]=
 
 STDDIPINFO(Hotgmck)
 
-#ifndef LSB_FIRST
+#ifdef MSB_FIRST
 static void le_to_be(unsigned char * p, int size)
 {
         unsigned char c;
@@ -332,7 +332,7 @@ void __fastcall ps4_write_long(UINT32 address, UINT32 data)
 UINT16 __fastcall ps4_read_word(UINT32 address)
 {
 	address &= 0xc7fffffe;
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	address ^= 2;
 #endif
 	if (address >= 0x03000000 && address <= 0x030037ff) {
@@ -370,14 +370,14 @@ UINT8 __fastcall ps4_read_byte(UINT32 address)
 
 
 	if (address >= 0x03000000 && address <= 0x030037ff) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		return DrvSprRAM[address & 0x3fff];
 	}
 
 	if ((address & 0xffffe000) == 0x03004000) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		return DrvPalRAM[address & 0x1fff];
@@ -413,7 +413,7 @@ UINT8 __fastcall ps4_read_byte(UINT32 address)
 void __fastcall ps4_write_word(UINT32 address, UINT16 data)
 {
 	address &= 0xc7fffffe;
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	address ^= 2;
 #endif
 
@@ -446,28 +446,28 @@ void __fastcall ps4_write_byte(UINT32 address, UINT8 data)
 //	bprintf (0, _T("%8.8x, wb\n"), address);
 
 	if (address >= 0x03000000 && address <= 0x030037ff) {
-#ifdef LSB_FIRST
-		DrvSprRAM[(address ^ 3) & 0x3fff] = data;
-#else
+#ifdef MSB_FIRST
 		DrvSprRAM[(address) & 0x3fff] = data;
+#else
+		DrvSprRAM[(address ^ 3) & 0x3fff] = data;
 #endif
 		return;
 	}
 
 	if ((address & 0xffffe000) == 0x03004000) {
-#ifdef LSB_FIRST
-		DrvPalRAM[(address ^ 3) & 0x1fff] = data;
-#else
+#ifdef MSB_FIRST
 		DrvPalRAM[(address) & 0x1fff] = data;
+#else
+		DrvPalRAM[(address ^ 3) & 0x1fff] = data;
 #endif
 		return;
 	}
 
 	if (address >= 0x03003fe4 && address <= 0x03003fef) {
-#ifdef LSB_FIRST
-		DrvVidRegs[(address ^ 3) - 0x03003fe4] = data;
-#else
+#ifdef MSB_FIRST
 		DrvVidRegs[(address) - 0x03003fe4] = data;
+#else
+		DrvVidRegs[(address ^ 3) - 0x03003fe4] = data;
 #endif
 		return;
 	}
@@ -547,19 +547,19 @@ UINT32 __fastcall ps4hack_read_long(UINT32 a)
 
 UINT16 __fastcall ps4hack_read_word(UINT32 a)
 {
-#ifdef LSB_FIRST
-	return *((UINT16 *)(DrvSh2RAM + ((a & 0xffffe) ^ 2)));
-#else
+#ifdef MSB_FIRST
 	return *((UINT16 *)(DrvSh2RAM + ((a & 0xffffe))));
+#else
+	return *((UINT16 *)(DrvSh2RAM + ((a & 0xffffe) ^ 2)));
 #endif
 }
 
 UINT8 __fastcall ps4hack_read_byte(UINT32 a)
 {
-#ifdef LSB_FIRST
-	return DrvSh2RAM[(a & 0xfffff) ^ 3];
-#else
+#ifdef MSB_FIRST
 	return DrvSh2RAM[(a & 0xfffff)];
+#else
+	return DrvSh2RAM[(a & 0xfffff) ^ 3];
 #endif
 }
 
@@ -691,7 +691,7 @@ static INT32 DrvInit(INT32 (*LoadCallback)(), INT32 gfx_len)
 		}
 
 		BurnSwapEndian();
-#ifndef LSB_FIRST
+#ifdef MSB_FIRST
 		le_to_be(DrvSh2ROM,0x0300000);
 #endif
 		BurnSwap32(DrvGfxROM, gfx_len);

@@ -266,7 +266,7 @@ STDDIPINFO(Tgm2)
 
 //-------------------------------------------------------------------------------------
 
-#ifndef LSB_FIRST
+#ifdef MSB_FIRST
 static void le_to_be(unsigned char * p, int size)
 {
         unsigned char c;
@@ -303,7 +303,7 @@ void __fastcall psx_write_long(UINT32 , UINT32)
 void __fastcall ps3v1_write_word(UINT32 address, UINT16 data)
 {
 	address &= 0xc7ffffff;
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	address ^= 2;
 #endif
 
@@ -318,7 +318,7 @@ void __fastcall ps3v1_write_byte(UINT32 address, UINT8 data)
 	address &= 0xc7ffffff;
 
 	if ((address & 0xfffffe00) == 0x3050000) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		DrvZoomRAM[address & 0x1ff] = data;
@@ -326,7 +326,7 @@ void __fastcall ps3v1_write_byte(UINT32 address, UINT8 data)
 	}
 
 	if ((address & 0xffffffe0) == 0x305ffe0) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		DrvVidRegs[address & 0x1f] = data;
@@ -393,7 +393,7 @@ UINT8 __fastcall ps3v1_read_byte(UINT32 address)
 void __fastcall ps5_write_word(UINT32 address, UINT16 data)
 {
 	address &= 0xc7ffffff;
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 	address ^= 2;
 #endif
 
@@ -408,7 +408,7 @@ void __fastcall ps5_write_byte(UINT32 address, UINT8 data)
 	address &= 0xc7ffffff;
 
 	if ((address & 0xfffffe00) == 0x4050000) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		DrvZoomRAM[address & 0x1ff] = data;
@@ -416,7 +416,7 @@ void __fastcall ps5_write_byte(UINT32 address, UINT8 data)
 	}
 
 	if ((address & 0xffffffe0) == 0x405ffe0) {
-#ifdef LSB_FIRST
+#ifndef MSB_FIRST
 		address ^= 3;
 #endif
 		DrvVidRegs[address & 0x1f] = data;
@@ -506,19 +506,19 @@ UINT32 __fastcall hack_read_long(UINT32 a)
 
 UINT16 __fastcall hack_read_word(UINT32 a)
 {
-#ifdef LSB_FIRST
-	return *((UINT16 *)(DrvSh2RAM + ((a & 0xfffff) ^ 2)));
-#else
+#ifdef MSB_FIRST
 	return *((UINT16 *)(DrvSh2RAM + ((a & 0xfffff))));
+#else
+	return *((UINT16 *)(DrvSh2RAM + ((a & 0xfffff) ^ 2)));
 #endif
 }
 
 UINT8 __fastcall hack_read_byte(UINT32 a)
 {
-#ifdef LSB_FIRST
-	return DrvSh2RAM[(a & 0xfffff) ^ 3];
-#else
+#ifdef MSB_FIRST
 	return DrvSh2RAM[(a & 0xfffff)];
+#else
+	return DrvSh2RAM[(a & 0xfffff) ^ 3];
 #endif
 }
 
@@ -653,7 +653,7 @@ static INT32 DrvInit(INT32 (*LoadCallback)(), INT32 type, INT32 gfx_max, INT32 g
 		}
 
 		BurnSwap32(DrvSh2ROM, 0x100000);
-#ifndef LSB_FIRST
+#ifdef MSB_FIRST
 		le_to_be(DrvSh2ROM,0x200000);
 #endif
 		BurnSwapEndian(0x200000);

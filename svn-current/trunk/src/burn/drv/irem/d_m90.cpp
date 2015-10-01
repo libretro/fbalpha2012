@@ -812,7 +812,7 @@ static inline void update_palette_entry(INT32 entry)
 {
 	UINT16 d = *((UINT16*)(DrvPalRAM + entry));
 
-#ifndef LSB_FIRST
+#ifdef MSB_FIRST
 	d = BURN_ENDIAN_SWAP_INT16(d);
 #endif
 

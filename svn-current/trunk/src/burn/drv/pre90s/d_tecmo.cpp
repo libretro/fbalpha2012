@@ -433,13 +433,11 @@ static void bankswitch_w(INT32 data)
 
 static inline void palette_write(INT32 offset)
 {
-	UINT16 data;
 	UINT8 r,g,b;
+	UINT16 data = *((UINT16*)(DrvPalRAM + (offset & ~1)));
 
-	data = *((UINT16*)(DrvPalRAM + (offset & ~1)));
-
-	#ifdef LSB_FIRST
-	data = (data << 8) | (data >> 8);
+#ifndef MSB_FIRST
+   data = (data << 8) | (data >> 8);
 #endif
 
 	r = (data >> 4) & 0x0f;

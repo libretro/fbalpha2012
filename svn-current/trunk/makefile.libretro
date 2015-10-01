@@ -184,9 +184,11 @@ else ifeq ($(platform), ctr)
    PLATFORM_DEFINES += -march=armv6k -mtune=mpcore -mfloat-abi=hard
    PLATFORM_DEFINES += -Wall -mword-relocations
    PLATFORM_DEFINES += -fomit-frame-pointer -ffast-math
+   ENDIANNESS_DEFINES := -DLSB_FIRST
    CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
    CPU_ARCH := arm
    STATIC_LINKING = 1
+   EXTERNAL_ZLIB = 1
    NO_MD = 1
    NO_CPS = 1
    NO_NEO = 1

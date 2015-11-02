@@ -124,6 +124,19 @@ else ifeq ($(platform), ps3)
    PLATFORM_DEFINES += -D__CELLOS_LV2__
    EXTERNAL_ZLIB = 1
 	STATIC_LINKING = 1
+else ifeq ($(platform), ctr)
+   TARGET := $(TARGET_NAME)_libretro_ctr.a
+   EXTERNAL_ZLIB = 1
+   CC = $(DEVKITARM)/bin/arm-none-eabi-gcc$(EXE_EXT)
+   CXX = $(DEVKITARM)/bin/arm-none-eabi-g++$(EXE_EXT)
+   AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
+   PLATFORM_DEFINES += -DARM11 -D_3DS
+   PLATFORM_DEFINES += -march=armv6k -mtune=mpcore -mfloat-abi=hard
+   PLATFORM_DEFINES += -Wall -mword-relocations
+   PLATFORM_DEFINES += -fomit-frame-pointer -ffast-math
+   CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+   CPU_ARCH := arm
+   STATIC_LINKING = 1
 else ifeq ($(platform), sncps3)
    TARGET := $(TARGET_NAME)_libretro_ps3.a
    CXX	= $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe

@@ -80,7 +80,7 @@ struct BurnDriver {
 
 	INT32 Flags;			// See burn.h
 	INT32 Players;		// Max number of players a game supports (so we can remove single player games from netplay)
-	INT32 Hardware;		// Which type of hardware the game runs on
+	UINT32 Hardware;		// Which type of hardware the game runs on
 	INT32 Genre;
 	INT32 Family;
 	INT32 (*GetZipName)(char** pszName, UINT32 i);				// Function to get possible zip names

@@ -532,7 +532,7 @@ extern "C" INT32 BurnDrvSetAspect(INT32 pnXAspect,INT32 pnYAspect)
 }
 
 // Get the hardware code
-extern "C" INT32 BurnDrvGetHardwareCode()
+extern "C" UINT32 BurnDrvGetHardwareCode()
 {
 	return pDriver[nBurnDrvActive]->Hardware;
 }

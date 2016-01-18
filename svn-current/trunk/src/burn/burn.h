@@ -264,7 +264,7 @@ INT32 BurnDrvGetVisibleSize(INT32* pnWidth, INT32* pnHeight);
 INT32 BurnDrvGetVisibleOffs(INT32* pnLeft, INT32* pnTop);
 INT32 BurnDrvGetFullSize(INT32* pnWidth, INT32* pnHeight);
 INT32 BurnDrvGetAspect(INT32* pnXAspect, INT32* pnYAspect);
-INT32 BurnDrvGetHardwareCode();
+UINT32 BurnDrvGetHardwareCode();
 INT32 BurnDrvGetFlags();
 bool BurnDrvIsWorking();
 INT32 BurnDrvGetMaxPlayers();

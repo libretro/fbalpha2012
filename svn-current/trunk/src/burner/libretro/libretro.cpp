@@ -153,7 +153,7 @@ void InpDIPSWResetDIPs (void)
 	}
 }
 
-static int InpDIPSWInit()
+static int InpDIPSWInit(void)
 {
    BurnDIPInfo bdi;
    struct GameInp *pgi;
@@ -852,7 +852,8 @@ bool analog_controls_enabled = false;
 
 bool retro_load_game(const struct retro_game_info *info)
 {
-   bool retval = false;
+   int32_t width;
+   int32_t height;
    char basename[128];
    extract_basename(basename, info->path, sizeof(basename));
    extract_directory(g_rom_dir, info->path, sizeof(g_rom_dir));
@@ -871,25 +872,20 @@ bool retro_load_game(const struct retro_game_info *info)
       driver_inited = true;
       analog_controls_enabled = init_input();
 
-      retval = true;
+      BurnDrvGetFullSize(&width, &height);
+
+      g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));
+
+      InpDIPSWInit();
+
+      check_variables();
+
+      return true;
    }
-   else if (log_cb)
-   {
+
+   if (log_cb)
       log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
-      return false;
-   }
-
-   INT32 width;
-   INT32 height;
-   BurnDrvGetFullSize(&width, &height);
-
-   g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));
-
-   InpDIPSWInit();
-
-   check_variables();
-
-   return retval;
+   return false;
 }
 
 bool retro_load_game_special(unsigned, const struct retro_game_info*, size_t) { return false; }

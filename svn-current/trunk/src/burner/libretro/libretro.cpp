@@ -222,12 +222,10 @@ static int find_rom_by_name(char *name, const ZipEntry *list, unsigned elems)
 {
 	unsigned i = 0;
 	for (i = 0; i < elems; i++)
-	{
-		if( strcmp(list[i].szName, name) == 0 ) 
-		{
-			return i; 
-		}
-	}
+   {
+      if(!strcmp(list[i].szName, name)) 
+         return i; 
+   }
 
 #if 0
    if (log_cb)
@@ -299,7 +297,7 @@ static bool open_archive()
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "enabled") == 0)
+      if (!strcmp(var.value, "enabled"))
          g_opt_bUseUNIBIOS = true;
    }
 
@@ -373,7 +371,7 @@ static bool open_archive()
 			{
 				char *szPossibleName=NULL;
 				BurnDrvGetRomName(&szPossibleName, i, 0);
-				if(strcmp(szPossibleName, "asia-s3.rom") == 0)
+				if(!strcmp(szPossibleName, "asia-s3.rom"))
 				{
 					if(index < 0) { index = find_rom_by_name((char*)"uni-bios_3_1.rom", list, count); }
 					if(index < 0) {	index = find_rom_by_crc(0x0C58093F, list, count); }
@@ -504,9 +502,9 @@ static void check_variables(void)
       static bool old_value = false;
       bool value = false;
 
-      if (strcmp(var.value, "disabled") == 0)
+      if (!strcmp(var.value, "disabled"))
          value = false;
-      else if (strcmp(var.value, "enabled") == 0)
+      else if (!strcmp(var.value, "enabled"))
          value = true;
 
       if (old_value != value)
@@ -3232,13 +3230,13 @@ static bool init_input(void)
 
       for(int j = 0; j < counter; j++)
       {
-         if((strcmp(bii.szName,"P1 Select") ==0) && (boardrom && (strcmp(boardrom,"neogeo") == 0)))
+         if(!strcmp(bii.szName,"P1 Select") && (boardrom && !strcmp(boardrom,"neogeo")))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_SELECT;
             keybinds[pgi->Input.Switch.nCode][1] = 0;
             value_found = true;
          }
-         else if((strcmp(bii.szName,"P2 Select") ==0) && (boardrom && (strcmp(boardrom,"neogeo") == 0)))
+         else if(!strcmp(bii.szName,"P2 Select") && (boardrom && !strcmp(boardrom,"neogeo")))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_SELECT;
             keybinds[pgi->Input.Switch.nCode][1] = 1;
@@ -3248,43 +3246,43 @@ static bool init_input(void)
          /* Alien vs. Predator and Armored Warriors both use "Px Shot" which usually serves as the shoot button for shmups
           * To make sure the controls don't overlap with each other if statements are used */
 
-         else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P1 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"avsp") || !strcmp(drvname,"avsp")) && (!strcmp(bii.szName,"P1 Shot")))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 0;
             value_found = true;
          }
-         else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P2 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"avsp") || !strcmp(drvname,"avsp")) && (strcmp(bii.szName,"P2 Shot") ==0))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 1;
             value_found = true;
          }
-         else if((parentrom && strcmp(parentrom,"avsp") == 0 || strcmp(drvname,"avsp") == 0) && (strcmp(bii.szName,"P3 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"avsp") || !strcmp(drvname,"avsp")) && (strcmp(bii.szName,"P3 Shot") ==0))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 2;
             value_found = true;
          }
-         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P1 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"armwar") || !strcmp(drvname,"armwar")) && (strcmp(bii.szName,"P1 Shot") ==0))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 0;
             value_found = true;
          }
-         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P2 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"armwar") || !strcmp(drvname,"armwar")) && (strcmp(bii.szName,"P2 Shot") ==0))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 1;
             value_found = true;
          }
-         else if((parentrom && strcmp(parentrom,"armwar") == 0 || strcmp(drvname,"armwar") == 0) && (strcmp(bii.szName,"P3 Shot") ==0))
+         else if((parentrom && !strcmp(parentrom,"armwar") || !strcmp(drvname,"armwar")) && (strcmp(bii.szName,"P3 Shot") ==0))
          {
             keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
             keybinds[pgi->Input.Switch.nCode][1] = 2;
             value_found = true;
          }
-         else if(strcmp(bii.szName, bind_map[j].bii_name) == 0)
+         else if(!strcmp(bii.szName, bind_map[j].bii_name))
          {
             keybinds[pgi->Input.Switch.nCode][0] = bind_map[j].nCode[0];
             keybinds[pgi->Input.Switch.nCode][1] = bind_map[j].nCode[1];
@@ -3562,10 +3560,14 @@ static void poll_input(void)
 
 static unsigned int BurnDrvGetIndexByName(const char* name)
 {
+   unsigned int i;
    unsigned int ret = ~0U;
-   for (unsigned int i = 0; i < nBurnDrvCount; i++) {
+
+   for (i = 0; i < nBurnDrvCount; i++)
+   {
       nBurnDrvActive = i;
-      if (strcmp(BurnDrvGetText(DRV_NAME), name) == 0) {
+      if (!strcmp(BurnDrvGetText(DRV_NAME), name))
+      {
          ret = i;
          break;
       }

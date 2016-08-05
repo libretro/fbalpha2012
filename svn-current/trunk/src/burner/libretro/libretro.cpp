@@ -852,8 +852,8 @@ bool analog_controls_enabled = false;
 
 bool retro_load_game(const struct retro_game_info *info)
 {
-   int32_t width;
-   int32_t height;
+   INT32 width;
+   INT32 height;
    char basename[128];
    extract_basename(basename, info->path, sizeof(basename));
    extract_directory(g_rom_dir, info->path, sizeof(g_rom_dir));

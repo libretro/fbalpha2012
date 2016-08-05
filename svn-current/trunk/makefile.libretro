@@ -48,7 +48,7 @@ GRIFFIN_DIR = griffin-libretro
 
 EXTERNAL_ZLIB = 0
 
-TARGET_NAME := fba2012
+TARGET_NAME := fbalpha2012
 
 ifeq ($(platform), unix)
    TARGET := $(TARGET_NAME)_libretro.so

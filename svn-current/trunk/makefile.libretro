@@ -256,8 +256,6 @@ else ifeq ($(platform), gcw0)
    CFLAGS += $(PTHREAD_FLAGS) -DHAVE_MKDIR
    CFLAGS += -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
    CXXFLAGS += -std=gnu++11 -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
-   ENDIANNESS_DEFINES := -DLSB_FIRST
-
 else
    TARGET := $(TARGET_NAME)_libretro.dll
    CC = gcc

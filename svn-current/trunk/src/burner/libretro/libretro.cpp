@@ -474,8 +474,6 @@ void retro_deinit()
       BurnStateSave(output, 0);
       BurnDrvExit();
    }
-   if (driver_inited)
-      BurnDrvExit();
    driver_inited = false;
    BurnLibExit();
    if (g_fba_frame)

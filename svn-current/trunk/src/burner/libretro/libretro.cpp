@@ -8,6 +8,12 @@
 
 #define FBA_VERSION "v0.2.97.29" // Sept 16, 2013 (SVN)
 
+#ifdef _WIN32
+   char slash = '\\';
+#else
+   char slash = '/';
+#endif
+
 static retro_environment_t environ_cb;
 static retro_log_printf_t log_cb;
 static retro_video_refresh_t video_cb;
@@ -70,6 +76,8 @@ void retro_set_environment(retro_environment_t cb)
 }
 
 char g_rom_dir[1024];
+char g_save_dir[1024];
+char g_system_dir[1024];
 static bool driver_inited;
 
 void retro_get_system_info(struct retro_system_info *info)
@@ -458,6 +466,14 @@ void retro_init()
 
 void retro_deinit()
 {
+   char output[128];
+
+   if (driver_inited)
+   {
+      snprintf (output, sizeof(output), "%s%c%s.fs", g_save_dir, slash, BurnDrvGetTextA(DRV_NAME));
+      BurnStateSave(output, 0);
+      BurnDrvExit();
+   }
    if (driver_inited)
       BurnDrvExit();
    driver_inited = false;
@@ -721,6 +737,10 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
 
    BurnDrvInit();
 
+   char input[128];
+   snprintf (input, sizeof(input), "%s%c%s.fs", g_save_dir, slash, BurnDrvGetTextA(DRV_NAME));
+   BurnStateLoad(input, 0, NULL);
+
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    unsigned drv_flags = BurnDrvGetFlags();
@@ -859,6 +879,33 @@ bool retro_load_game(const struct retro_game_info *info)
 
    extract_basename(basename, info->path, sizeof(basename));
    extract_directory(g_rom_dir, info->path, sizeof(g_rom_dir));
+
+   const char *dir = NULL;
+   // If save directory is defined use it, ...
+   if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
+   {
+      strncpy(g_save_dir, dir, sizeof(g_save_dir));
+      log_cb(RETRO_LOG_INFO, "Setting save dir to %s\n", g_save_dir);
+   }
+   else
+   {
+      // ... otherwise use rom directory
+      strncpy(g_save_dir, g_rom_dir, sizeof(g_save_dir));
+      log_cb(RETRO_LOG_ERROR, "Save dir not defined => use roms dir %s\n", g_save_dir);
+   }
+
+   // If system directory is defined use it, ...
+   if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
+   {
+      strncpy(g_system_dir, dir, sizeof(g_system_dir));
+      log_cb(RETRO_LOG_INFO, "Setting system dir to %s\n", g_system_dir);
+   }
+   else
+   {
+      // ... otherwise use rom directory
+      strncpy(g_system_dir, g_rom_dir, sizeof(g_system_dir));
+      log_cb(RETRO_LOG_ERROR, "System dir not defined => use roms dir %s\n", g_system_dir);
+   }
 
    unsigned i = BurnDrvGetIndexByName(basename);
    if (i < nBurnDrvCount)

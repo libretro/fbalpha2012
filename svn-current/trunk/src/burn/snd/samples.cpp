@@ -245,7 +245,7 @@ void BurnSampleInit(INT32 bAdd /*add sample to stream?*/)
 #else
    char slash = '/';
 #endif
-	snprintf(szTempPath, sizeof(szTempPath), "%s%csamples%c", g_rom_dir, slash, slash);
+	snprintf(szTempPath, sizeof(szTempPath), "%s%cfba2012%csamples%c", g_system_dir, slash, slash, slash);
 #else
 	snprintf(szTempPath, sizeof(szTempPath), _TtoA(SAMPLE_DIRECTORY));
 #endif

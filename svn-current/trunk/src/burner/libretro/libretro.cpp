@@ -1100,46 +1100,33 @@ bool retro_load_game(const struct retro_game_info *info)
    }
 
    unsigned i = BurnDrvGetIndexByName(basename);
-   if (!(i < nBurnDrvCount))
+   if (i < nBurnDrvCount)
    {
-      log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
-      return false;
+      pBurnSoundOut = g_audio_buf;
+      nBurnSoundRate = AUDIO_SAMPLERATE;
+      nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
+
+      if (!fba_init(i, basename))
+         return false;
+
+      check_variables();
+      driver_inited = true;
+      analog_controls_enabled = init_input();
+
+      BurnDrvGetFullSize(&width, &height);
+
+      g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));
+
+      InpDIPSWInit();
+
+      check_variables();
+
+      return true;
    }
 
-   const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
-   is_neogeo_game = (boardrom && strcmp(boardrom, "neogeo") == 0);
-
-   if (is_neogeo_game)
-   {
-      environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars_neogeo);
-   }
-
-   pBurnSoundOut = g_audio_buf;
-   nBurnSoundRate = AUDIO_SAMPLERATE;
-   nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
-
-   check_variables();
-
-   if (!fba_init(i, basename))
-      return false;
-
-   driver_inited = true;
-   analog_controls_enabled = init_input();
-
-   //int32_t width, height;
-   BurnDrvGetFullSize(&width, &height);
-
-   g_fba_frame = (uint32_t*)malloc(width * height * sizeof(uint32_t));
-
-   InpDIPSWInit();
-
-   return true;
-   }
-
-//   log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
-//   return false;
-// https://github.com/libretro/fbalpha2012/commit/f7e8b9d3b136af24edca3971064146691b214c3e
-//}
+   log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
+   return false;
+}
 
 bool retro_load_game_special(unsigned, const struct retro_game_info*, size_t) { return false; }
 

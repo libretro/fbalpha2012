@@ -3,6 +3,8 @@ LIBRETRO_OPTIMIZATIONS = 1
 FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 
+CXXFLAGS += -std=c++11
+
 ifeq ($(platform),)
 platform = unix
 ifeq ($(shell uname -a),)

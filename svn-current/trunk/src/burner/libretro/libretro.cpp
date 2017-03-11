@@ -1406,9 +1406,12 @@ bool retro_load_game(const struct retro_game_info *info)
    unsigned i = BurnDrvGetIndexByName(basename);
    if (i < nBurnDrvCount)
    {
+      const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
+      is_neogeo_game = (boardrom && strcmp(boardrom, "neogeo") == 0);
+
       set_environment();
       check_variables();
-      
+
       pBurnSoundOut = g_audio_buf;
       nBurnSoundRate = AUDIO_SAMPLERATE;
       nBurnSoundLen = AUDIO_SEGMENT_LENGTH;

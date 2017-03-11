@@ -16,7 +16,10 @@
 #endif
 
 static void log_dummy(enum retro_log_level level, const char *fmt, ...) { }
+
 static void set_environment();
+
+static void evaluate_neogeo_bios_mode(const char* drvname);
 
 static retro_environment_t environ_cb;
 static retro_log_printf_t log_cb = log_dummy;
@@ -56,6 +59,7 @@ INT32 (__cdecl *bprintf) (INT32 nStatus, TCHAR* szFormat, ...) = libretro_bprint
 
 extern UINT8 NeoSystem;
 bool is_neogeo_game = false;
+bool allow_neogeo_mode = true;
 
 enum neo_geo_modes
 {
@@ -520,9 +524,46 @@ static int InpDIPSWInit(void)
       }
    }
 
+   evaluate_neogeo_bios_mode(drvname);
+
    set_environment();
 
    return 0;
+}
+
+static void evaluate_neogeo_bios_mode(const char* drvname)
+{
+   if (!is_neogeo_game)
+      return;
+
+   bool is_neogeo_needs_specific_bios = false;
+
+   // search the BIOS dipswitch
+   for (int dip_idx = 0; dip_idx < dipswitch_core_options.size(); dip_idx++)
+   {
+      if (strcasecmp(dipswitch_core_options[dip_idx].friendly_name, "BIOS") == 0)
+      {
+         if (dipswitch_core_options[dip_idx].values.size() > 0)
+         {
+            // values[0] is the default value of the dipswitch
+            // if the default is different than 0, this means that a different Bios is needed
+            if (dipswitch_core_options[dip_idx].values[0].bdi.nSetting != 0x00)
+            {
+               is_neogeo_needs_specific_bios = true;
+               break;
+            }
+         }
+      }      
+   }
+
+   if (is_neogeo_needs_specific_bios)
+   {
+      // disable the NeoGeo mode core option
+      allow_neogeo_mode = false;
+
+      // set the NeoGeo mode to DIPSWITCH to rely on the Default Bios Dipswitch
+      g_opt_neo_geo_mode = NEO_GEO_MODE_DIPSWITCH;
+   }   
 }
 
 static void set_environment()
@@ -542,7 +583,8 @@ static void set_environment()
    if (is_neogeo_game)
    {
       // Add the Neo Geo core options
-      vars_systems.push_back(&var_neogeo_mode);
+      if (allow_neogeo_mode)
+         vars_systems.push_back(&var_neogeo_mode);
       vars_systems.push_back(&var_neogeo_controls);
    }
 
@@ -1071,17 +1113,20 @@ static void check_variables(void)
          newgen_controls = false;
       }
       
-      var.key = var_neogeo_mode.key;
-      if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+      if (allow_neogeo_mode)
       {
-         if (strcmp(var.value, "MVS") == 0)
-            g_opt_neo_geo_mode = NEO_GEO_MODE_MVS;
-         else if (strcmp(var.value, "AES") == 0)
-            g_opt_neo_geo_mode = NEO_GEO_MODE_AES;
-         else if (strcmp(var.value, "UNIBIOS") == 0)
-            g_opt_neo_geo_mode = NEO_GEO_MODE_UNIBIOS;
-         else if (strcmp(var.value, "DIPSWITCH") == 0)
-            g_opt_neo_geo_mode = NEO_GEO_MODE_DIPSWITCH;
+         var.key = var_neogeo_mode.key;
+         if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+         {
+            if (strcmp(var.value, "MVS") == 0)
+               g_opt_neo_geo_mode = NEO_GEO_MODE_MVS;
+            else if (strcmp(var.value, "AES") == 0)
+               g_opt_neo_geo_mode = NEO_GEO_MODE_AES;
+            else if (strcmp(var.value, "UNIBIOS") == 0)
+               g_opt_neo_geo_mode = NEO_GEO_MODE_UNIBIOS;
+            else if (strcmp(var.value, "DIPSWITCH") == 0)
+               g_opt_neo_geo_mode = NEO_GEO_MODE_DIPSWITCH;
+         }
       }
    }
 }

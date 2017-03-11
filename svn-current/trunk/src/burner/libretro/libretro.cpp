@@ -295,6 +295,18 @@ UINT8* CDEmuReadTOC(INT32 track) { return 0; }
 UINT8* CDEmuReadQChannel() { return 0; }
 INT32 CDEmuGetSoundBuffer(INT16* buffer, INT32 samples) { return 0; }
 
+// Replace the char c_find by the char c_replace in the destination c string
+char* str_char_replace(char* destination, char c_find, char c_replace)
+{
+   for (unsigned str_idx = 0; str_idx < strlen(destination); str_idx++)
+   {
+      if (destination[str_idx] == c_find)
+         destination[str_idx] = c_replace;
+   }
+
+   return destination;
+}
+
 static struct GameInp *pgi_reset;
 static struct GameInp *pgi_diag;
 
@@ -368,8 +380,6 @@ static int InpDIPSWInit(void)
    if (!drvname)
       return 0;
 
-   char char_to_replace[] = { ' ', '=' };
-
    for (int i = 0, j = 0; BurnDrvGetDIPInfo(&bdi, i) == 0; i++)
    {
       /* 0xFE is the beginning label for a DIP switch entry */
@@ -382,14 +392,8 @@ static int InpDIPSWInit(void)
          // Clean the dipswitch name to creation the core option name (removing space and equal characters)
          char option_name[strlen(bdi.szText) + 1]; // + 1 for the '\0' ending
          strcpy(option_name, bdi.szText);
-         for (int str_idx = 0; str_idx < strlen(option_name); str_idx++)
-         {
-            for (int c_idx = 0; c_idx < sizeof(char_to_replace); c_idx++)
-            {
-               if (bdi.szText[str_idx] == char_to_replace[c_idx])
-                  option_name[str_idx] = '_';
-            }
-         }
+         str_char_replace(option_name, ' ', '_');
+         str_char_replace(option_name, '=', '_');
          
          strncpy(dip_option->friendly_name, bdi.szText, sizeof(dip_option->friendly_name));
          snprintf(dip_option->option_name, sizeof(dip_option->option_name), "fba-dipswitch-%s-%s", drvname, option_name);
@@ -1450,13 +1454,13 @@ static const char *print_label(unsigned i)
    switch(i)
    {
       case RETRO_DEVICE_ID_JOYPAD_B:
-         return "RetroPad Button B";
+         return "RetroPad B Button";
       case RETRO_DEVICE_ID_JOYPAD_Y:
-         return "RetroPad Button Y";
+         return "RetroPad Y Button";
       case RETRO_DEVICE_ID_JOYPAD_SELECT:
-         return "RetroPad Button Select";
+         return "RetroPad Select Button";
       case RETRO_DEVICE_ID_JOYPAD_START:
-         return "RetroPad Button Start";
+         return "RetroPad Start Button";
       case RETRO_DEVICE_ID_JOYPAD_UP:
          return "RetroPad D-Pad Up";
       case RETRO_DEVICE_ID_JOYPAD_DOWN:
@@ -1466,21 +1470,23 @@ static const char *print_label(unsigned i)
       case RETRO_DEVICE_ID_JOYPAD_RIGHT:
          return "RetroPad D-Pad Right";
       case RETRO_DEVICE_ID_JOYPAD_A:
-         return "RetroPad Button A";
+         return "RetroPad A Button";
       case RETRO_DEVICE_ID_JOYPAD_X:
-         return "RetroPad Button X";
+         return "RetroPad X Button";
       case RETRO_DEVICE_ID_JOYPAD_L:
-         return "RetroPad Button L";
+         return "RetroPad L Button";
       case RETRO_DEVICE_ID_JOYPAD_R:
-         return "RetroPad Button R";
+         return "RetroPad R Button";
       case RETRO_DEVICE_ID_JOYPAD_L2:
-         return "RetroPad Button L2";
+         return "RetroPad L2 Button";
       case RETRO_DEVICE_ID_JOYPAD_R2:
-         return "RetroPad Button R2";
+         return "RetroPad R2 Button";
       case RETRO_DEVICE_ID_JOYPAD_L3:
-         return "RetroPad Button L3";
+         return "RetroPad L3 Button";
       case RETRO_DEVICE_ID_JOYPAD_R3:
-         return "RetroPad Button R3";
+         return "RetroPad R3 Button";
+      case RETRO_DEVICE_ID_JOYPAD_EMPTY:
+         return "None";
       default:
          return "No known label";
    }
@@ -1638,6 +1644,7 @@ static bool init_input(void)
 
    // Update core option for diagnostic input
    set_environment();
+   // Read the user core option values
    check_variables();
 
    return has_analog;

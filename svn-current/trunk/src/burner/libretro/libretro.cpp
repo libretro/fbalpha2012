@@ -1445,8 +1445,6 @@ static void extract_directory(char *buf, const char *path, size_t size)
 
 bool retro_load_game(const struct retro_game_info *info)
 {
-   INT32 width;
-   INT32 height;
    char basename[128];
 
    if (!info)
@@ -1485,6 +1483,8 @@ bool retro_load_game(const struct retro_game_info *info)
    unsigned i = BurnDrvGetIndexByName(basename);
    if (i < nBurnDrvCount)
    {
+      INT32 width, height;
+
       const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
       is_neogeo_game = (boardrom && strcmp(boardrom, "neogeo") == 0);
 
@@ -1496,7 +1496,7 @@ bool retro_load_game(const struct retro_game_info *info)
       nBurnSoundLen = AUDIO_SEGMENT_LENGTH;
 
       if (!fba_init(i, basename))
-         return false;
+         goto error;
 
       driver_inited = true;
 
@@ -1507,6 +1507,7 @@ bool retro_load_game(const struct retro_game_info *info)
       return true;
    }
 
+error:
    log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
    return false;
 }

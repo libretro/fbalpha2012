@@ -187,18 +187,17 @@ static struct RomBiosInfo aes_bioses[] = {
 };
 
 static struct RomBiosInfo uni_bioses[] = {
-   {"uni-bios_3_1.rom",  0x0c58093f, 0x0e, "Universe BIOS ver. 3.1"         ,  1 },
-   {"uni-bios_3_0.rom",  0xa97c89a9, 0x0f, "Universe BIOS ver. 3.0"         ,  2 },
-   {"uni-bios_2_3.rom",  0x27664eb5, 0x10, "Universe BIOS ver. 2.3"         ,  3 },
-   {"uni-bios_2_3o.rom", 0x601720ae, 0x11, "Universe BIOS ver. 2.3 (alt)"   ,  4 },
-   {"uni-bios_2_2.rom",  0x2d50996a, 0x12, "Universe BIOS ver. 2.2"         ,  5 },
-   {"uni-bios_2_1.rom",  0x8dabf76b, 0x13, "Universe BIOS ver. 2.1"         ,  6 },
-   {"uni-bios_2_0.rom",  0x0c12c2ad, 0x14, "Universe BIOS ver. 2.0"         ,  7 },
-   {"uni-bios_1_3.rom",  0xb24b44a0, 0x15, "Universe BIOS ver. 1.3"         ,  8 },
-   {"uni-bios_1_2.rom",  0x4fa698e9, 0x16, "Universe BIOS ver. 1.2"         ,  9 },
-   {"uni-bios_1_2o.rom", 0xe19d3ce9, 0x17, "Universe BIOS ver. 1.2 (alt)"   , 10 },
-   {"uni-bios_1_1.rom",  0x5dda0d84, 0x18, "Universe BIOS ver. 1.1"         , 11 },
-   {"uni-bios_1_0.rom",  0x0ce453a0, 0x19, "Universe BIOS ver. 1.0"         , 12 },
+   {"uni-bios_3_0.rom",  0xa97c89a9, 0x0e, "Universe BIOS ver. 3.0"         ,  1 },
+   {"uni-bios_2_3.rom",  0x27664eb5, 0x0f, "Universe BIOS ver. 2.3"         ,  2 },
+   {"uni-bios_2_3o.rom", 0x601720ae, 0x10, "Universe BIOS ver. 2.3 (alt)"   ,  3 },
+   {"uni-bios_2_2.rom",  0x2d50996a, 0x11, "Universe BIOS ver. 2.2"         ,  4 },
+   {"uni-bios_2_1.rom",  0x8dabf76b, 0x12, "Universe BIOS ver. 2.1"         ,  5 },
+   {"uni-bios_2_0.rom",  0x0c12c2ad, 0x13, "Universe BIOS ver. 2.0"         ,  6 },
+   {"uni-bios_1_3.rom",  0xb24b44a0, 0x14, "Universe BIOS ver. 1.3"         ,  7 },
+   {"uni-bios_1_2.rom",  0x4fa698e9, 0x15, "Universe BIOS ver. 1.2"         ,  8 },
+   {"uni-bios_1_2o.rom", 0xe19d3ce9, 0x16, "Universe BIOS ver. 1.2 (alt)"   ,  9 },
+   {"uni-bios_1_1.rom",  0x5dda0d84, 0x17, "Universe BIOS ver. 1.1"         , 10 },
+   {"uni-bios_1_0.rom",  0x0ce453a0, 0x18, "Universe BIOS ver. 1.0"         , 11 },
    {NULL, 0, 0, NULL, 0 }
 };
 

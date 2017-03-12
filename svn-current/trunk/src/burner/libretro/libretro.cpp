@@ -16,8 +16,12 @@
 #endif
 
 static void log_dummy(enum retro_log_level level, const char *fmt, ...) { }
+static const char *print_label(unsigned i);
 
 static void set_environment();
+static bool apply_dipswitch_from_variables();
+
+static void set_input_descriptors();
 
 static void evaluate_neogeo_bios_mode(const char* drvname);
 
@@ -344,6 +348,8 @@ char* str_char_replace(char* destination, char c_find, char c_replace)
    return destination;
 }
 
+std::vector<retro_input_descriptor> normal_input_descriptors;
+
 static struct GameInp *pgi_reset;
 static struct GameInp *pgi_diag;
 
@@ -555,6 +561,7 @@ static int InpDIPSWInit(void)
    evaluate_neogeo_bios_mode(drvname);
 
    set_environment();
+   apply_dipswitch_from_variables();
 
    return 0;
 }
@@ -651,6 +658,7 @@ static void set_environment()
    environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
 }
 
+// Update DIP switches value  depending of the choice the user made in core options
 static bool apply_dipswitch_from_variables()
 {
    bool dip_changed = false;
@@ -1244,6 +1252,9 @@ void retro_run()
 
       check_variables();
 
+      apply_dipswitch_from_variables();
+
+      bool reinit_input_performed = false;
       // reinitialise input if user changed the control scheme
       if (old_gamepad_controls != gamepad_controls ||
           old_newgen_controls_p1 != newgen_controls_p1 ||
@@ -1252,9 +1263,14 @@ void retro_run()
           old_remap_lr_p2 != remap_lr_p2)
       {
          init_input();
+         reinit_input_performed = true;
       }
 
-      apply_dipswitch_from_variables();
+      if (!reinit_input_performed) // if the reinit_input_performed is true, the 2 following methods was already called in the init_input one
+      {
+         // Re-assign all the input_descriptors to retroarch
+         set_input_descriptors();
+      }
 
       // adjust aspect ratio if the needed
       if (old_core_aspect_par != core_aspect_par)
@@ -1384,7 +1400,6 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
    analog_controls_enabled = init_input();
 
    InpDIPSWInit();
-   apply_dipswitch_from_variables();
 
    BurnDrvInit();
 
@@ -1688,22 +1703,20 @@ static bool init_input(void)
    for (unsigned i = 0; i < 0x5000; i++)
       keybinds[i][0] = 0xff;
 
-   pgi = GameInp;
-
    key_map bind_map[BIND_MAP_COUNT];
-
    unsigned counter = init_bind_map(bind_map, gamepad_controls, newgen_controls_p1, newgen_controls_p2, remap_lr_p1, remap_lr_p2);
 
-   struct retro_input_descriptor input_descriptors[nGameInpCount + 1]; // + 1 for the empty ending retro_input_descriptor { 0 }
    bool is_avsp =   (parentrom && strcmp(parentrom, "avsp") == 0   || strcmp(drvname, "avsp") == 0);
    bool is_armwar = (parentrom && strcmp(parentrom, "armwar") == 0 || strcmp(drvname, "armwar") == 0);
 
-   unsigned int nGameInpCountAffected = 0;
    char button_select[15];
    char button_shot[15];
 
+   pgi = GameInp;
    pgi_reset = NULL;
    pgi_diag = NULL;
+
+   normal_input_descriptors.clear();
 
    for(unsigned int i = 0; i < nGameInpCount; i++, pgi++)
    {
@@ -1785,11 +1798,9 @@ static bool init_input(void)
 
          char* description = bii.szName + offset_player_x;
          
-         input_descriptors[nGameInpCountAffected] = { port, device, index, id, description };
+         normal_input_descriptors.push_back((retro_input_descriptor){ port, device, index, id, description });
 
          log_cb(RETRO_LOG_INFO, "[%-16s] [%-15s] nSwitch.nCode: 0x%04x - assigned to key [%-25s] on port %2d.\n", bii.szName, bii.szInfo, pgi->Input.Switch.nCode, print_label(keybinds[pgi->Input.Switch.nCode][0]), port);
-
-         nGameInpCountAffected++;
 
          break;
       }
@@ -1800,14 +1811,13 @@ static bool init_input(void)
       }
    }
 
-   input_descriptors[nGameInpCountAffected] = { 0 };
-
-   environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, input_descriptors);
-
    // Update core option for diagnostic input
    set_environment();
    // Read the user core option values
    check_variables();
+
+   // The list of normal and macro input_descriptors are filled, we can assign all the input_descriptors to retroarch
+   set_input_descriptors();
 
    return has_analog;
 }
@@ -2150,3 +2160,20 @@ size_t wcstombs(char *s, const wchar_t *pwcs, size_t n)
 }
 
 #endif
+
+// Set the input descriptors by combininng the two lists of 'Normal' and 'Macros' inputs
+static void set_input_descriptors()
+{
+   struct retro_input_descriptor input_descriptors[normal_input_descriptors.size() + 1]; // + 1 for the empty ending retro_input_descriptor { 0 }
+
+   unsigned input_descriptor_idx = 0;
+
+   for (unsigned i = 0; i < normal_input_descriptors.size(); i++, input_descriptor_idx++)
+   {
+      input_descriptors[input_descriptor_idx] = normal_input_descriptors[i];
+   }
+
+   input_descriptors[input_descriptor_idx] = { 0 };
+
+   environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, input_descriptors);
+}

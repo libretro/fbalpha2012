@@ -154,7 +154,7 @@ static void GameInpInitMacros()
 			pgi->nType = BIT_DIGITAL;
 			pgi->Macro.nMode = 0;
 
-			sprintf(pgi->Macro.szName, "P%i 3× Punch", nPlayer + 1);
+			sprintf(pgi->Macro.szName, "P%i 3x Punch", nPlayer + 1);
 			for (INT32 j = 0; j < 3; j++) {
 				BurnDrvGetInputInfo(&bii, nPunchInputs[nPlayer][j]);
 				pgi->Macro.pVal[j] = bii.pVal;
@@ -170,7 +170,7 @@ static void GameInpInitMacros()
 			pgi->nType = BIT_DIGITAL;
 			pgi->Macro.nMode = 0;
 
-			sprintf(pgi->Macro.szName, "P%i 3× Kick", nPlayer + 1);
+			sprintf(pgi->Macro.szName, "P%i 3x Kick", nPlayer + 1);
 			for (INT32 j = 0; j < 3; j++) {
 				BurnDrvGetInputInfo(&bii, nKickInputs[nPlayer][j]);
 				pgi->Macro.pVal[j] = bii.pVal;

@@ -123,8 +123,8 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[1024];
 static unsigned g_rom_count;
 
-#define AUDIO_SAMPLERATE 32000
-#define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
+#define AUDIO_SAMPLERATE 48000
+#define AUDIO_SEGMENT_LENGTH 801 // <-- Hardcoded value that corresponds well to 48kHz audio.
 
 static uint32_t *g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
@@ -1311,7 +1311,7 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
 
    nBurnBpp = 2;
    nFMInterpolation = 3;
-   nInterpolation = 3;
+   nInterpolation = 1;
 
    analog_controls_enabled = init_input();
 

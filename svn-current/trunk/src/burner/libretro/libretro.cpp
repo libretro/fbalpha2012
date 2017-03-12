@@ -818,13 +818,11 @@ static bool open_archive()
 #endif
 
 		if (ZipOpen(path) != 0)
-		{
-			log_cb(RETRO_LOG_ERROR, "[FBA] Failed to find archive: %s\n", path);
-			return false;
-		}
-		ZipClose();
+			log_cb(RETRO_LOG_ERROR, "[FBA] Failed to find archive: %s, let's continue with other archives...\n", path);
+		else
+			g_find_list_path.push_back(path);
 
-		g_find_list_path.push_back(path);
+		ZipClose();
 	}
 
 	for (unsigned z = 0; z < g_find_list_path.size(); z++)
@@ -857,12 +855,23 @@ static bool open_archive()
 
             BurnDrvGetRomName(&rom_name, i, 0);
 
+            bool bad_crc = false;
+
+            if (index < 0)
+            {
+               index = find_rom_by_name(rom_name, list, count);
+               bad_crc = true;
+            }
+
 			// USE UNI-BIOS...
 			if (index < 0)
 			{
 				log_cb(RETRO_LOG_WARN, "[FBA] Searching ROM at index %d with CRC 0x%08x and name %s => Not Found\n", i, g_find_list[i].ri.nCrc, rom_name);
                continue;              
             }
+
+            if (bad_crc)
+               log_cb(RETRO_LOG_WARN, "[FBA] Using ROM at index %d with wrong CRC and name %s\n", i, rom_name);
 
 #if 0
             log_cb(RETRO_LOG_INFO, "[FBA] Searching ROM at index %d with CRC 0x%08x and name %s => Found\n", i, g_find_list[i].ri.nCrc, rom_name);

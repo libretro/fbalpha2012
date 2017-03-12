@@ -451,7 +451,7 @@ static int InpDIPSWInit(void)
          }
          else // ... so, to not hang, we will generate a name based on the position of the dip (DIPSWITCH 1, DIPSWITCH 2...)
          {
-            sprintf(option_name, "DIPSWITCH %d", dipswitch_core_options.size());
+            sprintf(option_name, "DIPSWITCH %d", (char) dipswitch_core_options.size());
             log_cb(RETRO_LOG_WARN, "Error in %sDIPList : The DIPSWITCH '%d' has no name. '%s' name has been generated\n", drvname, dipswitch_core_options.size(), option_name);
          }
 

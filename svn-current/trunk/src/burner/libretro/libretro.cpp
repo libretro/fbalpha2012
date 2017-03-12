@@ -1698,7 +1698,7 @@ static bool init_input(void)
    GameInpInit();
    GameInpDefault();
 
-   // Handle twinstick games (issue #102, not working for now)
+   // Handle twinstick games (issue libretro/fbalpha#102)
    bool twinstick_game[5] = { false, false, false, false, false };
    bool up_is_mapped[5] = { false, false, false, false, false };
    bool down_is_mapped[5] = { false, false, false, false, false };
@@ -2281,16 +2281,6 @@ static void InputTick()
 		INT32 nAdd = 0;
 		if ((pgi->nInput &  GIT_GROUP_SLIDER) == 0) {				// not a slider
 			continue;
-		}
-
-		if (pgi->nInput == GIT_KEYSLIDER) {
-			// Get states of the two keys
-			if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT))	{
-				nAdd -= 0x100;
-			}
-			if (input_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT))	{
-				nAdd += 0x100;
-			}
 		}
 
 		if (pgi->nInput == GIT_JOYSLIDER) {

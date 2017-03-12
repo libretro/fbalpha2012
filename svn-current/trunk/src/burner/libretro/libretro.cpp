@@ -1684,6 +1684,13 @@ static bool init_input(void)
    GameInpInit();
    GameInpDefault();
 
+   // Handle twinstick games (issue #102, not working for now)
+   bool twinstick_game[5] = { false, false, false, false, false };
+   bool up_is_mapped[5] = { false, false, false, false, false };
+   bool down_is_mapped[5] = { false, false, false, false, false };
+   bool left_is_mapped[5] = { false, false, false, false, false };
+   bool right_is_mapped[5] = { false, false, false, false, false };
+
    bool has_analog = false;
    struct GameInp* pgi = GameInp;
    for (unsigned i = 0; i < nGameInpCount; i++, pgi++)
@@ -1737,11 +1744,11 @@ static bool init_input(void)
       bool bPlayerInName = (bii.szName[0] == 'P' && bii.szName[1] >= '1' && bii.szName[1] <= '4');
 
       if (bPlayerInInfo || bPlayerInName) {
-         UINT32 port = 0;
+         INT32 port = -1;
 
          if (bPlayerInName)
             port = bii.szName[1] - '1';
-         if (bPlayerInInfo && port == 0)
+         if (bPlayerInInfo && port == -1)
             port = bii.szInfo[1] - '1';
 
          char* szi = bii.szInfo + 3;
@@ -1759,19 +1766,43 @@ static bool init_input(void)
             value_found = true;
          }
          if (strncmp("up", szi, 2) == 0) {
-            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_UP;
+            if( up_is_mapped[port] ) {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_X;
+               twinstick_game[port] = true;
+            } else {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_UP;
+               up_is_mapped[port] = true;
+            }
             value_found = true;
          }
          if (strncmp("down", szi, 4) == 0) {
-            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
+            if( down_is_mapped[port] ) {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_B;
+               twinstick_game[port] = true;
+            } else {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_DOWN;
+               down_is_mapped[port] = true;
+            }
             value_found = true;
          }
          if (strncmp("left", szi, 4) == 0) {
-            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+            if( left_is_mapped[port] ) {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_Y;
+               twinstick_game[port] = true;
+            } else {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_LEFT;
+               left_is_mapped[port] = true;
+            }
             value_found = true;
          }
          if (strncmp("right", szi, 5) == 0) {
-            keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
+            if( right_is_mapped[port] ) {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_A;
+               twinstick_game[port] = true;
+            } else {
+               keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_RIGHT;
+               right_is_mapped[port] = true;
+            }
             value_found = true;
          }
 
@@ -1787,7 +1818,19 @@ static bool init_input(void)
          if (strncmp("fire ", szi, 5) == 0) {
             char *szb = szi + 5;
             INT32 nButton = strtol(szb, NULL, 0);
-            if (nFireButtons <= 4) {
+            if (twinstick_game[port]) {
+               switch (nButton) {
+                  case 1:
+                     keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_R;
+                     value_found = true;
+                     break;
+                  case 2:
+                     keybinds[pgi->Input.Switch.nCode][0] = RETRO_DEVICE_ID_JOYPAD_L;
+                     value_found = true;
+                     break;
+               }
+			}
+            else if (nFireButtons <= 4) {
                if (is_neogeo_game) {
                   switch (nButton) {
                      case 1:
@@ -2305,6 +2348,7 @@ static void poll_input(void)
                break;
             }
          case GIT_KEYSLIDER:						// Keyboard slider
+         case GIT_JOYSLIDER:						// Joystick slider
 #if 0
             log_cb(RETRO_LOG_INFO, "GIT_JOYSLIDER\n");
 #endif

@@ -52,6 +52,11 @@ GRIFFIN_DIR = griffin-libretro
 
 TARGET_NAME := fbalpha2012
 
+GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
+ifneq ($(GIT_VERSION)," unknown")
+	FBA_DEFINES += -DGIT_VERSION=\"$(GIT_VERSION)\"
+endif
+
 ifeq ($(platform), unix)
    TARGET := $(TARGET_NAME)_libretro.so
    fpic := -fPIC
@@ -449,7 +454,7 @@ FBA_COBJ := $(SOURCES_C:.c=.o)
 
 OBJS := $(FBA_COBJ) $(FBA_CXXOBJ)
 
-FBA_DEFINES := -DUSE_SPEEDHACKS -D__LIBRETRO__ \
+FBA_DEFINES += -DUSE_SPEEDHACKS -D__LIBRETRO__ \
 	-D__LIBRETRO_OPTIMIZATIONS__ \
 	-DWANT_NEOGEOCD \
 	$(ENDIANNESS_DEFINES) \

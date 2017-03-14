@@ -8,10 +8,12 @@ INCLUDE_7Z_SUPPORT = 1
 
 CXXFLAGS += -std=c++11
 
+# system platform
 ifeq ($(platform),)
    platform = unix
    ifeq ($(shell uname -a),)
       platform = win
+      EXE_EXT=.exe
    else ifneq ($(findstring Darwin,$(shell uname -a)),)
       platform = osx
       arch = intel
@@ -20,24 +22,10 @@ ifeq ($(platform),)
       endif
    else ifneq ($(findstring MINGW,$(shell uname -a)),)
       platform = win
+      EXE_EXT=.exe
    endif
 else ifneq (,$(findstring armv,$(platform)))
    override platform += unix
-endif
-
-# system platform
-system_platform = unix
-ifeq ($(shell uname -a),)
-   system_platform = win
-   EXE_EXT=.exe
-else ifneq ($(findstring Darwin,$(shell uname -a)),)
-   system_platform = osx
-   arch = intel
-   ifeq ($(shell uname -p),powerpc)
-      arch = ppc
-   endif
-else ifneq ($(findstring MINGW,$(shell uname -a)),)
-   system_platform = win
 endif
 
 

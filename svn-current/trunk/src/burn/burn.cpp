@@ -5,6 +5,14 @@
 #include "burn_sound.h"
 #if defined(GEKKO) || defined(_XBOX1)
 #include "driverlist-gx.h"
+#elif defined(CPS1_ONLY)
+#include "driverlist_cps1.h"
+#elif defined(CPS2_ONLY)
+#include "driverlist_cps2.h"
+#elif defined(CPS3_ONLY)
+#include "driverlist_cps3.h"
+#elif defined(NEOGEO_ONLY)
+#include "driverlist_neogeo.h"
 #else
 #include "driverlist.h"
 #endif

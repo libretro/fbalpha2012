@@ -52,8 +52,24 @@ FBA_GENERATED_DIR = $(MAIN_FBA_DIR)/dep/generated
 FBA_SCRIPTS_DIR = $(MAIN_FBA_DIR)/dep/scripts
 GRIFFIN_DIR = griffin-libretro
 
-TARGET_NAME := fbalpha2012
+# TARGET
+ifeq ($(target),cps1)
+   TARGET_NAME := fbalpha2012_cps1
+   FBA_DEFINES += -DTARGET=\"\ CPS-1\" -DCPS1_ONLY
+else ifeq ($(target),cps2)
+   TARGET_NAME := fbalpha2012_cps2
+   FBA_DEFINES += -DTARGET=\"\ CPS-2\" -DCPS2_ONLY
+else ifeq ($(target),cps3)
+   TARGET_NAME := fbalpha2012_cps3
+   FBA_DEFINES += -DTARGET=\"\ CPS-3\" -DCPS3_ONLY
+else ifeq ($(target),neogeo)
+   TARGET_NAME := fbalpha2012_neogeo
+   FBA_DEFINES += -DTARGET=\"\ Neo\ Geo\" -DNEOGEO_ONLY
+else
+   TARGET_NAME := fbalpha2012
+endif
 
+# GIT HASH
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 ifneq ($(GIT_VERSION)," unknown")
    FBA_DEFINES += -DGIT_VERSION=\"$(GIT_VERSION)\"
@@ -400,10 +416,115 @@ FBA_CPU_DIRS := $(FBA_CPU_DIR) \
 	$(FBA_CPU_DIR)/sh2 \
 	$(FBA_CPU_DIR)/z80
 
+
+# CPS-1 Only
+ifeq ($(target),cps1)
+   SOURCES_CXX := $(FBA_BURN_DIR)/devices/8255ppi.cpp \
+		$(FBA_BURN_DIR)/devices/eeprom.cpp \
+		$(FBA_BURN_DIR)/devices/timekpr.cpp \
+		$(FBA_BURN_DIR)/snd/burn_ym2151.cpp \
+		$(FBA_BURN_DIR)/snd/burn_ym2203.cpp \
+		$(FBA_BURN_DIR)/snd/msm5205.cpp \
+		$(FBA_BURN_DIR)/snd/msm6295.cpp \
+		$(FBA_CPU_DIR)/m68000_intf.cpp \
+		$(FBA_CPU_DIR)/z80_intf.cpp
+
+   SOURCES_C :=	$(FBA_BURN_DIR)/snd/ay8910.c \
+		$(FBA_BURN_DIR)/snd/fm.c \
+		$(FBA_BURN_DIR)/snd/ym2151.c \
+		$(FBA_BURN_DIR)/snd/ymdeltat.c
+
+   FBA_BURN_DIRS := $(CPS2_DIR) \
+		$(FBA_BURN_DIR) \
+		$(FBA_BURN_DRIVERS_DIR)
+
+   FBA_CPU_DIRS := $(FBA_CPU_DIR)/a68k \
+		$(M68K_DIR) \
+		$(FBA_CPU_DIR)/z80
+
+   BURN_BLACKLIST += $(CPS2_DIR)/d_cps2.cpp \
+		$(CPS2_DIR)/cps2_crpt.cpp \
+		$(FBA_BURN_DIR)/burn_sound_c.cpp \
+		$(FBA_BURN_DIR)/burn_vector.cpp \
+		$(FBA_BURN_DIR)/tiles_generic.cpp
+
+# CPS-2 Only
+else ifeq ($(target),cps2)
+   SOURCES_CXX := $(FBA_BURN_DIR)/devices/8255ppi.cpp \
+		$(FBA_BURN_DIR)/devices/eeprom.cpp \
+		$(FBA_CPU_DIR)/m68000_intf.cpp \
+		$(FBA_CPU_DIR)/z80_intf.cpp
+
+   FBA_BURN_DIRS := $(CPS2_DIR) \
+		$(FBA_BURN_DIR) \
+		$(FBA_BURN_DRIVERS_DIR)
+
+   FBA_CPU_DIRS := $(FBA_CPU_DIR)/a68k \
+		$(M68K_DIR) \
+		$(FBA_CPU_DIR)/z80
+
+   BURN_BLACKLIST += $(CPS2_DIR)/d_cps1.cpp \
+		$(CPS2_DIR)/fcrash_snd.cpp \
+		$(CPS2_DIR)/kabuki.cpp \
+		$(CPS2_DIR)/ps.cpp \
+		$(CPS2_DIR)/ps_m.cpp \
+		$(CPS2_DIR)/ps_z.cpp \
+		$(CPS2_DIR)/sf2mdt_snd.cpp \
+		$(FBA_BURN_DIR)/burn_sound_c.cpp \
+		$(FBA_BURN_DIR)/burn_vector.cpp \
+		$(FBA_BURN_DIR)/tiles_generic.cpp
+
+# CPS-3 Only
+else ifeq ($(target),cps3)
+   SOURCES_CXX := $(FBA_BURN_DIR)/devices/eeprom.cpp
+
+   FBA_BURN_DIRS := $(CPS3_DIR) \
+		$(FBA_BURN_DIR) \
+		$(FBA_BURN_DRIVERS_DIR)
+
+   FBA_CPU_DIRS := $(FBA_CPU_DIR)/sh2
+
+   BURN_BLACKLIST += $(FBA_BURN_DIR)/timer.cpp \
+		$(FBA_BURN_DIR)/burn_sound_c.cpp \
+		$(FBA_BURN_DIR)/burn_vector.cpp \
+		$(FBA_BURN_DIR)/tiles_generic.cpp
+
+# Neo Geo Only
+else ifeq ($(target),neogeo)
+   SOURCES_CXX := $(FBA_BURN_DIR)/devices/eeprom.cpp \
+		$(FBA_BURN_DIR)/snd/burn_ym2610.cpp \
+		$(FBA_BURN_DIR)/snd/burn_ymf278b.cpp \
+		$(FBA_BURN_DIR)/snd/ymz280b.cpp \
+		$(FBA_CPU_DIR)/m68000_intf.cpp \
+		$(FBA_CPU_DIR)/z80_intf.cpp \
+		$(LIBRETRO_DIR)/neocdlist.cpp
+
+   SOURCES_C :=	$(FBA_BURN_DIR)/snd/ay8910.c \
+		$(FBA_BURN_DIR)/snd/fm.c \
+		$(FBA_BURN_DIR)/snd/ymf278b.c \
+		$(FBA_BURN_DIR)/snd/ymdeltat.c
+
+   FBA_BURN_DIRS := $(NEOGEO_DIR) \
+		$(FBA_BURN_DIR) \
+		$(FBA_BURN_DRIVERS_DIR)
+
+   FBA_CPU_DIRS := $(FBA_CPU_DIR)/a68k \
+		$(M68K_DIR) \
+		$(FBA_CPU_DIR)/z80
+
+   BURN_BLACKLIST += $(FBA_BURN_DIR)/burn_sound_c.cpp \
+		$(FBA_BURN_DIR)/burn_vector.cpp \
+		$(FBA_BURN_DIR)/tiles_generic.cpp
+
+else
+   SOURCES_CXX := $(LIBRETRO_DIR)/neocdlist.cpp
+
+endif
+
+
 FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
 
-FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS) $(FBA_BURNER_DIRS)
-
+FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS)
 
 ifeq ($(EXTERNAL_ZLIB), 1)
    FBA_DEFINES += -DEXTERNAL_ZLIB
@@ -411,10 +532,12 @@ else
    FBA_SRC_DIRS += $(FBA_LIB_DIRS)
 endif
 
-SOURCES_CXX := $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
-SOURCES_CXX += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp $(LIBRETRO_DIR)/gami.cpp $(LIBRETRO_DIR)/gamc.cpp
+
+SOURCES_CXX += $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
+SOURCES_CXX += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/gami.cpp $(LIBRETRO_DIR)/gamc.cpp
+SOURCES_C += $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
+
 FBA_CXXOBJ := $(SOURCES_CXX:.cpp=.o)
-SOURCES_C := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c)))
 FBA_COBJ := $(SOURCES_C:.c=.o)
 
 OBJS := $(FBA_COBJ) $(FBA_CXXOBJ)

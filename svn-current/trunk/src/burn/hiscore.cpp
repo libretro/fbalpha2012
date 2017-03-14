@@ -39,10 +39,16 @@ extern INT32 nSekCount;
 
 static void set_cpu_type()
 {
+#if !defined(CPS3_ONLY)
 	if (nSekCount > -1)
 	{
 		nCpuType = 1;			// Motorola 68000
 	}
+	else if (nHasZet > -1)
+	{
+		nCpuType = 5;			// Zilog Z80
+	}
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
 	else if (nVezCount)
 	{
 		nCpuType = 2;			// NEC V30 / V33
@@ -59,10 +65,6 @@ static void set_cpu_type()
 	{
 		nCpuType = 6;			// M6809
 	}
-	else if (nHasZet > -1)
-	{
-		nCpuType = 5;			// Zilog Z80
-	}
 	else if (nM6502Count)
 	{
 		nCpuType = 4;			// MOS 6502
@@ -75,6 +77,13 @@ static void set_cpu_type()
 	{
 		nCpuType = 9;			// S2650
 	}
+#endif
+#else
+	if (has_sh2)
+	{
+		nCpuType = 3;			// Hitachi SH2
+	}
+#endif
 	else
 	{
 		nCpuType = 0;			// Unknown (don't use cheats)
@@ -85,12 +94,18 @@ static void cpu_open(INT32 nCpu)
 {
 	switch (nCpuType)
 	{
+#if !defined(CPS3_ONLY)
 		case 1:	
 			SekOpen(nCpu);
 		break;
 
-		case 2:	
-			VezOpen(nCpu);	
+		case 5:
+			ZetOpen(nCpu);
+		break;
+
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
+		case 2:
+			VezOpen(nCpu);
 		break;
 
 		case 3:	
@@ -101,10 +116,6 @@ static void cpu_open(INT32 nCpu)
 			M6502Open(nCpu);
 		break;
 
-		case 5:
-			ZetOpen(nCpu);
-		break;
-			
 		case 6:
 			M6809Open(nCpu);
 		break;
@@ -112,12 +123,17 @@ static void cpu_open(INT32 nCpu)
 		case 7:
 			HD6309Open(nCpu);
 		break;
-		
-		case 8:
-		break;
-		
+
 		case 9: 
 			s2650Open(nCpu);
+		break;
+#endif
+#else
+		case 3:
+			Sh2Open(nCpu);
+		break;
+#endif
+		case 8:
 		break;
 	}
 }
@@ -126,26 +142,28 @@ static void cpu_close()
 {
 	switch (nCpuType)
 	{
+#if !defined(CPS3_ONLY)
 		case 1:
 			SekClose();
 		break;
 
-		case 2:
-			VezClose();	
+		case 5:
+			ZetClose();
 		break;
 
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
 		case 3:
 			Sh2Close();
+		break;
+
+		case 2:
+			VezClose();
 		break;
 
 		case 4:
 			M6502Close();
 		break;
 
-		case 5:
-			ZetClose();
-		break;
-		
 		case 6:
 			M6809Close();
 		break;
@@ -153,12 +171,17 @@ static void cpu_close()
 		case 7:
 			HD6309Close();
 		break;
-		
-		case 8:
-		break;
-		
+
 		case 9:
 			s2650Close();
+		break;
+#endif
+#else
+		case 3:
+			Sh2Close();
+		break;
+#endif
+		case 8:
 		break;
 	}
 }
@@ -208,20 +231,22 @@ static UINT8 cpu_read_byte(UINT32 a)
 {
 	switch (nCpuType)
 	{
+#if !defined(CPS3_ONLY)
 		case 1:
 			return SekReadByte(a);
 
-		case 2:
-			return cpu_readmem20(a);	
+		case 5:
+			return ZetReadByte(a);
 
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
 		case 3:
 			return Sh2ReadByte(a);
 
+		case 2:
+			return cpu_readmem20(a);
+
 		case 4:
 			return M6502ReadByte(a);
-
-		case 5:
-			return ZetReadByte(a);
 			
 		case 6:
 			return M6809ReadByte(a);
@@ -234,6 +259,12 @@ static UINT8 cpu_read_byte(UINT32 a)
 			
 		case 9:
 			return s2650_read(a);
+
+#endif
+#else
+		case 3:
+			return Sh2ReadByte(a);
+#endif
 	}
 
 	return 0;
@@ -243,24 +274,27 @@ static void cpu_write_byte(UINT32 a, UINT8 d)
 {
 	switch (nCpuType)
 	{
+#if !defined(CPS3_ONLY)
 		case 1:
 			SekWriteByteROM(a, d);
+		break;
+
+		case 5:
+			ZetWriteByte(a, d);
+		break;
+
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
+
+		case 3:
+			Sh2WriteByte(a, d);
 		break;
 
 		case 2:
 			cpu_writemem20(a, d);
 		break;
 
-		case 3:
-			Sh2WriteByte(a, d);
-		break;
-
 		case 4:
 			M6502WriteByte(a, d);
-		break;
-
-		case 5:
-			ZetWriteByte(a, d);
 		break;
 		
 		case 6:
@@ -278,6 +312,14 @@ static void cpu_write_byte(UINT32 a, UINT8 d)
 		case 9:
 			s2650_write(a, d);
 		break;
+
+#endif
+
+#else
+		case 3:
+			Sh2WriteByte(a, d);
+		break;
+#endif
 	}
 }
 

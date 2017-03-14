@@ -133,11 +133,13 @@ INT32 CpsRunInit()
 		return 1;
 	}
 
+	#if !defined(CPS2_ONLY)
 	if ((Cps & 1) && Cps1Qs == 0 && Cps1DisablePSnd == 0) {			// Sound init (MSM6295 + YM2151)
 		if (PsndInit()) {
 			return 1;
 		}
 	}
+	#endif
 
 	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) {			// Sound init (QSound)
 		if (QsndInit()) {
@@ -173,7 +175,9 @@ INT32 CpsRunExit()
 
 	// Sound exit
 	if (((Cps == 2) && !Cps2DisableQSnd) || Cps1Qs == 1) QsndExit();
+	#if !defined(CPS2_ONLY)
 	if (Cps != 2 && Cps1Qs == 0 && !Cps1DisablePSnd) PsndExit();
+	#endif
 
 	// Graphics exit
 	CpsObjExit();
@@ -300,7 +304,9 @@ INT32 Cps1Frame()
 	} else {
 		if (!Cps1DisablePSnd) {
 			ZetOpen(0);
+			#if !defined(CPS2_ONLY)
 			PsndNewFrame();
+			#endif
 		}
 	}
 	
@@ -350,12 +356,14 @@ INT32 Cps1Frame()
 
 	if (Cps1Qs == 1) {
 		QsndEndFrame();
+	#if !defined(CPS2_ONLY)
 	} else {
 		if (!Cps1DisablePSnd) {
 			PsndSyncZ80(nCpsZ80Cycles);
 			PsmUpdate(nBurnSoundLen);
 			ZetClose();
 		}
+	#endif
 	}
 	
 	if (CpsRunFrameEndCallbackFunction) {
@@ -369,6 +377,7 @@ INT32 Cps1Frame()
 	return 0;
 }
 
+#if !defined(CPS1_ONLY)
 INT32 Cps2Frame()
 {
 	INT32 nDisplayEnd, nNext;									// variables to keep track of executed 68K cyles
@@ -534,3 +543,4 @@ INT32 Cps2Frame()
 	return 0;
 }
 
+#endif /* #if !defined(CPS1_ONLY) */

@@ -12,6 +12,18 @@
 
 #define FBA_VERSION "v0.2.97.29" // Sept 16, 2013 (SVN)
 
+#if defined(CPS1_ONLY)
+#define CORE_OPTION_NAME "fbalpha2012_cps1"
+#elif defined(CPS2_ONLY)
+#define CORE_OPTION_NAME "fbalpha2012_cps2"
+#elif defined(CPS3_ONLY)
+#define CORE_OPTION_NAME "fbalpha2012_cps3"
+#elif defined(NEOGEO_ONLY)
+#define CORE_OPTION_NAME "fbalpha2012_neogeo"
+#else
+#define CORE_OPTION_NAME "fbalpha2012"
+#endif
+
 #ifdef _WIN32
    char slash = '\\';
 #else
@@ -152,21 +164,21 @@ void retro_set_input_state(retro_input_state_t cb) { input_cb = cb; }
 
 static const struct retro_variable var_empty = { NULL, NULL };
 
-static const struct retro_variable var_fba_aspect = { "fba-aspect", "Core-provided aspect ratio; DAR|PAR" };
-static const struct retro_variable var_fba_cpu_speed_adjust = { "fba-cpu-speed-adjust", "CPU overclock; 100|110|120|130|140|150|160|170|180|190|200" };
-static const struct retro_variable var_fba_diagnostic_input = { "fba-diagnostic-input", "Diagnostic Input; None|Hold Start|Start + A + B|Hold Start + A + B|Start + L + R|Hold Start + L + R|Hold Select|Select + A + B|Hold Select + A + B|Select + L + R|Hold Select + L + R" };
-static const struct retro_variable var_fba_hiscores = { "fba-hiscores", "Hiscores; enabled|disabled" };
+static const struct retro_variable var_fba_aspect = { CORE_OPTION_NAME "_aspect", "Core-provided aspect ratio; DAR|PAR" };
+static const struct retro_variable var_fba_cpu_speed_adjust = { CORE_OPTION_NAME "_cpu_speed_adjust", "CPU overclock; 100|110|120|130|140|150|160|170|180|190|200" };
+static const struct retro_variable var_fba_diagnostic_input = { CORE_OPTION_NAME "_diagnostic_input", "Diagnostic Input; None|Hold Start|Start + A + B|Hold Start + A + B|Start + L + R|Hold Start + L + R|Hold Select|Select + A + B|Hold Select + A + B|Select + L + R|Hold Select + L + R" };
+static const struct retro_variable var_fba_hiscores = { CORE_OPTION_NAME "_hiscores", "Hiscores; enabled|disabled" };
 
 // Neo Geo core options
-static const struct retro_variable var_fba_neogeo_mode = { "fba-neogeo-mode", "Neo Geo mode; MVS|AES|UNIBIOS|DIPSWITCH" };
+static const struct retro_variable var_fba_neogeo_mode = { CORE_OPTION_NAME "_neogeo_mode", "Neo Geo mode; MVS|AES|UNIBIOS|DIPSWITCH" };
 
 // Mapping core options
-static const struct retro_variable var_fba_controls_p1 = { "fba-controls-p1", "P1 control scheme; gamepad|arcade" };
-static const struct retro_variable var_fba_controls_p2 = { "fba-controls-p2", "P2 control scheme; gamepad|arcade" };
-static const struct retro_variable var_fba_neogeo_controls_p1 = { "fba-neogeo-controls-p1", "Neo Geo P1 gamepad scheme; classic|newgen" };
-static const struct retro_variable var_fba_neogeo_controls_p2 = { "fba-neogeo-controls-p2", "Neo Geo P2 gamepad scheme; classic|newgen" };
-static const struct retro_variable var_fba_lr_controls_p1 = { "fba-lr-controls-p1", "L/R P1 gamepad scheme; normal|remap to R1/R2" };
-static const struct retro_variable var_fba_lr_controls_p2 = { "fba-lr-controls-p2", "L/R P2 gamepad scheme; normal|remap to R1/R2" };
+static const struct retro_variable var_fba_controls_p1 = { CORE_OPTION_NAME "_controls_p1", "P1 control scheme; gamepad|arcade" };
+static const struct retro_variable var_fba_controls_p2 = { CORE_OPTION_NAME "_controls_p2", "P2 control scheme; gamepad|arcade" };
+static const struct retro_variable var_fba_neogeo_controls_p1 = { CORE_OPTION_NAME "_neogeo_controls_p1", "Neo Geo P1 gamepad scheme; classic|newgen" };
+static const struct retro_variable var_fba_neogeo_controls_p2 = { CORE_OPTION_NAME "_neogeo_controls_p2", "Neo Geo P2 gamepad scheme; classic|newgen" };
+static const struct retro_variable var_fba_lr_controls_p1 = { CORE_OPTION_NAME "_lr_controls_p1", "L/R P1 gamepad scheme; normal|remap to R1/R2" };
+static const struct retro_variable var_fba_lr_controls_p2 = { CORE_OPTION_NAME "_lr_controls_p2", "L/R P2 gamepad scheme; normal|remap to R1/R2" };
 
 void retro_set_environment(retro_environment_t cb)
 {
@@ -469,7 +481,7 @@ static int InpDIPSWInit(void)
          str_char_replace(option_name, ' ', '_');
          str_char_replace(option_name, '=', '_');
 
-         snprintf(dip_option->option_name, sizeof(dip_option->option_name), "fba-dipswitch-%s-%s", drvname, option_name);
+         snprintf(dip_option->option_name, sizeof(dip_option->option_name), CORE_OPTION_NAME "_dipswitch_%s_%s", drvname, option_name);
 
          // Search for duplicate name, and add number to make them unique in the core-options file
          for (int dup_idx = 0, dup_nbr = 1; dup_idx < dipswitch_core_options.size() - 1; dup_idx++) // - 1 to exclude the current one
@@ -477,7 +489,7 @@ static int InpDIPSWInit(void)
             if (strcmp(dip_option->option_name, dipswitch_core_options[dup_idx].option_name) == 0)
             {
                dup_nbr++;
-               snprintf(dip_option->option_name, sizeof(dip_option->option_name), "fba-dipswitch-%s-%s_%d", drvname, option_name, dup_nbr);
+               snprintf(dip_option->option_name, sizeof(dip_option->option_name), CORE_OPTION_NAME "_dipswitch_%s_%s_%d", drvname, option_name, dup_nbr);
             }
          }
 

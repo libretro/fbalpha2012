@@ -327,7 +327,7 @@ void retro_get_system_info(struct retro_system_info *info)
    info->library_version = FBA_VERSION GIT_VERSION;
    info->need_fullpath = true;
    info->block_extract = true;
-   info->valid_extensions = "iso|zip";
+   info->valid_extensions = "iso|zip|7z";
 }
 
 /////

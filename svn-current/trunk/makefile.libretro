@@ -4,6 +4,7 @@ FRONTEND_SUPPORTS_RGB565 = 1
 HAVE_GRIFFIN = 0
 USE_OLD_MAPPING = 0
 EXTERNAL_ZLIB = 0
+INCLUDE_7Z_SUPPORT = 1
 
 CXXFLAGS += -std=c++11
 
@@ -277,8 +278,7 @@ endif
 CC_SYSTEM = gcc
 CXX_SYSTEM = g++
 
-BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
-	$(FBA_CPU_DIR)/arm7/arm7exec.c \
+BURN_BLACKLIST := $(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_CPU_DIR)/arm7/arm7core.c \
 	$(FBA_CPU_DIR)/hd6309/6309tbl.c \
 	$(FBA_CPU_DIR)/hd6309/6309ops.c \
@@ -522,16 +522,30 @@ else
 endif
 
 
-FBA_LIB_DIRS := $(FBA_LIB_DIR)/zlib
-
 FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS)
+
 
 ifeq ($(EXTERNAL_ZLIB), 1)
    FBA_DEFINES += -DEXTERNAL_ZLIB
 else
-   FBA_SRC_DIRS += $(FBA_LIB_DIRS)
+   FBA_SRC_DIRS += $(FBA_LIB_DIR)/zlib
 endif
 
+ifeq ($(INCLUDE_7Z_SUPPORT), 1)
+   FBA_DEFINES += -DINCLUDE_7Z_SUPPORT
+   FBA_SRC_DIRS += $(FBA_LIB_DIR)/lib7z
+   BURN_BLACKLIST += $(FBA_LIB_DIR)/lib7z/LzFindMt.c \
+		$(FBA_LIB_DIR)/lib7z/LzmaEnc.c \
+		$(FBA_LIB_DIR)/lib7z/MtCoder.c \
+		$(FBA_LIB_DIR)/lib7z/Lzma2Enc.c \
+		$(FBA_LIB_DIR)/lib7z/Bcj2Enc.c \
+		$(FBA_LIB_DIR)/lib7z/Threads.c \
+		$(FBA_LIB_DIR)/lib7z/Lzma86Enc.c \
+		$(FBA_LIB_DIR)/lib7z/LzmaLib.c \
+		$(FBA_LIB_DIR)/lib7z/XzEnc.c
+else
+   BURN_BLACKLIST += $(FBA_BURNER_DIR)/un7z.cpp
+endif
 
 SOURCES_CXX += $(GRIFFIN_CXXSRCFILES) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp)))
 SOURCES_CXX += $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/gami.cpp $(LIBRETRO_DIR)/gamc.cpp
@@ -566,6 +580,7 @@ INCFLAGS := -I$(FBA_BURNER_DIR)/win32 \
 	-I$(FBA_CPU_DIR) \
 	-I$(FBA_CPU_DIR)/i8039 \
 	-I$(FBA_LIB_DIR)/zlib \
+	-I$(FBA_LIB_DIR)/lib7z \
 	-I$(FBA_BURN_DIR)/drv/capcom \
 	-I$(FBA_BURN_DIR)/drv/dataeast \
 	-I$(FBA_BURN_DIR)/drv/cave \

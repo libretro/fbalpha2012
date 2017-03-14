@@ -24,7 +24,7 @@
 #define CORE_OPTION_NAME "fbalpha2012"
 #endif
 
-#ifdef _WIN32
+#if defined(_XBOX) || defined(_WIN32)
    char slash = '\\';
 #else
    char slash = '/';
@@ -888,7 +888,7 @@ static bool open_archive()
 		log_cb(RETRO_LOG_INFO, "[FBA] Archive: %s\n", rom_name);
 
 		char path[1024];
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_WIN32)
 		snprintf(path, sizeof(path), "%s\\%s", g_rom_dir, rom_name);
 #else
 		snprintf(path, sizeof(path), "%s/%s", g_rom_dir, rom_name);

@@ -28,6 +28,7 @@
 #define strcasecmp(x, y) _stricmp(x, y)
 #define snprintf _snprintf
 #else
+#include <strings.h>
 #define _stricmp(x, y) strcasecmp(x,y)
 
 typedef struct { int x, y, width, height; } RECT;

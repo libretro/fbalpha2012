@@ -121,7 +121,7 @@ static void YM2610UpdateResample(INT16* pSoundBuf, INT32 nSegmentEnd)
 	pYM2610Buffer[5] = pBuffer + 5 * 4096 + 4;
 
 	for (INT32 i = (nFractionalPosition >> 16) - 4; i < nSamplesNeeded; i++) {
-		pYM2610Buffer[5][i] = pYM2610Buffer[2][i] + pYM2610Buffer[3][i] + pYM2610Buffer[4][i];
+		pYM2610Buffer[5][i] = BURN_SND_CLIP(pYM2610Buffer[2][i] + pYM2610Buffer[3][i] + pYM2610Buffer[4][i]);
 	}
 
 	for (INT32 i = (nFractionalPosition & 0xFFFF0000) >> 15; i < nSegmentLength; i += 2, nFractionalPosition += nSampleSize) {
@@ -207,8 +207,10 @@ static void YM2610UpdateResample(INT16* pSoundBuf, INT32 nSegmentEnd)
 		nTotalRightSample = BURN_SND_CLIP(nTotalRightSample);
 			
 		if (bYM2610AddSignal) {
-			pSoundBuf[i + 0] += nTotalLeftSample;
-			pSoundBuf[i + 1] += nTotalRightSample;
+//			pSoundBuf[i + 0] += nTotalLeftSample;
+//			pSoundBuf[i + 1] += nTotalRightSample;
+			pSoundBuf[i + 0] = BURN_SND_CLIP(pSoundBuf[i + 0] + nTotalLeftSample);
+			pSoundBuf[i + 1] = BURN_SND_CLIP(pSoundBuf[i + 1] + nTotalRightSample);
 		} else {
 			pSoundBuf[i + 0] = nTotalLeftSample;
 			pSoundBuf[i + 1] = nTotalRightSample;
@@ -305,8 +307,10 @@ static void YM2610UpdateNormal(INT16* pSoundBuf, INT32 nSegmentEnd)
 		nRightSample = BURN_SND_CLIP(nRightSample);
 			
 		if (bYM2610AddSignal) {
-			pSoundBuf[(n << 1) + 0] += nLeftSample;
-			pSoundBuf[(n << 1) + 1] += nRightSample;
+			//pSoundBuf[(n << 1) + 0] += nLeftSample;
+			//pSoundBuf[(n << 1) + 1] += nRightSample;
+			pSoundBuf[(n << 1) + 0] = BURN_SND_CLIP(pSoundBuf[(n << 1) + 0] + nLeftSample);
+			pSoundBuf[(n << 1) + 1] = BURN_SND_CLIP(pSoundBuf[(n << 1) + 1] + nRightSample);
 		} else {
 			pSoundBuf[(n << 1) + 0] = nLeftSample;
 			pSoundBuf[(n << 1) + 1] = nRightSample;

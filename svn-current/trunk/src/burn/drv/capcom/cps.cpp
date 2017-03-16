@@ -1700,8 +1700,11 @@ static INT32 CpsGetROMs(bool bLoad)
 			((UINT32*)CpsCode)[i] ^= ((UINT32*)CpsRom)[i];
 		}
 #endif
+
+		#if !defined(CPS1_ONLY)
 		cps2_decrypt_game_data();
-		
+		#endif
+
 //		if (!nCpsCodeLen) return 1;
 	} else {
 

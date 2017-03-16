@@ -2243,6 +2243,8 @@ void OPNPrescaler_w(FM_OPN *OPN , int addr, int pre_divider)
 }
 #endif /* BUILD_OPN_PRESCALER */
 
+#if !defined(NEOGEO_ONLY)
+
 #if BUILD_YM2203
 /*****************************************************************************/
 /*		YM2203 local section                                                 */
@@ -2564,7 +2566,9 @@ int YM2203TimerOver(int n,int c)
 }
 #endif /* BUILD_YM2203 */
 
+#endif /* #if !defined(NEOGEO_ONLY) */
 
+#if !defined(CPS1_ONLY)
 
 #if (BUILD_YM2608||BUILD_YM2610||BUILD_YM2610B)
 
@@ -2857,6 +2861,7 @@ static void FMsave_state_adpcma(const char *name,int num,ADPCM_CH *adpcm)
 
 #endif /* (BUILD_YM2608||BUILD_YM2610||BUILD_YM2610B) */
 
+#if !defined(NEOGEO_ONLY)
 
 #if BUILD_YM2608
 /*****************************************************************************/
@@ -4027,6 +4032,7 @@ int YM2608TimerOver(int n,int c)
 #endif /* BUILD_YM2608 */
 
 
+#endif /* #if !defined(NEOGEO_ONLY) */
 
 #if (BUILD_YM2610||BUILD_YM2610B)
 /* YM2610(OPNB) */
@@ -4719,6 +4725,7 @@ int YM2610TimerOver(int n,int c)
 #endif /* (BUILD_YM2610||BUILD_YM2610B) */
 
 
+#if !defined(NEOGEO_ONLY)
 
 #if BUILD_YM2612
 /*******************************************************************************/
@@ -5119,3 +5126,7 @@ int YM2612TimerOver(int n,int c)
 }
 
 #endif /* BUILD_YM2612 */
+
+#endif /* #if !defined(NEOGEO_ONLY) */
+
+#endif /* #if !defined(CPS1_ONLY) */

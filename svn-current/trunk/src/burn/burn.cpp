@@ -5,15 +5,25 @@
 #include "burn_sound.h"
 #if defined(GEKKO) || defined(_XBOX1)
 #include "driverlist-gx.h"
+#elif defined(CPS1_ONLY)
+#include "driverlist_cps1.h"
+#elif defined(CPS2_ONLY)
+#include "driverlist_cps2.h"
+#elif defined(CPS3_ONLY)
+#include "driverlist_cps3.h"
+#elif defined(NEOGEO_ONLY)
+#include "driverlist_neogeo.h"
 #else
 #include "driverlist.h"
 #endif
 
+#ifndef __LIBRETRO__
 // filler function, used if the application is not printing debug messages
 static INT32 __cdecl BurnbprintfFiller(INT32, TCHAR* , ...) { return 0; }
 // pointer to burner printing function
 #ifndef bprintf
 INT32 (__cdecl *bprintf)(INT32 nStatus, TCHAR* szFormat, ...) = BurnbprintfFiller;
+#endif
 #endif
 
 INT32 nBurnVer = BURN_VERSION;		// Version number of the library

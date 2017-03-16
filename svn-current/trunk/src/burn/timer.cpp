@@ -318,6 +318,7 @@ INT32 BurnTimerAttachZet(INT32 nClockspeed)
 	return 0;
 }
 
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY))
 INT32 BurnTimerAttachM6809(INT32 nClockspeed)
 {
 	nCPUClockspeed = nClockspeed;
@@ -430,3 +431,4 @@ INT32 BurnTimerAttachH6280(INT32 nClockspeed)
 
 	return 0;
 }
+#endif /* #if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(NEOGEO_ONLY)) */

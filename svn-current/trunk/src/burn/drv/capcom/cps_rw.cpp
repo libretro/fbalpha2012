@@ -129,6 +129,7 @@ static UINT8 CpsReadPort(const UINT32 ia)
 			return d;
 		}
 
+		#if !defined(CPS1_ONLY)
 		// CPS2 Volume control
 		if (ia == 0x030) {
 			if (Ssf2tb) {
@@ -143,6 +144,7 @@ static UINT8 CpsReadPort(const UINT32 ia)
 			d = Cps2VolumeStates[Cps2Volume] & 0xff;
 			return d;
 		}
+		#endif
 
 		if (ia >= 0x0100 && ia < 0x0200) {
 			static INT32 nRasterLine;
@@ -289,6 +291,7 @@ void CpsWritePort(const UINT32 ia, UINT8 d)
 {
 	if ((Cps & 1) && Cps1Qs == 0) {
 		if (!Cps1DisablePSnd) {
+		#if !defined(CPS2_ONLY)
 			// CPS1 sound code
 			if (ia == 0x181 || (Port6SoundWrite && (ia == 0x006 || ia == 0x007))) {
 				PsndSyncZ80((INT64)SekTotalCycles() * nCpsZ80Cycles / nCpsCycles);
@@ -304,6 +307,7 @@ void CpsWritePort(const UINT32 ia, UINT8 d)
 				PsndFade = d;
 				return;
 			}
+		#endif
 		} else {
 			if (ia == 0x181 || (Port6SoundWrite && (ia == 0x006 || ia == 0x007))) {
 				if (CpsRWSoundCommandCallbackFunction) {
@@ -606,6 +610,8 @@ INT32 CpsRwGetInp()
 }
 
 void CpsSoundCmd(UINT16 sound_code) {
+#if !defined(CPS2_ONLY)
 //	CpsWritePort(0x181, sound_code);
 	PsndCode = sound_code;
+#endif
 }

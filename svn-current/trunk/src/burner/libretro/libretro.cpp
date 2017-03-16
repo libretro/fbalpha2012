@@ -582,7 +582,7 @@ static int InpDIPSWInit(void)
 
             log_cb(RETRO_LOG_INFO, "   '%s'\n", dip_option->values[dip_value_idx].friendly_name);
          }         
-         dip_option->values_str.shrink_to_fit(); // C++ 11 feature
+         //dip_option->values_str.shrink_to_fit(); // C++ 11 feature
 
          j++;
       }
@@ -2562,7 +2562,7 @@ static void set_input_descriptors()
       input_descriptors[input_descriptor_idx] = normal_input_descriptors[i];
    }
 
-   input_descriptors[input_descriptor_idx] = { 0 };
+   input_descriptors[input_descriptor_idx] = (struct retro_input_descriptor){ 0 };
 
    environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, input_descriptors);
 }

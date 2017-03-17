@@ -257,10 +257,6 @@ else
 
 endif
 
-ifeq ($(EXTERNAL_ZLIB), 0)
-   LDFLAGS += -lz
-endif
-
 CC_SYSTEM = gcc
 CXX_SYSTEM = g++
 
@@ -513,6 +509,7 @@ FBA_SRC_DIRS := $(FBA_BURNER_DIR) $(FBA_BURN_DIRS) $(FBA_CPU_DIRS)
 
 ifeq ($(EXTERNAL_ZLIB), 1)
    FBA_DEFINES += -DEXTERNAL_ZLIB
+   LDFLAGS += -lz
 else
    FBA_SRC_DIRS += $(FBA_LIB_DIR)/zlib
 endif

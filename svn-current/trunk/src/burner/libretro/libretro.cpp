@@ -148,8 +148,8 @@ static std::vector<std::string> g_find_list_path;
 static ROMFIND g_find_list[1024];
 static unsigned g_rom_count;
 
-#define AUDIO_SAMPLERATE 48000
-#define AUDIO_SEGMENT_LENGTH 801 // <-- Hardcoded value that corresponds well to 48kHz audio.
+#define AUDIO_SAMPLERATE 32000
+#define AUDIO_SEGMENT_LENGTH 534 // <-- Hardcoded value that corresponds well to 32kHz audio.
 
 static uint32_t *g_fba_frame;
 static int16_t g_audio_buf[AUDIO_SEGMENT_LENGTH * 2];
@@ -241,7 +241,7 @@ static RomBiosInfo *available_mvs_bios = NULL;
 static RomBiosInfo *available_aes_bios = NULL;
 static RomBiosInfo *available_uni_bios = NULL;
 
-#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY))
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY) || defined(GEKKO))
 void set_neo_system_bios()
 {
    if (g_opt_neo_geo_mode == NEO_GEO_MODE_DIPSWITCH)
@@ -734,7 +734,7 @@ static bool apply_dipswitch_from_variables()
       }
    }
 
-#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY))
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY) || defined(GEKKO))
    // Override the NeoGeo bios DIP Switch by the main one (for the moment)
    if (is_neogeo_game)
       set_neo_system_bios();
@@ -1006,7 +1006,7 @@ static bool open_archive()
           log_cb(RETRO_LOG_WARN, "[FBA] NeoGeo BIOS missing ...\n");
        }
 
-#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY))
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY) || defined(GEKKO))
        set_neo_system_bios();
 #endif
 
@@ -1067,7 +1067,7 @@ void retro_deinit()
 
 void retro_reset()
 {
-#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY))
+#if !(defined(CPS1_ONLY) || defined(CPS2_ONLY) || defined(CPS3_ONLY) || defined(GEKKO))
    // restore the NeoSystem because it was changed during the gameplay
    if (is_neogeo_game)
       set_neo_system_bios();

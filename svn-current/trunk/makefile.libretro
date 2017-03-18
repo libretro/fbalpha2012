@@ -183,6 +183,7 @@ else ifeq ($(platform), ctr)
    CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
    CPU_ARCH := arm
    STATIC_LINKING = 1
+   INCLUDE_7Z_SUPPORT = 0
 
 # Xbox 360
 else ifeq ($(platform), xenon)

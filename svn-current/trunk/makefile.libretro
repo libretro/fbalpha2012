@@ -168,6 +168,7 @@ else ifeq ($(platform), vita)
    PLATFORM_DEFINES += -DVITA
    EXTERNAL_ZLIB = 1
    STATIC_LINKING = 1
+   INCLUDE_7Z_SUPPORT = 0
 
 # CTR (3DS)
 else ifeq ($(platform), ctr)

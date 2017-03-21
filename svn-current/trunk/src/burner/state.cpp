@@ -1,6 +1,19 @@
 // Driver Save State module
 #include "burner.h"
 
+// from dynhuff.cpp
+INT32 FreezeDecode(UINT8 **buffer, INT32 *size);
+INT32 UnfreezeDecode(const UINT8* buffer, INT32 size);
+INT32 FreezeEncode(UINT8 **buffer, INT32 *size);
+INT32 UnfreezeEncode(const UINT8* buffer, INT32 size);
+
+// from replay.cpp
+INT32 FreezeInput(UINT8** buf, int* size);
+INT32 UnfreezeInput(const UINT8* buf, INT32 size);
+
+UINT32 nReplayCurrentFrame;
+UINT32 nStartFrame;
+
 // If bAll=0 save/load all non-volatile ram to .fs
 // If bAll=1 save/load all ram to .fs
 
@@ -14,7 +27,7 @@ static INT32 __cdecl StateLenAcb(struct BurnArea* pba)
 	return 0;
 }
 
-static INT32 StateInfo(INT32* pnLen, INT32* pnMinVer, INT32 bAll)
+static INT32 StateInfo(int* pnLen, int* pnMinVer, INT32 bAll)
 {
 	INT32 nMin = 0;
 	nTotalLen = 0;
@@ -121,6 +134,12 @@ INT32 BurnStateLoadEmbed(FILE* fp, INT32 nOffset, INT32 bAll, INT32 (*pLoadGame)
 				nBurnDrvActive = nCurrentGame;
 				return -3;
 			} else {
+				if (nCurrentGame != nBurnDrvActive) {
+					INT32 nOldActive = nBurnDrvActive;  // Exit current game if loading a state from another game
+					nBurnDrvActive = nCurrentGame;
+					BurnDrvExit();
+					nBurnDrvActive = nOldActive;
+				}
 				if (pLoadGame == NULL) {
 					return -1;
 				}
@@ -142,7 +161,8 @@ INT32 BurnStateLoadEmbed(FILE* fp, INT32 nOffset, INT32 bAll, INT32 (*pLoadGame)
 	}
 
 	fseek(fp, nChunkData + 0x30, SEEK_SET);				// Read current frame
-	fread(&nCurrentFrame, 1, 4, fp);					//
+	fread(&nReplayCurrentFrame, 1, 4, fp);
+	nCurrentFrame = nStartFrame + nReplayCurrentFrame;
 
 	fseek(fp, 0x0C, SEEK_CUR);							// Move file pointer to the start of the compressed block
 	Def = (UINT8*)malloc(nDefLen);
@@ -153,18 +173,14 @@ INT32 BurnStateLoadEmbed(FILE* fp, INT32 nOffset, INT32 bAll, INT32 (*pLoadGame)
 	fread(Def, 1, nDefLen, fp);							// Read in deflated block
 
 	nRet = BurnStateDecompress(Def, nDefLen, bAll);		// Decompress block into driver
-	if (Def) {
-		free(Def);											// free deflated block
-		Def = NULL;
-	}
+	free(Def);											// free deflated block
 
 	fseek(fp, nChunkData + nChunkSize, SEEK_SET);
 
-	if (nRet) {
+	if (nRet)
 		return -1;
-	} else {
-		return 0;
-	}
+
+   return 0;
 }
 
 // State load
@@ -183,13 +199,13 @@ INT32 BurnStateLoad(TCHAR* szName, INT32 bAll, INT32 (*pLoadGame)())
 	if (memcmp(szReadHeader, szHeader, 4) == 0) {		// Check filetype
 		nRet = BurnStateLoadEmbed(fp, -1, bAll, pLoadGame);
 	}
-    fclose(fp);
 
-	if (nRet < 0) {
+	fclose(fp);
+
+	if (nRet < 0)
 		return -nRet;
-	} else {
-		return 0;
-	}
+
+   return 0;
 }
 
 // Write a savestate as a chunk of an "FB1 " file
@@ -246,7 +262,8 @@ INT32 BurnStateSaveEmbed(FILE* fp, INT32 nOffset, INT32 bAll)
 	sprintf(szGame, "%.32s", BurnDrvGetTextA(DRV_NAME));			//
 	fwrite(szGame, 1, 32, fp);							//
 
-	fwrite(&nCurrentFrame, 1, 4, fp);					// Current frame
+	nReplayCurrentFrame = GetCurrentFrame() - nStartFrame;
+	fwrite(&nReplayCurrentFrame, 1, 4, fp);					// Current frame
 
 	fwrite(&nZero, 1, 4, fp);							// Reserved
 	fwrite(&nZero, 1, 4, fp);							//
@@ -258,10 +275,7 @@ INT32 BurnStateSaveEmbed(FILE* fp, INT32 nOffset, INT32 bAll)
 	}
 
 	nRet = fwrite(Def, 1, nDefLen, fp);					// Write block to disk
-	if (Def) {
-		free(Def);											// free deflated block and close file
-		Def = NULL;
-	}
+	free(Def);											// free deflated block and close file
 
 	if (nRet != nDefLen) {								// error writing block to disk
 		return -1;
@@ -284,6 +298,15 @@ INT32 BurnStateSaveEmbed(FILE* fp, INT32 nOffset, INT32 bAll)
 	return nDefLen;
 }
 
+#ifdef BUILD_WIN32
+INT32 FileExists(const TCHAR *fileName)
+{
+    DWORD dwAttrib = GetFileAttributes(fileName);
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+            !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+#endif
+
 // State save
 INT32 BurnStateSave(TCHAR* szName, INT32 bAll)
 {
@@ -300,6 +323,33 @@ INT32 BurnStateSave(TCHAR* szName, INT32 bAll)
 		return 0;										// Don't return an error code
 	}
 
+#ifdef BUILD_WIN32
+	/*
+	 Save State backups - used in conjunction with BurnStateUNDO();
+	 derp.fs -> derp.fs.backup
+	 derp.fs.backup -> derp.fs.backup1
+	 derp.fs.backup1 -> derpfs.backup2
+	 derp.fs.backup3 -> derpfs.backup4
+	*/
+	if (_tcsstr(szName, _T(" slot "))) {
+		for (INT32 i=MAX_STATEBACKUPS;i>=0;i--) {
+			TCHAR szBackupNameTo[1024] = _T("");
+			TCHAR szBackupNameFrom[1024] = _T("");
+
+			_stprintf(szBackupNameTo, _T("%s.backup%d"), szName, i + 1);
+			_stprintf(szBackupNameFrom, _T("%s.backup%d"), szName, i);
+			if (i == MAX_STATEBACKUPS) {
+				DeleteFileW(szBackupNameFrom); // make sure there is only MAX_STATEBACKUPS :)
+			} else {
+				MoveFileW(szBackupNameFrom, szBackupNameTo); //derp.fs.backup0 -> derp.fs.backup1
+				if (i == 0) {
+					MoveFileW(szName, szBackupNameFrom); //derp.fs -> derp.fs.backup0
+				}
+			}
+		}
+	}
+#endif
+
 	FILE* fp = _tfopen(szName, _T("wb"));
 	if (fp == NULL) {
 		return 1;
@@ -307,11 +357,11 @@ INT32 BurnStateSave(TCHAR* szName, INT32 bAll)
 
 	fwrite(&szHeader, 1, 4, fp);
 	nRet = BurnStateSaveEmbed(fp, -1, bAll);
-    fclose(fp);
 
-	if (nRet < 0) {
+	fclose(fp);
+
+	if (nRet < 0)
 		return 1;
-	} else {
-		return 0;
-	}
+
+   return 0;
 }

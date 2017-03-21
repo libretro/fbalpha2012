@@ -1,8 +1,6 @@
 // FB Alpha - Emulator for MC68000/Z80 based arcade games
 //            Refer to the "license.txt" file for more info
-#ifndef _BURN_H
-#define _BURN_H
-
+#pragma once
 #include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -12,18 +10,18 @@
 #include <assert.h>
 #include <ctype.h>
 
-#if defined(__LIBRETRO__) && defined(_MSC_VER)
-#include <tchar.h>
-#else
 #include "tchar.h"
-#endif
 
 // Macro to make quoted strings
 #define MAKE_STRING_2(s) #s
 #define MAKE_STRING(s) MAKE_STRING_2(s)
 
 #define BZIP_MAX (20)								// Maximum zip files to search through
-#define DIRS_MAX (20)								// Maximum number of directories to search
+#if defined (BUILD_QT)
+ #define DIRS_MAX (4)								// Maximum number of directories to search
+#else
+ #define DIRS_MAX (20)								// Maximum number of directories to search
+#endif
 
 #include "title.h"
 #include "burn.h"
@@ -48,6 +46,8 @@ typedef struct tagIMAGE {
  #include "burner_xbox.h"
 #elif defined(__LIBRETRO__)
 #include "burner_libretro.h"
+#elif defined(BUILD_QT)
+ #include "burner_qt.h"
 #endif
 
 #if defined (INCLUDE_LIB_PNGH)
@@ -69,11 +69,13 @@ typedef struct tagIMAGE {
 #define FIND_QT(s) while (*s && *s != _T('\"')) { s++; }	// Find quote
 
 // image.cpp
+extern int bPngImageOrientation;
 void img_free(IMAGE* img);
 INT32 img_alloc(IMAGE* img);
 
 bool PNGIsImage(FILE* fp);
 INT32 PNGLoad(IMAGE* img, FILE* fp, INT32 nPreset);
+INT32 PNGGetInfo(IMAGE* img, FILE *fp);
 
 // gami.cpp
 extern struct GameInp* GameInp;
@@ -106,9 +108,23 @@ INT32 GameInpRead(TCHAR* szVal, bool bOverWrite);
 INT32 GameInpMacroRead(TCHAR* szVal, bool bOverWrite);
 INT32 GameInpCustomRead(TCHAR* szVal, bool bOverWrite);
 
+// inp_interface.cpp
+extern INT32 nAutoFireRate;
+
 // Player Default Controls
 extern INT32 nPlayerDefaultControls[4];
 extern TCHAR szPlayerDefaultIni[4][MAX_PATH];
+
+// mappable System Macros for the Input Dialogue
+extern UINT8 macroSystemPause;
+extern UINT8 macroSystemFFWD;
+extern UINT8 macroSystemSaveState;
+extern UINT8 macroSystemLoadState;
+extern UINT8 macroSystemUNDOState;
+
+// scrn.cpp
+extern void scrnSSUndo();
+extern bool bHasFocus;
 
 // cong.cpp
 extern const INT32 nConfigMinVersion;					// Minimum version of application for which input files are valid
@@ -150,6 +166,12 @@ void ComputeGammaLUT();
 #define DAT_PCENGINE_ONLY	2
 #define DAT_TG16_ONLY		3
 #define DAT_SGX_ONLY		4
+#define DAT_SG1000_ONLY		5
+#define DAT_COLECO_ONLY		6
+#define DAT_MASTERSYSTEM_ONLY		7
+#define DAT_GAMEGEAR_ONLY		8
+#define DAT_MSX_ONLY        9
+
 INT32 write_datfile(INT32 bType, FILE* fDat);
 INT32 create_datfile(TCHAR* szFilename, INT32 bType);
 
@@ -161,6 +183,7 @@ INT32 BurnStateLoadEmbed(FILE* fp, INT32 nOffset, INT32 bAll, INT32 (*pLoadGame)
 INT32 BurnStateLoad(TCHAR* szName, INT32 bAll, INT32 (*pLoadGame)());
 INT32 BurnStateSaveEmbed(FILE* fp, INT32 nOffset, INT32 bAll);
 INT32 BurnStateSave(TCHAR* szName, INT32 bAll);
+INT32 BurnStateUNDO(TCHAR* szName);
 
 // statec.cpp
 INT32 BurnStateCompress(UINT8** pDef, INT32* pnDefLen, INT32 bAll);
@@ -193,5 +216,15 @@ extern TCHAR szAppTitlesPath[MAX_PATH];
 extern TCHAR szAppCheatsPath[MAX_PATH];
 extern TCHAR szAppIpsPath[MAX_PATH];
 extern TCHAR szAppIconsPath[MAX_PATH];
-
-#endif
+extern TCHAR szAppSelectPath[MAX_PATH];
+extern TCHAR szAppVersusPath[MAX_PATH];
+extern TCHAR szAppHowtoPath[MAX_PATH];
+extern TCHAR szAppScoresPath[MAX_PATH];
+extern TCHAR szAppBossesPath[MAX_PATH];
+extern TCHAR szAppGameoverPath[MAX_PATH];
+extern TCHAR szAppFlyersPath[MAX_PATH];
+extern TCHAR szAppMarqueesPath[MAX_PATH];
+extern TCHAR szAppControlsPath[MAX_PATH];
+extern TCHAR szAppCabinetsPath[MAX_PATH];
+extern TCHAR szAppPCBsPath[MAX_PATH];
+extern TCHAR szAppHistoryPath[MAX_PATH];

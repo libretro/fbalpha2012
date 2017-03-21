@@ -850,6 +850,10 @@ typedef struct
 	uint cyc_movem_l;
 	uint cyc_shift;
 	uint cyc_reset;
+
+   /* Designates the end of the CPU context variables and beginning of system-specific pointers */
+	uint8 pointer_block_divider;                      /* Used to calculate the context-size for savestates */
+
 	uint8* cyc_instruction;
 	uint8* cyc_exception;
 

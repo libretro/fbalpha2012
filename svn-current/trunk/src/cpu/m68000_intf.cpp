@@ -1994,6 +1994,7 @@ INT32 SekScan(INT32 nAction)
 		szName[9] = '0' + i;
 
 		SCAN_VAR(nSekCPUType[i]);
+		SCAN_VAR(nSekIRQPending[i]); // fix for Gradius 2 s.states -dink feb.3.2015
 
 #if defined EMU_A68K && defined EMU_M68K
 		// Switch to another core if needed
@@ -2040,7 +2041,9 @@ INT32 SekScan(INT32 nAction)
 #ifdef EMU_M68K
 			if (nSekCPUType[i] != 0) {
 				ba.Data = SekM68KContext[i];
-				ba.nLen = nSekM68KContextSize[i];
+				// for savestate portability: preserve our cpu's pointers, they are set up in DrvInit() and can be specific to different systems.
+				// Therefore we scan the cpu context structure up until right before the pointers
+				ba.nLen = m68k_context_size_no_pointers();
 				ba.szName = szName;
 				BurnAcb(&ba);
 			}

@@ -32,6 +32,7 @@
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <string.h>
+#include <stddef.h>
 
 #include "burnint.h"
 #include "sh2_intf.h"
@@ -3516,10 +3517,9 @@ int Sh2Scan(int nAction)
 
 		for (int i = 0; i < 1 /*nCPUCount*/; i++) {
 			szText[5] = '1' + i;
-			ScanVar(& ( Sh2Ext[i].sh2 ), sizeof(SH2) - 4, szText);
+			ScanVar(& ( Sh2Ext[i].sh2 ), offsetof(SH2, irq_callback), szText);
 			
 			SCAN_VAR (Sh2Ext[i].suspend);
-			SCAN_VAR (Sh2Ext[i].opbase);
 			
 #if FAST_OP_FETCH
 			//	Sh2Ext[i].opbase

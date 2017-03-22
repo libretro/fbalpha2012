@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#if defined(__LIBRETRO__) && defined(_MSC_VER)
+#if defined(_MSC_VER)
 #include <tchar.h>
 #else
 #include "tchar.h"

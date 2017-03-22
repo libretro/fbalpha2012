@@ -38,17 +38,7 @@ typedef struct tagIMAGE {
 	unsigned int	flags;
 } IMAGE;
 
-#if defined (BUILD_WIN32)
- #include "burner_win32.h"
-#elif defined (BUILD_SDL)
- #include "burner_sdl.h"
-#elif defined (_XBOX) && !defined(__LIBRETRO__)
- #include "burner_xbox.h"
-#elif defined(__LIBRETRO__)
 #include "burner_libretro.h"
-#elif defined(BUILD_QT)
- #include "burner_qt.h"
-#endif
 
 #if defined (INCLUDE_LIB_PNGH)
  #include "png.h"
@@ -56,10 +46,6 @@ typedef struct tagIMAGE {
 
 // ---------------------------------------------------------------------------
 // OS independent functionality
-
-#ifndef __LIBRETRO__
-#include "interface.h"
-#endif
 
 #define IMG_FREE		(1 << 0)
 
@@ -95,10 +81,6 @@ INT32 GameInpExit();
 TCHAR* InputCodeDesc(INT32 c);
 TCHAR* InpToDesc(struct GameInp* pgi);
 TCHAR* InpMacroToDesc(struct GameInp* pgi);
-#ifndef __LIBRETRO__
-void GameInpCheckLeftAlt();
-void GameInpCheckMouse();
-#endif
 INT32 GameInpBlank(INT32 bDipSwitch);
 INT32 GameInputAutoIni(INT32 nPlayer, TCHAR* lpszFile, bool bOverWrite);
 INT32 ConfigGameLoadHardwareDefaults();

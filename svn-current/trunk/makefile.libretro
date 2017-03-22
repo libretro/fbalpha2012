@@ -551,9 +551,8 @@ ifneq ($(platform),qnx)
    FBA_DEFINES += -DINLINE="static inline" -DSH2_INLINE="static inline"
 endif
 
-INCFLAGS := -I$(FBA_BURNER_DIR)/win32 \
+INCFLAGS := \
 	-I$(LIBRETRO_DIR) \
-	-I$(LIBRETRO_DIR)/tchar \
 	-I$(FBA_BURN_DIR) \
 	-I$(MAIN_FBA_DIR)/cpu \
 	-I$(FBA_BURN_DIR)/snd \

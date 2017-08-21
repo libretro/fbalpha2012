@@ -256,6 +256,21 @@ void QscWrite(INT32 a, INT32 d)
 	}
 }
 
+static INT32 QscUpdate_Accum(INT32 p, INT32 c)
+{
+   INT32 fp = (QChan[c].nPos) & ((1 << 12) - 1);
+   INT32 sN = QChan[c].PlayBank[p + 0];
+   INT32 s0 = QChan[c].PlayBank[p + 1];
+   INT32 s1 = QChan[c].PlayBank[p + 2];
+   INT32 s2 = QChan[c].PlayBank[p + 3];
+   INT32  v = 256;
+   INT32  s = sN * (INT32)*((volatile INT16*)(Precalc + (fp * 4 + 0)));
+   s       += s0 * (INT32)*((volatile INT16*)(Precalc + (fp * 4 + 1)));
+   s       += s1 * (INT32)*((volatile INT16*)(Precalc + (fp * 4 + 2)));
+   s       += s2 * (INT32)*((volatile INT16*)(Precalc + (fp * 4 + 3)));
+   return s / v;
+}
+
 INT32 QscUpdate(INT32 nEnd)
 {
 	INT32 nLen;
@@ -425,12 +440,7 @@ INT32 QscUpdate(INT32 nEnd)
 					}
 				} else {
 					p = (QChan[c].nPos >> 12) & 0xFFFF;
-					s = INTERPOLATE4PS_CUSTOM((QChan[c].nPos) & ((1 << 12) - 1),
-											  QChan[c].PlayBank[p + 0],
-											  QChan[c].PlayBank[p + 1],
-											  QChan[c].PlayBank[p + 2],
-											  QChan[c].PlayBank[p + 3],
-											  256);
+					s  = QscUpdate_Accum(p, c);
 				}
 
 				// Add to the sound currently in the buffer

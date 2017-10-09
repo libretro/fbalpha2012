@@ -33,6 +33,7 @@
 static void log_dummy(enum retro_log_level level, const char *fmt, ...) { }
 static const char *print_label(unsigned i);
 
+static void set_controller_infos();
 static void set_environment();
 static bool apply_dipswitch_from_variables();
 
@@ -187,8 +188,6 @@ static const struct retro_variable var_fba_neogeo_mode = { CORE_OPTION_NAME "_ne
 void retro_set_environment(retro_environment_t cb)
 {
    environ_cb = cb;
-
-   set_environment();
 }
 
 struct RomBiosInfo {
@@ -633,24 +632,28 @@ static void evaluate_neogeo_bios_mode(const char* drvname)
    }   
 }
 
+static void set_controller_infos()
+{
+	static const struct retro_controller_description controller_description[] = {
+		{ "Classic", RETROPAD_CLASSIC },
+		{ "Modern", RETROPAD_MODERN },
+		{ "Arcade", RETROPAD_ARCADE },
+	};
+
+	std::vector<retro_controller_info> controller_infos(nMaxPlayers+1);
+
+	for (int i = 0; i < nMaxPlayers; i++)
+	{
+		controller_infos[i] = retro_controller_info(controller_description, 3);
+	}
+
+	controller_infos[nMaxPlayers] = retro_controller_info();
+
+	environ_cb(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, controller_infos.data());
+}
+
 static void set_environment()
 {
-   // add controls type
-   static const struct retro_controller_description pad_type[] = {
-      { "Classic", RETROPAD_CLASSIC },
-      { "Modern", RETROPAD_MODERN },
-      { "Arcade", RETROPAD_ARCADE },
-   };
-   static const struct retro_controller_info pads[] = {
-      { pad_type, 3 },
-      { pad_type, 3 },
-      { pad_type, 3 },
-      { pad_type, 3 },
-      { pad_type, 3 },
-      { 0 },
-   };
-   environ_cb(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)pads);
-
    std::vector<const retro_variable*> vars_systems;
 
    // Add the Global core options
@@ -1569,6 +1572,10 @@ bool retro_load_game(const struct retro_game_info *info)
       const char * boardrom = BurnDrvGetTextA(DRV_BOARDROM);
       is_neogeo_game = (boardrom && strcmp(boardrom, "neogeo") == 0);
 
+      // Define nMaxPlayers early;
+      nMaxPlayers = BurnDrvGetMaxPlayers();
+      set_controller_infos();
+
       set_environment();
       check_variables();
 
@@ -1604,21 +1611,13 @@ size_t retro_get_memory_size(unsigned) { return 0; }
 
 unsigned retro_api_version() { return RETRO_API_VERSION; }
 
-void retro_set_controller_port_device(unsigned port, unsigned device) {
-   switch (device)
-   {
-      case RETROPAD_MODERN:
-         fba_devices[port] = RETROPAD_MODERN;
-         break;
-      case RETROPAD_ARCADE:
-         fba_devices[port] = RETROPAD_ARCADE;
-         break;
-      case RETROPAD_CLASSIC:
-      default:
-         fba_devices[port] = RETROPAD_CLASSIC;
-         break;
-   }
-   init_input();
+void retro_set_controller_port_device(unsigned port, unsigned device)
+{
+	if (port < nMaxPlayers && fba_devices[port] != device)
+	{
+		fba_devices[port] = device;
+		init_input();
+	}
 }
 
 static const char *print_label(unsigned i)
@@ -1666,9 +1665,6 @@ static const char *print_label(unsigned i)
 
 static bool init_input(void)
 {
-   // Define nMaxPlayers early; GameInpInit() needs it (normally defined in DoLibInit()).
-   nMaxPlayers = BurnDrvGetMaxPlayers();
-
    switch_ncode = 0;
 
    normal_input_descriptors.clear();

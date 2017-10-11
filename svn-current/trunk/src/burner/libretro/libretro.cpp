@@ -2649,62 +2649,12 @@ INT32 GameInpInit()
 }
 
 
-// [WIP]
-// All in one function to map input on fba's side and create the relationship with libretro's retro_input_descriptor/retro_input_state (Through keybinds/axibinds)
-// Will probably end up setting macro though this too
-// parameters:
-// pgi => the game input
-// nJoy => the joypad number (from 0 to 4)
-// nInput => the type of control
-// nAxis => the axis (from 0 to 2, corresponds to x/y/z)
-// bCentering => boolean (autocenter ?)
-// nKey => the libretro key
-// nIndex => can be 0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_INDEX_ANALOG_RIGHT
-INT32 GameInp2RetroInp(struct GameInp* pgi, UINT32 nJoy, UINT8 nInput, UINT8 nAxis, bool bCentering, UINT32 nKey, UINT32 nIndex, char *szn)
+// Analog to analog mapping
+INT32 GameInpAnalog2RetroInpAnalog(struct GameInp* pgi, UINT32 nJoy, UINT8 nAxis, UINT32 nKey, UINT32 nIndex, char *szn, UINT8 nInput = GIT_JOYAXIS_FULL, INT32 nSliderValue = 0x8000, INT16 nSliderSpeed = 0x0E00, INT16 nSliderCenter = 10)
 {
 	if(bButtonMapped) return 0;
 	switch (nInput)
 	{
-		case GIT_JOYSLIDER:
-			pgi->nInput = GIT_JOYSLIDER;
-			if (bCentering)
-			{
-				pgi->Input.Slider.nSliderValue = 0x8000;
-				pgi->Input.Slider.nSliderSpeed = 0x0E00;
-				pgi->Input.Slider.nSliderCenter = 10;
-			}
-			else
-			{
-				pgi->Input.Slider.nSliderValue = 0x8000;
-				pgi->Input.Slider.nSliderSpeed = 0x0700;
-				pgi->Input.Slider.nSliderCenter = 0;
-			}
-			pgi->Input.Slider.JoyAxis.nAxis = nAxis;
-			pgi->Input.Slider.JoyAxis.nJoy = (UINT8)nJoy;
-			axibinds[nJoy][nAxis][0] = nIndex;
-			axibinds[nJoy][nAxis][1] = nKey;
-			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
-			break;
-		case GIT_JOYAXIS_NEG:
-		    // If used, will conflict with GIT_JOYAXIS_POS's retro_input_descriptor. Is there a way to "split" those ?
-			// Also, the way fba poll those is kinda unclear, it probably needs a lot of tuning in InputMake
-			pgi->nInput = GIT_JOYAXIS_NEG;
-			pgi->Input.JoyAxis.nAxis = nAxis;
-			pgi->Input.JoyAxis.nJoy = (UINT8)nJoy;
-			axibinds[nJoy][nAxis][0] = nIndex;
-			axibinds[nJoy][nAxis][1] = nKey;
-			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
-			break;
-		case GIT_JOYAXIS_POS:
-			// If used, will conflict with GIT_JOYAXIS_NEG's retro_input_descriptor. Is there a way to "split" those ?
-			// Also, the way fba poll those is kinda unclear, it probably needs a lot of tuning in InputMake
-			pgi->nInput = GIT_JOYAXIS_POS;
-			pgi->Input.JoyAxis.nAxis = nAxis;
-			pgi->Input.JoyAxis.nJoy = (UINT8)nJoy;
-			axibinds[nJoy][nAxis][0] = nIndex;
-			axibinds[nJoy][nAxis][1] = nKey;
-			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
-			break;
 		case GIT_JOYAXIS_FULL:
 			pgi->nInput = GIT_JOYAXIS_FULL;
 			pgi->Input.JoyAxis.nAxis = nAxis;
@@ -2713,25 +2663,58 @@ INT32 GameInp2RetroInp(struct GameInp* pgi, UINT32 nJoy, UINT8 nInput, UINT8 nAx
 			axibinds[nJoy][nAxis][1] = nKey;
 			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
 			break;
-		case GIT_SWITCH:
-			pgi->nInput = GIT_SWITCH;
-			pgi->Input.Switch.nCode = (UINT16)(switch_ncode++);
-			keybinds[pgi->Input.Switch.nCode][0] = nKey;
-			keybinds[pgi->Input.Switch.nCode][1] = nJoy;
-			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_JOYPAD, 0, nKey, szn));
+		case GIT_JOYSLIDER:
+			pgi->nInput = GIT_JOYSLIDER;
+			pgi->Input.Slider.nSliderValue = nSliderValue;
+			pgi->Input.Slider.nSliderSpeed = nSliderSpeed;
+			pgi->Input.Slider.nSliderCenter = nSliderCenter;
+			pgi->Input.Slider.JoyAxis.nAxis = nAxis;
+			pgi->Input.Slider.JoyAxis.nJoy = (UINT8)nJoy;
+			axibinds[nJoy][nAxis][0] = nIndex;
+			axibinds[nJoy][nAxis][1] = nKey;
+			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
+			break;
+		// I'm not sure the 2 following settings are needed in the libretro port
+		case GIT_JOYAXIS_NEG:
+			pgi->nInput = GIT_JOYAXIS_NEG;
+			pgi->Input.JoyAxis.nAxis = nAxis;
+			pgi->Input.JoyAxis.nJoy = (UINT8)nJoy;
+			axibinds[nJoy][nAxis][0] = nIndex;
+			axibinds[nJoy][nAxis][1] = nKey;
+			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
+			break;
+		case GIT_JOYAXIS_POS:
+			pgi->nInput = GIT_JOYAXIS_POS;
+			pgi->Input.JoyAxis.nAxis = nAxis;
+			pgi->Input.JoyAxis.nJoy = (UINT8)nJoy;
+			axibinds[nJoy][nAxis][0] = nIndex;
+			axibinds[nJoy][nAxis][1] = nKey;
+			normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_ANALOG, nIndex, nKey, szn));
 			break;
 	}
 	bButtonMapped = true;
 	return 0;
 }
 
-// [WIP]
-// Map 2 digital buttons (game side) to 1 axis on the right analog (retropad side) then create 1 input descriptor
+// Digital to digital mapping
+INT32 GameInpDigital2RetroInpKey(struct GameInp* pgi, UINT32 nJoy, UINT32 nKey, char *szn)
+{
+	if(bButtonMapped) return 0;
+	pgi->nInput = GIT_SWITCH;
+	pgi->Input.Switch.nCode = (UINT16)(switch_ncode++);
+	keybinds[pgi->Input.Switch.nCode][0] = nKey;
+	keybinds[pgi->Input.Switch.nCode][1] = nJoy;
+	normal_input_descriptors.push_back(retro_input_descriptor(nJoy, RETRO_DEVICE_JOYPAD, 0, nKey, szn));
+	bButtonMapped = true;
+	return 0;
+}
+
+// 2 digital to 1 analog mapping
 // Need to be run once for each of the 2 pgi (the 2 game inputs)
 // nJoy (player) and nKey (axis) needs to be the same for each of the 2 buttons
 // position is either JOY_POS or JOY_NEG (the position expected on axis to trigger the button)
 // szn is the descriptor text
-INT32 GameInpSwitch2RetroInpAnalogRight(struct GameInp* pgi, UINT32 nJoy, UINT32 nKey, UINT32 position, char *szn)
+INT32 GameInpDigital2RetroInpAnalogRight(struct GameInp* pgi, UINT32 nJoy, UINT32 nKey, UINT32 position, char *szn)
 {
 	if(bButtonMapped) return 0;
 	pgi->nInput = GIT_SWITCH;
@@ -2748,10 +2731,9 @@ INT32 GameInpSwitch2RetroInpAnalogRight(struct GameInp* pgi, UINT32 nJoy, UINT32
 	return 0;
 }
 
-// [WIP]
-// Map 1 axis (game side) to 2 digital buttons (retropad side)
+// 1 analog to 2 digital mapping
 // Needs pgi, player, axis, 2 buttons retropad id and 2 descriptions
-INT32 GameInpAxis2RetroInpDualButtons(struct GameInp* pgi, UINT32 nJoy, UINT8 nAxis, UINT32 nKeyPos, UINT32 nKeyNeg, char *sznpos, char *sznneg)
+INT32 GameInpAnalog2RetroInpDualKeys(struct GameInp* pgi, UINT32 nJoy, UINT8 nAxis, UINT32 nKeyPos, UINT32 nKeyNeg, char *sznpos, char *sznneg)
 {
 	if(bButtonMapped) return 0;
 	pgi->nInput = GIT_JOYAXIS_FULL;
@@ -2786,22 +2768,22 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "crazyfgt") == 0)
 	) {
 		if (strcmp("top-left", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("top-center", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 		}
 		if (strcmp("top-right", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 		if (strcmp("bottom-left", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("bottom-center", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 		if (strcmp("bottom-right", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R2, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R2, description);
 		}
 	}
 
@@ -2810,10 +2792,19 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "lastsurv") == 0)
 	) {
 		if (strcmp("Turn Left", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_L, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_L, description);
 		}
 		if (strcmp("Turn Right", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
+		}
+	}
+
+	// Recommandation from http://neosource.1emulation.com/forums/index.php?topic=2991.0 (Power Drift)
+	if ((parentrom && strcmp(parentrom, "pdrift") == 0) ||
+		(drvname && strcmp(drvname, "pdrift") == 0)
+	) {
+		if (strcmp("Steering", description) == 0) {
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 0, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_LEFT, description, GIT_JOYSLIDER, 0x8000, 0x0800, 10);
 		}
 	}
 
@@ -2822,7 +2813,7 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "nightstr") == 0)
 	) {
 		if (strcmp("Stick Y", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYSLIDER, 1, false, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_LEFT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 1, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_LEFT, description, GIT_JOYSLIDER, 0x8000, 0x0700, 0);
 		}
 	}
 
@@ -2834,13 +2825,13 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "hangonjr") == 0)
 	) {
 		if (strcmp("Accelerate", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Brake", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("Super Charger", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 	}
 
@@ -2850,13 +2841,13 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "goldnaxe") == 0)
 	) {
 		if (strcmp("Fire 1", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, "Magic");
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, "Magic");
 		}
 		if (strcmp("Fire 2", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, "Attack");
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, "Attack");
 		}
 		if (strcmp("Fire 3", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, "Jump");
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, "Jump");
 		}
 	}
 
@@ -2865,22 +2856,22 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "mjleague") == 0)
 	) {
 		if (strcmp("Bat Swing", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Fire 1", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 		if (strcmp("Fire 2", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("Fire 3", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 		}
 		if (strcmp("Fire 4", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 		if (strcmp("Fire 5", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_L, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_L, description);
 		}
 	}
 
@@ -2889,16 +2880,16 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "chasehq") == 0)
 	) {
 		if (strcmp("Brake", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 		if (strcmp("Accelerate", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Turbo", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("Gear", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 	}
 
@@ -2909,22 +2900,22 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "ddtod") == 0)
 	) {
 		if (strcmp("Attack", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("Jump", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Select", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 		}
 		if (strcmp("Use", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 		if (strcmp("Volume Up", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 		if (strcmp("Volume Down", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_L, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_L, description);
 		}
 	}
 	
@@ -2933,13 +2924,13 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "sdi") == 0)
 	) {
 		if (strcmp("Target L/R", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYAXIS_FULL, 0, true, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 0, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
 		}
 		if (strcmp("Target U/D", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYAXIS_FULL, 1, true, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 1, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
 		}
 		if (strcmp("Fire 1", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 	}
 	
@@ -2948,16 +2939,16 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "forgottn") == 0)
 	) {
 		if (strcmp("Turn (analog)", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYAXIS_FULL, 0, true, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 0, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_RIGHT, description);
 		}
 		if (strcmp("Attack", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 		}
 		if (strcmp("Turn - (digital)", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Turn + (digital)", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 	}
 
@@ -2966,7 +2957,7 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "pzloop2") == 0)
 	) {
 		if (strcmp("Paddle", description) == 0) {
-			GameInpAxis2RetroInpDualButtons(pgi, nPlayer, 0, RETRO_DEVICE_ID_JOYPAD_R, RETRO_DEVICE_ID_JOYPAD_L, "Paddle Up", "Paddle Down");
+			GameInpAnalog2RetroInpDualKeys(pgi, nPlayer, 0, RETRO_DEVICE_ID_JOYPAD_R, RETRO_DEVICE_ID_JOYPAD_L, "Paddle Up", "Paddle Down");
 		}
 	}
 
@@ -2975,7 +2966,7 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(drvname && strcmp(drvname, "aburner2") == 0)
 	) {
 		if (strcmp("Throttle", description) == 0) {
-			GameInpAxis2RetroInpDualButtons(pgi, nPlayer, 2, RETRO_DEVICE_ID_JOYPAD_R, RETRO_DEVICE_ID_JOYPAD_L, "Speed Up", "Speed Down");
+			GameInpAnalog2RetroInpDualKeys(pgi, nPlayer, 2, RETRO_DEVICE_ID_JOYPAD_R, RETRO_DEVICE_ID_JOYPAD_L, "Speed Up", "Speed Down");
 		}
 	}
 
@@ -2987,34 +2978,34 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 			(drvname && strcmp(drvname, "md_sf2") == 0)
 		) {
 			if (strcmp("Button A", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, "Weak Kick");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, "Weak Kick");
 			}
 			if (strcmp("Button B", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, "Medium Kick");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, "Medium Kick");
 			}
 			if (strcmp("Button C", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_R), 0, "Strong Kick");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_R), "Strong Kick");
 			}
 			if (strcmp("Button X", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, "Weak Punch");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, "Weak Punch");
 			}
 			if (strcmp("Button Y", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, "Medium Punch");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, "Medium Punch");
 			}
 			if (strcmp("Button Z", description) == 0) {
-				GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R : RETRO_DEVICE_ID_JOYPAD_L), 0, "Strong Punch");
+				GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R : RETRO_DEVICE_ID_JOYPAD_L), "Strong Punch");
 			}
 		}
 		// Generic megadrive mapping
 		// Use same layout as megadrive cores
 		if (strcmp("Button A", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 		}
 		if (strcmp("Button B", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 		}
 		if (strcmp("Button C", description) == 0) {
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 		}
 	}
 
@@ -3023,26 +3014,35 @@ INT32 GameInpSpecialOne(struct GameInp* pgi, INT32 nPlayer, char* szi, char *szn
 		(strcmp("Up (right)", description) == 0) ||
 		(strcmp("Right Up", description) == 0)
 	) {
-		GameInpSwitch2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_Y, JOY_NEG, "Up / Down (Right Stick)");
+		GameInpDigital2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_Y, JOY_NEG, "Up / Down (Right Stick)");
 	}
 	if ((strcmp("Down 2", description) == 0) ||
 		(strcmp("Down (right)", description) == 0) ||
 		(strcmp("Right Down", description) == 0)
 	) {
-		GameInpSwitch2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_Y, JOY_POS, "Up / Down (Right Stick)");
+		GameInpDigital2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_Y, JOY_POS, "Up / Down (Right Stick)");
 	}
 	if ((strcmp("Left 2", description) == 0) ||
 		(strcmp("Left (right)", description) == 0) ||
 		(strcmp("Right Left", description) == 0)
 	) {
-		GameInpSwitch2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_X, JOY_NEG, "Left / Right (Right Stick)");
+		GameInpDigital2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_X, JOY_NEG, "Left / Right (Right Stick)");
 	}
 	if ((strcmp("Right 2", description) == 0) ||
 		(strcmp("Right (right)", description) == 0) ||
 		(strcmp("Right Right", description) == 0)
 	) {
-		GameInpSwitch2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_X, JOY_POS, "Left / Right (Right Stick)");
+		GameInpDigital2RetroInpAnalogRight(pgi, nPlayer, RETRO_DEVICE_ID_ANALOG_X, JOY_POS, "Left / Right (Right Stick)");
 	}
+
+	// Default racing games's Steering control to the joyslider type of analog control
+	// Joyslider is some sort of "wheel" emulation
+	if ((BurnDrvGetGenreFlags() & GBF_RACING)) {
+		if (strcmp("Steering", description) == 0) {
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 0, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_LEFT, description, GIT_JOYSLIDER);
+		}
+	}
+
 	return 0;
 }
 
@@ -3075,23 +3075,23 @@ static INT32 GameInpAutoOne(struct GameInp* pgi, char* szi, char *szn)
 		if(bButtonMapped) return 0;
 
 		if (strncmp("select", szb, 6) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_SELECT, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_SELECT, description);
 		if (strncmp("coin", szb, 4) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_SELECT, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_SELECT, description);
 		if (strncmp("start", szb, 5) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_START, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_START, description);
 		if (strncmp("up", szb, 2) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_UP, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_UP, description);
 		if (strncmp("down", szb, 4) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_DOWN, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_DOWN, description);
 		if (strncmp("left", szb, 4) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_LEFT, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_LEFT, description);
 		if (strncmp("right", szb, 5) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_RIGHT, 0, description);
+			GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_RIGHT, description);
 		if (strncmp("x-axis", szb, 6) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYAXIS_FULL, 0, true, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_LEFT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 0, RETRO_DEVICE_ID_ANALOG_X, RETRO_DEVICE_INDEX_ANALOG_LEFT, description);
 		if (strncmp("y-axis", szb, 6) == 0)
-			GameInp2RetroInp(pgi, nPlayer, GIT_JOYAXIS_FULL, 1, true, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_LEFT, description);
+			GameInpAnalog2RetroInpAnalog(pgi, nPlayer, 1, RETRO_DEVICE_ID_ANALOG_Y, RETRO_DEVICE_INDEX_ANALOG_LEFT, description);
 
 		if (strncmp("fire ", szb, 5) == 0) {
 			char *szf = szb + 5;
@@ -3102,16 +3102,16 @@ static INT32 GameInpAutoOne(struct GameInp* pgi, char* szi, char *szn)
 			if ((BurnDrvGetFamilyFlags() & (FBF_KOF | FBF_FATFURY | FBF_SAMSHO)) && fba_devices[nPlayer] == RETROPAD_MODERN) {
 				switch (nButton) {
 					case 1:
-						GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+						GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 						break;
 					case 2:
-						GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+						GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 						break;
 					case 3:
-						GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+						GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 						break;
 					case 4:
-						GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+						GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 						break;
 				}
 			} else {
@@ -3119,50 +3119,50 @@ static INT32 GameInpAutoOne(struct GameInp* pgi, char* szi, char *szn)
 				if (bStreetFighterLayout) {
 					switch (nButton) {
 						case 1:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 							break;
 						case 2:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 							break;
 						case 3:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R : RETRO_DEVICE_ID_JOYPAD_L), 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R : RETRO_DEVICE_ID_JOYPAD_L), description);
 							break;
 						case 4:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 							break;
 						case 5:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 							break;
 						case 6:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_R), 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_R), description);
 							break;
 					}
 				// Handle generic mapping of everything else
 				} else {
 					switch (nButton) {
 						case 1:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_B, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_B, description);
 							break;
 						case 2:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_A, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_A, description);
 							break;
 						case 3:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_Y, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_Y, description);
 							break;
 						case 4:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_X, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_X, description);
 							break;
 						case 5:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_R, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_R, description);
 							break;
 						case 6:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_L), 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_R2 : RETRO_DEVICE_ID_JOYPAD_L), description);
 							break;
 						case 7:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_L : RETRO_DEVICE_ID_JOYPAD_R2), 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, (fba_devices[nPlayer] == RETROPAD_MODERN ? RETRO_DEVICE_ID_JOYPAD_L : RETRO_DEVICE_ID_JOYPAD_R2), description);
 							break;
 						case 8:
-							GameInp2RetroInp(pgi, nPlayer, GIT_SWITCH, 0, false, RETRO_DEVICE_ID_JOYPAD_L2, 0, description);
+							GameInpDigital2RetroInpKey(pgi, nPlayer, RETRO_DEVICE_ID_JOYPAD_L2, description);
 							break;
 					}
 				}

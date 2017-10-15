@@ -40,8 +40,7 @@ ifeq ($(TARGET_ARCH),mips)
 LOCAL_CXXFLAGS += -DANDROID_MIPS -D__mips__ -D__MIPSEL__
 endif
 
-BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
-	$(FBA_CPU_DIR)/arm7/arm7exec.c \
+BURN_BLACKLIST := $(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_CPU_DIR)/arm7/arm7core.c \
 	$(FBA_CPU_DIR)/hd6309/6309tbl.c \
 	$(FBA_CPU_DIR)/hd6309/6309ops.c \
@@ -66,6 +65,8 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_BURNER_DIR)/cong.cpp \
 	$(FBA_BURNER_DIR)/image.cpp \
 	$(FBA_BURNER_DIR)/misc.cpp \
+	$(FBA_BURNER_DIR)/gami.cpp \
+	$(FBA_BURNER_DIR)/gamc.cpp \
 	$(FBA_CPU_DIR)/h6280/tblh6280.c \
 	$(FBA_CPU_DIR)/m6502/t65sc02.c \
 	$(FBA_CPU_DIR)/m6502/t65c02.c \
@@ -75,7 +76,8 @@ BURN_BLACKLIST := $(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/nec/v25sfr.c \
 	$(FBA_CPU_DIR)/nec/v25instr.c \
 	$(FBA_CPU_DIR)/nec/necinstr.c \
-	$(FBA_BURN_DIR)/drv/capcom/ctv_make.cpp
+	$(FBA_BURN_DIR)/drv/capcom/ctv_make.cpp \
+	$(FBA_BURN_DIR)/drv/pgm/pgm_sprite_create.cpp
 
 ifeq ($(HAVE_GRIFFIN), 1)
 GRIFFIN_CXX_SRC_FILES := $(GRIFFIN_DIR)/cps12.cpp $(GRIFFIN_DIR)/cps3.cpp $(GRIFFIN_DIR)/neogeo.cpp $(GRIFFIN_DIR)/pgm.cpp $(GRIFFIN_DIR)/snes.cpp $(GRIFFIN_DIR)/galaxian.cpp

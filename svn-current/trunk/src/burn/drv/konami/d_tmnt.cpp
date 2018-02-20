@@ -3067,7 +3067,7 @@ static void tmnt2_protection_write()
 		if (i > 0)
 		{
 			i >>= 8;
-			xoffs += (INT32)(pow(i, /*1.898461*/1.891292) * xoffs / 599.250121);
+			xoffs += (INT32)(powf(i, /*1.898461*/1.891292) * xoffs / 599.250121);
 		}
 		else if (i < 0)
 		{
@@ -3081,7 +3081,7 @@ static void tmnt2_protection_write()
 		if (i > 0)
 		{
 			i >>= 8;
-			yoffs += (INT32)(pow(i, /*1.898461*/1.891292) * yoffs / 599.250121);
+			yoffs += (INT32)(powf(i, /*1.898461*/1.891292) * yoffs / 599.250121);
 		}
 		else if (i < 0)
 		{

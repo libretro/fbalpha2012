@@ -53,7 +53,7 @@ static INT32 __cdecl libretro_bprintf(INT32 nStatus, TCHAR* szFormat, ...)
 {
    va_list vp;
    va_start(vp, szFormat);
-   int rc = vsnprintf(bprintf_buf, BPRINTF_BUFFER_SIZE, szFormat, vp);
+   int rc = vsprintf(bprintf_buf, szFormat, vp);
    va_end(vp);
 
    if (rc >= 0)
@@ -653,6 +653,7 @@ static void set_controller_infos()
 static void set_environment()
 {
    std::vector<const retro_variable*> vars_systems;
+   struct retro_variable *vars;
 
    // Add the Global core options
    vars_systems.push_back(&var_fba_aspect);
@@ -676,7 +677,7 @@ static void set_environment()
 
    log_cb(RETRO_LOG_INFO, "set_environment: SYSTEM: %d, DIPSWITCH: %d\n", nbr_vars, nbr_dips);
 
-   struct retro_variable vars[nbr_vars + nbr_dips + 1]; // + 1 for the empty ending retro_variable
+   vars = (struct retro_variable*)calloc(nbr_vars + nbr_dips + 1, sizeof(struct retro_variable));
    
    int idx_var = 0;
 
@@ -698,6 +699,7 @@ static void set_environment()
    vars[idx_var] = var_empty;
    
    environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
+   free(vars);
 }
 
 // Update DIP switches value  depending of the choice the user made in core options
@@ -753,13 +755,17 @@ static bool apply_dipswitch_from_variables()
    return dip_changed;
 }
 
-int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround) { return 0; }
+int InputSetCooperativeLevel(const bool bExclusive, const bool bForeGround)
+{
+   return 0;
+}
 
-void Reinitialise(void) {
-    // Update the geometry, some games (sfiii2) and systems (megadrive) need it.
-    struct retro_system_av_info av_info;
-    retro_get_system_av_info(&av_info);
-    environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &av_info);
+void Reinitialise(void)
+{
+   // Update the geometry, some games (sfiii2) and systems (megadrive) need it.
+   struct retro_system_av_info av_info;
+   retro_get_system_av_info(&av_info);
+   environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &av_info);
 }
 
 static void ForceFrameStep()
@@ -786,8 +792,16 @@ char* TCHARToANSI(const TCHAR* pszInString, char* pszOutString, int /*nOutSize*/
    return (char*)pszInString;
 }
 
-int QuoteRead(char **, char **, char*) { return 1; }
-char *LabelCheck(char *, char *) { return 0; }
+int QuoteRead(char **, char **, char*)
+{
+   return 1;
+}
+
+char *LabelCheck(char *, char *)
+{
+   return 0;
+}
+
 const int nConfigMinVersion = 0x020921;
 
 // addition to support loading of roms without crc check
@@ -1338,8 +1352,13 @@ bool retro_unserialize(const void *data, size_t size)
    return true;
 }
 
-void retro_cheat_reset() {}
-void retro_cheat_set(unsigned, bool, const char*) {}
+void retro_cheat_reset(void)
+{
+}
+
+void retro_cheat_set(unsigned, bool, const char*)
+{
+}
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
@@ -1380,7 +1399,8 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
 {
    nBurnDrvActive = driver;
 
-   if (!open_archive()) {
+   if (!open_archive())
+   {
       log_cb(RETRO_LOG_ERROR, "[FBA] Cannot find driver.\n");
       return false;
    }
@@ -1402,7 +1422,9 @@ static bool fba_init(unsigned driver, const char *game_zip_name)
    int width, height;
    BurnDrvGetVisibleSize(&width, &height);
    unsigned drv_flags = BurnDrvGetFlags();
-    if (!(BurnDrvIsWorking())) {
+
+   if (!(BurnDrvIsWorking()))
+   {
       log_cb(RETRO_LOG_ERROR, "[FBA] Game %s is not marked as working\n", game_zip_name);
       return false;
    }
@@ -1598,16 +1620,34 @@ error:
    return false;
 }
 
-bool retro_load_game_special(unsigned, const struct retro_game_info*, size_t) { return false; }
+bool retro_load_game_special(unsigned, const struct retro_game_info*, size_t)
+{
+   return false;
+}
 
-void retro_unload_game(void) {}
+void retro_unload_game(void)
+{
+}
 
-unsigned retro_get_region() { return RETRO_REGION_NTSC; }
+unsigned retro_get_region(void)
+{
+   return RETRO_REGION_NTSC;
+}
 
-void *retro_get_memory_data(unsigned) { return 0; }
-size_t retro_get_memory_size(unsigned) { return 0; }
+void *retro_get_memory_data(unsigned)
+{
+   return 0;
+}
 
-unsigned retro_api_version() { return RETRO_API_VERSION; }
+size_t retro_get_memory_size(unsigned)
+{
+   return 0;
+}
+
+unsigned retro_api_version(void)
+{
+   return RETRO_API_VERSION;
+}
 
 void retro_set_controller_port_device(unsigned port, unsigned device)
 {
@@ -2047,9 +2087,10 @@ size_t wcstombs(char *s, const wchar_t *pwcs, size_t n)
 #endif
 
 // Set the input descriptors by combininng the two lists of 'Normal' and 'Macros' inputs
-static void set_input_descriptors()
+static void set_input_descriptors(void)
 {
-   struct retro_input_descriptor input_descriptors[normal_input_descriptors.size() + 1]; // + 1 for the empty ending retro_input_descriptor { 0 }
+   struct retro_input_descriptor *input_descriptors = (struct retro_input_descriptor*)calloc(normal_input_descriptors.size() + 1,
+         sizeof(struct retro_input_descriptor));
 
    unsigned input_descriptor_idx = 0;
 
@@ -2061,6 +2102,7 @@ static void set_input_descriptors()
    input_descriptors[input_descriptor_idx].description = NULL;
 
    environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, input_descriptors);
+   free(input_descriptors);
 }
 
 INT32 GameInpBlank(INT32 bDipSwitch)
@@ -2069,9 +2111,8 @@ INT32 GameInpBlank(INT32 bDipSwitch)
 	struct GameInp* pgi = NULL;
 
 	// Reset all inputs to undefined (even dip switches, if bDipSwitch==1)
-	if (GameInp == NULL) {
+	if (GameInp == NULL)
 		return 1;
-	}
 
 	// Get the targets in the library for the Input Values
 	for (i = 0, pgi = GameInp; i < nGameInpCount; i++, pgi++) {

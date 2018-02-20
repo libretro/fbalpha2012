@@ -26,15 +26,12 @@ to do:
 
 */
 
+#include <retro_inline.h>
+
 #include "driver.h"
 #include "state.h"
 #include "ym2413.h"
 
-#ifndef MAME_INLINE
-#ifndef MAME_INLINE
-#define MAME_INLINE static inline
-#endif
-#endif
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -94,7 +91,7 @@ to do:
 //#define SAVE_SAMPLE
 
 #ifdef SAVE_SAMPLE
-MAME_INLINE signed int acc_calc(signed int value)
+static INLINE signed int acc_calc(signed int value)
 {
 	if (value>=0)
 	{
@@ -617,8 +614,8 @@ static signed int outchan;
 static UINT32	LFO_AM;
 static INT32	LFO_PM;
 
-
-MAME_INLINE int limit( int val, int max, int min ) {
+static int limit( int val, int max, int min )
+{
 	if ( val > max )
 		val = max;
 	else if ( val < min )
@@ -629,7 +626,7 @@ MAME_INLINE int limit( int val, int max, int min ) {
 
 
 /* advance LFO to next sample */
-MAME_INLINE void advance_lfo(YM2413 *chip)
+static INLINE void advance_lfo(YM2413 *chip)
 {
 	/* LFO */
 	chip->lfo_am_cnt += chip->lfo_am_inc;
@@ -643,13 +640,11 @@ MAME_INLINE void advance_lfo(YM2413 *chip)
 }
 
 /* advance to next sample */
-MAME_INLINE void advance(YM2413 *chip)
+static INLINE void advance(YM2413 *chip)
 {
     YM2413_OPLL_CH *CH;
     YM2413_OPLL_SLOT *op;
 	unsigned int i;
-
-//profiler_mark(PROFILER_USER3);
 
 	/* Envelope Generator */
 	chip->eg_timer += chip->eg_timer_add;
@@ -876,11 +871,10 @@ MAME_INLINE void advance(YM2413 *chip)
 
 		i--;
 	}
-//profiler_mark(PROFILER_END);
 }
 
 
-MAME_INLINE signed int op_calc(UINT32 phase, unsigned int env, signed int pm, unsigned int wave_tab)
+static INLINE signed int op_calc(UINT32 phase, unsigned int env, signed int pm, unsigned int wave_tab)
 {
 	UINT32 p;
 
@@ -891,7 +885,7 @@ MAME_INLINE signed int op_calc(UINT32 phase, unsigned int env, signed int pm, un
 	return tl_tab[p];
 }
 
-MAME_INLINE signed int op_calc1(UINT32 phase, unsigned int env, signed int pm, unsigned int wave_tab)
+static INLINE signed int op_calc1(UINT32 phase, unsigned int env, signed int pm, unsigned int wave_tab)
 {
 	UINT32 p;
 	INT32  i;
@@ -913,7 +907,7 @@ MAME_INLINE signed int op_calc1(UINT32 phase, unsigned int env, signed int pm, u
 #define volume_calc(OP) ((OP)->TLL + ((UINT32)(OP)->volume) + (LFO_AM & (OP)->AMmask))
 
 /* calculate output */
-MAME_INLINE void chan_calc( YM2413_OPLL_CH *CH )
+static INLINE void chan_calc( YM2413_OPLL_CH *CH )
 {
     YM2413_OPLL_SLOT *SLOT;
 	unsigned int env;
@@ -990,7 +984,7 @@ number   number    BLK/FNUM2 FNUM    Drum  Hat   Drum  Tom  Cymbal
 
 /* calculate rhythm */
 
-MAME_INLINE void rhythm_calc( YM2413_OPLL_CH *CH, unsigned int noise )
+static INLINE void rhythm_calc( YM2413_OPLL_CH *CH, unsigned int noise )
 {
     YM2413_OPLL_SLOT *SLOT;
 	signed int out;
@@ -1314,7 +1308,7 @@ static void OPLL_initalize(YM2413 *chip)
 
 }
 
-MAME_INLINE void KEY_ON(YM2413_OPLL_SLOT *SLOT, UINT32 key_set)
+static INLINE void KEY_ON(YM2413_OPLL_SLOT *SLOT, UINT32 key_set)
 {
 	if( !SLOT->key )
 	{
@@ -1325,7 +1319,7 @@ MAME_INLINE void KEY_ON(YM2413_OPLL_SLOT *SLOT, UINT32 key_set)
 	SLOT->key |= key_set;
 }
 
-MAME_INLINE void KEY_OFF(YM2413_OPLL_SLOT *SLOT, UINT32 key_clr)
+static INLINE void KEY_OFF(YM2413_OPLL_SLOT *SLOT, UINT32 key_clr)
 {
 	if( SLOT->key )
 	{
@@ -1341,7 +1335,7 @@ MAME_INLINE void KEY_OFF(YM2413_OPLL_SLOT *SLOT, UINT32 key_clr)
 }
 
 /* update phase increment counter of operator (also update the EG rates if necessary) */
-MAME_INLINE void CALC_FCSLOT(YM2413_OPLL_CH *CH,YM2413_OPLL_SLOT *SLOT)
+static INLINE void CALC_FCSLOT(YM2413_OPLL_CH *CH,YM2413_OPLL_SLOT *SLOT)
 {
 	int ksr;
 	UINT32 SLOT_rs;
@@ -1387,7 +1381,7 @@ MAME_INLINE void CALC_FCSLOT(YM2413_OPLL_CH *CH,YM2413_OPLL_SLOT *SLOT)
 }
 
 /* set multi,am,vib,EG-TYP,KSR,mul */
-MAME_INLINE void set_mul(YM2413 *chip,int slot,int v)
+static INLINE void set_mul(YM2413 *chip,int slot,int v)
 {
     YM2413_OPLL_CH   *CH   = &chip->P_CH[slot/2];
     YM2413_OPLL_SLOT *SLOT = &CH->SLOT[slot&1];
@@ -1401,7 +1395,7 @@ MAME_INLINE void set_mul(YM2413 *chip,int slot,int v)
 }
 
 /* set ksl, tl */
-MAME_INLINE void set_ksl_tl(YM2413 *chip,int chan,int v)
+static INLINE void set_ksl_tl(YM2413 *chip,int chan,int v)
 {
 	int ksl;
     YM2413_OPLL_CH   *CH   = &chip->P_CH[chan];
@@ -1416,7 +1410,7 @@ MAME_INLINE void set_ksl_tl(YM2413 *chip,int chan,int v)
 }
 
 /* set ksl , waveforms, feedback */
-MAME_INLINE void set_ksl_wave_fb(YM2413 *chip,int chan,int v)
+static INLINE void set_ksl_wave_fb(YM2413 *chip,int chan,int v)
 {
 	int ksl;
     YM2413_OPLL_CH   *CH   = &chip->P_CH[chan];
@@ -1436,7 +1430,7 @@ MAME_INLINE void set_ksl_wave_fb(YM2413 *chip,int chan,int v)
 }
 
 /* set attack rate & decay rate  */
-MAME_INLINE void set_ar_dr(YM2413 *chip,int slot,int v)
+static INLINE void set_ar_dr(YM2413 *chip,int slot,int v)
 {
     YM2413_OPLL_CH   *CH   = &chip->P_CH[slot/2];
     YM2413_OPLL_SLOT *SLOT = &CH->SLOT[slot&1];
@@ -1460,7 +1454,7 @@ MAME_INLINE void set_ar_dr(YM2413 *chip,int slot,int v)
 }
 
 /* set sustain level & release rate */
-MAME_INLINE void set_sl_rr(YM2413 *chip,int slot,int v)
+static INLINE void set_sl_rr(YM2413 *chip,int slot,int v)
 {
     YM2413_OPLL_CH   *CH   = &chip->P_CH[slot/2];
     YM2413_OPLL_SLOT *SLOT = &CH->SLOT[slot&1];

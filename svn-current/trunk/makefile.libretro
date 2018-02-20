@@ -31,6 +31,7 @@ FBA_BURN_DIR := $(MAIN_FBA_DIR)/burn
 FBA_BURN_DRIVERS_DIR := $(MAIN_FBA_DIR)/burn/drv
 FBA_BURNER_DIR := $(MAIN_FBA_DIR)/burner
 LIBRETRO_DIR := $(FBA_BURNER_DIR)/libretro
+LIBRETRO_COMM_DIR  = $(LIBRETRO_DIR)/libretro-common
 FBA_CPU_DIR := $(MAIN_FBA_DIR)/cpu
 FBA_LIB_DIR := $(MAIN_FBA_DIR)/dep/libs
 FBA_INTERFACE_DIR := $(MAIN_FBA_DIR)/intf
@@ -53,6 +54,30 @@ else ifeq ($(target),neogeo)
    FBA_DEFINES += -DTARGET=\"\ Neo\ Geo\" -DNEOGEO_ONLY
 else
    TARGET_NAME := fbalpha2012
+endif
+
+SPACE :=
+SPACE := $(SPACE) $(SPACE)
+BACKSLASH :=
+BACKSLASH := \$(BACKSLASH)
+filter_out1 = $(filter-out $(firstword $1),$1)
+filter_out2 = $(call filter_out1,$(call filter_out1,$1))
+unixpath = $(subst \,/,$1)
+unixcygpath = /$(subst :,,$(call unixpath,$1))
+
+ifneq (,$(findstring msvc,$(platform)))
+	OBJOUT = -Fo
+	LINKOUT = -out:
+ifeq ($(STATIC_LINKING),1)
+	LD ?= lib.exe
+	STATIC_LINKING=0
+else
+	LD = link.exe
+endif
+else
+	OBJOUT   = -o
+	LINKOUT  = -o 
+	LD = $(CXX)
 endif
 
 # GIT HASH
@@ -252,6 +277,41 @@ else ifeq ($(platform), gcw0)
    CFLAGS += -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
    CXXFLAGS += -std=gnu++11 -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
 
+# Windows MSVC 2003 Xbox 1
+else ifeq ($(platform), xbox1_msvc2003)
+TARGET := $(TARGET_NAME)_libretro_xdk1.lib
+CC  = CL.exe
+CXX  = CL.exe
+LD   = lib.exe
+
+export INCLUDE := $(XDK)/xbox/include
+export LIB := $(XDK)/xbox/lib
+PATH := $(call unixcygpath,$(XDK)/xbox/bin/vc71):$(PATH)
+PSS_STYLE :=2
+CFLAGS   += -D_XBOX -D_XBOX1
+CXXFLAGS += -D_XBOX -D_XBOX1
+STATIC_LINKING=1
+
+# Windows MSVC 2003 x86
+else ifeq ($(platform), windows_msvc2003_x86)
+	CC  = cl.exe
+CXX = cl.exe
+
+PATH := $(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../../Vc7/bin"):$(PATH)
+PATH := $(PATH):$(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../IDE")
+INCLUDE := $(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../../Vc7/include")
+LIB := $(shell IFS=$$'\n'; cygpath -w "$(VS71COMNTOOLS)../../Vc7/lib")
+BIN := $(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../../Vc7/bin")
+
+WindowsSdkDir := $(INETSDK)
+
+export INCLUDE := $(INCLUDE);$(INETSDK)/Include;libretro-common/include/compat/msvc
+export LIB := $(LIB);$(WindowsSdkDir);$(INETSDK)/Lib
+TARGET := $(TARGET_NAME)_libretro.dll
+PSS_STYLE :=2
+LDFLAGS += -DLL
+CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
+
 # Windows
 else
    TARGET := $(TARGET_NAME)_libretro.dll
@@ -280,18 +340,8 @@ BURN_BLACKLIST := $(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_CPU_DIR)/sh2/mksh2.cpp \
 	$(FBA_CPU_DIR)/sh2/mksh2-x86.cpp \
 	$(FBA_CPU_DIR)/m68k/m68kmake.c \
-	$(FBA_BURNER_DIR)/wave_writer.cpp \
 	$(FBA_CPU_DIR)/m68k/m68kdasm.c \
-	$(FBA_LIBRETRO_DIR)/menu.cpp \
 	$(FBA_CPU_DIR)/sh2/mksh2.cpp \
-	$(FBA_BURNER_DIR)/sshot.cpp \
-	$(FBA_BURNER_DIR)/conc.cpp \
-	$(FBA_BURNER_DIR)/dat.cpp \
-	$(FBA_BURNER_DIR)/cong.cpp \
-	$(FBA_BURNER_DIR)/image.cpp \
-	$(FBA_BURNER_DIR)/misc.cpp \
-	$(FBA_BURNER_DIR)/gami.cpp \
-	$(FBA_BURNER_DIR)/gamc.cpp \
 	$(FBA_CPU_DIR)/h6280/tblh6280.c \
 	$(FBA_CPU_DIR)/m6502/t65sc02.c \
 	$(FBA_CPU_DIR)/m6502/t65c02.c \
@@ -551,7 +601,7 @@ FBA_DEFINES += -DUSE_SPEEDHACKS -D__LIBRETRO__ \
 	$(PLATFORM_DEFINES)
 
 ifneq ($(platform),qnx)
-   FBA_DEFINES += -DINLINE="static inline" -DSH2_INLINE="static inline"
+   FBA_DEFINES += -DSH2_INLINE="static inline"
 endif
 
 INCFLAGS := \
@@ -577,7 +627,12 @@ INCFLAGS := \
 	-I$(FBA_BURN_DIR)/drv/toaplan \
 	-I$(FBA_BURN_DIR)/drv/taito \
 	-I$(FBA_GENERATED_DIR) \
+	-I$(LIBRETRO_COMM_DIR)/include \
 	-I$(FBA_LIB_DIR)
+
+ifneq (,$(findstring msvc2003,$(platform)))
+INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
+endif
 
 ifeq ($(LIBRETRO_OPTIMIZATIONS), 1)
    FBA_DEFINES += -D__LIBRETRO_OPTIMIZATIONS__
@@ -593,6 +648,8 @@ endif
 
 ifeq ($(platform), sncps3)
    WARNINGS_DEFINES =
+else ifneq (,$(findstring msvc,$(platform)))
+	WARNINGS_DEFINES =
 else
    WARNINGS_DEFINES = -Wno-write-strings
 endif
@@ -684,16 +741,16 @@ generate-files:
 	$(EXE_PREFIX)$(CTVMAKE_EXE) > $(FBA_GENERATED_DIR)/ctv.h
 
 %.o: %.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCFLAGS) -c $< -o $@
+	@$(CXX) -c $(OBJOUT)$@ $< $(CXXFLAGS) $(INCFLAGS)
 
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCFLAGS) -c $< -o $@
+	@$(CC) -c $(OBJOUT)$@ $< $(CFLAGS) $(INCFLAGS)
 
 $(TARGET): $(OBJS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
-	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS)
+	@$(LD) $(LINKOUT)$@ $(SHARED) $(OBJS) $(LDFLAGS)
 endif
 
 

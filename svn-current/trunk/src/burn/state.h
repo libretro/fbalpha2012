@@ -1,16 +1,10 @@
 #ifndef _STATE_H
 #define _STATE_H
 
+#include <retro_inline.h>
+
 #ifdef __cplusplus
  extern "C" {
-#endif
-
-#if !defined(__cplusplus) && defined(_XBOX)
-#define C_INLINE _inline
-#else
-#ifndef C_INLINE
-#define C_INLINE inline
-#endif
 #endif
 
 /* Scan driver data */
@@ -40,7 +34,7 @@ struct BurnArea { void *Data; UINT32 nLen; INT32 nAddress; char *szName; };
 extern INT32 (__cdecl *BurnAcb) (struct BurnArea* pba);
 
 /* Scan a small variable or structure */
-C_INLINE static void ScanVar(void* pv, INT32 nSize, char* szName)
+static void ScanVar(void* pv, INT32 nSize, char* szName)
 {
 	struct BurnArea ba;
 	memset(&ba, 0, sizeof(ba));

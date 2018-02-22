@@ -150,6 +150,7 @@ LOCAL_CFLAGS = -O2 -fno-stack-protector -DUSE_SPEEDHACKS -DINLINE="static inline
 
 LOCAL_C_INCLUDES = $(FBA_BURNER_DIR)/win32 \
 	$(LIBRETRO_DIR) \
+	$(LIBRETRO_DIR)/libretro-common/include \
 	$(LIBRETRO_DIR)/tchar \
 	$(FBA_BURN_DIR) \
 	$(MAIN_FBA_DIR)/cpu \

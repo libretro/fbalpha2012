@@ -600,10 +600,6 @@ FBA_DEFINES += -DUSE_SPEEDHACKS -D__LIBRETRO__ \
 	$(ENDIANNESS_DEFINES) \
 	$(PLATFORM_DEFINES)
 
-ifneq ($(platform),qnx)
-   FBA_DEFINES += -DSH2_INLINE="static inline"
-endif
-
 INCFLAGS := \
 	-I$(LIBRETRO_DIR) \
 	-I$(FBA_BURN_DIR) \

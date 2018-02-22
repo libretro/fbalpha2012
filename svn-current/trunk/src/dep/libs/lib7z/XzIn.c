@@ -3,6 +3,7 @@
 
 #include "Precomp.h"
 
+#include <stdint.h>
 #include <string.h>
 
 #include "7zCrc.h"

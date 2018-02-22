@@ -9,6 +9,7 @@
 #include <stdio.h>
 #endif
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -86,7 +87,7 @@ static SRes BraState_SetProps(void *pp, const Byte *props, size_t propSize, ISzA
   {
     if (propSize == 4)
     {
-      UInt32 v = GetUi32(props);
+      uint32_t v = GetUi32(props);
       switch (p->methodId)
       {
         case XZ_ID_PPC:

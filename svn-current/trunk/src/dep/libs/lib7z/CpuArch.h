@@ -10,11 +10,6 @@
 extern "C" {
 #endif
 
-/*
-MY_CPU_LE_UNALIGN means that CPU is LITTLE ENDIAN and CPU supports unaligned memory accesses.
-If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of platform.
-*/
-
 #if defined(_M_X64) || defined(_M_AMD64) || defined(__x86_64__)
 #define MY_CPU_AMD64
 #endif
@@ -43,16 +38,10 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
 #define MY_CPU_IA64_LE
 #endif
 
-#if defined(MY_CPU_X86_OR_AMD64)
-#define MY_CPU_LE_UNALIGN
+#ifdef MSB_FIRST
+#define MY_CPU_BE
 #endif
 
-#ifdef MY_CPU_LE_UNALIGN
-
-#define GetUi16(p) (*(const uint16_t *)(p))
-#define GetUi32(p) (*(const uint32_t *)(p))
-#define GetUi64(p) (*(const uint64_t *)(p))
-#else
 #define GetUi16(p) (((const uint8_t *)(p))[0] | ((uint16_t)((const uint8_t *)(p))[1] << 8))
 
 #define GetUi32(p) ( \
@@ -62,7 +51,39 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
     ((uint32_t)((const uint8_t *)(p))[3] << 24))
 
 #define GetUi64(p) (GetUi32(p) | ((uint64_t)GetUi32(((const uint8_t *)(p)) + 4) << 32))
-#endif
+
+#define SetUi16(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+    _ppp_[0] = (Byte)_vvv_; \
+    _ppp_[1] = (Byte)(_vvv_ >> 8); }
+
+#define SetUi32(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+    _ppp_[0] = (Byte)_vvv_; \
+    _ppp_[1] = (Byte)(_vvv_ >> 8); \
+    _ppp_[2] = (Byte)(_vvv_ >> 16); \
+    _ppp_[3] = (Byte)(_vvv_ >> 24); }
+
+#define SetUi64(p, v) { Byte *_ppp2_ = (Byte *)(p); UInt64 _vvv2_ = (v); \
+    SetUi32(_ppp2_    , (UInt32)_vvv2_); \
+    SetUi32(_ppp2_ + 4, (UInt32)(_vvv2_ >> 32)); }
+
+#define GetBe32(p) ( \
+    ((UInt32)((const Byte *)(p))[0] << 24) | \
+    ((UInt32)((const Byte *)(p))[1] << 16) | \
+    ((UInt32)((const Byte *)(p))[2] <<  8) | \
+             ((const Byte *)(p))[3] )
+
+#define GetBe64(p) (((UInt64)GetBe32(p) << 32) | GetBe32(((const Byte *)(p)) + 4))
+
+#define SetBe32(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+    _ppp_[0] = (Byte)(_vvv_ >> 24); \
+    _ppp_[1] = (Byte)(_vvv_ >> 16); \
+    _ppp_[2] = (Byte)(_vvv_ >> 8); \
+    _ppp_[3] = (Byte)_vvv_; }
+
+
+#define GetBe16(p) ( (UInt16) ( \
+    ((UInt16)((const Byte *)(p))[0] << 8) | \
+             ((const Byte *)(p))[1] ))
 
 #ifdef __cplusplus
 }

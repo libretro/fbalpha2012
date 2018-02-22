@@ -48,10 +48,6 @@ int has_sh2;
 
 #define SH2_INT_15			15
 
-#ifndef static INLINE
-#define	static INLINE
-#endif
-
 #if FAST_OP_FETCH
 
 	#define change_pc(newpc)															\

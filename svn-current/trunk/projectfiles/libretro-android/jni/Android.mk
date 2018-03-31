@@ -67,6 +67,7 @@ BURN_BLACKLIST := $(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_BURNER_DIR)/misc.cpp \
 	$(FBA_BURNER_DIR)/gami.cpp \
 	$(FBA_BURNER_DIR)/gamc.cpp \
+	$(FBA_BURNER_DIR)/un7z.cpp \
 	$(FBA_CPU_DIR)/h6280/tblh6280.c \
 	$(FBA_CPU_DIR)/m6502/t65sc02.c \
 	$(FBA_CPU_DIR)/m6502/t65c02.c \

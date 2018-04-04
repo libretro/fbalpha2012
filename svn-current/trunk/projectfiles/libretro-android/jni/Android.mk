@@ -176,6 +176,7 @@ LOCAL_C_INCLUDES = $(FBA_BURNER_DIR)/win32 \
 	$(FBA_GENERATED_DIR) \
 	$(FBA_LIB_DIR)
 
-LOCAL_LDLIBS += -lz
+LOCAL_LDLIBS += -lz -latomic
+LOCAL_CPP_FEATURES := exceptions rtti
 
 include $(BUILD_SHARED_LIBRARY)

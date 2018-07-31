@@ -8659,17 +8659,17 @@ static void kof2003Callback()
 	for (i = 0x100000; i < 0x800000; i += 4) {
 		UINT16 rom16 = BURN_ENDIAN_SWAP_INT16(BURN_UNALIGNED_READ16(Neo68KROMActive + i + 1));
 		rom16 = BITSWAP16(rom16, 15, 14, 13, 12, 5, 4, 7, 6, 9, 8, 11, 10, 3, 2, 1, 0);
-		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, BURN_ENDIAN_SWAP_INT16(rom16));
+		*((UINT16 *)(Neo68KROMActive + i + 1)) = BURN_ENDIAN_SWAP_INT16(rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memmove (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x0100000 / 0x10000; i++) {
 		j = BITSWAP08(i, 7, 6, 5, 4, 0, 1, 2, 3);
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
+		memmove (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
 	}
 
-	memcpy (Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
+	memmove (Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
 
 	for (i = 0x200000; i < 0x900000; i += 0x100000)
 	{
@@ -8678,10 +8678,10 @@ static void kof2003Callback()
 			k  = (j & 0xf00) ^ 0x00800;
 			k |= BITSWAP08(j >> 12, 4, 5, 6, 7, 1, 0, 3, 2 ) << 12;
 
-			memcpy (Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
+			memmove (Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
+		memmove (Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
 	}
 }
 

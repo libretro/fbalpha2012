@@ -34,6 +34,12 @@ DRV		BurnDrvtg_cdsys;		// NEC [NOT WORKING]
 DRV		BurnDrvtg_scdsys;		// NEC [NOT WORKING]
 DRV		BurnDrvVictnine;		// Taito [NOT WORKING]
 #endif
+DRV		BurnDrvdoubledrsp;  // no comment
+DRV		BurnDrvKof95sp;
+DRV		BurnDrvSamsho2sp;
+DRV		BurnDrvSamSho4sp;
+DRV		BurnDrvlastbladsp;
+//Add back these 5 drivers from FBA 0.2.97.42, though the hacker is of very nasty of character.
 DRV		BurnDrvgames88;
 DRV		BurnDrv99lstwar;
 DRV		BurnDrv99lstwara;
@@ -6130,6 +6136,12 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvtg_scdsys,			// "tg_scdsys" [NEC, NOT WORKING]
 	&BurnDrvVictnine,			// "victnine" [Taito, NOT WORKING]
 #endif
+	&BurnDrvdoubledrsp,			// Double Dragon (Special 2017, hack) [no comment]
+	&BurnDrvKof95sp,			// The King of Fighters '95 (Special 2017, hack)           
+	&BurnDrvSamsho2sp,			// Samurai Shodown II / Shin Samurai Spirits - Haohmaru jigokuhen (Special 2017, hack)
+	&BurnDrvSamSho4sp,			// Samurai Shodown IV - Amakusa's Revenge / Samurai Spirits - Amakusa Kourin (Special 2017, hack)
+	&BurnDrvlastbladsp,			// The Last Soldier (Special 2017, hack)
+	//Add back these 5 drivers from FBA 0.2.97.42, though the hacker is of very nasty of character.
 	&BurnDrvgames88,			// '88 Games
 	&BurnDrv99lstwar,			// '99: The Last War
 	&BurnDrv99lstwara,			// '99: The Last War (alternate)
@@ -8591,7 +8603,7 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvpce_ladyswrd,		// Lady Sword
 	&BurnDrvpce_ladyswrd1,		// Lady Sword (Alt)
 	&BurnDrvmd_lakers,			// Lakers versus Celtics and the NBA Playoffs (USA)
-	&BurnDrvmd_landstlkg,		// Landstalker - Die Schätze von König Nolo (Ger)
+	&BurnDrvmd_landstlkg,		// Landstalker - Die SchÃ¤tze von KÃ¶nig Nolo (Ger)
 	&BurnDrvmd_landstlkj,		// Landstalker - Koutei no Zaihou (Jpn)
 	&BurnDrvmd_landstlkf,		// Landstalker - Le Tresor du Roi Nole (Fra)
 	&BurnDrvmd_landstlk,		// Landstalker - The Treasures of King Nole (Euro)
@@ -9139,7 +9151,7 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvMysticrib,			// Mystic Riders (bootleg?)
 	&BurnDrvMysticri,			// Mystic Riders (World)
 	&BurnDrvmd_mysticf,			// Mystical Fighter (USA)
-	&BurnDrvpce_marchen,		// Märchen Maze
+	&BurnDrvpce_marchen,		// MÃ¤rchen Maze
 	&BurnDrvmd_nakaf1gp,		// Nakajima Satoru Kanshuu F1 Grand Prix (Jpn)
 	&BurnDrvmd_f1heromd,		// Nakajima Satoru Kanshuu F1 Hero MD (Jpn)
 	&BurnDrvmd_nakaf1sl,		// Nakajima Satoru Kanshuu F1 Super License (Jpn)
@@ -10562,9 +10574,9 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvmd_steeltalj,		// Steel Talons (Jpn, Kor)
 	&BurnDrvmd_steeltalp,		// Steel Talons (USA, Prototype)
 	&BurnDrvStera,				// Steraranger (Moon Cresta bootleg)
-	&BurnDrvmd_renstim,			// Stimpy's Invention Starring Starring Ren Hoëk & Stimpy (Euro)
-	&BurnDrvmd_renstimu,		// Stimpy's Invention Starring Starring Ren Hoëk & Stimpy (USA)
-	&BurnDrvmd_renstimup,		// Stimpy's Invention Starring Starring Ren Hoëk & Stimpy (USA, Prototype)
+	&BurnDrvmd_renstim,			// Stimpy's Invention Starring Starring Ren HoÃ«k & Stimpy (Euro)
+	&BurnDrvmd_renstimu,		// Stimpy's Invention Starring Starring Ren HoÃ«k & Stimpy (USA)
+	&BurnDrvmd_renstimup,		// Stimpy's Invention Starring Starring Ren HoÃ«k & Stimpy (USA, Prototype)
 	&BurnDrvmd_stonprot,		// Stone Protectors (USA, Prototype)
 	&BurnDrvStoneage,			// Stoneage (bootleg of Caveman Ninja)
 	&BurnDrvmd_strmlordj,		// Stormlord (Jpn)
@@ -11615,7 +11627,7 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvToutrun,			// Turbo Out Run (Out Run upgrade, FD1094 317-0118)
 	&BurnDrvmd_toutrun,			// Turbo OutRun (Euro, Jpn)
 	&BurnDrvTurkhunt,			// Turkey Hunting USA V1.0
-	&BurnDrvmd_turmamon,		// Turma da Mônica na Terra dos Monstros (Bra)
+	&BurnDrvmd_turmamon,		// Turma da MÃ´nica na Terra dos Monstros (Bra)
 	&BurnDrvTurpin,				// Turpin
 	&BurnDrvTurpins,			// Turpin (bootleg on Scramble hardware)
 	&BurnDrvtg_turrican,		// Turrican

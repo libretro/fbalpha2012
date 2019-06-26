@@ -130,6 +130,7 @@ FBA_INCLUDES := $(FBA_BURNER_DIR)/win32 \
 	$(FBA_LIB_DIR)
 
 COREFLAGS := -fno-stack-protector -DUSE_SPEEDHACKS -D__LIBRETRO_OPTIMIZATIONS__ -D__LIBRETRO__ -Wno-write-strings -DUSE_FILE32API -DANDROID -DFRONTEND_SUPPORTS_RGB565 -DWANT_NEOGEOCD
+COREFLAGS += -Wno-c++11-narrowing
 
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 ifneq ($(GIT_VERSION)," unknown")

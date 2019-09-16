@@ -21,6 +21,7 @@
 #endif
 
 #include "burn.h"
+#include "joyprocess.h"
 
 #ifdef MSB_FIRST
 // define the above union and BURN_ENDIAN_SWAP macros in the following platform specific header

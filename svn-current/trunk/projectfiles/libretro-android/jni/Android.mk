@@ -139,7 +139,7 @@ endif
 
 include $(CLEAR_VARS)
 LOCAL_MODULE       := retro
-LOCAL_SRC_FILES    := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp
+LOCAL_SRC_FILES    := $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.cpp))) $(filter-out $(BURN_BLACKLIST),$(foreach dir,$(FBA_SRC_DIRS),$(wildcard $(dir)/*.c))) $(LIBRETRO_DIR)/libretro.cpp $(LIBRETRO_DIR)/neocdlist.cpp $(LIBRETRO_DIR)/retro_common.cpp $(LIBRETRO_DIR)/retro_input.cpp
 LOCAL_CXXFLAGS     := $(COREFLAGS)
 LOCAL_CFLAGS       := $(COREFLAGS)
 LOCAL_C_INCLUDES   := $(FBA_INCLUDES)

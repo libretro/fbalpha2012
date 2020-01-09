@@ -1083,6 +1083,8 @@ INT32 cps3Init()
 {
 	INT32 nRet, ii, offset;
 	struct BurnRomInfo pri;
+
+   BurnSetRefreshRate(59.59949);
 	
 	// calc graphic and sound roms size
 	ii = 0; cps3_data_rom_size = 0;

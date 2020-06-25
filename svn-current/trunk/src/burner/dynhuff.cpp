@@ -548,6 +548,7 @@ void EncodeBuffer(unsigned char data)
 	UINT32 code_temp = 0;     // used to break the code into two parts
 	UINT32 code_reverse;
 	int i;
+	int flag_temp[4] = {code_count,0,0,0};
 
 	// at the beginning, reset everything
 	// also fill 0s for the headers (coude_count, code_reset_count, buffer_reset_count)
@@ -559,7 +560,7 @@ void EncodeBuffer(unsigned char data)
 		c_buffer_idx       = 0;
 
 		// leave space for the 4 flags
-		fwrite(&code_count,sizeof(int),4,cFile);
+		fwrite(&flag_temp,sizeof(int),4,cFile);
 
 		// init code buffer
 		AllocBufferC(MAX_BUFFER_LEN);

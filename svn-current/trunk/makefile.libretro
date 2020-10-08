@@ -797,16 +797,16 @@ generate-files:
 	$(EXE_PREFIX)$(CTVMAKE_EXE) > $(FBA_GENERATED_DIR)/ctv.h
 
 %.o: %.cpp
-	@$(CXX) -c $(OBJOUT)$@ $< $(CXXFLAGS) $(INCFLAGS)
+	$(CXX) -c $(OBJOUT)$@ $< $(CXXFLAGS) $(INCFLAGS)
 
 %.o: %.c
-	@$(CC) -c $(OBJOUT)$@ $< $(CFLAGS) $(INCFLAGS)
+	$(CC) -c $(OBJOUT)$@ $< $(CFLAGS) $(INCFLAGS)
 
 $(TARGET): $(OBJS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
-	@$(LD) $(LINKOUT)$@ $(SHARED) $(OBJS) $(LDFLAGS)
+	$(LD) $(LINKOUT)$@ $(SHARED) $(OBJS) $(LDFLAGS)
 endif
 
 clean-objs:

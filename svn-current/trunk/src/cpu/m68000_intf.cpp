@@ -278,10 +278,18 @@ inline static UINT16 ReadWord(UINT32 a)
 //	bprintf(PRINT_NORMAL, _T("read16 0x%08X\n"), a);
 
 	pr = FIND_R(a);
-	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		UINT16 r = BURN_UNALIGNED_READ16(pr + (a & SEK_PAGEM));
-		return BURN_ENDIAN_SWAP_INT16(r);
+	if ((uintptr_t)pr >= SEK_MAXHANDLER)
+	{
+		if (a & 1)
+		{
+			return (ReadByte(a + 0) * 256) + ReadByte(a + 1);
+		}
+		else
+		{
+			return BURN_ENDIAN_SWAP_INT16(*((UINT16*)(pr + (a & SEK_PAGEM))));
+		}
 	}
+
 	return pSekExt->ReadWord[(uintptr_t)pr](a);
 }
 
@@ -295,9 +303,9 @@ inline static UINT16 FetchWord(UINT32 a)
 
 	pr = FIND_F(a);
 	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		UINT16 r = BURN_UNALIGNED_READ16(pr + (a & SEK_PAGEM));
-		return BURN_ENDIAN_SWAP_INT16(r);
+		return BURN_ENDIAN_SWAP_INT16(*((UINT16*)(pr + (a & SEK_PAGEM))));
 	}
+
 	return pSekExt->ReadWord[(uintptr_t)pr](a);
 }
 
@@ -310,10 +318,24 @@ inline static void WriteWord(UINT32 a, UINT16 d)
 //	bprintf(PRINT_NORMAL, _T("write16 0x%08X\n"), a);
 
 	pr = FIND_W(a);
-	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		BURN_UNALIGNED_WRITE16(pr + (a & SEK_PAGEM), BURN_ENDIAN_SWAP_INT16(d));
-		return;
+	if ((uintptr_t)pr >= SEK_MAXHANDLER)
+	{
+		if (a & 1)
+		{
+		//	bprintf(PRINT_NORMAL, _T("write16 0x%08X\n"), a);
+
+			WriteByte(a + 0, d / 0x100);
+			WriteByte(a + 1, d);
+
+			return;
+		}
+		else
+		{
+			*((UINT16*)(pr + (a & SEK_PAGEM))) = (UINT16)BURN_ENDIAN_SWAP_INT16(d);
+			return;
+		}
 	}
+
 	pSekExt->WriteWord[(uintptr_t)pr](a, d);
 }
 
@@ -340,11 +362,28 @@ inline static UINT32 ReadLong(UINT32 a)
 //	bprintf(PRINT_NORMAL, _T("read32 0x%08X\n"), a);
 
 	pr = FIND_R(a);
-	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		UINT32 r = BURN_UNALIGNED_READ32(pr + (a & SEK_PAGEM));
-		r = (r >> 16) | (r << 16);
-		return BURN_ENDIAN_SWAP_INT32(r);
+	if ((uintptr_t)pr >= SEK_MAXHANDLER)
+	{
+		UINT32 r = 0;
+
+		if (a & 1)
+		{
+			r  = ReadByte((a + 0)) * 0x1000000;
+			r += ReadByte((a + 1)) * 0x10000;
+			r += ReadByte((a + 2)) * 0x100;
+			r += ReadByte((a + 3));
+
+			return r;
+		}
+		else
+		{
+			r = *((UINT32*)(pr + (a & SEK_PAGEM)));
+			r = (r >> 16) | (r << 16);
+
+			return BURN_ENDIAN_SWAP_INT32(r);
+		}
 	}
+
 	return pSekExt->ReadLong[(uintptr_t)pr](a);
 }
 
@@ -358,7 +397,7 @@ inline static UINT32 FetchLong(UINT32 a)
 
 	pr = FIND_F(a);
 	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		UINT32 r = BURN_UNALIGNED_READ32(pr + (a & SEK_PAGEM));
+		UINT32 r = *((UINT32*)(pr + (a & SEK_PAGEM)));
 		r = (r >> 16) | (r << 16);
 		return BURN_ENDIAN_SWAP_INT32(r);
 	}
@@ -374,10 +413,26 @@ inline static void WriteLong(UINT32 a, UINT32 d)
 //	bprintf(PRINT_NORMAL, _T("write32 0x%08X\n"), a);
 
 	pr = FIND_W(a);
-	if ((uintptr_t)pr >= SEK_MAXHANDLER) {
-		d = (d >> 16) | (d << 16);
-		BURN_UNALIGNED_WRITE32(pr + (a & SEK_PAGEM), BURN_ENDIAN_SWAP_INT32(d));
-		return;
+	if ((uintptr_t)pr >= SEK_MAXHANDLER)
+	{
+		if (a & 1)
+		{
+		//	bprintf(PRINT_NORMAL, _T("write32 0x%08X 0x%8.8x\n"), a,d);
+
+			WriteByte((a + 0), d / 0x1000000);
+			WriteByte((a + 1), d / 0x10000);
+			WriteByte((a + 2), d / 0x100);
+			WriteByte((a + 3), d);
+
+			return;
+		}
+		else
+		{
+			d = (d >> 16) | (d << 16);
+			*((UINT32*)(pr + (a & SEK_PAGEM))) = BURN_ENDIAN_SWAP_INT32(d);
+
+			return;
+		}
 	}
 	pSekExt->WriteLong[(uintptr_t)pr](a, d);
 }

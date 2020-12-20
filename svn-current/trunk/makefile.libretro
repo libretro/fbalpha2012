@@ -170,28 +170,15 @@ else ifeq ($(platform), qnx)
    PLATFORM_DEFINES := -D__BLACKBERRY_QNX__ -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 
 # PS3
-else ifneq (,$(filter $(platform), ps3 sncps3 psl1ght))
+else ifneq (,$(filter $(platform), psl1ght))
    TARGET := $(TARGET_NAME)_libretro_ps3.a
    ENDIANNESS_DEFINES =  -DWORDS_BIGENDIAN -DMSB_FIRST
-   PLATFORM_DEFINES += -D__CELLOS_LV2__
+   PLATFORM_DEFINES += -D__PSL1GHT__
    EXTERNAL_ZLIB = 1
    STATIC_LINKING = 1
 
-   # sncps3
-   ifneq (,$(findstring sncps3,$(platform)))
-      PLATFORM_DEFINES += -DSN_TARGET_PS3
-      CXX = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
-      CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
-      AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
-
-   # PS3
-   else ifneq (,$(findstring ps3,$(platform)))
-      CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
-      CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
-      AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
-      
    # Lightweight PS3 Homebrew SDK
-   else ifneq (,$(findstring psl1ght,$(platform)))
+   ifneq (,$(findstring psl1ght,$(platform)))
       TARGET := $(TARGET_NAME)_libretro_$(platform).a
       CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
       CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)

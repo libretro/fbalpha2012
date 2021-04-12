@@ -1050,18 +1050,12 @@ static INT32 Cps3Reset()
 		}
 	}
 	
-	// Patch the EEPROM is not needed for sfiii2 and cause some issues if it's done on it.
-	// Normally this is only needed for sfiii but I have nothing to know what the current game is
-	// without adding a new property in the driver
-	if (!cps3_isSpecial)
-	{
-		if (cps3_dip & 0x80) {
-			EEPROM[0x11] = 0x100 + (EEPROM[0x11] & 0xff);
-			EEPROM[0x29] = 0x100 + (EEPROM[0x29] & 0xff);
-		} else {
-			EEPROM[0x11] = 0x000 + (EEPROM[0x11] & 0xff);
-			EEPROM[0x29] = 0x000 + (EEPROM[0x29] & 0xff);
-		}
+	if (cps3_dip & 0x80) {
+		EEPROM[0x11] = 0x100 + (EEPROM[0x11] & 0xff);
+		EEPROM[0x29] = 0x100 + (EEPROM[0x29] & 0xff);
+	} else {
+		EEPROM[0x11] = 0x000 + (EEPROM[0x11] & 0xff);
+		EEPROM[0x29] = 0x000 + (EEPROM[0x29] & 0xff);
 	}
 
 	cps3_current_eeprom_read = 0;	

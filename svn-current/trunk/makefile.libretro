@@ -382,6 +382,10 @@ endif
 CC_SYSTEM = gcc
 CXX_SYSTEM = g++
 
+ifeq ($(STATIC_LINKING), 1)
+INCLUDE_7Z_SUPPORT = 0
+endif
+
 BURN_BLACKLIST := $(FBA_CPU_DIR)/arm7/arm7exec.c \
 	$(FBA_CPU_DIR)/arm7/arm7core.c \
 	$(FBA_CPU_DIR)/hd6309/6309tbl.c \

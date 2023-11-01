@@ -370,7 +370,7 @@ void K054539Update(INT32 chip, INT16 *pBuf, INT32 length)
 	info = &Chips[chip];
 #define VOL_CAP 1.80
 
-	static const INT16 dpcm[16] = {
+	static const INT32 dpcm[16] = {
 		0<<8, 1<<8, 4<<8, 9<<8, 16<<8, 25<<8, 36<<8, 49<<8,
 		-64<<8, -49<<8, -36<<8, -25<<8, -16<<8, -9<<8, -4<<8, -1<<8
 	};

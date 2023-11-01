@@ -59,9 +59,9 @@ void x1010_sound_update()
 
 	X1_010_CHANNEL	*reg;
 	int		ch, i, volL, volR, freq;
-	register INT8 *start, *end, data;
-	register UINT8 *env;
-	register UINT32 smp_offs, smp_step, env_offs, env_step, delta;
+	INT8 *start, *end, data;
+	UINT8 *env;
+	UINT32 smp_offs, smp_step, env_offs, env_step, delta;
 
 	for( ch = 0; ch < SETA_NUM_CHANNELS; ch++ ) {
 		reg = (X1_010_CHANNEL *) & (x1_010_chip->reg[ch * sizeof(X1_010_CHANNEL)]);

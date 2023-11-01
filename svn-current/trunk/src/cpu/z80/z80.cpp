@@ -111,10 +111,6 @@ static Z80ReadOpArgHandler Z80CPUReadOpArg;
 
 unsigned char Z80Vector = 0;
 
-#define VERBOSE 0
-
-#define LOG(x)	//do { if (VERBOSE) logerror x; } while (0)
-
 /* execute main opcodes inside a big switch statement */
 #ifndef BIG_SWITCH
 #define BIG_SWITCH			1
@@ -804,7 +800,6 @@ Z80_INLINE UINT32 ARG16(void)
  * RETN
  ***************************************************************/
 #define RETN	{												\
-	LOG(("Z80 #%d RETN IFF1:%d IFF2:%d\n", cpu_getactivecpu(), IFF1, IFF2)); \
 	POP( pc );													\
 	change_pc(PCD);												\
 	IFF1 = IFF2;												\
@@ -2127,8 +2122,6 @@ OP(xycb,fe) { WM( EA, SET(7,RM(EA)) );							} /* SET  7,(XY+o)    */
 OP(xycb,ff) { A = SET(7, RM(EA) ); WM( EA,A );					} /* SET  7,A=(XY+o)  */
 
 OP(illegal,1) {
-//	logerror("Z80 #%d ill. opcode $%02x $%02x\n",
-//			cpu_getactivecpu(), cpu_readop((PCD-1)&0xffff), cpu_readop(PCD));
 }
 
 /**********************************************************
@@ -2715,8 +2708,6 @@ OP(fd,ff) { illegal_1(); op_ff();								} /* DB   FD          */
 
 OP(illegal,2)
 {
-//	logerror("Z80 #%d ill. opcode $ed $%02x\n",
-//			cpu_getactivecpu(), cpu_readop((PCD-1)&0xffff));
 }
 
 /**********************************************************
@@ -3325,15 +3316,12 @@ static void take_interrupt(void)
 //	else
 //		irq_vector = (*Z80.irq_callback)(0);
 
-//	LOG(("Z80 #%d single int. irq_vector $%02x\n", cpu_getactivecpu(), irq_vector));
-
 	/* Interrupt mode 2. Call [Z80.i:databyte] */
 	if( IM == 2 )
 	{
 		irq_vector = (irq_vector & 0xff) | (I << 8);
 		PUSH( pc );
 		RM16( irq_vector, &Z80.pc );
-//		LOG(("Z80 #%d IM2 [$%04x] = $%04x\n",cpu_getactivecpu() , irq_vector, PCD));
 		/* CALL opcode timing */
 		z80_ICount -= cc[Z80_TABLE_op][0xcd];
 	}
@@ -3341,7 +3329,6 @@ static void take_interrupt(void)
 	/* Interrupt mode 1. RST 38h */
 	if( IM == 1 )
 	{
-//		LOG(("Z80 #%d IM1 $0038\n",cpu_getactivecpu() ));
 		PUSH( pc );
 		PCD = 0x0038;
 		/* RST $38 + 'interrupt latency' cycles */
@@ -3352,7 +3339,6 @@ static void take_interrupt(void)
 		/* Interrupt mode 0. We check for CALL and JP instructions, */
 		/* if neither of these were found we assume a 1 byte opcode */
 		/* was placed on the databus                                */
-//		LOG(("Z80 #%d IM0 $%04x\n",cpu_getactivecpu() , irq_vector));
 		switch (irq_vector & 0xff0000)
 		{
 			case 0xcd0000:	/* call */
@@ -3521,7 +3507,6 @@ int Z80Execute(int cycles)
 	/* to just check here */
 	if (Z80.nmi_pending)
 	{
-//		LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
 		PRVPC = (UINT32)-1;			/* there isn't a valid previous program counter */
 		LEAVE_HALT;			/* Check if processor was halted */
 
@@ -3837,7 +3822,6 @@ static int z80_execute(int cycles)
 	/* to just check here */
 	if (Z80.nmi_pending)
 	{
-		LOG(("Z80 #%d take NMI\n", cpu_getactivecpu()));
 		PRVPC = -1;			/* there isn't a valid previous program counter */
 		LEAVE_HALT;			/* Check if processor was halted */
 

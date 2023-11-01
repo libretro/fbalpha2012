@@ -88,18 +88,6 @@ const INT32 ym_deltat_decode_tableB2[16] = {
   57,  57,  57,  57, 77, 102, 128, 153
 };
 
-#if 0
-void YM_DELTAT_BRDY_callback(YM_DELTAT *DELTAT)
-{
-	logerror("BRDY_callback reached (flag set) !\n");
-
-	/* set BRDY bit in status register */
-	if(DELTAT->status_set_handler)
-		if(DELTAT->status_change_BRDY_bit)
-			(DELTAT->status_set_handler)(DELTAT->status_change_which_chip, DELTAT->status_change_BRDY_bit);
-}
-#endif
-
 UINT8 YM_DELTAT_ADPCM_Read(YM_DELTAT *DELTAT)
 {
 	UINT8 v = 0;
@@ -119,8 +107,6 @@ UINT8 YM_DELTAT_ADPCM_Read(YM_DELTAT *DELTAT)
 		if ( DELTAT->now_addr != (DELTAT->end<<1) )
 		{
 			v = DELTAT->memory[DELTAT->now_addr>>1];
-
-			/*logerror("YM Delta-T memory read  $%08x, v=$%02x\n", DELTAT->now_addr >> 1, v);*/
 
 			DELTAT->now_addr+=2; /* two nibbles at a time */
 
@@ -227,20 +213,15 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 			/* if yes, then let's check if ADPCM memory is mapped and big enough */
 			if(DELTAT->memory == 0)
 			{
-				logerror("YM Delta-T ADPCM rom not mapped\n");
 				DELTAT->portstate = 0x00;
 				DELTAT->PCM_BSY = 0;
 			}
 			else
 			{
 				if( DELTAT->end >= DELTAT->memory_size )	/* Check End in Range */
-				{
-					logerror("YM Delta-T ADPCM end out of range: $%08x\n", DELTAT->end);
 					DELTAT->end = DELTAT->memory_size - 1;
-				}
 				if( DELTAT->start >= DELTAT->memory_size )	/* Check Start in Range */
 				{
-					logerror("YM Delta-T ADPCM start out of range: $%08x\n", DELTAT->start);
 					DELTAT->portstate = 0x00;
 					DELTAT->PCM_BSY = 0;
 				}
@@ -298,13 +279,11 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 	case 0x02:	/* Start Address L */
 	case 0x03:	/* Start Address H */
 		DELTAT->start  = (DELTAT->reg[0x3]*0x0100 | DELTAT->reg[0x2]) << (DELTAT->portshift - DELTAT->DRAMportshift);
-		/*logerror("DELTAT start: 02=%2x 03=%2x addr=%8x\n",DELTAT->reg[0x2], DELTAT->reg[0x3],DELTAT->start );*/
 		break;
 	case 0x04:	/* Stop Address L */
 	case 0x05:	/* Stop Address H */
 		DELTAT->end    = (DELTAT->reg[0x5]*0x0100 | DELTAT->reg[0x4]) << (DELTAT->portshift - DELTAT->DRAMportshift);
 		DELTAT->end   += (1 << (DELTAT->portshift-DELTAT->DRAMportshift) ) - 1;
-		/*logerror("DELTAT end  : 04=%2x 05=%2x addr=%8x\n",DELTAT->reg[0x4], DELTAT->reg[0x5],DELTAT->end   );*/
 		break;
 	case 0x06:	/* Prescale L (ADPCM and Record frq) */
 	case 0x07:	/* Prescale H */
@@ -332,8 +311,6 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 				DELTAT->now_addr = DELTAT->start << 1;
 				DELTAT->memread = 0;
 			}
-
-			/*logerror("YM Delta-T memory write $%08x, v=$%02x\n", DELTAT->now_addr >> 1, v);*/
 
 			if ( DELTAT->now_addr != (DELTAT->end<<1) )
 			{
@@ -383,7 +360,6 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 	case 0x0a:	/* DELTA-N H */
 		DELTAT->delta  = (DELTAT->reg[0xa]*0x0100 | DELTAT->reg[0x9]);
 		DELTAT->step     = (UINT32)( (double)(DELTAT->delta /* *(1<<(YM_DELTAT_SHIFT-16)) */ ) * (DELTAT->freqbase) );
-		/*logerror("DELTAT deltan:09=%2x 0a=%2x\n",DELTAT->reg[0x9], DELTAT->reg[0xa]);*/
 		break;
 	case 0x0b:	/* Output level control (volume, linear) */
 		{
@@ -395,7 +371,6 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 *								v     *		((1<<23)>>8)		>>	15;
 *								v	  *		(1<<15)				>>	15;
 */
-			/*logerror("DELTAT vol = %2x\n",v&0xff);*/
 			if( oldvol != 0 )
 			{
 				DELTAT->adpcml = (int)((double)DELTAT->adpcml / (double)oldvol * (double)DELTAT->volume);
@@ -405,7 +380,6 @@ value:   START, REC, MEMDAT, REPEAT, SPOFF, x,x,RESET   meaning:
 	case 0x0c:	/* Limit Address L */
 	case 0x0d:	/* Limit Address H */
 		DELTAT->limit  = (DELTAT->reg[0xd]*0x0100 | DELTAT->reg[0xc]) << (DELTAT->portshift - DELTAT->DRAMportshift);
-		/*logerror("DELTAT limit: 0c=%2x 0d=%2x addr=%8x\n",DELTAT->reg[0xc], DELTAT->reg[0xd],DELTAT->limit );*/
 		break;
 	}
 }

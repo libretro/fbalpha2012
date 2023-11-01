@@ -175,18 +175,14 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 				chip->flash_mode = FM_READAMDID1;
 			break;
 		default:
-			//logerror( "Unknown flash mode byte %x\n", data & 0xff );
-			//bprintf(1, _T("FLASH to write long value %8x to location %8x\n"), data, addr);
 			break;
 		}	
 		break;
 	case FM_READAMDID1:
-		if ((addr & 0xffff) == (0x2aa <<2) && (data & 0xff) == 0x55 ) {
+		if ((addr & 0xffff) == (0x2aa <<2) && (data & 0xff) == 0x55 )
 			chip->flash_mode = FM_READAMDID2;
-		} else {
-			//logerror( "unexpected %08x=%02x in FM_READAMDID1\n", address, data & 0xff );
+		else
 			chip->flash_mode = FM_NORMAL;
-		}
 		break;
 	case FM_READAMDID2:
 		if ((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0x90) {
@@ -197,10 +193,8 @@ void cps3_flash_write(flash_chip * chip, UINT32 addr, UINT32 data)
 			chip->flash_mode = FM_BYTEPROGRAM;
 		} else if((addr & 0xffff) == (0x555<<2) && (data & 0xff) == 0xf0) {
 			chip->flash_mode = FM_NORMAL;
-		} else {
-			// logerror( "unexpected %08x=%02x in FM_READAMDID2\n", address, data & 0xff );
+		} else
 			chip->flash_mode = FM_NORMAL;
-		}
 		break;				
 	}
 }

@@ -3,8 +3,6 @@
  *
  *****************************************************************************/
 
-#define DECO16_VERBOSE 0
-
 #undef	OP
 #define OP(nn) M6502_INLINE void deco16_##nn()
 
@@ -85,9 +83,6 @@ OP(23) {
 
 	m6502_ICount -= 1;
 	RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OP23 %02x\n",PCW,tmp);
 }
 OP(43) { RD_DUM; ILL; } 								/* 2 ILL */
 OP(63) {
@@ -95,9 +90,6 @@ OP(63) {
 
 	m6502_ICount -= 1;
 	RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OP63 %02x\n",PCW,tmp);
 }
 OP(83) { RD_DUM; ILL; } 								/* 2 ILL */
 OP(a3) {
@@ -105,17 +97,11 @@ OP(a3) {
 
 	m6502_ICount -= 1;
 	RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OPA3 %02x\n",PCW,tmp);
 }
 OP(c3) { RD_DUM; ILL; } 								/* 2 ILL */
 OP(e3) { RD_DUM; ILL; } 								/* 2 ILL */
 
 OP(13) { int tmp; m6502_ICount -= 1; RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OP13 %02x\n",PCW,tmp);
 
 //bank select control?
 
@@ -189,13 +175,10 @@ OP(67) {
 	RD_IMM_DISCARD;
 	m6502.a=M6502ReadPort(0);
 
-//  logerror("%04x: VBL (0x67)\n",PCW);
-
 // really - wait for status?
 
 } /*  */
 OP(87) { int tmp; m6502_ICount -= 1; RD_IMM;
-	//logerror("%04x: OP87 %02x\n",PCW,tmp);
 
 } /*  */
 OP(a7) { RD_DUM; ILL; }									/* 2 ILL / 5 SMB2 ZPG ?? */
@@ -266,12 +249,10 @@ OP(f7) { RD_DUM; ILL; }									/* 2 ILL / 5 SMB7 ZPG ?? */
 #define deco16_fa m65c02_fa								/* 4 PLX */
 
 OP(0b) { int tmp; m6502_ICount -= 1; RD_IMM;
-//	logerror("%04x: OP0B %02x\n",PCW,tmp);
 
 				}
 OP(2b) { RD_DUM; ILL; } 								/* 2 ILL */
 OP(4b) { m6502_ICount -= 1; RD_IMM_DISCARD;
-	//logerror("%04x: OP4B %02x\n",PCW,tmp);
 	/* TODO: Maybe it's just read I/O 0 and do a logic AND with bit 1? */
 	m6502.a=M6502ReadPort(1);
 
@@ -297,9 +278,6 @@ OP(bb) {
 
 	m6502_ICount -= 1;
 	RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OPBB %02x\n",PCW,tmp);
 }
 OP(db) { RD_DUM; ILL; } 								/* 2 ILL */
 OP(fb) { RD_DUM; ILL; } 								/* 2 ILL */
@@ -363,8 +341,6 @@ OP(2f) { RD_DUM; ILL; }									/* 2 ILL / 5 BBR2 ZPG ?? */
 OP(4f) { RD_DUM; ILL; }									/* 2 ILL / 5 BBR4 ZPG ?? */
 OP(6f) { RD_DUM; ILL; }									/* 2 ILL / 5 BBR6 ZPG ?? */
 OP(8f) { int tmp; m6502_ICount -= 1; RD_IMM;
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: BANK (8F) %02x\n",PCW,tmp);
 
 	M6502WritePort(0,tmp);
 
@@ -380,9 +356,6 @@ OP(3f) {
 
 	m6502_ICount -= 1;
 	RD_IMM;
-
-	//if (DECO16_VERBOSE)
-	//	logerror("%04x: OP3F %02x\n",PCW,tmp);
 }
 OP(5f) { RD_DUM; ILL; }									/* 2 ILL / 5 BBR5 ZPG ?? */
 OP(7f) { RD_DUM; ILL; }									/* 2 ILL / 5 BBR7 ZPG ?? */

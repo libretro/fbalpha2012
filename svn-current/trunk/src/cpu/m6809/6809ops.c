@@ -18,7 +18,6 @@ static void illegal( void )
 M6809_INLINE void illegal( void )
 #endif
 {
-//	logerror("M6809: illegal opcode at %04x\n",PC);
 }
 
 /* $00 NEG direct ?**** */

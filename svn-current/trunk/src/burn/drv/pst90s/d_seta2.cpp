@@ -1277,19 +1277,12 @@ static void tmp68301_update_timer( INT32 i )
 		break;
 	}
 
-//  logerror("CPU #0 PC %06X: TMP68301 Timer %d, duration %lf, max %04X\n",activecpu_get_pc(),i,duration,max);
-//	bprintf(PRINT_NORMAL, _T("TMP68301 Timer %d, duration %lf, max %04X TCR %04X\n"),i,duration,max,TCR);
-
 	if (!(TCR & 0x0002))				// CS
 	{
 		if (duration) {
-			// timer_adjust(tmp68301_timer[i],TIME_IN_HZ(duration),i,0);
 			// active tmp68301 timer i, and set duration
 			tmp68301_timer[i] = (INT32) (M68K_CYCS / duration);
-			//tmp68301_timer_counter[i] = 0;
-			//bprintf(PRINT_NORMAL, _T("Tmp68301: update timer #%d duration to %d (%8.3f)\n"), i, tmp68301_timer[i], duration);
 		} else
-			//logerror("CPU #0 PC %06X: TMP68301 error, timer %d duration is 0\n",activecpu_get_pc(),i);
 			bprintf(PRINT_ERROR, _T("Tmp68301: error timer %d duration is 0\n"), i, TCR, MAX1, MAX2);
 	}
 }
@@ -1300,9 +1293,6 @@ static void tmp68301_timer_callback(INT32 i)
 	UINT16 IMR	= BURN_ENDIAN_SWAP_INT16(RamTMP68301[0x94/2]);		// Interrupt Mask Register (IMR)
 	UINT16 ICR	= BURN_ENDIAN_SWAP_INT16(RamTMP68301[0x8e/2+i]);	// Interrupt Controller Register (ICR7..9)
 	UINT16 IVNR	= BURN_ENDIAN_SWAP_INT16(RamTMP68301[0x9a/2]);		// Interrupt Vector Number Register (IVNR)
-
-//  logerror("CPU #0 PC %06X: callback timer %04X, j = %d\n",activecpu_get_pc(),i,tcount);
-//	bprintf(PRINT_NORMAL, _T("Tmp68301: timer[%d] TCR: %04x IMR: %04x\n"), i, TCR, IMR);
 
 	if	( (TCR & 0x0004) &&	!(IMR & (0x100<<i))	) {
 		INT32 level = ICR & 0x0007;

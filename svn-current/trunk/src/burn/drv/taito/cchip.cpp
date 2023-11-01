@@ -2415,9 +2415,6 @@ void VolfiedCChipRamWrite(INT32 offset, UINT8 data)
 {
 	volfied_cchip_ram[(volfied_current_bank * 0x400) + offset] = data;
 
-//  if (offset != 0x8)
-//      logerror("%08x:  volfied c write %04x %04x\n", cpu_get_pc(space->cpu), offset, data);
-
 	if (volfied_current_bank == 0)
 	{
 		if (offset == 0x008)
@@ -2474,10 +2471,7 @@ void VolfiedCChipRamWrite(INT32 offset, UINT8 data)
 				volfied_timer_callback();
 			}
 			else
-			{
-//				logerror("unknown cchip cmd %02x\n", data);
 				volfied_current_cmd = 0;
-			}
 		}
 
 		// Some kind of timer command
@@ -2514,9 +2508,6 @@ UINT8 VolfiedCChipRamRead(INT32 offset)
 		case 0x08: return volfied_cc_port;
 		}
 	}
-
-//  if (cpu_get_pc(space->cpu)!=0x15ca8 && cpu_get_pc(space->cpu)!=0x15cd8 && cpu_get_pc(space->cpu)!=0x15cde)
-//      logerror("%08x:  volfied c read %04x (bank %04x)\n", cpu_get_pc(space->cpu), offset, volfied_current_bank);
 
 	/* Unknown */
 	if (volfied_current_bank == 2 && offset == 0x005)

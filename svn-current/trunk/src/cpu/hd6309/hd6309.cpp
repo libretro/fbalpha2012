@@ -107,18 +107,6 @@
 #include "burnint.h"
 #include "hd6309.h"
 
-#define VERBOSE 0
-
-#define LOG(x)	do { if (VERBOSE) logerror x; } while (0)
-
-#ifndef true
-#define true 1
-#endif
-
-#ifndef false
-#define false 0
-#endif
-
 #define HD6309_INLINE		static
 #define change_pc(newpc)	hd6309.pc.w.l = (newpc)
 #define HD6309_CLEAR_LINE	0
@@ -564,7 +552,6 @@ void hd6309_set_irq_line(int irqline, int state)
 	{
 		if (hd6309.nmi_state == state) return;
 		hd6309.nmi_state = state;
-//		LOG(("HD6309#%d set_irq_line (NMI) %d (PC=%4.4X)\n", cpu_getactivecpu(), state, pPC.d));
 		if( state == HD6309_CLEAR_LINE ) return;
 
 		/* if the stack was not yet initialized */
@@ -603,7 +590,6 @@ void hd6309_set_irq_line(int irqline, int state)
 	}
 	else if (irqline < 2)
 	{
-//		LOG(("HD6309#%d set_irq_line %d, %d (PC=%4.4X)\n", cpu_getactivecpu(), irqline, state, pPC.d));
 		hd6309.irq_state[irqline] = state;
 		if (state == HD6309_CLEAR_LINE) return;
 		CHECK_IRQ_LINES();

@@ -256,8 +256,6 @@ static void nec_interrupt(v25_state_t *nec_state, unsigned int_num, INTSOURCES s
 		case BRKS:	/* force secure mode */
 			if (nec_state->decode)
 				nec_state->MF = 0;
-//			else
-//				logerror("%06x: BRKS executed with no decryption table\n",PC(nec_state));
 			break;
 		case INT_IRQ:	/* get vector */
 			int_num = nec_state->vector; //(*nec_state->irq_callback)(0);

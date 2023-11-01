@@ -16,8 +16,6 @@ UINT8 *NMK004PROGROM;
 #define ym2203_status_port_r(x,y)	BurnYM2203Read(x, 0);
 #define ym2203_read_port_r(x,y)		BurnYM2203Read(x, 1)
 #define device				0
-#define	fatalerror			printf
-//#define logerror			printf
 
 //--------------------------------------------------------------------------
 
@@ -271,7 +269,7 @@ static void effects_update(INT32 channel)
 							return;
 
 						default:
-							fatalerror("effects channel %d unsupported token %02x",channel,token);
+							break;
 					}
 				}
 			} while (token == 0xef || (token & 0xf0) == 0xf0);
@@ -442,7 +440,7 @@ static void fm_update(INT32 channel)
 							return;
 
 						default:
-							fatalerror("fm channel %d unsupported token %02x",channel,token);
+							break;
 					}
 				}
 			} while (token == 0xef || (token & 0xf0) == 0xf0);
@@ -864,10 +862,7 @@ static void get_command()
 	{
 		// startup handshake
 		if (cmd == from_main[NMK004_state.protection_check])
-		{
-//			logerror("advance handshake to %02x\n",to_main[NMK004_state.protection_check]);
 			NMK004_state.to_main = to_main[NMK004_state.protection_check++];
-		}
 	}
 	else
 	{

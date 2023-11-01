@@ -85,82 +85,6 @@ to do:
 #define EG_REL			1
 #define EG_OFF			0
 
-
-/* save output as raw 16-bit sample */
-
-//#define SAVE_SAMPLE
-
-#ifdef SAVE_SAMPLE
-static INLINE signed int acc_calc(signed int value)
-{
-	if (value>=0)
-	{
-		if (value < 0x0200)
-			return (value & ~0);
-		if (value < 0x0400)
-			return (value & ~1);
-		if (value < 0x0800)
-			return (value & ~3);
-		if (value < 0x1000)
-			return (value & ~7);
-		if (value < 0x2000)
-			return (value & ~15);
-		if (value < 0x4000)
-			return (value & ~31);
-		return (value & ~63);
-	}
-	/*else value < 0*/
-	if (value > -0x0200)
-		return (~abs(value) & ~0);
-	if (value > -0x0400)
-		return (~abs(value) & ~1);
-	if (value > -0x0800)
-		return (~abs(value) & ~3);
-	if (value > -0x1000)
-		return (~abs(value) & ~7);
-	if (value > -0x2000)
-		return (~abs(value) & ~15);
-	if (value > -0x4000)
-		return (~abs(value) & ~31);
-	return (~abs(value) & ~63);
-}
-
-
-static FILE *sample[1];
-	#if 0	/*save to MONO file */
-		#define SAVE_ALL_CHANNELS \
-		{	signed int pom = acc_calc(mo); \
-			fputc((unsigned short)pom&0xff,sample[0]); \
-			fputc(((unsigned short)pom>>8)&0xff,sample[0]); \
-		}
-	#else	/*save to STEREO file */
-		#define SAVE_ALL_CHANNELS \
-		{	signed int pom = mo; \
-			fputc((unsigned short)pom&0xff,sample[0]); \
-			fputc(((unsigned short)pom>>8)&0xff,sample[0]); \
-			pom = ro; \
-			fputc((unsigned short)pom&0xff,sample[0]); \
-			fputc(((unsigned short)pom>>8)&0xff,sample[0]); \
-		}
-		#define SAVE_SEPARATE_CHANNEL(j) \
-		{	signed int pom = outchan; \
-			fputc((unsigned short)pom&0xff,sample[0]); \
-			fputc(((unsigned short)pom>>8)&0xff,sample[0]); \
-			pom = chip->instvol_r[j]>>4; \
-			fputc((unsigned short)pom&0xff,sample[0]); \
-			fputc(((unsigned short)pom>>8)&0xff,sample[0]); \
-		}
-	#endif
-#endif
-
-/*#define LOG_CYM_FILE*/
-#ifdef LOG_CYM_FILE
-	FILE * cymfile = NULL;
-#endif
-
-
-
-
 typedef struct{
 	UINT32	ar;			/* attack rate: AR<<2			*/
 	UINT32	dr;			/* decay rate:  DR<<2			*/
@@ -887,16 +811,8 @@ static INLINE signed int op_calc(UINT32 phase, unsigned int env, signed int pm, 
 
 static INLINE signed int op_calc1(UINT32 phase, unsigned int env, signed int pm, unsigned int wave_tab)
 {
-	UINT32 p;
-	INT32  i;
-
-	i = (phase & ~FREQ_MASK) + pm;
-
-/*logerror("i=%08x (i>>16)&511=%8i phase=%i [pm=%08x] ",i, (i>>16)&511, phase>>FREQ_SH, pm);*/
-
-	p = (env<<5) + sin_tab[ wave_tab + ((i>>FREQ_SH) & SIN_MASK)];
-
-/*logerror("(p&255=%i p>>8=%i) out= %i\n", p&255,p>>8, tl_tab[p&255]>>(p>>8) );*/
+	INT32  i = (phase & ~FREQ_MASK) + pm;
+	UINT32 p = (env<<5) + sin_tab[ wave_tab + ((i>>FREQ_SH) & SIN_MASK)];
 
 	if (p >= TL_TAB_LEN)
 		return 0;
@@ -1180,15 +1096,7 @@ static int init_tables(void)
 			tl_tab[ x*2+0 + i*2*TL_RES_LEN ] =  tl_tab[ x*2+0 ]>>i;
 			tl_tab[ x*2+1 + i*2*TL_RES_LEN ] = -tl_tab[ x*2+0 + i*2*TL_RES_LEN ];
 		}
-	#if 0
-			logerror("tl %04i", x*2);
-			for (i=0; i<11; i++)
-				logerror(", [%02i] %5i", i*2, tl_tab[ x*2 /*+1*/ + i*2*TL_RES_LEN ] );
-			logerror("\n");
-	#endif
 	}
-	/*logerror("ym2413.c: TL_TAB_LEN = %i elements (%i bytes)\n",TL_TAB_LEN, (int)sizeof(tl_tab));*/
-
 
 	for (i=0; i<SIN_LEN; i++)
 	{
@@ -1213,9 +1121,6 @@ static int init_tables(void)
 		/* waveform 0: standard sinus  */
 		sin_tab[ i ] = n*2 + (m>=0.0? 0: 1 );
 
-		/*logerror("ym2413.c: sin [%4i (hex=%03x)]= %4i (tl_tab value=%5i)\n", i, i, sin_tab[i], tl_tab[sin_tab[i]] );*/
-
-
 		/* waveform 1:  __      __     */
 		/*             /  \____/  \____*/
 		/* output only first half of the sinus waveform (positive one) */
@@ -1223,28 +1128,13 @@ static int init_tables(void)
 			sin_tab[1*SIN_LEN+i] = TL_TAB_LEN;
 		else
 			sin_tab[1*SIN_LEN+i] = sin_tab[i];
-
-		/*logerror("ym2413.c: sin1[%4i]= %4i (tl_tab value=%5i)\n", i, sin_tab[1*SIN_LEN+i], tl_tab[sin_tab[1*SIN_LEN+i]] );*/
 	}
-#if 0
-	logerror("YM2413.C: ENV_QUIET= %08x (*32=%08x)\n", ENV_QUIET, ENV_QUIET*32 );
-	for (i=0; i<ENV_QUIET; i++)
-	{
-		logerror("tl_tb[%4x(%4i)]=%8x\n", i<<5, i, tl_tab[i<<5] );
-	}
-#endif
-#ifdef SAVE_SAMPLE
-	sample[0]=fopen("sampsum.pcm","wb");
-#endif
 
 	return 1;
 }
 
 static void OPLCloseTable( void )
 {
-#ifdef SAVE_SAMPLE
-	fclose(sample[0]);
-#endif
 }
 
 static void OPLL_initalize(YM2413 *chip)
@@ -1253,11 +1143,6 @@ static void OPLL_initalize(YM2413 *chip)
 	
 	/* frequency base */
 	chip->freqbase  = (chip->rate) ? ((double)chip->clock / 72.0) / chip->rate  : 0;
-#if 0
-	chip->rate = (double)chip->clock / 72.0;
-	chip->freqbase  = 1.0;
-	logerror("freqbase=%f\n", chip->freqbase);
-#endif
 
 	/* make fnumber -> increment counter table */
 	for( i = 0 ; i < 1024; i++ )
@@ -1265,29 +1150,7 @@ static void OPLL_initalize(YM2413 *chip)
 		/* OPLL (YM2413) phase increment counter = 18bit */
 
 		chip->fn_tab[i] = (UINT32)( (double)i * 64 * chip->freqbase * (1<<(FREQ_SH-10)) ); /* -10 because chip works with 10.10 fixed point, while we use 16.16 */
-#if 0
-		logerror("ym2413.c: fn_tab[%4i] = %08x (dec=%8i)\n",
-				 i, chip->fn_tab[i]>>6, chip->fn_tab[i]>>6 );
-#endif
 	}
-
-#if 0
-	for( i=0 ; i < 16 ; i++ )
-	{
-		logerror("ym2413.c: sl_tab[%i] = %08x\n", i, sl_tab[i] );
-	}
-	for( i=0 ; i < 8 ; i++ )
-	{
-		int j;
-		logerror("ym2413.c: ksl_tab[oct=%2i] =",i);
-		for (j=0; j<16; j++)
-		{
-			logerror("%08x ", ksl_tab[i*16+j] );
-		}
-		logerror("\n");
-	}
-#endif
-
 
 	/* Amplitude modulation: 27 output levels (triangle waveform); 1 level takes one of: 192, 256 or 448 samples */
 	/* One entry from LFO_AM_TABLE lasts for 64 samples */
@@ -1296,16 +1159,11 @@ static void OPLL_initalize(YM2413 *chip)
 	/* Vibrato: 8 output levels (triangle waveform); 1 level takes 1024 samples */
 	chip->lfo_pm_inc = (1.0 / 1024.0) * (1<<LFO_SH) * chip->freqbase;
 
-	/*logerror ("chip->lfo_am_inc = %8x ; chip->lfo_pm_inc = %8x\n", chip->lfo_am_inc, chip->lfo_pm_inc);*/
-
 	/* Noise generator: a step takes 1 sample */
 	chip->noise_f = (1.0 / 1.0) * (1<<FREQ_SH) * chip->freqbase;
-	/*logerror("YM2413init noise_f=%8x\n", chip->noise_f);*/
 
 	chip->eg_timer_add  = (1<<EG_SH)  * chip->freqbase;
 	chip->eg_timer_overflow = ( 1 ) * (1<<EG_SH);
-	/*logerror("YM2413init eg_timer_add=%8x eg_timer_overflow=%8x\n", chip->eg_timer_add, chip->eg_timer_overflow);*/
-
 }
 
 static INLINE void KEY_ON(YM2413_OPLL_SLOT *SLOT, UINT32 key_set)
@@ -1577,16 +1435,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 	r &= 0xff;
 	v &= 0xff;
 
-
-#ifdef LOG_CYM_FILE
-	if ((cymfile) && (r!=8) )
-	{
-		fputc( (unsigned char)r, cymfile );
-		fputc( (unsigned char)v, cymfile );
-	}
-#endif
-
-
 	switch(r&0xf0)
 	{
 	case 0x00:	/* 00-0f:control */
@@ -1612,8 +1460,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 				if ((chip->rhythm&0x20)==0)
 				/*rhythm off to on*/
 				{
-					logerror("YM2413: Rhythm mode enable\n");
-
 	/* Load instrument settings for channel seven(chan=6 since we're zero based). (Bass drum) */
 					chan = 6;
 					inst = &chip->inst_tab[16][0];
@@ -1674,7 +1520,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 				if (chip->rhythm&0x20)
 				/*rhythm on to off*/
 				{
-					logerror("YM2413: Rhythm mode disable\n");
 	/* Load instrument settings for channel seven(chan=6 since we're zero based).*/
 					chan = 6;
 					inst = &chip->inst_tab[chip->instvol_r[chan]>>4][0];
@@ -1747,9 +1592,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 			}
 
 
-			if (CH->sus!=(v&0x20))
-				logerror("chan=%i sus=%2x\n",chan,v&0x20);
-
 			CH->sus = v & 0x20;
 		}
 		/* update */
@@ -1818,12 +1660,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 			slot = chan*2;
 
 			load_instrument(chip, chan, slot, inst);
-
-		#if 0
-			logerror("YM2413: chan#%02i inst=%02i:  (r=%2x, v=%2x)\n",chan,v>>4,r,v);
-			logerror("  0:%2x  1:%2x\n",inst[0],inst[1]);	logerror("  2:%2x  3:%2x\n",inst[2],inst[3]);
-			logerror("  4:%2x  5:%2x\n",inst[4],inst[5]);	logerror("  6:%2x  7:%2x\n",inst[6],inst[7]);
-		#endif
 		}
 	}
 	break;
@@ -1832,16 +1668,6 @@ static void OPLLWriteReg(YM2413 *chip, int r, int v)
 	break;
 	}
 }
-
-#ifdef LOG_CYM_FILE
-static void cymfile_callback (int n)
-{
-	if (cymfile)
-	{
-		fputc( (unsigned char)8, cymfile );
-	}
-}
-#endif
 
 /* lock/unlock for common table */
 static int OPLL_LockTable(void)
@@ -1859,14 +1685,6 @@ static int OPLL_LockTable(void)
 		return -1;
 	}
 
-#ifdef LOG_CYM_FILE
-	cymfile = fopen("2413_.cym","wb");
-	if (cymfile)
-		timer_pulse ( TIME_IN_HZ(110), 0, cymfile_callback); /*110 Hz pulse timer*/
-	else
-		logerror("Could not create file 2413_.cym\n");
-#endif
-
 	return 0;
 }
 
@@ -1879,12 +1697,6 @@ static void OPLL_UnLockTable(void)
 
 	cur_chip = NULL;
 	OPLCloseTable();
-
-#ifdef LOG_CYM_FILE
-	fclose (cymfile);
-	cymfile = NULL;
-#endif
-
 }
 
 static void OPLLResetChip(YM2413 *chip)
@@ -2142,13 +1954,6 @@ void YM2413UpdateOne(int which, INT16 **buffers, int length)
 		/* limit check */
 		mo = limit( mo , MAXOUT, MINOUT );
 		ro = limit( ro , MAXOUT, MINOUT );
-
-		#ifdef SAVE_SAMPLE
-		if (which==0)
-		{
-			SAVE_ALL_CHANNELS
-		}
-		#endif
 
 		/* store to sound buffer */
 		bufMO[i] = mo;

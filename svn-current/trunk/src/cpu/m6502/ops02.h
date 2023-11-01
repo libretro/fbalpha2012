@@ -515,7 +515,6 @@
  *  ILL Illegal opcode
  ***************************************************************/
 #define ILL 													
-//	logerror("M6502 illegal opcode %04x: %02x\n",(PCW-1)&0xffff, cpu_readop((PCW-1)&0xffff))
 
 /* 6502 ********************************************************
  *  INC Increment memory

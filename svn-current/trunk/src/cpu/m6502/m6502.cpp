@@ -52,8 +52,6 @@ void	(*const *insnActive)(void);
 
 #define VERBOSE 0
 
-#define LOG(x)	do { if (VERBOSE) logerror x; } while (0)
-
 /****************************************************************************
  * The 6502 registers.
  ****************************************************************************/
@@ -62,9 +60,6 @@ void	(*const *insnActive)(void);
 static int m6502_ICount = 0;
 
 static m6502_Regs m6502;
-
-//static READ8_HANDLER( default_rdmem_id ) { return program_read_byte_8le(offset); }
-//static WRITE8_HANDLER( default_wdmem_id ) { program_write_byte_8le(offset, data); }
 
 /***************************************************************
  * include the opcode macros, functions and tables
@@ -193,7 +188,6 @@ M6502_INLINE void m6502_take_irq(void)
 		P |= F_I;		/* set I flag */
 		PCL = RDMEM(EAD);
 		PCH = RDMEM(EAD+1);
-//		LOG(("M6502#%d takes IRQ ($%04x)\n", cpu_getactivecpu(), PCD));
 		/* call back the cpuintrf to let it clear the line */
 		if (m6502.irq_callback) (*m6502.irq_callback)(0);
 		change_pc(PCD);
@@ -225,17 +219,9 @@ int m6502_execute(int cycles)
 		/* check if the I flag was just reset (interrupts enabled) */
 		if( m6502.after_cli )
 		{
-//			LOG(("M6502#%d after_cli was >0", cpu_getactivecpu()));
 			m6502.after_cli = 0;
 			if (m6502.irq_state != M6502_CLEAR_LINE)
-			{
-//				LOG((": irq line is asserted: set pending IRQ\n"));
 				m6502.pending_irq = 1;
-			}
-			else
-			{
-//				LOG((": irq line is clear\n"));
-			}
 		}
 		else {
 			if ( m6502.pending_irq == 2 ) {
@@ -263,7 +249,6 @@ void m6502_set_irq_line(int irqline, int state)
 		m6502.nmi_state = state;
 		if( state != M6502_CLEAR_LINE )
 		{
-//			LOG(( "M6502#%d set_nmi_line(ASSERT)\n", cpu_getactivecpu()));
 			EAD = M6502_NMI_VEC;
 			m6502_ICount -= 2;
 			PUSH(PCH);
@@ -272,7 +257,6 @@ void m6502_set_irq_line(int irqline, int state)
 			P |= F_I;		/* set I flag */
 			PCL = RDMEM(EAD);
 			PCH = RDMEM(EAD+1);
-//			LOG(("M6502#%d takes NMI ($%04x)\n", cpu_getactivecpu(), PCD));
 			change_pc(PCD);
 		}
 	}
@@ -281,17 +265,13 @@ void m6502_set_irq_line(int irqline, int state)
 		if( irqline == M6502_SET_OVERFLOW )
 		{
 			if( m6502.so_state && !state )
-			{
-//				LOG(( "M6502#%d set overflow\n", cpu_getactivecpu()));
 				P|=F_V;
-			}
 			m6502.so_state=state;
 			return;
 		}
 		m6502.irq_state = state;
 		if( state != M6502_CLEAR_LINE )
 		{
-//			LOG(( "M6502#%d set_irq_line(ASSERT)\n", cpu_getactivecpu()));
 			m6502.pending_irq = 1;
 //          m6502.pending_irq = 2;
 			m6502_IntOccured = m6502_ICount;
@@ -415,7 +395,6 @@ M6502_INLINE void m65c02_take_irq(void)
 		P = (P & ~F_D) | F_I;		/* knock out D and set I flag */
 		PCL = RDMEM(EAD);
 		PCH = RDMEM(EAD+1);
-		//LOG(("M65c02#%d takes IRQ ($%04x)\n", cpu_getactivecpu(), PCD));
 		/* call back the cpuintrf to let it clear the line */
 		if (m6502.irq_callback) (*m6502.irq_callback)(0);
 		change_pc(PCD);
@@ -448,17 +427,9 @@ int m65c02_execute(int cycles)
 		/* check if the I flag was just reset (interrupts enabled) */
 		if( m6502.after_cli )
 		{
-			//LOG(("M6502#%d after_cli was >0", cpu_getactivecpu()));
 			m6502.after_cli = 0;
 			if (m6502.irq_state != M6502_CLEAR_LINE)
-			{
-			//	LOG((": irq line is asserted: set pending IRQ\n"));
 				m6502.pending_irq = 1;
-			}
-			//else
-			//{
-			//	LOG((": irq line is clear\n"));
-			//}
 		}
 		else
 		if( m6502.pending_irq )
@@ -477,7 +448,6 @@ void m65c02_set_irq_line(int irqline, int state)
 		m6502.nmi_state = state;
 		if( state != M6502_CLEAR_LINE )
 		{
-		//	LOG(( "M6502#%d set_nmi_line(ASSERT)\n", cpu_getactivecpu()));
 			EAD = M6502_NMI_VEC;
 			m6502_ICount -= 2;
 			PUSH(PCH);
@@ -486,7 +456,6 @@ void m65c02_set_irq_line(int irqline, int state)
 			P = (P & ~F_D) | F_I;		/* knock out D and set I flag */
 			PCL = RDMEM(EAD);
 			PCH = RDMEM(EAD+1);
-		//	LOG(("M6502#%d takes NMI ($%04x)\n", cpu_getactivecpu(), PCD));
 			change_pc(PCD);
 		}
 	}
@@ -545,7 +514,6 @@ M6502_INLINE void deco16_take_irq(void)
 		P |= F_I;		/* set I flag */
 		PCL = RDMEM(EAD+1);
 		PCH = RDMEM(EAD);
-		//LOG(("M6502#%d takes IRQ ($%04x)\n", cpu_getactivecpu(), PCD));
 		/* call back the cpuintrf to let it clear the line */
 		if (m6502.irq_callback) (*m6502.irq_callback)(0);
 		change_pc(PCD);
@@ -561,7 +529,6 @@ void deco16_set_irq_line(int irqline, int state)
 		m6502.nmi_state = state;
 		if( state != M6502_CLEAR_LINE )
 		{
-			//LOG(( "M6502#%d set_nmi_line(ASSERT)\n", cpu_getactivecpu()));
 			EAD = DECO16_NMI_VEC;
 			m6502_ICount -= 7;
 			PUSH(PCH);
@@ -570,7 +537,6 @@ void deco16_set_irq_line(int irqline, int state)
 			P |= F_I;		/* set I flag */
 			PCL = RDMEM(EAD+1);
 			PCH = RDMEM(EAD);
-			//LOG(("M6502#%d takes NMI ($%04x)\n", cpu_getactivecpu(), PCD));
 			change_pc(PCD);
 		}
 	}
@@ -579,19 +545,13 @@ void deco16_set_irq_line(int irqline, int state)
 		if( irqline == M6502_SET_OVERFLOW )
 		{
 			if( m6502.so_state && !state )
-			{
-			//	LOG(( "M6502#%d set overflow\n", cpu_getactivecpu()));
 				P|=F_V;
-			}
 			m6502.so_state=state;
 			return;
 		}
 		m6502.irq_state = state;
 		if( state != M6502_CLEAR_LINE )
-		{
-			//LOG(( "M6502#%d set_irq_line(ASSERT)\n", cpu_getactivecpu()));
 			m6502.pending_irq = 1;
-		}
 	}
 }
 
@@ -620,17 +580,9 @@ int deco16_execute(int cycles)
 		/* check if the I flag was just reset (interrupts enabled) */
 		if( m6502.after_cli )
 		{
-			//LOG(("M6502#%d after_cli was >0", cpu_getactivecpu()));
 			m6502.after_cli = 0;
 			if (m6502.irq_state != M6502_CLEAR_LINE)
-			{
-			//	LOG((": irq line is asserted: set pending IRQ\n"));
 				m6502.pending_irq = 1;
-			}
-			//else
-			//{
-			//	LOG((": irq line is clear\n"));
-			//}
 		}
 		else
 		if( m6502.pending_irq )

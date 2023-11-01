@@ -952,27 +952,6 @@ INT32 BurnAreaScan(INT32 nAction, INT32* pnMin)
 #include "driver.h"
 
 // ----------------------------------------------------------------------------
-// Wrapper for MAME logerror calls
-
-#if defined (FBA_DEBUG) && defined (MAME_USE_LOGERROR)
-void logerror(char* szFormat, ...)
-{
-	static char szLogMessage[1024];
-
-	va_list vaFormat;
-	va_start(vaFormat, szFormat);
-
-	_vsnprintf(szLogMessage, 1024, szFormat, vaFormat);
-
-	va_end(vaFormat);
-
-	bprintf(PRINT_ERROR, _T("%hs"), szLogMessage);
-
-	return;
-}
-#endif
-
-// ----------------------------------------------------------------------------
 // Wrapper for MAME state_save_register_* calls
 
 struct BurnStateEntry { BurnStateEntry* pNext; BurnStateEntry* pPrev; char szName[256]; void* pValue; UINT32 nSize; };

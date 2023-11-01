@@ -29,9 +29,6 @@
 extern TCHAR szAppHiscorePath[MAX_PATH];
 extern TCHAR szAppSamplesPath[MAX_PATH];
 
-// Enable the MAME logerror() function in debug builds
-// #define MAME_USE_LOGERROR
-
 // Give access to the CPUID function for various compilers
 #if defined (__GNUC__)
  #define CPUID(f,ra,rb,rc,rd) __asm__ __volatile__ ("cpuid"											\

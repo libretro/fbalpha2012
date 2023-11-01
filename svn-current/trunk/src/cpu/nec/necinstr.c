@@ -47,7 +47,6 @@ OP( 0x0f, i_pre_nec  ) { UINT32 ModRM, tmp, tmp2;
 		case 0xe0 : ModRM = FETCH(); ModRM=0; break;
 		case 0xf0 : ModRM = FETCH(); ModRM=0; break;
 		case 0xff : ModRM = FETCH(); ModRM=0; break;
-//		default:    logerror("%06x: Unknown V20 instruction\n",PC(nec_state)); break;
 	}
 }
 #endif
@@ -176,7 +175,6 @@ OP( 0x62, i_chkind  ) {
 		nec_interrupt(nec_state, NEC_CHKIND_VECTOR, BRK);
 	}
 	nec_state->icount-=20;
-//	logerror("%06x: bound %04x high %04x low %04x tmp\n",PC(nec_state),high,low,tmp);
 }
 OP( 0x64, i_repnc  ) {	UINT32 next = fetchop(nec_state);	UINT16 c = Wreg(CW);
 	switch(next) { /* Segments */
@@ -331,7 +329,6 @@ OP( 0x8c, i_mov_wsreg ) { GetModRM;
 		case 0x08: PutRMWord(ModRM,Sreg(PS)); CLKR(14,14,5,14,10,3,2,EA); break;
 		case 0x10: PutRMWord(ModRM,Sreg(SS)); CLKR(14,14,5,14,10,3,2,EA); break;
 		case 0x18: PutRMWord(ModRM,Sreg(DS0)); CLKR(14,14,5,14,10,3,2,EA); break;
-//		default:   logerror("%06x: MOV Sreg - Invalid register\n",PC(nec_state));
 	}
 }
 OP( 0x8d, i_lea       ) { UINT16 ModRM = FETCH(); (void)(*GetEA[ModRM])(nec_state); RegWord(ModRM)=EO;	CLKS(4,4,2); }
@@ -341,7 +338,6 @@ OP( 0x8e, i_mov_sregw ) { UINT16 src; GetModRM; src = GetRMWord(ModRM); CLKR(15,
 		case 0x08: Sreg(PS) = src; break; /* mov cs,ew */
 		case 0x10: Sreg(SS) = src; break; /* mov ss,ew */
 		case 0x18: Sreg(DS0) = src; break; /* mov ds,ew */
-//		default:   logerror("%06x: MOV Sreg - Invalid register\n",PC(nec_state));
 	}
 	nec_state->no_interrupt=1;
 }
@@ -412,7 +408,6 @@ OP( 0xc0, i_rotshft_bd8 ) {
 		case 0x18: do { RORC_BYTE; c--; CLK(1); } while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
 		case 0x20: SHL_BYTE(c); break;
 		case 0x28: SHR_BYTE(c); break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xc0 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_BYTE(c); break;
 	}
 }
@@ -429,7 +424,6 @@ OP( 0xc1, i_rotshft_wd8 ) {
 		case 0x18: do { RORC_WORD; c--; CLK(1); } while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
 		case 0x20: SHL_WORD(c); break;
 		case 0x28: SHR_WORD(c); break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xc1 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_WORD(c); break;
 	}
 }
@@ -479,7 +473,6 @@ OP( 0xd0, i_rotshft_b ) {
 		case 0x18: RORC_BYTE; PutbackRMByte(ModRM,(BYTE)dst); nec_state->OverVal = (src^dst)&0x80; break;
 		case 0x20: SHL_BYTE(1); nec_state->OverVal = (src^dst)&0x80; break;
 		case 0x28: SHR_BYTE(1); nec_state->OverVal = (src^dst)&0x80; break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xd0 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_BYTE(1); nec_state->OverVal = 0; break;
 	}
 }
@@ -494,7 +487,6 @@ OP( 0xd1, i_rotshft_w ) {
 		case 0x18: RORC_WORD; PutbackRMWord(ModRM,(WORD)dst); nec_state->OverVal = (src^dst)&0x8000; break;
 		case 0x20: SHL_WORD(1); nec_state->OverVal = (src^dst)&0x8000;  break;
 		case 0x28: SHR_WORD(1); nec_state->OverVal = (src^dst)&0x8000;  break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xd1 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_WORD(1); nec_state->OverVal = 0; break;
 	}
 }
@@ -510,7 +502,6 @@ OP( 0xd2, i_rotshft_bcl ) {
 		case 0x18: do { RORC_BYTE; c--; CLK(1); } while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
 		case 0x20: SHL_BYTE(c); break;
 		case 0x28: SHR_BYTE(c); break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xd2 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_BYTE(c); break;
 	}
 }
@@ -526,7 +517,6 @@ OP( 0xd3, i_rotshft_wcl ) {
 		case 0x18: do { RORC_WORD; c--; CLK(1); } while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
 		case 0x20: SHL_WORD(c); break;
 		case 0x28: SHR_WORD(c); break;
-//		case 0x30: logerror("%06x: Undefined opcode 0xd3 0x30 (SHLA)\n",PC(nec_state)); break;
 		case 0x38: SHRA_WORD(c); break;
 	}
 }
@@ -616,7 +606,6 @@ OP( 0xf6, i_f6pre ) { UINT32 tmp; UINT32 uresult,uresult2; INT32 result,result2;
 	GetModRM; tmp = GetRMByte(ModRM);
 	switch (ModRM & 0x38) {
 		case 0x00: tmp &= FETCH(); nec_state->CarryVal = nec_state->OverVal = 0; SetSZPF_Byte(tmp); nec_state->icount-=(ModRM >=0xc0 )?4:11; break; /* TEST */
-//		case 0x08: logerror("%06x: Undefined opcode 0xf6 0x08\n",PC(nec_state)); break;
 		case 0x10: PutbackRMByte(ModRM,~tmp); nec_state->icount-=(ModRM >=0xc0 )?2:16; break; /* NOT */
 		case 0x18: nec_state->CarryVal=(tmp!=0); tmp=(~tmp)+1; SetSZPF_Byte(tmp); PutbackRMByte(ModRM,tmp&0xff); nec_state->icount-=(ModRM >=0xc0 )?2:16; break; /* NEG */
 		case 0x20: uresult = Breg(AL)*tmp; Wreg(AW)=(WORD)uresult; nec_state->CarryVal=nec_state->OverVal=(Breg(AH)!=0); nec_state->icount-=(ModRM >=0xc0 )?30:36; break; /* MULU */
@@ -630,7 +619,6 @@ OP( 0xf7, i_f7pre   ) { UINT32 tmp,tmp2; UINT32 uresult,uresult2; INT32 result,r
 	GetModRM; tmp = GetRMWord(ModRM);
 	switch (ModRM & 0x38) {
 		case 0x00: tmp2 = FETCHWORD(); tmp &= tmp2; nec_state->CarryVal = nec_state->OverVal = 0; SetSZPF_Word(tmp); nec_state->icount-=(ModRM >=0xc0 )?4:11; break; /* TEST */
-//		case 0x08: logerror("%06x: Undefined opcode 0xf7 0x08\n",PC(nec_state)); break;
 		case 0x10: PutbackRMWord(ModRM,~tmp); nec_state->icount-=(ModRM >=0xc0 )?2:16; break; /* NOT */
 		case 0x18: nec_state->CarryVal=(tmp!=0); tmp=(~tmp)+1; SetSZPF_Word(tmp); PutbackRMWord(ModRM,tmp&0xffff); nec_state->icount-=(ModRM >=0xc0 )?2:16; break; /* NEG */
 		case 0x20: uresult = Wreg(AW)*tmp; Wreg(AW)=uresult&0xffff; Wreg(DW)=((UINT32)uresult)>>16; nec_state->CarryVal=nec_state->OverVal=(Wreg(DW)!=0); nec_state->icount-=(ModRM >=0xc0 )?30:36; break; /* MULU */
@@ -650,7 +638,6 @@ OP( 0xfe, i_fepre ) { UINT32 tmp, tmp1; GetModRM; tmp=GetRMByte(ModRM);
 	switch(ModRM & 0x38) {
 		case 0x00: tmp1 = tmp+1; nec_state->OverVal = (tmp==0x7f); SetAF(tmp1,tmp,1); SetSZPF_Byte(tmp1); PutbackRMByte(ModRM,(BYTE)tmp1); CLKM(2,2,2,16,16,7); break; /* INC */
 		case 0x08: tmp1 = tmp-1; nec_state->OverVal = (tmp==0x80); SetAF(tmp1,tmp,1); SetSZPF_Byte(tmp1); PutbackRMByte(ModRM,(BYTE)tmp1); CLKM(2,2,2,16,16,7); break; /* DEC */
-//		default:   logerror("%06x: FE Pre with unimplemented mod\n",PC(nec_state));
 	}
 }
 OP( 0xff, i_ffpre ) { UINT32 tmp, tmp1; GetModRM; tmp=GetRMWord(ModRM);
@@ -662,12 +649,10 @@ OP( 0xff, i_ffpre ) { UINT32 tmp, tmp1; GetModRM; tmp=GetRMWord(ModRM);
 		case 0x20: nec_state->ip = tmp; CHANGE_PC; nec_state->icount-=13; break; /* JMP */
 		case 0x28: nec_state->ip = tmp; Sreg(PS) = GetnextRMWord; CHANGE_PC; nec_state->icount-=15; break; /* JMP FAR */
 		case 0x30: PUSH(tmp); nec_state->icount-=4; break;
-//		default:   logerror("%06x: FF Pre with unimplemented mod\n",PC(nec_state));
 	}
 }
 
 static void i_invalid(nec_state_t *nec_state)
 {
 	nec_state->icount-=10;
-//	logerror("%06x: Invalid Opcode\n",PC(nec_state));
 }

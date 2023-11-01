@@ -292,18 +292,7 @@ I8039_INLINE void M_XCHD(UINT8 addr)
 	INTRAM_W(addr, val);
 }
 
-
-I8039_INLINE void M_ILLEGAL(void)
-{
-//	logerror("I8039:  PC = %04x,  Illegal opcode = %02x\n", R.PC.w.l-1, M_RDMEM(R.PC.w.l-1));
-}
-
-I8039_INLINE void M_UNDEFINED(void)
-{
-//	logerror("I8039:  PC = %04x,  Unimplemented opcode = %02x\n", R.PC.w.l-1, M_RDMEM(R.PC.w.l-1));
-}
-
-static void illegal(void)	 { M_ILLEGAL(); }
+static void illegal(void)	 { }
 
 static void add_a_n(void)	 { M_ADD(M_RDMEM_OPCODE()); }
 static void add_a_r0(void)	 { M_ADD(R0); }
@@ -393,7 +382,7 @@ static void djnz_r6(void)	{ UINT8 i=M_RDMEM_OPCODE(); R6--; if (R6 != 0) { R.PC.
 static void djnz_r7(void)	{ UINT8 i=M_RDMEM_OPCODE(); R7--; if (R7 != 0) { R.PC.w.l = ((R.PC.w.l-1) & 0xf00) | i; change_pc(R.PC.w.l); } else ADJUST_CYCLES }
 static void en_i(void)		 { R.xirq_en = 1; if (R.irq_state == I8039_EXTERNAL_INT) { R.irq_extra_cycles += Ext_IRQ(); } }
 static void en_tcnti(void)	 { R.tirq_en = 1; }
-static void ento_clk(void)	 { M_UNDEFINED(); }
+static void ento_clk(void)	 { }
 static void in_a_p1(void)	 { R.A = port_r(1) & R.P1; }
 static void in_a_p2(void)	 { R.A = port_r(2) & R.P2; }
 static void ins_a_bus(void)	 { R.A = bus_r(); }
@@ -634,7 +623,6 @@ static int Ext_IRQ(void)
 
 	if (R.xirq_en) {
 		if (R.irq_executing == I8039_NO_INT) {
-//          logerror("I8039:  EXT INTERRUPT being serviced\n");
 			R.irq_executing = I8039_EXTERNAL_INT;
 			push(R.PC.b.l);
 			push((R.PC.b.h & 0x0f) | (R.PSW & 0xf0));
@@ -657,7 +645,6 @@ static int Timer_IRQ(void)
 
 	if (R.tirq_en) {
 		if (R.irq_executing == I8039_NO_INT) {
-//          logerror("I8039:  TIMER/COUNTER INTERRUPT\n");
 			R.irq_executing = I8039_TIMCNT_INT;
 			R.pending_irq &= ~I8039_TIMCNT_INT;
 			push(R.PC.b.l);
@@ -856,11 +843,7 @@ int I8039Run(int cycles)
 	{
 		R.PREVPC = R.PC;
 
-//		CALL_DEBUGGER(R.PC.w.l);
-
 		opcode=M_RDOP(R.PC.w.l);
-
-/*      logerror("I8039:  PC = %04x,  opcode = %02x\n", R.PC.w.l, opcode); */
 
 		R.PC.w.l++;
 		R.inst_cycles = opcode_main[opcode].cycles;

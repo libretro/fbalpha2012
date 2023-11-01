@@ -2782,16 +2782,10 @@ static void sh2_timer_activate(void)
 			max_delta <<= divider;
 			sh2->frc_base = sh2_GetTotalCycles();
 			
-			//timer_adjust(sh2->timer, ATTOTIME_IN_CYCLES(max_delta, sh2->cpu_number), sh2->cpu_number, attotime_zero);
-			//bprintf(0, _T("SH2 Timer Actived %d\n"), max_delta);
-			
 			sh2->timer_active = 1;
 			sh2->timer_cycles = max_delta;
 			sh2->timer_base = sh2->frc_base;
 			
-		} else {
-//			logerror("SH2.%d: Timer event in %d cycles of external clock", sh2->cpu_number, max_delta);
-			//bprintf(0, _T("SH2.0: Timer event in %d cycles of external clock\n"), max_delta);
 		}
 	}
 }
@@ -2896,11 +2890,7 @@ static void sh2_dmac_check(int dma)
 			incs = (sh2->m[0x63+4*dma] >> 12) & 3;
 			size = (sh2->m[0x63+4*dma] >> 10) & 3;
 			if(incd == 3 || incs == 3)
-			{
-//				logerror("SH2: DMA: bad increment values (%d, %d, %d, %04x)\n", incd, incs, size, sh2->m[0x63+4*dma]);
-				//bprintf(0, _T("SH2: DMA: bad increment values (%d, %d, %d, %04x)\n"), incd, incs, size, sh2->m[0x63+4*dma]);
 				return;
-			}
 			src   = sh2->m[0x60+4*dma];
 			dst   = sh2->m[0x61+4*dma];
 			count = sh2->m[0x62+4*dma];
@@ -2993,13 +2983,7 @@ static void sh2_dmac_check(int dma)
 	else
 	{
 		if(sh2->dma_timer_active[dma])
-		{
-//			logerror("SH2: DMA %d cancelled in-flight", dma);
-			//bprintf(0, _T("SH2: DMA %d cancelled in-flight"), dma);
-			//timer_adjust(sh2->dma_timer[dma], attotime_never, 0, attotime_zero);
 			sh2->dma_timer_active[dma] = 0;
-
-		}
 	}
 }
 
@@ -3009,16 +2993,12 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 	UINT32 old = sh2->m[offset];
 	COMBINE_DATA(sh2->m+offset);
 
-	//  if(offset != 0x20)
-	//      logerror("sh2_internal_w:  Write %08x (%x), %08x @ %08x\n", 0xfffffe00+offset*4, offset, data, mem_mask);
-
 	switch( offset )
 	{
 		// Timers
 	case 0x04: // TIER, FTCSR, FRC
 		if((mem_mask & 0x00ffffff) != 0xffffff)
 			sh2_timer_resync();
-		//logerror("SH2.%d: TIER write %04x @ %04x\n", sh2->cpu_number, data >> 16, mem_mask>>16);
 		sh2->m[4] = (sh2->m[4] & ~(ICF|OCFA|OCFB|OVF)) | (old & sh2->m[4] & (ICF|OCFA|OCFB|OVF));
 		COMBINE_DATA(&sh2->frc);
 		if((mem_mask & 0x00ffffff) != 0xffffff)
@@ -3026,7 +3006,6 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 		sh2_recalc_irq();
 		break;
 	case 0x05: // OCRx, TCR, TOCR
-		//logerror("SH2.%d: TCR write %08x @ %08x\n", sh2->cpu_number, data, mem_mask);
 		sh2_timer_resync();
 		if(sh2->m[5] & 0x10)
 			sh2->ocrb = (sh2->ocrb & (mem_mask >> 16)) | ((data & ~mem_mask) >> 16);
@@ -3167,16 +3146,12 @@ static void sh2_internal_w(UINT32 offset, UINT32 data, UINT32 mem_mask)
 		break;
 
 	default:
-		//logerror("sh2_internal_w:  Unmapped write %08x, %08x @ %08x\n", 0xfffffe00+offset*4, data, mem_mask);
 		break;
 	}
 }
 
 static UINT32 sh2_internal_r(UINT32 offset, UINT32 /*mem_mask*/)
 {
-	//  logerror("sh2_internal_r:  Read %08x (%x) @ %08x\n", 0xfffffe00+offset*4, offset, mem_mask);
-	//bprintf(0, _T("sh2_internal_r:  Read %08x (%x) @ %08x\n"), 0xfffffe00+offset*4, offset, mem_mask);
-	
 	switch( offset )
 	{
 	case 0x04: // TIER, FTCSR, FRC

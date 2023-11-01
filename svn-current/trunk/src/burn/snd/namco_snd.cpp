@@ -365,10 +365,7 @@ static void namcos1_sound_write(INT32 offset, INT32 data)
 {
 	/* verify the offset */
 	if (offset > 63)
-	{
-	//	logerror("NAMCOS1 sound: Attempting to write past the 64 registers segment\n");
 		return;
-	}
 
 	if (namco_soundregs[offset] == data)
 		return;

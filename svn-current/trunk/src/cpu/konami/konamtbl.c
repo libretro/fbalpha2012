@@ -117,7 +117,7 @@ KONAMI_INLINE void eorb_ex(void);
 KONAMI_INLINE void eorb_im(void);
 KONAMI_INLINE void eorb_ix(void);
 KONAMI_INLINE void exg(void);
-KONAMI_INLINE void illegal(void);
+KONAMI_INLINE void illegal(void) { }
 KONAMI_INLINE void inc_di(void);
 KONAMI_INLINE void inc_ex(void);
 KONAMI_INLINE void inc_ix(void);

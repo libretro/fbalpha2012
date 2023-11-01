@@ -1191,7 +1191,6 @@ static void snes_oam_list_build( void )
 			break;
 		default:
 			/* we should never enter here... */
-			logerror("Object size unsupported: %d\n", snes_ppu.oam.size_);
 			break;
 		}
 	}
@@ -2028,7 +2027,6 @@ void writeppu(unsigned short offset, unsigned char data)
 		               break;
 		            default:
 		               /* Unknown size so default to 8 & 16 */
-//		               logerror("Object size unsupported: %d\n", (data & 0xe0) >> 5);
 
 		               snes_ppu.oam.size[0] = 1;
 		               snes_ppu.oam.size[1] = 2;

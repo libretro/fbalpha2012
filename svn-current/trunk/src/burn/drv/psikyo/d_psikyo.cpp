@@ -1011,7 +1011,6 @@ void tengaiMCUWrite(UINT32 offset, UINT8 data)
 					s1945_mcu_index = s1945_mcu_inlatch;
 					break;
 				case 0x013:
-//					logerror("MCU: Table read index %02x\n", s1945_mcu_index);
 					s1945_mcu_latching = 1;
 					s1945_mcu_latch1 = s1945_mcu_table[s1945_mcu_index];
 					break;
@@ -1033,12 +1032,9 @@ void tengaiMCUWrite(UINT32 offset, UINT8 data)
 					s1945_mcu_latching |= 4;
 					break;
 				default:
-//					logerror("MCU: function %02x, direction %02x, latch1 %02x, latch2 %02x (%x)\n", data, s1945_mcu_direction, s1945_mcu_latch1, s1945_mcu_latch2, activecpu_get_pc());
 					break;
 			}
 			break;
-//		default:
-//			logerror("MCU.w %x, %02x (%x)\n", offset, data, activecpu_get_pc());
 	}
 }
 

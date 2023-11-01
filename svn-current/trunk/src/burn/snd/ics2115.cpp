@@ -433,7 +433,6 @@ void ics2115_update(INT32 /*length*/)
 
 				adr += delta;
 				if(adr >= end) {
-					//if (ICS2115LOGERROR) logerror("ICS2115: KEYDONE %2d\n", osc);
 					adr -= (end-loop);
 					chip->voice[osc].state &= ~V_ON;
 					chip->voice[osc].state |= V_DONE;

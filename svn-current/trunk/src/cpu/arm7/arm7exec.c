@@ -159,7 +159,6 @@
                                 HandleThumbALUSubFlags(GET_REGISTER(rd), rs,imm);
                                 break;
                             default:
-                                fatalerror("%08x: G1 Undefined Thumb instruction: %04x\n", pc, insn);
                                 R15 += 2;
                                 break;
                         }
@@ -487,7 +486,6 @@
                                     R15 += 2;
                                     break;
                                 default:
-                                    fatalerror("%08x: G4-0 Undefined Thumb instruction: %04x %x\n", pc, insn, (insn & THUMB_ALUOP_TYPE) >> THUMB_ALUOP_TYPE_SHIFT);
                                     R15 += 2;
                                     break;
                             }
@@ -530,7 +528,6 @@
                                             }
                                             break;
                                         default:
-                                            fatalerror("%08x: G4-1-0 Undefined Thumb instruction: %04x %x\n", pc, insn, (insn & THUMB_HIREG_H) >> THUMB_HIREG_H_SHIFT);
                                             break;
                                     }
                                     R15 += 2;
@@ -563,7 +560,6 @@
                                             HandleThumbALUSubFlags(rn, rd, rs);
                                             break;
                                         default:
-                                            fatalerror("%08x: G4-1 Undefined Thumb instruction: %04x %x\n", pc, insn, (insn & THUMB_HIREG_H) >> THUMB_HIREG_H_SHIFT);
                                             R15 += 2;
                                             break;
                                     }
@@ -620,7 +616,6 @@
                                             }
                                             break;
                                         default:
-                                            fatalerror("%08x: G4-2 Undefined Thumb instruction: %04x (%x)\n", pc, insn, (insn & THUMB_HIREG_H) >> THUMB_HIREG_H_SHIFT);
                                             R15 += 2;
                                             break;
                                     }
@@ -666,13 +661,11 @@
                                             R15 = addr;
                                             break;
                                         default:
-                                            fatalerror("%08x: G4-3 Undefined Thumb instruction: %04x\n", pc, insn);
                                             R15 += 2;
                                             break;
                                     }
                                     break;
                                 default:
-                                    fatalerror("%08x: G4-x Undefined Thumb instruction: %04x\n", pc, insn);
                                     R15 += 2;
                                     break;
                             }
@@ -684,7 +677,6 @@
                             R15 += 2;
                             break;
                         default:
-                            fatalerror("%08x: G4-y Undefined Thumb instruction: %04x\n", pc, insn);
                             R15 += 2;
                             break;
                     }
@@ -770,7 +762,6 @@
                             R15 += 2;
                             break;
                         default:
-                            fatalerror("%08x: G5 Undefined Thumb instruction: %04x\n", pc, insn);
                             R15 += 2;
                             break;
                     }
@@ -919,7 +910,6 @@
                             SET_REGISTER(13, GET_REGISTER(13) + 4);
                             break;
                         default:
-                            fatalerror("%08x: Gb Undefined Thumb instruction: %04x\n", pc, insn);
                             R15 += 2;
                             break;
                     }
@@ -1108,7 +1098,6 @@
                             }
                             break;
                         case COND_AL:
-                            fatalerror("%08x: Undefined Thumb instruction: %04x (ARM9 reserved)\n", pc, insn);
                             R15 += 2;
                             break;
                         case COND_NV:   // SWI (this is sort of a "hole" in the opcode encoding)
@@ -1158,7 +1147,6 @@
                     }
                     break;
                 default:
-                    fatalerror("%08x: Undefined Thumb instruction: %04x\n", pc, insn);
                     R15 += 2;
                     break;
             }
@@ -1348,7 +1336,6 @@
                     ARM7.pendingSwi = 1;
                     ARM7_CHECKIRQ;
                     ARM7_ICOUNT -= 1;               //undefined takes 4 cycles (page 77)
-                    LOG(("%08x:  Undefined instruction\n",pc-4));
                     L_Next:
                         R15 += 4;
                         ARM7_ICOUNT +=2;    //Any unexecuted instruction only takes 1 cycle (page 193)

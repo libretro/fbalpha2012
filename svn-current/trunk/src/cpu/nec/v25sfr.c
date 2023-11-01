@@ -101,7 +101,6 @@ static UINT8 read_sfr(v25_state_t *nec_state, unsigned o)
 			ret = (nec_state->IDB >> 12);
 			break;
 		default:
-//			logerror("%06x: Read from special function register %02x\n",PC(nec_state),o);
 			ret = 0;
 	}
 	return ret;
@@ -114,19 +113,15 @@ static UINT16 read_sfr_word(v25_state_t *nec_state, unsigned o)
 	switch(o)
 	{
 		case 0x80:	/* TM0 */
-//			logerror("%06x: Warning: read back TM0\n",PC(nec_state));
 			ret = nec_state->TM0;
 			break;
 		case 0x82: /* MD0 */
-//			logerror("%06x: Warning: read back MD0\n",PC(nec_state));
 			ret = nec_state->MD0;
 			break;
 		case 0x88:	/* TM1 */
-//			logerror("%06x: Warning: read back TM1\n",PC(nec_state));
 			ret = nec_state->TM1;
 			break;
 		case 0x8A: /* MD1 */
-//			logerror("%06x: Warning: read back MD1\n",PC(nec_state));
 			ret = nec_state->MD1;
 			break;
 		default:
@@ -146,9 +141,6 @@ static void write_irqcontrol(v25_state_t *nec_state, INTSOURCES source, UINT8 d)
 		nec_state->unmasked_irq &= ~source;
 	else
 		nec_state->unmasked_irq |= source;
-
-//	if(d & 0x20)
-//		logerror("%06x: Warning: macro service function not implemented\n",PC(nec_state));
 
 	if(d & 0x10)
 		nec_state->bankswitch_irq |= source;
@@ -259,23 +251,16 @@ static void write_sfr(v25_state_t *nec_state, unsigned o, UINT8 d)
 			nec_state->F1 = ((d & 0x20) == 0x20);
 			break;
 		case 0xEB: /* PRC */
-//			logerror("%06x: PRC set to %02x\n", PC(nec_state), d);
 			nec_state->RAMEN = ((d & 0x40) == 0x40);
 			nec_state->TB = timebases[(d & 0x0C) >> 2];
 			nec_state->PCK = clocks[d & 0x03];
 			if (nec_state->PCK == 0)
-			{
-//				logerror("        Warning: invalid clock divider\n");
 				nec_state->PCK = 8;
-			}
 			tmp = nec_state->PCK << nec_state->TB;
 			//bprintf (0, _T("d3, TIME: %d\n"), tmp);
 			add_timer(nec_state, 3, tmp, INTTB, 1/*repeat*/);
 //			time = attotime::from_hz(nec_state->device->unscaled_clock()) * tmp;
 //			nec_state->timers[3]->adjust(time, INTTB, time);
-//			logerror("        Internal RAM %sabled\n", (nec_state->RAMEN ? "en" : "dis"));
-//			logerror("        Time base set to 2^%d\n", nec_state->TB);
-//			logerror("        Clock divider set to %d\n", nec_state->PCK);
 			break;
 		case 0xEC: /* TBIC */
 			/* time base interrupt doesn't support macro service, bank switching or priority control */
@@ -283,10 +268,7 @@ static void write_sfr(v25_state_t *nec_state, unsigned o, UINT8 d)
 			break;
 		case 0xFF: /* IDB */
 			nec_state->IDB = (d << 12) | 0xE00;
-//			logerror("%06x: IDB set to %02x\n",PC(nec_state),d);
 			break;
-//		default:
-//			logerror("%06x: Wrote %02x to special function register %02x\n",PC(nec_state),d,o);
 	}
 }
 

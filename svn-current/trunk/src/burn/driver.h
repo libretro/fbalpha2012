@@ -73,11 +73,6 @@ enum {
   typedef UINT8 (*read8_handler)(UINT32 offset);
   typedef void (*write8_handler)(UINT32 offset, UINT32 data);
 
- #ifdef MAME_USE_LOGERROR
-  void __cdecl logerror(char* szFormat, ...);
- #else
-  #define logerror
- #endif
 #ifdef __cplusplus
  }
 #endif

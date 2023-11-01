@@ -78,17 +78,6 @@
 *****************************************************************************/
 
 #include <stdarg.h>
-//#include "deprecat.h"
-
-#define ARM7_DEBUG_CORE 0
-#define logerror	printf
-#define fatalerror	logerror
-
-#if 0
-#define LOG(x) mame_printf_debug x
-#else
-#define LOG(x) logerror x
-#endif
 
 #define ARM7_INLINE	static inline
 
@@ -340,12 +329,6 @@ static UINT32 decodeShift(UINT32 insn, UINT32 *pCarry)
     /* All shift types ending in 1 are Rk, not #k */
     if (t & 1)
     {
-//      LOG(("%08x:  RegShift %02x %02x\n", R15, k >> 1, GET_REGISTER(k >> 1)));
-#if ARM7_DEBUG_CORE
-            if ((insn & 0x80) == 0x80)
-                LOG(("%08x:  RegShift ERROR (p36)\n", R15));
-#endif
-
         // see p35 for check on this
         //k = GET_REGISTER(k >> 1) & 0x1f;
 
@@ -354,7 +337,6 @@ static UINT32 decodeShift(UINT32 insn, UINT32 *pCarry)
 
         if (k == 0) /* Register shift by 0 is a no-op */
         {
-//          LOG(("%08x:  NO-OP Regshift\n", R15));
             /* TODO this is wrong for at least ROR by reg with lower
              *      5 bits 0 but lower 8 bits non zero */
             if (pCarry)
@@ -442,8 +424,6 @@ static UINT32 decodeShift(UINT32 insn, UINT32 *pCarry)
         }
         break;
     }
-
-    LOG(("%08x: Decodeshift error\n", R15));
     return 0;
 } /* decodeShift */
 
@@ -505,10 +485,6 @@ static int storeInc(UINT32 pat, UINT32 rbv)
     {
         if ((pat >> i) & 1)
         {
-#if ARM7_DEBUG_CORE
-            if (i == 15) /* R15 is plus 12 from address of STM */
-                LOG(("%08x: StoreInc on R15\n", R15));
-#endif
             WRITE32(rbv += 4, GET_REGISTER(i));
             result++;
         }
@@ -525,10 +501,6 @@ static int storeDec(UINT32 pat, UINT32 rbv)
     {
         if ((pat >> i) & 1)
         {
-#if ARM7_DEBUG_CORE
-            if (i == 15) /* R15 is plus 12 from address of STM */
-                LOG(("%08x: StoreDec on R15\n", R15));
-#endif
             WRITE32(rbv -= 4, GET_REGISTER(i));
             result++;
         }
@@ -712,8 +684,6 @@ static void HandleCoProcDO(UINT32 insn)
     // This instruction simply instructs the co-processor to do something, no data is returned to ARM7 core
     if (arm7_coproc_do_callback)
         arm7_coproc_do_callback(0, insn);   // iq_132?? // simply pass entire opcode to callback - since data format is actually dependent on co-proc implementation
-    else
-        LOG(("%08x: Co-Processor Data Operation executed, but no callback defined!\n", R15));
 }
 
 // Co-Processor Register Transfer - To/From Arm to Co-Proc
@@ -730,16 +700,12 @@ static void HandleCoProcRT(UINT32 insn)
             UINT32 res = arm7_coproc_rt_r_callback(insn);   // RT Read handler must parse opcode & return appropriate result
             SET_REGISTER((insn >> 12) & 0xf, res);
         }
-        else
-            LOG(("%08x: Co-Processor Register Transfer executed, but no RT Read callback defined!\n", R15));
     }
     // Store (MCR) data from ARM7 to Co-Proc register
     else
     {
         if (arm7_coproc_rt_r_callback)
          ; //  arm7_coproc_rt_w_callback(insn, GET_REGISTER((insn >> 12) & 0xf), 0); // iq_132
-        else
-            LOG(("%08x: Co-Processor Register Transfer executed, but no RT Write callback defined!\n", R15));
     }
 }
 
@@ -769,11 +735,6 @@ static void HandleCoProcDT(UINT32 insn)
     write32 = PTR_WRITE32;
     read32 = PTR_READ32;
 
-#if ARM7_DEBUG_CORE
-    if (((insn >> 16) & 0xf) == 15 && (insn & 0x200000))
-        LOG(("%08x: Illegal use of R15 as base for write back value!\n", R15));
-#endif
-
     // Pre-Increment base address (IF POST INCREMENT - CALL BACK FUNCTION MUST DO IT)
     if ((insn & 0x1000000) && off)
     {
@@ -789,16 +750,12 @@ static void HandleCoProcDT(UINT32 insn)
     {
         if (arm7_coproc_dt_r_callback)
             arm7_coproc_dt_r_callback(insn, prn, read32);
-        else
-            LOG(("%08x: Co-Processer Data Transfer executed, but no READ callback defined!\n", R15));
     }
     // Store (STC) data from Co-Proc to ARM7 memory
     else
     {
         if (arm7_coproc_dt_w_callback)
             arm7_coproc_dt_w_callback(insn, prn, write32);
-        else
-            LOG(("%08x: Co-Processer Data Transfer executed, but no WRITE callback defined!\n", R15));
     }
 
     // If writeback not used - ensure the original value of RN is restored in case co-proc callback changed value
@@ -914,20 +871,11 @@ static void HandleMemSingle(UINT32 insn)
         /* Store */
         if (insn & INSN_SDT_B)
         {
-#if ARM7_DEBUG_CORE
-                if (rd == eR15)
-                    LOG(("Wrote R15 in byte mode\n"));
-#endif
 
             WRITE8(rnv, (UINT8) GET_REGISTER(rd) & 0xffu);
         }
         else
         {
-#if ARM7_DEBUG_CORE
-                if (rd == eR15)
-                    LOG(("Wrote R15 in 32bit mode\n"));
-#endif
-
             //WRITE32(rnv, rd == eR15 ? R15 + 8 : GET_REGISTER(rd));
             WRITE32(rnv, rd == eR15 ? R15 + 8 + 4 : GET_REGISTER(rd)); // manual says STR rd = PC, +12
         }
@@ -947,10 +895,6 @@ static void HandleMemSingle(UINT32 insn)
                 // todo: check for offs... ?
             }
             else {
-
-                if ((insn & INSN_SDT_W) != 0)
-                    LOG(("%08x:  RegisterWritebackIncrement %d %d %d\n", R15, (insn & INSN_SDT_P) != 0, (insn & INSN_SDT_W) != 0, (insn & INSN_SDT_U) != 0));
-
                 SET_REGISTER(rn, (rnv + off));
             }
         }
@@ -963,9 +907,6 @@ static void HandleMemSingle(UINT32 insn)
             }
             else {
                 SET_REGISTER(rn, (rnv - off));
-
-                if ((insn & INSN_SDT_W) != 0)
-                    LOG(("%08x:  RegisterWritebackDecrement %d %d %d\n", R15, (insn & INSN_SDT_P) != 0, (insn & INSN_SDT_W) != 0, (insn & INSN_SDT_U) != 0));
             }
         }
     }
@@ -1111,10 +1052,6 @@ static void HandleHalfWordDT(UINT32 insn)
                 // todo: check for offs... ?
             }
             else {
-
-                if ((insn & INSN_SDT_W) != 0)
-                    LOG(("%08x:  RegisterWritebackIncrement %d %d %d\n", R15, (insn & INSN_SDT_P) != 0, (insn & INSN_SDT_W) != 0, (insn & INSN_SDT_U) != 0));
-
                 SET_REGISTER(rn, (rnv + off));
             }
         }
@@ -1127,9 +1064,6 @@ static void HandleHalfWordDT(UINT32 insn)
             }
             else {
                 SET_REGISTER(rn, (rnv - off));
-
-                if ((insn & INSN_SDT_W) != 0)
-                    LOG(("%08x:  RegisterWritebackDecrement %d %d %d\n", R15, (insn & INSN_SDT_P) != 0, (insn & INSN_SDT_W) != 0, (insn & INSN_SDT_U) != 0));
             }
         }
     }
@@ -1143,11 +1077,6 @@ static void HandleSwap(UINT32 insn)
     rn = GET_REGISTER((insn >> 16) & 0xf);  // reg. w/read address
     rm = GET_REGISTER(insn & 0xf);          // reg. w/write address
     rd = (insn >> 12) & 0xf;                // dest reg
-
-#if ARM7_DEBUG_CORE
-    if (rn == 15 || rm == 15 || rd == 15)
-        LOG(("%08x: Illegal use of R15 in Swap Instruction\n", R15));
-#endif
 
     // can be byte or word
     if (insn & 0x400000)
@@ -1308,16 +1237,9 @@ static void HandleALU(UINT32 insn)
     if ((opcode & 0xd) != 0xd) /* No Rn in MOV */
     {
         if ((rn = (insn & INSN_RN) >> INSN_RN_SHIFT) == eR15)
-        {
-#if ARM7_DEBUG_CORE
-            LOG(("%08x:  Pipelined R15 (Shift %d)\n", R15, (insn & INSN_I ? 8 : insn & 0x10u ? 12 : 12)));
-#endif
             rn = R15 + 8;
-        }
         else
-        {
             rn = GET_REGISTER(rn);
-        }
     }
 
     /* Perform the operation */
@@ -1414,19 +1336,10 @@ static void HandleALU(UINT32 insn)
     else if (rdn == eR15)
     {
         if (insn & INSN_S) {
-#if ARM7_DEBUG_CORE
-                LOG(("%08x: TST class on R15 s bit set\n", R15));
-#endif
             R15 = rd;
 
             /* IRQ masks may have changed in this instruction */
 //          ARM7_CHECKIRQ;
-        }
-        else
-        {
-#if ARM7_DEBUG_CORE
-                LOG(("%08x: TST class on R15 no s bit set\n", R15));
-#endif
         }
     }
 
@@ -1441,13 +1354,6 @@ static void HandleMul(UINT32 insn)
     /* Do the basic multiply of Rm and Rs */
     r = GET_REGISTER(insn & INSN_MUL_RM) *
         GET_REGISTER((insn & INSN_MUL_RS) >> INSN_MUL_RS_SHIFT);
-
-#if ARM7_DEBUG_CORE
-    if ((insn & INSN_MUL_RM) == 0xf ||
-        ((insn & INSN_MUL_RS) >> INSN_MUL_RS_SHIFT) == 0xf ||
-        ((insn & INSN_MUL_RN) >> INSN_MUL_RN_SHIFT) == 0xf)
-        LOG(("%08x:  R15 used in mult\n", R15));
-#endif
 
     /* Add on Rn if this is a MLA */
     if (insn & INSN_MUL_A)
@@ -1476,11 +1382,6 @@ static void HandleSMulLong(UINT32 insn)
     rs  = (INT32)GET_REGISTER(((insn >> 8) & 0xf));
     rhi = (insn >> 16) & 0xf;
     rlo = (insn >> 12) & 0xf;
-
-#if ARM7_DEBUG_CORE
-        if ((insn & 0xf) == 15 || ((insn >> 8) & 0xf) == 15 || ((insn >> 16) & 0xf) == 15 || ((insn >> 12) & 0xf) == 15)
-            LOG(("%08x: Illegal use of PC as a register in SMULL opcode\n", R15));
-#endif
 
     /* Perform the multiplication */
     res = (INT64)rm * rs;
@@ -1515,11 +1416,6 @@ static void HandleUMulLong(UINT32 insn)
     rhi = (insn >> 16) & 0xf;
     rlo = (insn >> 12) & 0xf;
 
-#if ARM7_DEBUG_CORE
-        if (((insn & 0xf) == 15) || (((insn >> 8) & 0xf) == 15) || (((insn >> 16) & 0xf) == 15) || (((insn >> 12) & 0xf) == 15)
-            LOG(("%08x: Illegal use of PC as a register in SMULL opcode\n", R15));
-#endif
-
     /* Perform the multiplication */
     res = (UINT64)rm * rs;
 
@@ -1545,13 +1441,7 @@ static void HandleMemBlock(UINT32 insn)
 {
     UINT32 rb = (insn & INSN_RN) >> INSN_RN_SHIFT;
     UINT32 rbp = GET_REGISTER(rb);
-//    UINT32 oldR15 = R15; // iq_132 
     int result;
-
-#if ARM7_DEBUG_CORE
-    if (rbp & 3)
-        LOG(("%08x: Unaligned Mem Transfer @ %08x\n", R15, rbp));
-#endif
 
     // We will specify the cycle count for each case, so remove the -3 that occurs at the end
     ARM7_ICOUNT += 3;
@@ -1573,7 +1463,6 @@ static void HandleMemBlock(UINT32 insn)
                 // set to user mode - then do the transfer, and set back
                 int curmode = GET_MODE;
                 SwitchMode(eARM7_MODE_USER);
-                LOG(("%08x: User Bank Transfer not fully tested - please check if working properly!\n", R15));
                 result = loadInc(insn & 0xffff, rbp, insn & INSN_BDT_S);
                 // todo - not sure if Writeback occurs on User registers also..
                 SwitchMode(curmode);
@@ -1583,10 +1472,6 @@ static void HandleMemBlock(UINT32 insn)
 
             if (insn & INSN_BDT_W)
             {
-#if ARM7_DEBUG_CORE
-                    if (rb == 15)
-                        LOG(("%08x:  Illegal LDRM writeback to r15\n", R15));
-#endif
                 SET_REGISTER(rb, GET_REGISTER(rb) + result * 4);
             }
 
@@ -1616,7 +1501,6 @@ static void HandleMemBlock(UINT32 insn)
                 // set to user mode - then do the transfer, and set back
                 int curmode = GET_MODE;
                 SwitchMode(eARM7_MODE_USER);
-                LOG(("%08x: User Bank Transfer not fully tested - please check if working properly!\n", R15));
                 result = loadDec(insn & 0xffff, rbp, insn & INSN_BDT_S);
                 // todo - not sure if Writeback occurs on User registers also..
                 SwitchMode(curmode);
@@ -1626,8 +1510,6 @@ static void HandleMemBlock(UINT32 insn)
 
             if (insn & INSN_BDT_W)
             {
-                if (rb == 0xf)
-                    LOG(("%08x:  Illegal LDRM writeback to r15\n", R15));
                 SET_REGISTER(rb, GET_REGISTER(rb)-result*4);
             }
 
@@ -1652,9 +1534,6 @@ static void HandleMemBlock(UINT32 insn)
         /* Storing */
         if (insn & (1 << eR15))
         {
-#if ARM7_DEBUG_CORE
-                LOG(("%08x: Writing R15 in strm\n", R15));
-#endif
             /* special case handling if writing to PC */
             R15 += 12;
         }
@@ -1674,7 +1553,6 @@ static void HandleMemBlock(UINT32 insn)
                 // set to user mode - then do the transfer, and set back
                 int curmode = GET_MODE;
                 SwitchMode(eARM7_MODE_USER);
-                LOG(("%08x: User Bank Transfer not fully tested - please check if working properly!\n", R15));
                 result = storeInc(insn & 0xffff, rbp);
                 // todo - not sure if Writeback occurs on User registers also..
                 SwitchMode(curmode);
@@ -1701,7 +1579,6 @@ static void HandleMemBlock(UINT32 insn)
                 // set to user mode - then do the transfer, and set back
                 int curmode = GET_MODE;
                 SwitchMode(eARM7_MODE_USER);
-                LOG(("%08x: User Bank Transfer not fully tested - please check if working properly!\n", R15));
                 result = storeDec(insn & 0xffff, rbp);
                 // todo - not sure if Writeback occurs on User registers also..
                 SwitchMode(curmode);

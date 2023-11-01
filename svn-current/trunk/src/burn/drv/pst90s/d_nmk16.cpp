@@ -5512,13 +5512,13 @@ static INT32 NMK004Frame()
 
 	INT32 nSegment;
 	INT32 nInterleave = 200;
-	INT32 nTotalCycles[1] = { nNMK004CpuSpeed / 56 };
+	INT32 nTotalCycles = (INT32)(nNMK004CpuSpeed / 56);
 
 	SekOpen(0);
 
 	for (INT32 i = 0; i < nInterleave; i++)
 	{
-		nSegment = (nTotalCycles[0] / nInterleave) * (i + 1);
+		nSegment = (nTotalCycles / nInterleave) * (i + 1);
 		BurnTimerUpdate(nSegment);
 
 		if (i == (nInterleave-1) || i == ((nInterleave / 2) - 1)) {
@@ -5534,7 +5534,7 @@ static INT32 NMK004Frame()
 		}
 	}
 
-	BurnTimerEndFrame(nTotalCycles[0]);
+	BurnTimerEndFrame(nTotalCycles);
 
 	if (pBurnSoundOut) {
 		BurnYM2203Update(pBurnSoundOut, nBurnSoundLen);
@@ -5544,15 +5544,13 @@ static INT32 NMK004Frame()
 
 	SekClose();
 
-	if (pBurnDraw) {
+	if (pBurnDraw)
 		BurnDrvRedraw();
-	}
 
-	if (strncmp(BurnDrvGetTextA(DRV_NAME), "strahl", 6) == 0) {
+	if (strncmp(BurnDrvGetTextA(DRV_NAME), "strahl", 6) == 0)
 		memcpy (DrvSprBuf2, Drv68KRAM + 0xf000, 0x1000);
-	} else {
+	else
 		memcpy (DrvSprBuf2, Drv68KRAM + 0x8000, 0x1000);
-	}
 
 	return 0;
 }

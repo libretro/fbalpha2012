@@ -81,8 +81,6 @@
 
 #define VERBOSE 0
 
-#define LOG(x)	do { if (VERBOSE) logerror x; } while (0)
-
 //extern offs_t m6809_dasm(char *buffer, offs_t pc, const UINT8 *oprom, const UINT8 *opram);
 
 #define M6809_INLINE		static
@@ -451,7 +449,6 @@ void m6809_set_irq_line(int irqline, int state)
 	{
 		if (m6809.nmi_state == state) return;
 		m6809.nmi_state = state;
-//		LOG(("M6809#%d set_irq_line (NMI) %d\n", cpu_getactivecpu(), state));
 		if( state == M6809_CLEAR_LINE ) return;
 
 		/* if the stack was not yet initialized */
@@ -483,7 +480,6 @@ void m6809_set_irq_line(int irqline, int state)
 	}
 	else if (irqline < 2)
 	{
-//	    LOG(("M6809#%d set_irq_line %d, %d\n", cpu_getactivecpu(), irqline, state));
 		m6809.irq_state[irqline] = state;
 		if (state == M6809_CLEAR_LINE) return;
 		CHECK_IRQ_LINES;

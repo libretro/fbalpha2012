@@ -1766,7 +1766,7 @@ static void draw_layer(INT32 layer, INT32 forcelayer, INT32 type, INT32 start, I
 	UINT8  *gfx  = (layer) ? DrvGfxROM2 : DrvGfxROM1;
 
 	//	    layer, prio, forcelayer
-	const UINT16 transmask[2][3][2] = {
+	const INT32 transmask[2][3][2] = {
 		{ { 0xffff, 0x0001 }, { 0x00ff, 0xff01 }, { 0x0001, 0xffff } },
 		{ { 0xffff, 0x0000 }, { 0x00ff, 0xff00 }, { (type == 0) ? 0x0007 : 0x0001, (type == 0) ? 0xfff8 : 0xfffe } }
 	};
